@@ -1,8 +1,17 @@
 <script lang="ts">
 	import '../app.css';
+
+	import { Footer, Header } from '$components';
+
 	let { children } = $props();
 </script>
 
-<main class="container mx-auto">
-	{@render children()}
+<main class="flex flex-col min-h-screen">
+	<Header />
+
+	<main class="container mx-auto flex-grow mt-5">
+		{@render children()}
+	</main>
+
+	<Footer />
 </main>

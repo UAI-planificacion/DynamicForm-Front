@@ -8,6 +8,7 @@ export const templateJson = [{
         "placeholder"   : "Enter your name",
         "description"   : "Please enter your name"
     }, {
+        "id"        : "2",
         "shape"     : "select",
         "name"      : "options",
         "label"     : "Select",
@@ -19,25 +20,28 @@ export const templateJson = [{
             { value: "svelte-orange",       label: "Svelte Orange" },
             { value: "punk-pink",           label: "Punk Pink" }
         ]
-    },{
-        "shape"     : "input",
+    }, {
+        "id"        : "3",
+        "shape"     : "textarea",
         "type"      : "text",
         "name"      : "lastname",
-        "label"     : "Name",
+        "label"     : "Lastname",
         "required"  : true
     },{
+        "id"        : "4",
         "shape"     : "datepicker",
         "type"      : "text",
         "name"      : "ages",
         "label"     : "Selecciona una fecha",
-        "required"  : true
+        "required"  : true,
     },{
-        "id"        : "2",
+        "id"        : "5",
         "shape"     : "check",
         "name"      : "confirm",
         "label"     : "Confirmar",
         "checked"   : true,
     }, {
+        "id"        : "6",
         "shape"     : "combobox",
         "name"      : "combobox",
         "label"     : "Combobox",
@@ -50,9 +54,10 @@ export const templateJson = [{
             { value: "punk-pink",           label: "Punk Pink" }
         ]
     },{
-        "shape"     : "button",
-        "name"      : "Send",
-        "label"     : "Send",
-        "apiUrlSend" : "http://localhost:5173/api/send"
+        "id"            : "7",
+        "shape"         : "button",
+        "name"          : "Send",
+        "label"         : "Send",
+        "apiUrlSend"    : "http://localhost:5173/api/send"
     },
 ];

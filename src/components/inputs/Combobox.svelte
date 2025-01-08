@@ -1,8 +1,9 @@
 <script lang="ts">
     import { Combobox, type Selected } from "bits-ui";
 
-    import { CaretUpDown, Check }   from "$icons";
+    import { CaretUpDownIcon, CheckIcon }   from "$icons";
     import type { ShapeInput }      from "$models/shape-input";
+    import Info                     from "./Info.svelte";
 
     export let shapeInput: ShapeInput;
     export let onSelectedChange: (value: Selected<string> | undefined) => void;
@@ -17,19 +18,7 @@
         : shapeInput.options;
 </script>
 
-<div class="w-full space-y-1.5">
-    {#if shapeInput.label}
-        <label
-            for         = { shapeInput.name || "no name" }
-            class       = "block text-sm font-medium text-gray-700"
-            on:click    = { () => open = !open }
-            on:input    = { () => open = !open }
-            aria-hidden = "true"
-        >
-            { shapeInput.label }
-        </label>
-    {/if}
-
+<Info {shapeInput} {onSelectedChange}>
     <Combobox.Root
         items={filtered}
         onSelectedChange={onSelectedChange}
@@ -44,7 +33,7 @@
                 aria-label  = {shapeInput.label}
             />
 
-            <CaretUpDown />
+            <CaretUpDownIcon />
         </div>
 
         <Combobox.Content
@@ -60,7 +49,7 @@
                     {option.label}
 
                     <Combobox.ItemIndicator class="ml-auto" asChild={false}>
-                        <Check />
+                        <CheckIcon />
                     </Combobox.ItemIndicator>
                 </Combobox.Item>
             {:else}
@@ -72,4 +61,4 @@
 
         <Combobox.HiddenInput name="favoriteFruit" />
     </Combobox.Root>
-</div>
+</Info>

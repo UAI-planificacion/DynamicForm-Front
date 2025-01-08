@@ -1,106 +1,87 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
+	import {
+		dndzone,
+		type DndEvent
+	} 					from "svelte-dnd-action";
+	import { flip }		from 'svelte/animate';
 
-    import { type Selected } from "bits-ui";
+	import { Separator }	from "bits-ui";
+	import { v4 as uuid }	from 'uuid';
 
 	import {
-		Input,
-		Select,
-		Check,
-		Combobox,
-		Button
-	} 							from "$components";
-	import { templateJson } 	from "$lib/template";
-	import type { ShapeInput } 	from '$models/index';
-  import DatePicker from '$components/DatePicker.svelte';
+		EditIcon,
+		NameIcon,
+		InputIcon,
+		FlagIcon,
+		DeleteIcon,
+		AddIcon
+	}									from "$icons";
+	import { templateJson } 			from "$lib/template";
+	import type { ShapeInput } 			from '$models';
+	import { Preview, Dialog, Input, EditorView }	from '$components';
 
 
-	type FormValues = {
-		[key: string]: any;
-	};
-
-	type TDatePicker = {
-		calendar : any;
-		month	 : number;
-		year	 : number;
-		day		 : number;
-		era		: string;
-	}
+    const flipDurationMs = 100;
+	let template  = templateJson as ShapeInput[];
 
 
-    const formValues = writable<FormValues>({});
-	const template = templateJson;
-	console.log("🚀 ~ template:", template)
+	console.log("🚀 ~ template:", template);
 
-	function handleDatePicker(event: TDatePicker, name: string) {
-		const { day, month, year } = event;
-		const date = new Date( year, month - 1, day );
-        formValues.update((values) => {
-            return { ...values, [name]: date};
-        });
-    }
+	const handleConsider = ( env: CustomEvent<DndEvent<ShapeInput>> ) =>
+		template = [...env.detail.items];
+
+	const handleFinalize = ( env: CustomEvent<DndEvent<ShapeInput>> ) =>
+		template = [...env.detail.items];
 
 
-	function handleInput(event: Event, name: string) {
-        formValues.update((values) => {
-            return { ...values, [name]: (event.target as HTMLInputElement).value };
-        });
-    }
+	// let form : ShapeInput = {
+	// 	id		: uuid(),
+	// 	name 	: '',
+	// 	shape	: 'none',
+	// };
 
-    function handleSelect(selected: Selected<string> | undefined, name: string) {
-        formValues.update((values) => {
-            return { ...values, [name]: selected?.value || "" };
-        });
-    }
 
-	function handleCheck(isChecked: boolean, name: string) {
-    formValues.update((values) => {
-        return { ...values, [name]: isChecked };
-    });
-}
-
+	// const onSave = ( ev: ShapeInput ) => {
+	// 	template = [...template, ev];
+	// }
 </script>
 
-<container class="space-y-4">
-	{#each template as item }
-		<!-- Select -->
-		{#if item.shape === 'input'}
-			<Input
-				shapeInput	= { item as ShapeInput }
-				onInput		= {(event) => handleInput(event, item.name)}
-			/>
-		<!-- Select -->
-		{:else if item.shape === 'select'}
-			<Select
-				shapeInput			= {item as ShapeInput}
-				onSelectedChange	= {(selected) => handleSelect(selected, item.name)}
-			/>
-		<!-- Combobox -->
-		{:else if item.shape === 'combobox'}
-			<Combobox
-				shapeInput			= {item as ShapeInput }
-				onSelectedChange	= {( selected ) => handleSelect( selected, item.name )}
-			/>
-		<!-- Button -->
-		{:else if item.shape === 'button'}
-			<Button shapeInput={item as ShapeInput}/>
-		<!-- Check -->
-		{:else if item.shape === 'check'}
-			<Check
-				shapeInput={item as ShapeInput}
-				onChange={(checked) => handleCheck(checked, item.name)}
-			/>
 
-		{:else if item.shape === 'datepicker'}
-			<DatePicker
-				shapeInput={item as ShapeInput}
-				onValueChange={(value) => handleDatePicker(value, item.name)}
-			/>
-		<!-- Default -->
-		{:else}
-			<p class="text-red-500">Shape not found</p>
-		{/if}
-	{/each}
-</container>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+	<container class="space-y-3 max-h-full h-full overflow-auto">
+		<h2>Editor</h2>
 
-<pre class="mt-4 bg-amber-200 p-5 rounded-lg">{JSON.stringify($formValues, null, 2)}</pre>
+		<div
+			class		= "space-y-3"
+			use:dndzone = {{ items: template, flipDurationMs, dropTargetStyle: {} }}
+			on:consider = { handleConsider }
+			on:finalize = { handleFinalize }
+		>
+			{#each template as item (item.id || item.uniqueIdentifier) }
+				<div
+					class="hover:brightness-105 shadow-md rounded-md p-5 border-1 border-zinc-300 border bg-white"
+					animate:flip={{ duration: flipDurationMs }}
+				>
+					<EditorView
+						shapeInput	= {item}
+						onDelete	= {() => template = [...template.filter( temp => temp.id !== item.id )] }
+					/>
+				</div>
+			{/each}
+		</div>
+
+		<!-- <Dialog {form} {onSave} /> -->
+		<button
+			class="w-full flex justify-center hover:brightness-105 shadow-md rounded-lg p-5 border-1 border-zinc-300 border bg-white active:scale-[0.99] active:brightness-90"
+			on:click={() => template = [...template, {
+				id		: uuid(),
+				name 	: '',
+				shape	: 'none',
+			}]}
+		>
+			<AddIcon />
+		</button>
+	</container>
+
+	<Preview {template} />
+</div>

@@ -2,11 +2,12 @@
     import { DatePicker } from "bits-ui";
 
     import {
-        CalendarBlank,
-        CaretLeft,
-        CaretRight
+        CalendarBlankIcon,
+        CaretLeftIcon,
+        CaretRightIcon
     }                           from "$icons";
     import type { ShapeInput }  from "$models";
+    import Description from "./Description.svelte";
 
     export let shapeInput: ShapeInput;
     export let onValueChange: (value: any) => void;
@@ -19,9 +20,11 @@
     fixedWeeks      = {true}
 >
     <div class="flex w-full flex-col gap-1.5">
-        <DatePicker.Label class="block select-none text-sm font-medium">
-            {shapeInput.label}
-        </DatePicker.Label>
+        {#if shapeInput.label}
+            <DatePicker.Label class="block select-none text-sm font-medium">
+                {shapeInput.label}
+            </DatePicker.Label>
+        {/if}
 
         <DatePicker.Input
             let:segments
@@ -47,7 +50,7 @@
             <DatePicker.Trigger
                 class="ml-auto inline-flex size-8 items-center justify-center rounded-[5px] text-foreground/60 transition-all hover:bg-muted active:bg-dark-10"
             >
-                <CalendarBlank />
+                <CalendarBlankIcon />
             </DatePicker.Trigger>
         </DatePicker.Input>
 
@@ -66,7 +69,7 @@
                     <DatePicker.PrevButton
                         class="inline-flex size-10 items-center justify-center rounded-9px bg-background-alt transition-all hover:bg-muted active:scale-98"
                     >
-                        <CaretLeft />
+                        <CaretLeftIcon />
                     </DatePicker.PrevButton>
 
                     <DatePicker.Heading class="text-[15px] font-medium capitalize" />
@@ -74,7 +77,7 @@
                     <DatePicker.NextButton
                         class="inline-flex size-10 items-center justify-center rounded-9px bg-background-alt transition-all hover:bg-muted active:scale-98"
                     >
-                        <CaretRight />
+                        <CaretRightIcon />
                     </DatePicker.NextButton>
                 </DatePicker.Header>
 
@@ -120,4 +123,6 @@
             </DatePicker.Calendar>
         </DatePicker.Content>
     </div>
+
+    <Description text={shapeInput.description} />
 </DatePicker.Root>

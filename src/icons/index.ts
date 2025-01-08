@@ -1,18 +1,14 @@
-import CaretLeft       from './CaretLeft.svelte';
-import CaretRight       from './CaretRight.svelte';
-import CaretDown        from './CaretDown.svelte';
-import CaretUpDown      from './CaretUpDown.svelte';
-import CalendarBlank    from './CalendarBlank.svelte';
-import Check            from './Check.svelte';
-import Minus            from './Minus.svelte';
-
-
-export {
-    CaretLeft,
-    CaretRight,
-    CaretDown,
-    CaretUpDown,
-    CalendarBlank,
-    Check,
-    Minus
-};
+export { default as AddIcon }           from './AddIcon.svelte';
+export { default as DeleteIcon }        from './DeleteIcon.svelte';
+export { default as EditIcon }          from './EditIcon.svelte';
+export { default as CloseIcon }         from './CloseIcon.svelte';
+export { default as CaretLeftIcon }     from './CaretLeft.svelte';
+export { default as CaretRightIcon }    from './CaretRight.svelte';
+export { default as CaretDownIcon }     from './CaretDown.svelte';
+export { default as CaretUpDownIcon }   from './CaretUpDown.svelte';
+export { default as CalendarBlankIcon } from './CalendarBlank.svelte';
+export { default as CheckIcon }         from './Check.svelte';
+export { default as MinusIcon }         from './Minus.svelte';
+export { default as InputIcon }         from './InputIcon.svelte';
+export { default as NameIcon }          from './NameIcon.svelte';
+export { default as FlagIcon }          from './FlagIcon.svelte';

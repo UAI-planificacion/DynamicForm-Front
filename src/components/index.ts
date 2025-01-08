@@ -1,13 +1,18 @@
-import Button   from './Button.svelte';
-import Check    from './Check.svelte';
-import Combobox from './Combobox.svelte';
-import Input    from './Input.svelte';
-import Select   from './Select.svelte';
+//Inputs
+export { default as Button }        from './inputs/Button.svelte';
+export { default as Check }         from './inputs/Check.svelte';
+export { default as Combobox }      from './inputs/Combobox.svelte';
+export { default as Input }         from './inputs/Input.svelte';
+export { default as Select }        from './inputs/Select.svelte';
+export { default as DatePicker }    from './inputs/DatePicker.svelte';
+export { default as Radio }         from './inputs/Radio.svelte';
+export { default as TextArea }         from './inputs/TextArea.svelte';
 
-export {
-    Button,
-    Check,
-    Combobox,
-    Input,
-    Select
-};
+//Footer
+export { default as Footer } from './Footer.svelte';
+export { default as Header } from './Header.svelte';
+
+// Others
+export { default as Preview }       from './Preview.svelte';
+export { default as Dialog }        from './Dialog.svelte';
+export { default as EditorView }    from './EditorView.svelte';
