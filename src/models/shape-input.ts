@@ -6,7 +6,7 @@ export type ShapeInput = {
     [key: string]   : unknown;
     id              : string;
     name            : string;
-    shape           : InputType;
+    shape?          : InputType;
     label?          : string;
     description?    : string;
     type?           : Types;

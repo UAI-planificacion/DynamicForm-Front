@@ -2,8 +2,8 @@
     import { Combobox, type Selected } from "bits-ui";
 
     import { CaretUpDownIcon, CheckIcon }   from "$icons";
-    import type { ShapeInput }      from "$models/shape-input";
-    import Info                     from "./Info.svelte";
+    import type { ShapeInput }              from "$models";
+    import Info                             from "./Info.svelte";
 
     export let shapeInput: ShapeInput;
     export let onSelectedChange: (value: Selected<string> | undefined) => void;
@@ -20,8 +20,9 @@
 
 <Info {shapeInput} {onSelectedChange}>
     <Combobox.Root
-        items={filtered}
-        onSelectedChange={onSelectedChange}
+        items               = { filtered }
+        onSelectedChange    = { onSelectedChange }
+        selected            = { shapeInput.options?.find( option => option.value === shapeInput.value )}
         bind:inputValue
         bind:touchedInput
         bind:open

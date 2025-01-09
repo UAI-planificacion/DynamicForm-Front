@@ -14,5 +14,4 @@ export { default as Header } from './Header.svelte';
 
 // Others
 export { default as Preview }       from './Preview.svelte';
-export { default as Dialog }        from './Dialog.svelte';
 export { default as EditorView }    from './EditorView.svelte';
