@@ -1,5 +1,9 @@
 <script lang="ts">
-    import { DatePicker } from "bits-ui";
+    import {
+        CalendarDate,
+        type DateValue
+    }                       from "@internationalized/date";
+    import { DatePicker }   from "bits-ui";
 
     import {
         CalendarBlankIcon,
@@ -7,28 +11,42 @@
         CaretRightIcon
     }                           from "$icons";
     import type { ShapeInput }  from "$models";
-    import Description from "./Description.svelte";
+    import Description          from "./Description.svelte";
+
 
     export let shapeInput: ShapeInput;
-    export let onValueChange: (value: any) => void;
+    export let onValueChange: ( value: any ) => void;
+
+    const date  = new Date();
+    const year  = date.getFullYear();
+    const month = date.getMonth() - 1;
+    const day   = date.getDate();
 </script>
+
 
 <DatePicker.Root
     {onValueChange}
     locale          = "es"
     weekdayFormat   = "short"
-    fixedWeeks      = {true}
+    fixedWeeks      = { true }
+    disabled        = { shapeInput.disabled }
+    readonly        = { shapeInput.readonly }
+    multiple        = { shapeInput.multiple }
+    value           = { shapeInput.currentDate ? new CalendarDate( year, month, day ) : shapeInput.date }
+    minValue        = { shapeInput.minValue }
+    maxValue        = { shapeInput.maxValue }
+    calendarLabel = 'hola'
 >
     <div class="flex w-full flex-col gap-1.5">
         {#if shapeInput.label}
-            <DatePicker.Label class="block select-none text-sm font-medium">
-                {shapeInput.label}
+            <DatePicker.Label class={`block select-none text-sm font-medium ${ shapeInput.disabled ? 'text-slate-500' : '' }`}>
+                { shapeInput.label }
             </DatePicker.Label>
         {/if}
 
         <DatePicker.Input
             let:segments
-            class="rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input bg-background px-2 py-3 text-sm tracking-[0.01em] text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover"
+            class={`rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input bg-background px-2 py-3 text-sm tracking-[0.01em] ${ shapeInput.disabled ? 'text-slate-500 ' : '' } focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover`}
         >
             {#each segments as { part, value }}
                 <div class="inline-block select-none">
@@ -61,7 +79,7 @@
             class               = "z-50"
         >
             <DatePicker.Calendar
-                class="rounded-lg border border-dark-10 bg-zinc-800 p-[22px] shadow-popover"
+                class="rounded-lg border border-dark-10 bg-zinc-800 p-3 shadow-popover"
                 let:months
                 let:weekdays
             >
@@ -106,7 +124,7 @@
                                                 <DatePicker.Day
                                                     {date}
                                                     month={month.value}
-                                                    class="group relative inline-flex size-10 items-center justify-center whitespace-nowrap rounded-9px border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-foreground data-[selected]:bg-blue-500 data-[selected]:rounded-lg data-[disabled]:text-zinc-700  data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through"
+                                                    class="group relative inline-flex size-10 items-center justify-center whitespace-nowrap rounded-9px border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-foreground data-[selected]:bg-blue-500 data-[selected]:rounded-lg data-[disabled]:text-zinc-700  data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through hover:bg-slate-600 hover:rounded-lg"
                                                 >
                                                 <!-- svelte-ignore element_invalid_self_closing_tag -->
                                                     <div class="absolute top-[5px] hidden size-1 rounded-full bg-foreground transition-all group-data-[today]:block group-data-[selected]:bg-background bg-blue-500" />
@@ -122,7 +140,7 @@
                 </div>
             </DatePicker.Calendar>
         </DatePicker.Content>
-    </div>
 
-    <Description text={shapeInput.description} />
+        <Description text={shapeInput.description} />
+    </div>
 </DatePicker.Root>

@@ -12,3 +12,4 @@ export { default as MinusIcon }         from './Minus.svelte';
 export { default as InputIcon }         from './InputIcon.svelte';
 export { default as NameIcon }          from './NameIcon.svelte';
 export { default as FlagIcon }          from './FlagIcon.svelte';
+export { default as JsonIcon }          from './JsonIcon.svelte';

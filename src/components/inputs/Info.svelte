@@ -13,7 +13,7 @@
     {#if shapeInput.label}
         <label
             for     = {shapeInput.id || "no name"}
-            class   = "block text-sm font-medium text-gray-700"
+            class   = {`block text-sm font-medium   ${ shapeInput.disabled ? 'text-gray-500' : 'text-gray-700' }`}
         >
             {shapeInput.label}
         </label>

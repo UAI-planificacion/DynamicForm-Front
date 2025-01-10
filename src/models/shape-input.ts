@@ -1,3 +1,6 @@
+import { type DateValue } from "@internationalized/date";
+
+
 export type InputType  = 'input' | 'combobox' | 'check' | 'select' | 'textarea' | 'datepicker' | 'button' | 'none';
 export type Types      = 'text' | 'number' | 'password' | 'email' | 'url' | 'tel' | 'search';
 
@@ -12,15 +15,25 @@ export type ShapeInput = {
     type?           : Types;
     placeholder?    : string;
     value?          : string;
+    date?           : DateValue;
+    currentDate?    : boolean
+    minValue?       : DateValue;
+    maxValue?       : DateValue;
     required?       : boolean;
+    msgRequired?    : string;
     disabled?       : boolean;
     readonly?       : boolean;
+    multiple?       : false;
     pattern?        : string;
     class?          : string;
     min?            : number;
     max?            : number;
     minLength?      : number;
     maxLength?      : number;
+    msgMin?         : string;
+    msgMax?         : string;
+    msgMinLength?   : string;
+    msgMaxLength?   : string;
     options?        : ShapeOptions[];
     rows?           : number;
     checked?        : boolean;
@@ -30,6 +43,7 @@ export type ShapeInput = {
 
 
 export type ShapeOptions = {
+    id?     : string;
     label   : string;
     value   : string;
 }

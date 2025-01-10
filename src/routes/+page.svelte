@@ -5,23 +5,31 @@
 	} 					from "svelte-dnd-action";
 	import { flip }		from 'svelte/animate';
 
-	import { v4 as uuid }	from 'uuid';
+	import { v4 as uuid } from 'uuid';
 
-	import { AddIcon }				from "$icons";
-	import { templateJson } 		from "$lib";
-	import type { ShapeInput }		from '$models';
-	import { Preview, EditorView }	from '$components';
+	import {
+		Preview,
+		EditorView,
+		Enumeration,
+		SubTitle
+	}							from '$components';
+	import { AddIcon }			from "$icons";
+	import { templateJson } 	from "$lib";
+	import type { ShapeInput }	from '$models';
 
 
 	const flipDurationMs = 100;
 
 	let template  = templateJson as ShapeInput[];
 
+
 	const handleConsider = ( env: CustomEvent<DndEvent<ShapeInput>> ) =>
 		template = [...env.detail.items];
 
+
 	const handleFinalize = ( env: CustomEvent<DndEvent<ShapeInput>> ) =>
 		template = [...env.detail.items];
+
 
 	const addItem = () => template = [
 		...template, {
@@ -30,15 +38,18 @@
 			shape	: 'none',
 		}];
 
+
 	const deleteItem = ( id: string ) => template = [
 		...template.filter( temp => temp.id !== id ) ?? []
 	];
+
+	let inputActive = 0;
 </script>
 
 
 <main class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 	<container class="space-y-3 max-h-full h-full overflow-auto">
-		<h2>Editor</h2>
+		<SubTitle title="Editor" />
 
 		<div
 			class		= "space-y-3"
@@ -47,14 +58,20 @@
 			on:finalize = { handleFinalize }
 		>
 			{#each template ?? [] as item, index ( item.id )}
-				<div
-					class="hover:brightness-105 shadow-md rounded-md p-5 border-1 border-zinc-300 border bg-white"
-					animate:flip={{ duration: flipDurationMs }}
-				>
-					<EditorView
-						bind:shapeInput	= { template[index] }
-						onDelete		= { () => deleteItem( item.id )}
-					/>
+				<div animate:flip={{ duration: flipDurationMs }}>
+					<div class="flex gap-1.5">
+						<Enumeration
+							number	= { index + 1 }
+							active	= { inputActive === index + 1 }
+						/>
+
+						<EditorView
+							bind:shapeInput	= { template[index] }
+							onDelete		= { () => deleteItem( item.id )}
+							inputActive 	= { () => inputActive = index + 1 }
+							inputDesactive	= { () => inputActive = 0 }
+						/>
+					</div>
 				</div>
 			{/each}
 		</div>
@@ -67,5 +84,5 @@
 		</button>
 	</container>
 
-	<Preview {template} />
+	<Preview {template} { inputActive }/>
 </main>

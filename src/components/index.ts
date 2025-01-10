@@ -15,3 +15,5 @@ export { default as Header } from './Header.svelte';
 // Others
 export { default as Preview }       from './Preview.svelte';
 export { default as EditorView }    from './EditorView.svelte';
+export { default as Enumeration }   from './Enumeration.svelte';
+export { default as SubTitle }      from './SubTitle.svelte';
