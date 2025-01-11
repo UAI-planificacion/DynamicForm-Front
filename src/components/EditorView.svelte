@@ -5,8 +5,9 @@
         Accordion,
         Separator,
         type Selected
-    }                       from "bits-ui";
-	import { v4 as uuid }	from 'uuid';
+    }                           from "bits-ui";
+	import { v4 as uuid }	    from 'uuid';
+    import type { DateValue }   from "@internationalized/date";
 
     import {
         DeleteIcon,
@@ -32,7 +33,6 @@
         TextArea
     }                           from "$components";
     import { options, types }   from "$lib";
-    import type { DateValue } from "@internationalized/date";
 
 
     export let shapeInput       : Partial<ShapeInput>;
@@ -40,6 +40,12 @@
     export let inputActive      : VoidFunction;
     export let inputDesactive   : VoidFunction;
 
+    shapeInput.valid = true;
+    shapeInput.msgRequired  = 'El campo es requerido.'
+    shapeInput.msgMin       = `El valor mínimo es ${shapeInput.min}.`
+    shapeInput.msgMax       = `La valor máximo es ${shapeInput.max ?? 0}.`
+    shapeInput.msgMinLength = `El campo menor a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
+    shapeInput.msgMaxLength = `El campo super a los ${shapeInput.maxLength ?? 0} caracteres permitidos.`
 
     let editing = false;
 
@@ -166,15 +172,18 @@
                         placeholder : 'Ingrese la etiqueta',
                         value       : shapeInput.label
                     }}
-                    onInput = {( event: Event ) => shapeInput.label = ( event.target as HTMLInputElement ).value  }
+                    onInput = {( event: Event ) => shapeInput.label = ( event.target as HTMLInputElement ).value }
                 />
 
                 {#if shapeInput.shape === 'check' }
                     <div class="flex mt-5">
                         <Check
-                            id 			= { uuid() }
-                            label		= { "Valor por defecto" }
-                            checked     = { shapeInput.checked ?? 'indeterminate' }
+                            shapeInput  = {{
+                                id      : uuid(),
+                                name    : 'default-value',
+                                label   : 'Valor por defecto',
+                                checked : shapeInput.checked
+                            }} 
                             onChange	= {( e ) => shapeInput.checked = e as boolean }
                         />
                     </div>
@@ -182,9 +191,12 @@
                     <div class="flex gap-2 items-center">
                         <div class="w-48">
                             <Check
-                                id 			= { uuid() }
-                                label		= { "Día actual" }
-                                checked     = { shapeInput.currentDate }
+                                shapeInput  = {{
+                                    id      : uuid(),
+                                    name    : 'current-date',
+                                    label   : 'Día actual',
+                                    checked : shapeInput.currentDate
+                                }}
                                 onChange    = {( e ) => shapeInput.currentDate = e as boolean }
                             />
                         </div>
@@ -288,7 +300,6 @@
                         <span>Label</span>
 
                         <div class="flex items-center gap-2">
-
                             <button
                                 class   = "hover:brightness-105 active:scale-95 active:brightness-90"
                                 on:click= { triggerFileInput }
@@ -315,7 +326,7 @@
                 </div>
 
                 <div class={`${heightOptions( shapeInput.options?.length )} w-full overflow-auto gap-2 grid grid-cols-2 pr-2`}>
-                    {#each shapeInput.options?? [] as item }
+                    {#each shapeInput.options ?? [{ id: uuid(), label: '', value: '' }] as item }
                         <Input
                             shapeInput = {{
                                 id		    : uuid(),
@@ -386,9 +397,12 @@
                         {#if shapeInput.shape !== 'button' }
                             <div class=" grid grid-cols-2 gap-2 items-center">
                                 <Check
-                                    id 			= { uuid() }
-                                    label		= { "Requerido" }
-                                    checked     = { shapeInput.required }
+                                    shapeInput = {{
+                                        id		    : uuid(),
+                                        label       : 'Requerido',
+                                        name	    : 'required',
+                                        checked     : shapeInput.required
+                                    }}
                                     onChange	= {( e ) => shapeInput.required = e as boolean }
                                 />
 
@@ -398,7 +412,7 @@
                                         label       : 'Mensaje para requerido',
                                         name	    : 'msg-required',
                                         placeholder : 'Ingresa el mensaje para mostrar como requerido',
-                                        value       : shapeInput.msgRequired ?? 'El campo es requerido.',
+                                        value       : shapeInput.msgRequired,
                                         disabled    : !shapeInput.required
                                     }}
                                     onInput = {( event: Event ) => shapeInput.msgRequired = ( event.target as HTMLInputElement ).value }
@@ -427,8 +441,8 @@
                                             label       : 'Mensaje largo mínimo',
                                             name	    : 'msg-min-length',
                                             placeholder : 'Ingresa el mensaje para largo mínimo',
-                                            disabled    : (shapeInput.minLength ?? 0) <= 0,
-                                            value       : shapeInput.msgMinLength ?? `Campo es inferior a los ${shapeInput.minLength} caracteres permitidos`,
+                                            disabled    : ( shapeInput.minLength ?? 0 ) <= 0,
+                                            value       : shapeInput.msgMinLength,
                                         }}
                                         onInput = {( event: Event ) => shapeInput.msgMinLength = ( event.target as HTMLInputElement ).value }
                                     />
@@ -452,7 +466,7 @@
                                             name	    : 'msg-max-length',
                                             placeholder : 'Ingresa el mensaje para largo máximo',
                                             disabled    : (shapeInput.maxLength ?? 0) <= 0,
-                                            value       : shapeInput.msgMaxLength ?? `Campo supera los ${shapeInput.maxLength} caracteres permitidos`,
+                                            value       : shapeInput.msgMaxLength,
                                         }}
                                         onInput = {( event: Event ) => shapeInput.msgMaxLength = ( event.target as HTMLInputElement ).value }
                                     />
@@ -477,7 +491,7 @@
                                             name	    : 'msg-min',
                                             placeholder : 'Ingresa el mensaje para el mínimo requerido',
                                             disabled    : (shapeInput.min ?? 0) <= 0,
-                                            value       : shapeInput.msgMin ?? `Campo es inferior a ${shapeInput.min}`,
+                                            value       : shapeInput.msgMin,
                                         }}
                                         onInput = {( event: Event ) => shapeInput.msgMin = ( event.target as HTMLInputElement ).value }
                                     />
@@ -501,7 +515,7 @@
                                             name	    : 'msg-max',
                                             placeholder : 'Ingresa el mensaje para máximo requerido',
                                             disabled    : (shapeInput.max ?? 0) <= 0,
-                                            value       : shapeInput.msgMax ?? `Campo supera a ${shapeInput.max}`,
+                                            value       : shapeInput.msgMax,
                                         }}
                                         onInput = {( event: Event ) => shapeInput.msgMax = ( event.target as HTMLInputElement ).value }
                                     />
@@ -565,34 +579,36 @@
 
                         {#if shapeInput.shape === 'button'}
                             <div class="grid grid-cols-1 sm:grid-cols-2 items-center justify-between">
-                                <Check
-                                    id 			= { uuid() }
-                                    label		= { "Mantener desactivado mientras el formulario sea inválido" }
-                                    onChange	= {( e ) => shapeInput.readonly = e as boolean }
-                                    checked     = { shapeInput.readonly }
-                                />
-
                                 <!-- <Check
-                                    id 			= { uuid() }
-                                    label		= { "Desactivado" }
-                                    onChange	= {( e ) => shapeInput.disabled = e as boolean }
-                                    checked     = { shapeInput.disabled }
+                                    shapeInput = {{
+                                        id		    : uuid(),
+                                        label       : 'Mantener desactivado mientras el formulario sea inválido.',
+                                        name	    : 'keep-disabled',
+                                        checked     : shapeInput.checked
+                                    }}
+                                    onChange	= {( e ) => shapeInput.readonly = e as boolean }
                                 /> -->
                             </div>
                         {:else}
                             <div class="grid grid-cols-1 sm:grid-cols-2 items-center justify-between">
                                 <Check
-                                    id 			= { uuid() }
-                                    label		= { "Solo lectura" }
-                                    onChange	= {( e ) => shapeInput.readonly = e as boolean }
-                                    checked     = { shapeInput.readonly }
+                                    shapeInput={{
+                                        id		: uuid(),
+                                        label   : 'Desactivado',
+                                        name	: 'disabled',
+                                        checked : shapeInput.disabled
+                                    }}
+                                    onChange={( e ) => shapeInput.disabled = e as boolean }
                                 />
 
                                 <Check
-                                    id 			= { uuid() }
-                                    label		= { "Desactivado" }
-                                    onChange	= {( e ) => shapeInput.disabled = e as boolean }
-                                    checked     = { shapeInput.disabled }
+                                    shapeInput = {{
+                                        id		    : uuid(),
+                                        label       : 'Solo lectura',
+                                        name	    : 'readonly',
+                                        checked     : shapeInput.readonly
+                                    }}
+                                    onChange	= {( e ) => shapeInput.readonly = e as boolean }
                                 />
                             </div>
                         {/if}

@@ -20,6 +20,7 @@ export type ShapeInput = {
     minValue?       : DateValue;
     maxValue?       : DateValue;
     required?       : boolean;
+    valid?          : boolean;
     msgRequired?    : string;
     disabled?       : boolean;
     readonly?       : boolean;

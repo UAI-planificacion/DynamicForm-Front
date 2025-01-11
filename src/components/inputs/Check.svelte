@@ -3,25 +3,23 @@
 
     import { CheckIcon, MinusIcon } from "$icons";
     import Description              from "./Description.svelte";
+    import type { ShapeInput }      from "$models";
 
 
-    export let id           : string;
-    export let label        : string | undefined = undefined;
-    export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
     export let className    : string = "peer inline-flex size-[25px] items-center justify-center rounded-md border border-muted bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40";
-    export let description  : string | undefined    = undefined;
-    export let disabled     : boolean | undefined   = undefined;
+    export let shapeInput   : ShapeInput;
     export let onChange     : ( checked: boolean ) => void;
+    export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
 </script>
 
 <div class="space-y-1">
     <div class="flex items-center space-x-3">
         <Checkbox.Root
-            { id }
-            { checked }
-            { disabled }
-            aria-labelledby = {label}
-            class           = { className }
+            id              = { shapeInput.id }
+            checked         = { shapeInput.checked }
+            disabled        = { shapeInput.disabled }
+            aria-labelledby = { shapeInput.label}
+            class           = { shapeInput.class ?? className }
             onCheckedChange = {( e ) => onChange( e as boolean )}
         >
             <Checkbox.Indicator
@@ -38,13 +36,13 @@
         </Checkbox.Root>
 
         <Label.Root
-            id      = { label }
-            for     = { id }
+            id      = { shapeInput.label }
+            for     = { shapeInput.id }
             class   = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-            {label}
+            { shapeInput.label }
         </Label.Root>
     </div>
 
-    <Description text={ description } />
+    <Description { shapeInput } { checked } />
 </div>

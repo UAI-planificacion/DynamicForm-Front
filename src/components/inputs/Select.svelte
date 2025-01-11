@@ -6,11 +6,13 @@
     import Info                             from "./Info.svelte";
 
 
-    export let shapeInput: ShapeInput;
-    export let onSelectedChange: ( value: Selected<string> | undefined ) => void;
+    export let shapeInput       : ShapeInput;
+    export let value            : string | undefined = undefined;
+    export let onSelectedChange : ( value: Selected<string> | undefined ) => void;
 </script>
 
-<Info {shapeInput} {onSelectedChange}>
+
+<Info { shapeInput } { onSelectedChange } { value }>
     <Select.Root
         items               = { shapeInput.options }
         onSelectedChange    = { onSelectedChange }

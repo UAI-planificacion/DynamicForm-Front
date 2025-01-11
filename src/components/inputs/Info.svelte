@@ -6,20 +6,21 @@
 
     export let shapeInput       : ShapeInput;
     export let onInput          : ( event: Event ) => void = () => {};
-    export let onSelectedChange : (value: Selected<string> | undefined) => void = () => {};
+    export let onSelectedChange : ( value: Selected<string> | undefined ) => void = () => {};
+    export let value            : string | undefined = undefined;
 </script>
 
 <div class="w-full space-y-1.5">
     {#if shapeInput.label}
         <label
-            for     = {shapeInput.id || "no name"}
-            class   = {`block text-sm font-medium   ${ shapeInput.disabled ? 'text-gray-500' : 'text-gray-700' }`}
+            for     = { shapeInput.id || "no name" }
+            class   = {`block text-sm font-medium ${ shapeInput.disabled ? 'text-gray-500' : 'text-gray-700' }`}
         >
-            {shapeInput.label}
+            { shapeInput.label }
         </label>
     {/if}
 
-    <slot {shapeInput} {onInput} {onSelectedChange}/>
+    <slot { shapeInput } { onInput } { onSelectedChange } />
 
-    <Description text={shapeInput.description} />
+    <Description { shapeInput } { value } />
 </div>

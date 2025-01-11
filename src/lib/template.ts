@@ -6,7 +6,6 @@ export const templateJson = [{
         "label"         : "Name",
         "required"      : true,
         "placeholder"   : "Enter your name",
-        "description"   : "Please enter your name"
     }, {
         "id"        : "2",
         "shape"     : "select",

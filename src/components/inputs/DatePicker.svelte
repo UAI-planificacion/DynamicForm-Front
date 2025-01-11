@@ -14,8 +14,9 @@
     import Description          from "./Description.svelte";
 
 
-    export let shapeInput: ShapeInput;
-    export let onValueChange: ( value: any ) => void;
+    export let shapeInput       : ShapeInput;
+    export let value            : DateValue | undefined = undefined;
+    export let onValueChange    : ( value: any ) => void;
 
     const date  = new Date();
     const year  = date.getFullYear();
@@ -141,6 +142,6 @@
             </DatePicker.Calendar>
         </DatePicker.Content>
 
-        <Description text={shapeInput.description} />
+        <Description { shapeInput } date={ value } />
     </div>
 </DatePicker.Root>

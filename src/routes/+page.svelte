@@ -11,7 +11,9 @@
 		Preview,
 		EditorView,
 		Enumeration,
-		SubTitle
+		SubTitle,
+		Input,
+		Combobox
 	}							from '$components';
 	import { AddIcon }			from "$icons";
 	import { templateJson } 	from "$lib";
@@ -20,15 +22,18 @@
 
 	const flipDurationMs = 100;
 
-	let template  = templateJson as ShapeInput[];
+	let template  	= templateJson as ShapeInput[];
+	let inputActive = 0;
 
 
 	const handleConsider = ( env: CustomEvent<DndEvent<ShapeInput>> ) =>
-		template = [...env.detail.items];
+		template = [ ...env.detail.items ];
 
 
-	const handleFinalize = ( env: CustomEvent<DndEvent<ShapeInput>> ) =>
-		template = [...env.detail.items];
+	const handleFinalize = ( env: CustomEvent<DndEvent<ShapeInput>> ) => {
+		template 	= [ ...env.detail.items ];
+		inputActive = 0;
+	}
 
 
 	const addItem = () => template = [
@@ -36,53 +41,77 @@
 			id		: uuid(),
 			name 	: '',
 			shape	: 'none',
-		}];
+		}
+	];
 
 
 	const deleteItem = ( id: string ) => template = [
 		...template.filter( temp => temp.id !== id ) ?? []
 	];
-
-	let inputActive = 0;
 </script>
 
 
-<main class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-	<container class="space-y-3 max-h-full h-full overflow-auto">
-		<SubTitle title="Editor" />
+<main class="space-y-2">
+	<Combobox
+		shapeInput={{
+			id			: uuid(),
+			name		: 'search',
+			options 	: [ { label: 'template', value: 'Template original' } ],
+			label		: 'Plantillas de formularios',
+			placeholder	: 'Seleccione una plantilla'
+		}}
+		onSelectedChange={() => {}}
+	/>
 
-		<div
-			class		= "space-y-3"
-			use:dndzone = {{ items: template, flipDurationMs, dropTargetStyle: {} }}
-			on:consider = { handleConsider }
-			on:finalize = { handleFinalize }
-		>
-			{#each template ?? [] as item, index ( item.id )}
-				<div animate:flip={{ duration: flipDurationMs }}>
-					<div class="flex gap-1.5">
-						<Enumeration
-							number	= { index + 1 }
-							active	= { inputActive === index + 1 }
-						/>
+	<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+		<container class="space-y-3 max-h-full h-full overflow-auto">
+			<SubTitle title="Editor" />
 
-						<EditorView
-							bind:shapeInput	= { template[index] }
-							onDelete		= { () => deleteItem( item.id )}
-							inputActive 	= { () => inputActive = index + 1 }
-							inputDesactive	= { () => inputActive = 0 }
-						/>
+			<div
+				class		= "space-y-3"
+				use:dndzone = {{ items: template, flipDurationMs, dropTargetStyle: {} }}
+				on:consider = { handleConsider }
+				on:finalize = { handleFinalize }
+			>
+				{#each template ?? [] as item, index ( item.id )}
+					<div animate:flip={{ duration: flipDurationMs }}>
+						<div class="flex gap-1.5">
+							<Enumeration
+								number	= { index + 1 }
+								active	= { inputActive === index + 1 }
+							/>
+
+							<EditorView
+								bind:shapeInput	= { template[index] }
+								onDelete		= { () => deleteItem( item.id )}
+								inputActive 	= { () => inputActive = index + 1 }
+								inputDesactive	= { () => inputActive = 0 }
+							/>
+						</div>
 					</div>
-				</div>
-			{/each}
-		</div>
+				{/each}
+			</div>
 
-		<button
-			class="w-full flex justify-center hover:brightness-105 shadow-md rounded-lg p-5 border-1 border-zinc-300 border bg-white active:scale-[0.99] active:brightness-90"
-			on:click={addItem}
-		>
-			<AddIcon />
-		</button>
-	</container>
+			<button
+				class="w-full flex justify-center hover:brightness-105 shadow-md rounded-lg p-5 border-1 border-zinc-300 border bg-white active:scale-[0.99] active:brightness-90"
+				on:click={addItem}
+			>
+				<AddIcon />
+			</button>
+		</container>
 
-	<Preview {template} { inputActive }/>
+		<Preview {template} { inputActive }/>
+	</div>
+
+	{#if template.length > 0}
+		<Input 
+			shapeInput={{
+				id			: uuid(),
+				name		: 'template-name',
+				label		: 'Nombre de la nueva plantilla',
+				placeholder	: 'Escribe aquí para crear el nombre de la plantilla'
+			}}
+			onInput= {() => {}}
+		/>
+	{/if}
 </main>

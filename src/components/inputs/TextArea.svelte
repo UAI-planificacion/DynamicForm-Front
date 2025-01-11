@@ -1,13 +1,15 @@
 <script lang="ts">
-    import type { ShapeInput } from "$models";
-	import Info from "./Info.svelte";
+    import type { ShapeInput } 	from "$models";
+	import Info 				from "./Info.svelte";
 
-    export let shapeInput: ShapeInput;
-    export let onInput: ( event: Event ) => void;
+
+    export let shapeInput	: ShapeInput;
+	export let value 		: string | undefined = undefined;
+    export let onInput		: ( event: Event ) => void;
 </script>
 
 
-<Info {shapeInput} {onInput}>
+<Info { shapeInput } { onInput } { value }>
 	<textarea
 		name        = { shapeInput.name }
 		id          = { shapeInput.id }

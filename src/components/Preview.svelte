@@ -16,6 +16,7 @@
 		SubTitle
 	} 							from "$components";
     import type { ShapeInput }  from "$models";
+	import { getIsError } 		from "$lib";
 
 
     export let template		: ShapeInput[] = [];
@@ -67,7 +68,7 @@
 <container class="space-y-3 h-full overflow-auto">
 	<SubTitle title="Vista Previa" />
 
-    {#each template as item, index }
+    {#each template as shapeInput, index }
 		<div class="flex gap-1.5">
 		<!-- <div class={`flex gap-2 ${inputActive === index + 1 ? 'border-0 border-amber-00 border pr-2 py-2 rounded-lg   bg-zinc-300/20  ' : ''}`}> -->
 			<Enumeration
@@ -76,43 +77,50 @@
 			/>
 
 			<!-- Select -->
-			{#if item.shape === 'input'}
+			{#if shapeInput.shape === 'input'}
 				<Input
-					shapeInput	= { item as ShapeInput }
-					onInput		= {(event: Event) => handleInput(event, item.name)}
-				/>
+					{ shapeInput }
+					onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
+					value 		= { $formValues[ shapeInput.name ]}
+					setError 	= {() => shapeInput.valid = getIsError( {shapeInput, value: $formValues[ shapeInput.name ]})}
+					/>
 			<!-- Select -->
-			{:else if item.shape === 'select'}
+			{:else if shapeInput.shape === 'select'}
 				<Select
-					shapeInput			= {item as ShapeInput}
-					onSelectedChange	= {(selected: Selected<string> | undefined) => handleSelect(selected, item.name)}
+					{ shapeInput }
+					onSelectedChange	= {( selected: Selected<string> | undefined ) => handleSelect( selected, shapeInput.name )}
+					value 				= { $formValues[ shapeInput.name ]}
 				/>
 			<!-- Combobox -->
-			{:else if item.shape === 'combobox'}
+			{:else if shapeInput.shape === 'combobox'}
 				<Combobox
-					shapeInput			= {item as ShapeInput }
-					onSelectedChange	= {( selected: Selected<string> | undefined ) => handleSelect( selected, item.name )}
+					{ shapeInput }
+					onSelectedChange	= {( selected: Selected<string> | undefined ) => handleSelect( selected, shapeInput.name )}
+					value 				= { $formValues[ shapeInput.name ]}
 				/>
 			<!-- Button -->
-			{:else if item.shape === 'button'}
-				<Button shapeInput={item as ShapeInput}/>
+			{:else if shapeInput.shape === 'button'}
+				<Button { shapeInput } />
 			<!-- Check -->
-			{:else if item.shape === 'check'}
+			{:else if shapeInput.shape === 'check'}
 				<Check
-					{ ...item }
-					onChange={( checked: boolean ) => handleCheck( checked, item.name )}
+					{ shapeInput }
+					onChange	={( checked: boolean ) => handleCheck( checked, shapeInput.name )}
+					checked		= { $formValues[ shapeInput.name ]}
 				/>
 			<!-- Datepicker -->
-			{:else if item.shape === 'datepicker'}
+			{:else if shapeInput.shape === 'datepicker'}
 				<DatePicker
-					shapeInput={item as ShapeInput}
-					onValueChange={(value: DateValue) => handleDatePicker(value, item.name)}
+					{ shapeInput }
+					onValueChange	= {( value: DateValue ) => handleDatePicker( value, shapeInput.name )}
+					value 			= { $formValues[ shapeInput.name ]}
 				/>
 			<!-- TextArea -->
-			{:else if item.shape === 'textarea'}
+			{:else if shapeInput.shape === 'textarea'}
 				<TextArea
-					shapeInput	= { item as ShapeInput }
-					onInput		= {(event: Event) => handleInput(event, item.name)}
+					{ shapeInput }
+					onInput	= {( event: Event ) => handleInput( event, shapeInput.name )}
+					value	= { $formValues[ shapeInput.name ]}
 				/>
 			<!-- Default -->
 			{:else}

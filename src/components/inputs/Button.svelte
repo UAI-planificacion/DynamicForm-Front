@@ -20,5 +20,5 @@
 			{shapeInput.label}
 	</Button.Root>
 
-	<Description text={shapeInput.description} />
+	<Description { shapeInput } />
 </div>
