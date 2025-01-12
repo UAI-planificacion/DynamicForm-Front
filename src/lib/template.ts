@@ -2,7 +2,7 @@ export const templateJson = [{
         "id"            : "1",
         "shape"         : "input",
         "type"          : "text",
-        "name"          : "name ",
+        "name"          : "name",
         "label"         : "Name",
         "required"      : true,
         "placeholder"   : "Enter your name",

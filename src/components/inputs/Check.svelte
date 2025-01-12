@@ -10,6 +10,7 @@
     export let shapeInput   : ShapeInput;
     export let onChange     : ( checked: boolean ) => void;
     export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
+    export let setError     : VoidFunction = () => {};
 </script>
 
 <div class="space-y-1">
@@ -20,7 +21,7 @@
             disabled        = { shapeInput.disabled }
             aria-labelledby = { shapeInput.label}
             class           = { shapeInput.class ?? className }
-            onCheckedChange = {( e ) => onChange( e as boolean )}
+            onCheckedChange = {( e ) => {onChange( e as boolean ); setError()}}
         >
             <Checkbox.Indicator
                 let:isChecked

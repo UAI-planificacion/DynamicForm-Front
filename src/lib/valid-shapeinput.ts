@@ -2,87 +2,144 @@ import type { ShapeInput }  from "$models";
 import type { DateValue }   from "@internationalized/date";
 
 
-type ErrorShape = {
-    shapeInput  : ShapeInput;
-    value?       : string            | undefined;
-    checked?     : "indeterminate"   | boolean | undefined  ;
-    date?        : DateValue         | undefined;
+// type ValueError = {
+//     shapeInput  : ShapeInput;
+//     value?      : string | undefined;
+// }
+
+
+// type CheckedError = {
+//     shapeInput  : ShapeInput;
+//     checked?     : "indeterminate" | boolean | undefined;
+// }
+
+
+// type DateError = {
+//     shapeInput  : ShapeInput;
+//     date?       : DateValue | undefined;
+// }
+
+
+export const errorDatePicker = (
+    shapeInput  : ShapeInput,
+    date?       : DateValue | undefined
+): boolean => showErrorDatePicker( shapeInput, date ) === undefined;
+
+
+export function showErrorDatePicker(
+    shapeInput  : ShapeInput,
+    date?       : DateValue | undefined
+): string | undefined {
+    if ( !shapeInput.required ) return undefined
+
+    if ( shapeInput.required && !date )
+        return shapeInput?.msgRequired;
 }
 
 
-export const getIsError = ( errorShape: ErrorShape ): boolean => {
-    //! TODO: Quitar esto cuando todos estén validados
-    const error = showErrorMessages( errorShape );
-    const vli   = showErrorMessages( errorShape ) === '';
-    console.log("🚀 ~ vli:", error, vli, errorShape )
-    return vli;
-} 
+export const errorCheck = (
+    shapeInput  : ShapeInput,
+    checked?    : "indeterminate" | boolean | undefined
+
+): boolean => showErrorCheck( shapeInput, checked ) === undefined;
 
 
-export function showErrorMessages( errorShape: ErrorShape ): string | undefined {
-    if (
-        errorShape.shapeInput.shape    === 'check'  &&
-        errorShape.checked             === false    &&
-        errorShape.shapeInput.required
-    ) return errorShape.shapeInput.msgRequired;
+export function showErrorCheck(
+    shapeInput  : ShapeInput,
+    checked?    : "indeterminate" | boolean | undefined
+): string | undefined {
+    if ( !shapeInput.required ) return undefined;
 
     if (
-        errorShape.shapeInput.shape === 'datepicker'    &&
-        errorShape.shapeInput.required                  &&
-        !errorShape.date
-    ) return errorShape.shapeInput?.msgRequired;
+        (
+            checked === false       ||
+            checked === undefined   ||
+            checked === 'indeterminate'
+        ) &&
+        shapeInput.required
+    )
+        return shapeInput.msgRequired;
+}
 
-    if (
-        errorShape.shapeInput.shape === 'select'    ||
-        errorShape.shapeInput.shape === 'combobox'  &&
-        ( errorShape.shapeInput.required            &&
-        errorShape.value === ''                     ||
-        !errorShape.value )
-    ) return errorShape.shapeInput.msgRequired;
 
-    if (
-        errorShape.shapeInput.shape === 'input'     ||
-        errorShape.shapeInput.shape === 'textarea'
-    ) {
+export const errorSelect = (
+    shapeInput  : ShapeInput,
+    value?      : string | undefined
+): boolean => showErrorSelect( shapeInput, value ) === undefined;
 
-        if ( errorShape.shapeInput.required && errorShape.value === '' ) {
-            return errorShape.shapeInput.msgRequired;
-        }
 
-        if (
-            errorShape.shapeInput.type  === 'number' &&
-            errorShape.shapeInput.shape === 'input'
-        ) {
-            if ( !errorShape.shapeInput.required && errorShape.value === '' )
-                return '';
+export const showErrorSelect = (
+    shapeInput  : ShapeInput,
+    value?      : string | undefined
+): string | undefined => {
+    if ( !shapeInput.required ) return undefined;
 
-            if ( !errorShape.shapeInput.min ) return '';
+    if (( value === '' || !value ) && shapeInput.required )
+        return shapeInput.msgRequired;
+}
 
-            if ( Number( errorShape.value ) < errorShape.shapeInput.min )
-                return errorShape.shapeInput.msgMin;
 
-            if ( !errorShape.shapeInput.max ) return '';
+export const errorInput = (
+    shapeInput  : ShapeInput,
+    value?      : string | undefined
+): boolean => {
+    return showErrorInput( shapeInput, value ) === undefined;
+}
 
-            if ( Number( errorShape.value ) > errorShape.shapeInput.max )
-                return errorShape.shapeInput.msgMax;
-        }
-        else {
-            const length = errorShape.value?.length ?? 0;
 
-            if ( !errorShape.shapeInput.required && errorShape.value === '' )
-                return '';
+export const errorTextArea = (
+    shapeInput  : ShapeInput,
+    value?      : string | undefined
+): boolean => {
+    return showErrorText( shapeInput, value ) === undefined;
+}
 
-            if ( !errorShape.shapeInput.minLength ) return '';
 
-            if ( length < errorShape.shapeInput.minLength )
-                return errorShape.shapeInput.msgMinLength;
+export function showErrorInput(
+    shapeInput  : ShapeInput,
+    value?      : string | undefined
+): string | undefined {
+    if ( shapeInput.required && value === '' )
+        return shapeInput.msgRequired;
 
-            if ( !errorShape.shapeInput.maxLength ) return '';
+    if ( shapeInput.type  === 'number' ) {
+        if ( !shapeInput.required && value === '' )
+            return undefined;
 
-            if ( length > errorShape.shapeInput.maxLength )
-                return errorShape.shapeInput.msgMaxLength;
-        }
+        if ( !shapeInput.min ) return undefined;
+
+        if ( Number( value ) < shapeInput.min )
+            return shapeInput.msgMin;
+
+        if ( !shapeInput.max ) return undefined;
+
+        if ( Number( value ) > shapeInput.max )
+            return shapeInput.msgMax;
     }
 
-    return '';
+    return showErrorText( shapeInput, value );
+}
+
+
+export function showErrorText(
+    shapeInput  : ShapeInput,
+    value?      : string | undefined
+): string | undefined {
+    if ( !shapeInput.required && value === '' )
+        return undefined;
+
+    if ( shapeInput.required && value === '' )
+        return shapeInput.msgRequired
+
+    const length = value?.length ?? 0;
+
+    if ( shapeInput.minLength ) {
+        if ( length < shapeInput.minLength )
+            return shapeInput.msgMinLength;
+    }
+
+    if ( shapeInput.maxLength ) {
+        if ( length > shapeInput.maxLength )
+            return shapeInput.msgMaxLength;
+    }
 }

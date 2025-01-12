@@ -8,6 +8,7 @@
     export let shapeInput       : ShapeInput;
     export let value            : string | undefined = undefined;
     export let onSelectedChange : ( value: Selected<string> | undefined ) => void;
+    export let setError         : VoidFunction = () => {};
 
 
     let inputValue      = "";
@@ -23,7 +24,7 @@
 <Info { shapeInput } { onSelectedChange } { value }>
     <Combobox.Root
         items               = { filtered }
-        onSelectedChange    = { onSelectedChange }
+        onSelectedChange    = { ( event ) => { onSelectedChange( event ); setError() }}
         selected            = { shapeInput.options?.find( option => option.value === shapeInput.value )}
         bind:inputValue
         bind:touchedInput

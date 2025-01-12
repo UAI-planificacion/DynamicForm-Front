@@ -17,6 +17,8 @@
     export let shapeInput       : ShapeInput;
     export let value            : DateValue | undefined = undefined;
     export let onValueChange    : ( value: any ) => void;
+    export let setError         : VoidFunction = () => {};
+
 
     const date  = new Date();
     const year  = date.getFullYear();
@@ -26,7 +28,7 @@
 
 
 <DatePicker.Root
-    {onValueChange}
+    onValueChange   = {( value ) => { onValueChange( value ); setError(); }}
     locale          = "es"
     weekdayFormat   = "short"
     fixedWeeks      = { true }

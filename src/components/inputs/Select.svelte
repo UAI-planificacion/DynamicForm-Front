@@ -9,20 +9,24 @@
     export let shapeInput       : ShapeInput;
     export let value            : string | undefined = undefined;
     export let onSelectedChange : ( value: Selected<string> | undefined ) => void;
+    export let setError         : VoidFunction = () => {};
 </script>
 
 
 <Info { shapeInput } { onSelectedChange } { value }>
     <Select.Root
         items               = { shapeInput.options }
-        onSelectedChange    = { onSelectedChange }
         required            = { shapeInput.required }
         selected            = { shapeInput.options?.find( option => option.value === shapeInput.value )}
         disabled            = { shapeInput.disabled }
+        onSelectedChange    = {( event ) => {
+            onSelectedChange( event );
+            setError();
+        }}
     >
         <Select.Trigger
             class       = "inline-flex h-input w-full items-center rounded-9px border border-border-input bg-background px-[11px] text-sm transition-colors placeholder:text-foreground-alt/50  focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background rounded-lg h-10 justify-between"
-            aria-label  = {shapeInput.name}
+            aria-label  = { shapeInput.name }
         >
             <Select.Value
                 class       = "text-sm"
@@ -34,18 +38,18 @@
 
         <Select.Content
             class               = "w-full rounded-xl border border-muted bg-background px-1 py-2 shadow-popover outline-none bg-white dark:bg-zinc-800 z-10"
-            sideOffset          = {5}
-            collisionPadding    = {0}
+            sideOffset          = { 5 }
+            collisionPadding    = { 0 }
         >
             {#each shapeInput.options! as option}
                 <Select.Item
                     class = "flex h-10 w-full select-none items-center rounded-button py-3 pl-5 pr-1.5 text-sm outline-none transition-all duration-75 data-[highlighted]:bg-muted hover:bg-zinc-700 hover:rounded-lg"
-                    value = {option.value}
-                    label = {option.label}
+                    value = { option.value }
+                    label = { option.label }
                 >
-                    {option.label}
+                    { option.label }
 
-                    <Select.ItemIndicator class="ml-auto" asChild={false}>
+                    <Select.ItemIndicator class="ml-auto" asChild={ false }>
                         <CheckIcon />
                     </Select.ItemIndicator>
                 </Select.Item>
@@ -53,8 +57,8 @@
         </Select.Content>
 
         <Select.Input
-            name        = {shapeInput.name}
-            required    = {shapeInput.required}
+            name        = {shapeInput.name }
+            required    = {shapeInput.required }
         />
     </Select.Root>
 </Info>

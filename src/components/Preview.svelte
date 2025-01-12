@@ -15,8 +15,13 @@
 		Enumeration,
 		SubTitle
 	} 							from "$components";
+	import {
+		errorSelect,
+		errorCheck,
+		errorInput,
+		errorTextArea
+	}							from "$lib";
     import type { ShapeInput }  from "$models";
-	import { getIsError } 		from "$lib";
 
 
     export let template		: ShapeInput[] = [];
@@ -75,14 +80,13 @@
 				number	= { index + 1 }
 				active	= { inputActive === index + 1 }
 			/>
-
-			<!-- Select -->
+			<!-- Input -->
 			{#if shapeInput.shape === 'input'}
 				<Input
 					{ shapeInput }
 					onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
 					value 		= { $formValues[ shapeInput.name ]}
-					setError 	= {() => shapeInput.valid = getIsError( {shapeInput, value: $formValues[ shapeInput.name ]})}
+					setError 	= {() => shapeInput.valid = errorInput( shapeInput,  $formValues[ shapeInput.name ])}
 					/>
 			<!-- Select -->
 			{:else if shapeInput.shape === 'select'}
@@ -90,6 +94,7 @@
 					{ shapeInput }
 					onSelectedChange	= {( selected: Selected<string> | undefined ) => handleSelect( selected, shapeInput.name )}
 					value 				= { $formValues[ shapeInput.name ]}
+					setError 			= {() => shapeInput.valid = errorSelect( shapeInput, $formValues[ shapeInput.name ])}
 				/>
 			<!-- Combobox -->
 			{:else if shapeInput.shape === 'combobox'}
@@ -97,6 +102,7 @@
 					{ shapeInput }
 					onSelectedChange	= {( selected: Selected<string> | undefined ) => handleSelect( selected, shapeInput.name )}
 					value 				= { $formValues[ shapeInput.name ]}
+					setError 			= {() => shapeInput.valid = errorCheck( shapeInput, $formValues[ shapeInput.name ])}
 				/>
 			<!-- Button -->
 			{:else if shapeInput.shape === 'button'}
@@ -105,8 +111,9 @@
 			{:else if shapeInput.shape === 'check'}
 				<Check
 					{ shapeInput }
-					onChange	={( checked: boolean ) => handleCheck( checked, shapeInput.name )}
+					onChange	= {( checked: boolean ) => handleCheck( checked, shapeInput.name )}
 					checked		= { $formValues[ shapeInput.name ]}
+					setError	= {() => shapeInput.valid = errorSelect( shapeInput, $formValues[ shapeInput.name ])}
 				/>
 			<!-- Datepicker -->
 			{:else if shapeInput.shape === 'datepicker'}
@@ -114,13 +121,15 @@
 					{ shapeInput }
 					onValueChange	= {( value: DateValue ) => handleDatePicker( value, shapeInput.name )}
 					value 			= { $formValues[ shapeInput.name ]}
+					setError		= {() => shapeInput.valid = errorSelect( shapeInput, $formValues[ shapeInput.name ])}
 				/>
 			<!-- TextArea -->
 			{:else if shapeInput.shape === 'textarea'}
 				<TextArea
 					{ shapeInput }
-					onInput	= {( event: Event ) => handleInput( event, shapeInput.name )}
-					value	= { $formValues[ shapeInput.name ]}
+					onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
+					value		= { $formValues[ shapeInput.name ]}
+					setError	= {() => shapeInput.valid = errorTextArea( shapeInput, $formValues[ shapeInput.name ])}
 				/>
 			<!-- Default -->
 			{:else}
