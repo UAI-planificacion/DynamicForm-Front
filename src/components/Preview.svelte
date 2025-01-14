@@ -19,7 +19,8 @@
 		errorSelect,
 		errorCheck,
 		errorInput,
-		errorTextArea
+		errorTextArea,
+		errorDatePicker
 	}							from "$lib";
     import type { ShapeInput }  from "$models";
 
@@ -67,6 +68,37 @@
 			return { ...values, [name]: isChecked };
 		});
 	}
+
+
+	function onClick() {
+		template.forEach(( item, index ) => {
+			switch ( item.shape ) {
+				case 'input':
+					template[index].valid = errorInput( item, $formValues[ item.name ]);
+				break;
+
+				case 'textarea':
+					template[index].valid = errorTextArea( item, $formValues[ item.name ]);
+
+				case 'check':
+					template[index].valid = errorSelect( item, $formValues[ item.name ]);
+
+				case 'combobox':
+				case 'select':
+					template[index].valid = errorSelect( item, $formValues[ item.name ]);
+
+				case 'datepicker':
+				template[index].valid = errorDatePicker( item, $formValues[ item.name ]);
+			}
+		});
+
+		if ( template.some( item => !item.valid ) ) {
+			console.log("🚀 ~ Hay un error en el formulario")
+			return;
+		}
+
+		console.log("🚀 ~ Formulario válido")
+	}
 </script>
 
 
@@ -86,8 +118,8 @@
 					{ shapeInput }
 					onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
 					value 		= { $formValues[ shapeInput.name ]}
-					setError 	= {() => shapeInput.valid = errorInput( shapeInput,  $formValues[ shapeInput.name ])}
-					/>
+					setError 	= {() => shapeInput.valid = errorInput( shapeInput, $formValues[ shapeInput.name ])}
+				/>
 			<!-- Select -->
 			{:else if shapeInput.shape === 'select'}
 				<Select
@@ -102,18 +134,21 @@
 					{ shapeInput }
 					onSelectedChange	= {( selected: Selected<string> | undefined ) => handleSelect( selected, shapeInput.name )}
 					value 				= { $formValues[ shapeInput.name ]}
-					setError 			= {() => shapeInput.valid = errorCheck( shapeInput, $formValues[ shapeInput.name ])}
+					setError 			= {() => shapeInput.valid = errorSelect( shapeInput, $formValues[ shapeInput.name ])}
 				/>
 			<!-- Button -->
 			{:else if shapeInput.shape === 'button'}
-				<Button { shapeInput } />
+				<Button
+					{ shapeInput }
+					{ onClick }
+				/>
 			<!-- Check -->
 			{:else if shapeInput.shape === 'check'}
 				<Check
 					{ shapeInput }
 					onChange	= {( checked: boolean ) => handleCheck( checked, shapeInput.name )}
 					checked		= { $formValues[ shapeInput.name ]}
-					setError	= {() => shapeInput.valid = errorSelect( shapeInput, $formValues[ shapeInput.name ])}
+					setError	= {() => shapeInput.valid = errorCheck( shapeInput, $formValues[ shapeInput.name ])}
 				/>
 			<!-- Datepicker -->
 			{:else if shapeInput.shape === 'datepicker'}
@@ -121,7 +156,7 @@
 					{ shapeInput }
 					onValueChange	= {( value: DateValue ) => handleDatePicker( value, shapeInput.name )}
 					value 			= { $formValues[ shapeInput.name ]}
-					setError		= {() => shapeInput.valid = errorSelect( shapeInput, $formValues[ shapeInput.name ])}
+					setError		= {() => shapeInput.valid = errorDatePicker( shapeInput, $formValues[ shapeInput.name ])}
 				/>
 			<!-- TextArea -->
 			{:else if shapeInput.shape === 'textarea'}

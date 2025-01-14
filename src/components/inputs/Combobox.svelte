@@ -24,15 +24,16 @@
 <Info { shapeInput } { onSelectedChange } { value }>
     <Combobox.Root
         items               = { filtered }
+        disabled            = { shapeInput.disabled }
         onSelectedChange    = { ( event ) => { onSelectedChange( event ); setError() }}
         selected            = { shapeInput.options?.find( option => option.value === shapeInput.value )}
         bind:inputValue
         bind:touchedInput
         bind:open
     >
-        <div class="relative flex items-center w-full rounded-lg border border-border-input bg-background px-2 text-sm transition-colors placeholder:text-foreground-alt/50 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background">
+        <div class="relative flex items-center w-full rounded-lg border border-border-input bg-background px-2 text-sm transition-colors placeholder:text-foreground-alt/50 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background disabled:bg-gray-100">
             <Combobox.Input
-                class       = "w-full border-none text-sm outline-none transition-all duration-75 data-[highlighted]:bg-muted  focus:ring-0 focus:outline-none active:outline-none"
+                class       = "w-full border-none text-sm outline-none transition-all duration-75 data-[highlighted]:bg-muted focus:ring-0 focus:outline-none active:outline-none disabled:bg-gray-100"
                 placeholder = { shapeInput.placeholder }
                 aria-label  = { shapeInput.label }
             />

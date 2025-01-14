@@ -18,7 +18,7 @@
 
 
 {#if !shapeInput.valid && shapeInput.shape !== 'button'}
-    <span class="text-sm text-red-500">
+    <span class="text-sm text-red-500 font-semibold">
         {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea'}
             { showErrorInput( shapeInput, value )}
         {:else if shapeInput.shape === 'select' || shapeInput.shape === 'combobox'}
@@ -30,7 +30,7 @@
         {/if}
     </span>
 {:else if shapeInput.description}
-    <span class="text-sm text-gray-500">
+    <span class="text-sm text-gray-500 font-semibold">
         { shapeInput?.description }
     </span>
 {/if}

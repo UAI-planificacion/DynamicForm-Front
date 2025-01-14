@@ -4,9 +4,10 @@
     import { CheckIcon, MinusIcon } from "$icons";
     import Description              from "./Description.svelte";
     import type { ShapeInput }      from "$models";
+    import { styles }               from "$lib";
 
 
-    export let className    : string = "peer inline-flex size-[25px] items-center justify-center rounded-md border border-muted bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40";
+    export let className    : string = "read read-only:cursor-help peer inline-flex size-[25px] items-center justify-center rounded-md border border-muted bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40";
     export let shapeInput   : ShapeInput;
     export let onChange     : ( checked: boolean ) => void;
     export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
@@ -21,7 +22,7 @@
             disabled        = { shapeInput.disabled }
             aria-labelledby = { shapeInput.label}
             class           = { shapeInput.class ?? className }
-            onCheckedChange = {( e ) => {onChange( e as boolean ); setError()}}
+            onCheckedChange = {( e ) => { shapeInput.readonly ? undefined : onChange( e as boolean ); setError()}}
         >
             <Checkbox.Indicator
                 let:isChecked
@@ -39,7 +40,7 @@
         <Label.Root
             id      = { shapeInput.label }
             for     = { shapeInput.id }
-            class   = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            class   = { shapeInput.class ?? styles.check }
         >
             { shapeInput.label }
         </Label.Root>

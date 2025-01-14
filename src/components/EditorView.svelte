@@ -1,51 +1,50 @@
 <script lang="ts">
-    import { slide } from "svelte/transition";
+    import { onMount }  from "svelte";
+    import { slide }    from "svelte/transition";
 
-    import {
-        Accordion,
-        Separator,
-        type Selected
-    }                           from "bits-ui";
-	import { v4 as uuid }	    from 'uuid';
-    import type { DateValue }   from "@internationalized/date";
+    import { Accordion, type Selected } from "bits-ui";
+	import { v4 as uuid }	            from 'uuid';
+    import type { DateValue }           from "@internationalized/date";
 
     import {
         DeleteIcon,
-        EditIcon,
-        FlagIcon,
-        InputIcon,
-        NameIcon,
         CaretDownIcon,
         AddIcon,
         JsonIcon
-    }                           from "$icons";
+    }                                   from "$icons";
     import type {
         InputType,
         ShapeInput,
         ShapeOptions,
         Types
-    }                           from "$models";
+    }                                   from "$models";
     import {
         Check,
         DatePicker,
         Input,
         Select,
-        TextArea
-    }                           from "$components";
-    import { options, types }   from "$lib";
+        TextArea,
+        Viewer
+    }                                   from "$components";
+    import { options, styles, types }   from "$lib";
 
 
-    export let shapeInput       : Partial<ShapeInput>;
+    export let shapeInput       : ShapeInput;
     export let onDelete         : VoidFunction;
     export let inputActive      : VoidFunction;
     export let inputDesactive   : VoidFunction;
 
-    shapeInput.valid = true;
+    shapeInput.valid        = true;
     shapeInput.msgRequired  = 'El campo es requerido.'
-    shapeInput.msgMin       = `El valor mínimo es ${shapeInput.min}.`
-    shapeInput.msgMax       = `La valor máximo es ${shapeInput.max ?? 0}.`
-    shapeInput.msgMinLength = `El campo menor a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
-    shapeInput.msgMaxLength = `El campo super a los ${shapeInput.maxLength ?? 0} caracteres permitidos.`
+
+
+    onMount(() => {
+        if ( shapeInput.shape === 'textarea' || shapeInput.shape === 'input' ) {
+            shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
+            shapeInput.msgMaxLength ??= `El campo superior a los ${shapeInput.maxLength ?? 0} caracteres permitidos.`
+        }
+    });
+
 
     let editing = false;
 
@@ -89,59 +88,63 @@
         const fileInput = document.getElementById('fileInput') as HTMLInputElement;
         if (fileInput) fileInput.click();
     };
+
+
+    function onSelectedChange( selected: Selected<string> | undefined ) {
+        shapeInput.shape = selected?.value as InputType || 'none';
+
+        if ( shapeInput.shape === 'textarea' ) {
+            shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
+            shapeInput.msgMaxLength ??= `El campo superior a los ${shapeInput.maxLength ?? 0} caracteres permitidos.`
+        }
+        else {
+            shapeInput.msgMinLength = undefined;
+            shapeInput.msgMaxLength = undefined;
+            shapeInput.msgMin       = undefined
+            shapeInput.msgMax       = undefined
+        }
+
+        if ( shapeInput.shape !== 'input' ) return;
+
+        onChangeType();
+    }
+
+
+    function onChangeType() {
+        if ( shapeInput.type === 'number' ) {
+            shapeInput.msgMinLength = undefined;
+            shapeInput.msgMaxLength = undefined;
+            shapeInput.msgMin       = `El valor mínimo es ${shapeInput.min ?? 0}.`
+            shapeInput.msgMax       = `La valor máximo es ${shapeInput.max ?? 0}.`
+        }
+        else {
+            shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
+            shapeInput.msgMaxLength ??= `El campo superior a los ${shapeInput.maxLength ?? 0} caracteres permitidos.`
+            shapeInput.msgMin       = undefined
+            shapeInput.msgMax       = undefined
+        }
+    }
+
+    function onSelectedType( selected: Selected<string> | undefined ) {
+        shapeInput.type = selected?.value as Types || 'none';
+        onChangeType();
+    }
 </script>
 
-<div class="hover:brightness-105 shadow-md rounded-md p-5 border-1 border-zinc-300 border bg-white w-full">
+
+<card class="hover:brightness-105 shadow-md rounded-md p-5 border-1 border-zinc-300 border bg-white w-full">
     {#if editing === false}
-        <div class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="bg-amber-300 rounded-xl py-1 px-3 w-auto flex items-center gap-2">
-                    <InputIcon />
-                    { shapeInput.shape }
-                </div>
-
-                <div class="bg-green-300 rounded-xl py-1 px-3 w-auto flex items-center gap-2">
-                    <NameIcon />
-                    { shapeInput.name }
-                </div>
-            </div>
-
-            <div class="flex gap-3 items-center">
-                <button
-                    class       = "justify-center hover:brightness-105 shadow-md active:scale-95"
-                    on:click    = {() => {
-                        editing = !editing;
-                        inputActive();
-                    }}
-                >
-                    <EditIcon />
-                </button>
-
-                <button
-                    class       = "justify-center hover:brightness-105 shadow-md active:scale-95"
-                    on:click    = { onDelete }
-                >
-                    <DeleteIcon />
-                </button>
-            </div>
-        </div>
-
-        <Separator.Root
-            class="my-2 shrink-0 bg-zinc-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+        <Viewer
+            { shapeInput }
+            { onDelete }
+            { inputActive }
+            onEdit = { () => editing = !editing }
         />
-
-        <div class=" flex items-center gap-2">
-            <div class="bg-sky-300 rounded-xl py-1 px-3 w-auto flex items-center gap-1">
-                <FlagIcon />
-
-                { shapeInput.label }
-            </div>
-        </div>
     {:else}
         <section class="space-y-2">
             <div class="grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
                 <Select
-                    shapeInput={{
+                    shapeInput = {{
                         id			: uuid(),
                         name 		: 'shape',
                         placeholder	: 'Ingrese el tipo de entrada',
@@ -150,8 +153,9 @@
                         value       : shapeInput.shape,
                         options,
                     }}
-                    onSelectedChange={( selected: Selected<string> | undefined) => shapeInput.shape = selected?.value as InputType || 'none' }
+                    { onSelectedChange }
                 />
+                <!-- onSelectedChange = {( selected: Selected<string> | undefined ) => shapeInput.shape = selected?.value as InputType || 'none' } -->
 
                 <Input
                     shapeInput = {{
@@ -178,38 +182,38 @@
                 {#if shapeInput.shape === 'check' }
                     <div class="flex mt-5">
                         <Check
-                            shapeInput  = {{
+                            shapeInput = {{
                                 id      : uuid(),
                                 name    : 'default-value',
                                 label   : 'Valor por defecto',
                                 checked : shapeInput.checked
                             }} 
-                            onChange	= {( e ) => shapeInput.checked = e as boolean }
+                            onChange = {( e ) => shapeInput.checked = e as boolean }
                         />
                     </div>
                 {:else if shapeInput.shape === 'datepicker'}
                     <div class="flex gap-2 items-center">
                         <div class="w-48">
                             <Check
-                                shapeInput  = {{
+                                shapeInput = {{
                                     id      : uuid(),
                                     name    : 'current-date',
                                     label   : 'Día actual',
                                     checked : shapeInput.currentDate
                                 }}
-                                onChange    = {( e ) => shapeInput.currentDate = e as boolean }
+                                onChange = {( e ) => shapeInput.currentDate = e as boolean }
                             />
                         </div>
 
                         <DatePicker
-                            shapeInput={{
+                            shapeInput = {{
                                 id          : uuid(),
                                 name        : 'default-value',
                                 date        : shapeInput.date,
                                 label       : 'Valor por defecto',
                                 disabled    : shapeInput.currentDate
                             }}
-                            onValueChange={( value: DateValue ) => shapeInput.date = value }
+                            onValueChange = {( value: DateValue ) => shapeInput.date = value }
                         />
                     </div>
                 {:else if shapeInput.shape !== 'button'}
@@ -229,7 +233,7 @@
             {#if shapeInput.shape === 'input'}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center">
                     <Select
-                        shapeInput={{
+                        shapeInput = {{
                             id			: uuid(),
                             name 		: 'type',
                             placeholder	: 'Ingrese el tipo',
@@ -238,8 +242,9 @@
                             value       : shapeInput.type,
                             options     : types,
                         }}
-                        onSelectedChange={( selected: Selected<string> | undefined ) => shapeInput.type = selected?.value as Types || 'none' }
+                        onSelectedChange = { onSelectedType }
                     />
+                            <!-- onSelectedChange = {( selected: Selected<string> | undefined ) => shapeInput.type = selected?.value as Types || 'none' } -->
 
                     <Input
                         shapeInput = {{
@@ -280,7 +285,7 @@
                     />
 
                     <TextArea
-                        shapeInput={{
+                        shapeInput = {{
                             id          : uuid(),
                             name        : 'default-value',
                             label       : 'Valor por defecto',
@@ -524,23 +529,23 @@
                         {:else if shapeInput.shape === 'datepicker'}
                             <div class="grid grid-cols-2 gap-2 items-center">
                                 <DatePicker
-                                    shapeInput={{
+                                    shapeInput = {{
                                         id      : uuid(),
                                         name    : 'min-value',
                                         date    : shapeInput.minValue,
                                         label   : 'Fecha mínima',
                                     }}
-                                    onValueChange={( value: DateValue ) => shapeInput.minValue = value }
+                                    onValueChange = {( value: DateValue ) => shapeInput.minValue = value }
                                 />
 
                                 <DatePicker
-                                    shapeInput={{
+                                    shapeInput = {{
                                         id      : uuid(),
                                         name    : 'max-value',
                                         date    : shapeInput.maxValue,
                                         label   : 'Fecha máxima',
                                     }}
-                                    onValueChange={( value: DateValue ) => shapeInput.maxValue = value }
+                                    onValueChange = {( value: DateValue ) => shapeInput.maxValue = value }
                                 />
                             </div>
                         {/if}
@@ -592,35 +597,35 @@
                         {:else}
                             <div class="grid grid-cols-1 sm:grid-cols-2 items-center justify-between">
                                 <Check
-                                    shapeInput={{
+                                    shapeInput = {{
                                         id		: uuid(),
                                         label   : 'Desactivado',
                                         name	: 'disabled',
                                         checked : shapeInput.disabled
                                     }}
-                                    onChange={( e ) => shapeInput.disabled = e as boolean }
+                                    onChange = {( e ) => shapeInput.disabled = e as boolean }
                                 />
 
                                 <Check
                                     shapeInput = {{
-                                        id		    : uuid(),
-                                        label       : 'Solo lectura',
-                                        name	    : 'readonly',
-                                        checked     : shapeInput.readonly
+                                        id		: uuid(),
+                                        label   : 'Solo lectura',
+                                        name	: 'readonly',
+                                        checked : shapeInput.readonly
                                     }}
-                                    onChange	= {( e ) => shapeInput.readonly = e as boolean }
+                                    onChange = {( e ) => shapeInput.readonly = e as boolean }
                                 />
                             </div>
                         {/if}
 
                         <TextArea 
-                            shapeInput={{
+                            shapeInput = {{
                                 id          : uuid(),
                                 name        : 'class',
                                 label       : 'Estilos con tailwind',
                                 placeholder : 'Ingrese los estilos',
                                 rows        : 4,
-                                value       : shapeInput.class ?? `w-full rounded-md border border-gray-300 shadow-sm focus:border-gray-400 focus:ring-0.5 focus:ring-gray-400 placeholder:text-gray-400 sm:text-sm`
+                                value       : shapeInput.class ?? styles[shapeInput.shape || 'none'] as string
                             }}
                             onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
                         />
@@ -639,4 +644,4 @@
             </button>
         </section>
     {/if}
-</div>
+</card>

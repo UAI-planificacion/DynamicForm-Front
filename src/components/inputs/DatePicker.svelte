@@ -38,18 +38,17 @@
     value           = { shapeInput.currentDate ? new CalendarDate( year, month, day ) : shapeInput.date }
     minValue        = { shapeInput.minValue }
     maxValue        = { shapeInput.maxValue }
-    calendarLabel = 'hola'
 >
     <div class="flex w-full flex-col gap-1.5">
         {#if shapeInput.label}
-            <DatePicker.Label class={`block select-none text-sm font-medium ${ shapeInput.disabled ? 'text-slate-500' : '' }`}>
+            <DatePicker.Label class={`block select-none text-sm font-medium ${ shapeInput.disabled ? 'text-gray-500' : 'text-gray-700' }`}>
                 { shapeInput.label }
             </DatePicker.Label>
         {/if}
 
         <DatePicker.Input
             let:segments
-            class={`rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input bg-background px-2 py-3 text-sm tracking-[0.01em] ${ shapeInput.disabled ? 'text-slate-500 ' : '' } focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover`}
+            class={`rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input bg-background px-2 py-3 text-sm tracking-[0.01em] ${ shapeInput.disabled ? 'text-gray-500' : '' } focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover`}
         >
             {#each segments as { part, value }}
                 <div class="inline-block select-none">

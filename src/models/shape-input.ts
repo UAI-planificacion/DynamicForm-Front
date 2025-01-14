@@ -3,8 +3,6 @@ import { type DateValue } from "@internationalized/date";
 
 export type InputType  = 'input' | 'combobox' | 'check' | 'select' | 'textarea' | 'datepicker' | 'button' | 'none';
 export type Types      = 'text' | 'number' | 'password' | 'email' | 'url' | 'tel' | 'search';
-
-
 export type ShapeInput = {
     [key: string]   : unknown;
     id              : string;

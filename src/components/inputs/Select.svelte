@@ -25,7 +25,7 @@
         }}
     >
         <Select.Trigger
-            class       = "inline-flex h-input w-full items-center rounded-9px border border-border-input bg-background px-[11px] text-sm transition-colors placeholder:text-foreground-alt/50  focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background rounded-lg h-10 justify-between"
+            class       = "inline-flex h-input w-full items-center rounded-9px border border-border-input bg-background px-[11px] text-sm transition-colors placeholder:text-foreground-alt/50 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background rounded-lg h-10 justify-between disabled:bg-gray-100"
             aria-label  = { shapeInput.name }
         >
             <Select.Value
@@ -43,7 +43,7 @@
         >
             {#each shapeInput.options! as option}
                 <Select.Item
-                    class = "flex h-10 w-full select-none items-center rounded-button py-3 pl-5 pr-1.5 text-sm outline-none transition-all duration-75 data-[highlighted]:bg-muted hover:bg-zinc-700 hover:rounded-lg"
+                    class = "flex h-10 w-full select-none items-center rounded-button py-3 pl-5 pr-1.5 text-sm outline-none transition-all duration-75 data-[highlighted]:bg-muted dark:hover:bg-zinc-700 hover:rounded-lg"
                     value = { option.value }
                     label = { option.label }
                 >

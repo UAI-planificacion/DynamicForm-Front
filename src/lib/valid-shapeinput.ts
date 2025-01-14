@@ -99,7 +99,7 @@ export function showErrorInput(
     shapeInput  : ShapeInput,
     value?      : string | undefined
 ): string | undefined {
-    if ( shapeInput.required && value === '' )
+    if ( shapeInput.required && value === '' || !value )
         return shapeInput.msgRequired;
 
     if ( shapeInput.type  === 'number' ) {
@@ -125,10 +125,10 @@ export function showErrorText(
     shapeInput  : ShapeInput,
     value?      : string | undefined
 ): string | undefined {
-    if ( !shapeInput.required && value === '' )
+    if ( !shapeInput.required && ( value === '' ||  !value ))
         return undefined;
 
-    if ( shapeInput.required && value === '' )
+    if ( shapeInput.required && ( value === '' || !value ))
         return shapeInput.msgRequired
 
     const length = value?.length ?? 0;

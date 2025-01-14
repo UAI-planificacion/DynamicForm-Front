@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { styles }			from "$lib";
     import type { ShapeInput } 	from "$models";
 	import Info 				from "./Info.svelte";
 
@@ -22,8 +23,6 @@
 		disabled 	= { shapeInput.disabled }
 		placeholder	= { shapeInput.placeholder }
 		on:input    = { ( value ) => {onInput( value ); setError() }}
-		class       = { shapeInput.class ?? `w-full rounded-md border border-gray-300 shadow-sm 
-			focus:border-gray-400 focus:ring-0.5 focus:ring-gray-400 
-			placeholder:text-gray-400 sm:text-sm disabled:border-gray-200`}
+		class       = { shapeInput.class ?? styles.textarea }
 	>{ shapeInput.value }</textarea>
 </Info>
