@@ -1,23 +1,25 @@
 <script lang="ts">
     import { Select, type Selected } from "bits-ui";
 
-    import type { ShapeInput }              from "$models/shape-input";
-    import { CheckIcon, CaretUpDownIcon }   from "$icons";
-    import Info                             from "./Info.svelte";
+    import type { ShapeInput }          from "$models/shape-input";
+    import { CheckIcon, CaretDownIcon } from "$icons";
+    import Info                         from "./Info.svelte";
 
 
     export let shapeInput       : ShapeInput;
     export let value            : string | undefined = undefined;
     export let onSelectedChange : ( value: Selected<string> | undefined ) => void;
     export let setError         : VoidFunction = () => {};
+
+    let selected : Selected<string> | undefined = shapeInput.options?.find( option => option.value === shapeInput.value );
 </script>
 
 
 <Info { shapeInput } { onSelectedChange } { value }>
     <Select.Root
+        { selected }
         items               = { shapeInput.options }
         required            = { shapeInput.required }
-        selected            = { shapeInput.options?.find( option => option.value === shapeInput.value )}
         disabled            = { shapeInput.disabled }
         onSelectedChange    = {( event ) => {
             onSelectedChange( event );
@@ -33,7 +35,7 @@
                 placeholder = { shapeInput.placeholder }
             />
 
-            <CaretUpDownIcon />
+            <CaretDownIcon />
         </Select.Trigger>
 
         <Select.Content

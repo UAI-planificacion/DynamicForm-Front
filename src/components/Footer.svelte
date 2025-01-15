@@ -3,7 +3,7 @@
 </script>
 
 
-<footer class="h-20  bg-black text-white grid items-center justify-center w-full">
+<footer class="h-20 bg-black text-white grid items-center justify-center w-full">
     <figure>
         <img
             class   = "aspect-auto"
@@ -15,5 +15,5 @@
         />
     </figure>
 
-    <p class="text-center text-sm">© {date.getFullYear()}</p>
+    <!-- <p class="text-center text-sm">© {date.getFullYear()}</p> -->
 </footer>

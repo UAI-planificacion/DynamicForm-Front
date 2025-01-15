@@ -14,9 +14,9 @@ export type ShapeInput = {
     placeholder?    : string;
     value?          : string;
     date?           : DateValue;
-    currentDate?    : boolean
     minValue?       : DateValue;
     maxValue?       : DateValue;
+    currentDate?    : boolean
     required?       : boolean;
     valid?          : boolean;
     msgRequired?    : string;

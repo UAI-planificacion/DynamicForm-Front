@@ -25,16 +25,15 @@
     const month = date.getMonth() - 1;
     const day   = date.getDate();
 
-    // const currrentSelected = new CalendarDate( year, month, day );
 
-    let currentDate: DateValue | undefined = shapeInput.date ? new CalendarDate( shapeInput.date.year, shapeInput.date.month, shapeInput.date.day ) : undefined
-    // shapeInput.currentDate ? currrentSelected:
-    // shapeInput.date ? new CalendarDate( shapeInput.date.year, shapeInput.date.month, shapeInput.date.day ) : undefined;
+    let currentDate: DateValue | undefined = shapeInput.currentDate
+        ? new CalendarDate( year, month, day )
+        : shapeInput.date
+            ? new CalendarDate( shapeInput.date.year, shapeInput.date.month, shapeInput.date.day )
+            : undefined;
 </script>
 
 
-<!-- value           = { shapeInput.currentDate === true ? new CalendarDate( year, month, day ) : normalizeDate( shapeInput.date )} -->
-<!-- onValueChange   = {( value ) => { onValueChange( value ); setError(); currentDate = value }} -->
 <DatePicker.Root
     onValueChange   = {( value ) => { onValueChange( value ); setError(); currentDate = value }}
     locale          = "es"
@@ -43,7 +42,7 @@
     disabled        = { shapeInput.disabled }
     readonly        = { shapeInput.readonly }
     multiple        = { shapeInput.multiple }
-    value           = {  currentDate}
+    value           = { currentDate }
     minValue        = { shapeInput.minValue }
     maxValue        = { shapeInput.maxValue }
 >

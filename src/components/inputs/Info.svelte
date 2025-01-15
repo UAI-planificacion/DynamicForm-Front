@@ -14,7 +14,7 @@
     {#if shapeInput.label}
         <label
             for     = { shapeInput.id || "no name" }
-            class   = {`block text-sm font-medium ${ shapeInput.disabled ? 'text-zinc-500 dark:text-zinc-400 ' : 'text-zinc-700 dark:text-zinc-300' }`}
+            class   = {`block text-sm font-medium ${ shapeInput.disabled ? 'text-zinc-500 dark:text-zinc-400' : 'text-zinc-700 dark:text-zinc-300' }`}
         >
             { shapeInput.label }
         </label>

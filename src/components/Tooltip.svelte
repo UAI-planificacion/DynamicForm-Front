@@ -1,11 +1,10 @@
 <script lang="ts">
     import { Tooltip } from "bits-ui";
 
-    export let value        : string | undefined;
+    export let value        : string | boolean | undefined;
     export let message      : string;
     export let background   : string;
     export let color        : string;
-    export let border       : string;
 </script>   
 
 
@@ -15,19 +14,18 @@
             class={`${background} rounded-xl py-1 px-3 w-auto flex items-center gap-1`}
         >
             <slot />
-            { value }
         </Tooltip.Trigger>
 
         <Tooltip.Content
             transitionConfig = {{ y: 8, duration: 150 }}
             sideOffset      = { 8 }
         >
-            <div class={`${color} ${border}`}>
-                <Tooltip.Arrow class="rounded-[2px] border-l border-t border-dark-10 dark:border-zinc-500" />
+            <div class={ color }>
+                <Tooltip.Arrow class="rounded-[2px] border-l border-t border-zinc-300 dark:border-zinc-400" />
             </div>
 
             <div
-                class={`${color} ${border} flex items-center justify-center rounded-lg p-2 text-sm font-medium `}
+                class={`${color} border border-zinc-300 dark:border-zinc-400 flex items-center justify-center rounded-lg p-2 text-sm font-medium `}
             >
                 { message }
             </div>

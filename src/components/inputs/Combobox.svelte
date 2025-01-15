@@ -1,9 +1,9 @@
 <script lang="ts">
     import { Combobox, type Selected } from "bits-ui";
 
-    import { CaretUpDownIcon, CheckIcon }   from "$icons";
-    import type { ShapeInput }              from "$models";
-    import Info                             from "./Info.svelte";
+    import { CaretDownIcon, CheckIcon } from "$icons";
+    import type { ShapeInput }          from "$models";
+    import Info                         from "./Info.svelte";
 
     export let shapeInput       : ShapeInput;
     export let value            : string | undefined = undefined;
@@ -14,6 +14,7 @@
     let inputValue      = "";
     let touchedInput    = false;
     let open            = false;
+    let selected        = shapeInput.options?.find( option => option.value === shapeInput.value );
 
     $: filtered = inputValue && touchedInput
         ? shapeInput.options?.filter(( option ) => option.value.includes( inputValue.toLowerCase() ))
@@ -26,19 +27,19 @@
         items               = { filtered }
         disabled            = { shapeInput.disabled }
         onSelectedChange    = { ( event ) => { onSelectedChange( event ); setError() }}
-        selected            = { shapeInput.options?.find( option => option.value === shapeInput.value )}
+        { selected }
         bind:inputValue
         bind:touchedInput
         bind:open
     >
-        <div class="relative flex items-center w-full rounded-lg border border-border-input dark:border-zinc-700 bg-background px-2 text-sm transition-colors placeholder:text-foreground-alt/50 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background disabled:bg-gray-100 dark:disabled:bg-zinc-600 focus:ring-zinc-600">
+        <div class="relative flex items-center w-full rounded-lg border border-border-input dark:border-zinc-700 bg-background dark:bg-zinc-900 px-2 text-sm transition-colors placeholder:text-foreground-alt/50 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background disabled:bg-gray-100 dark:disabled:bg-zinc-600 focus:ring-zinc-600">
             <Combobox.Input
                 class       = "w-full border-none text-sm outline-none transition-all duration-75 data-[highlighted]:bg-muted focus:ring-0 focus:outline-none active:outline-none disabled:bg-gray-100 dark:bg-zinc-900 dark:text-zinc-300"
                 placeholder = { shapeInput.placeholder }
                 aria-label  = { shapeInput.label }
             />
 
-            <CaretUpDownIcon />
+            <CaretDownIcon />
         </div>
 
         <Combobox.Content

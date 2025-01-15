@@ -28,7 +28,8 @@ export const templateJson = [{
         "name"      : "lastname",
         "label"     : "Lastname",
         "required"  : true,
-        "rows"      : 4
+        "rows"      : 4,
+        "value"     : "Valor por defecto"
     },{
         "id"        : "4",
         "shape"     : "datepicker",
@@ -46,7 +47,6 @@ export const templateJson = [{
         "shape"     : "check",
         "name"      : "confirm",
         "label"     : "Confirmar",
-        "checked"   : false,
     }, {
         "id"        : "6",
         "shape"     : "combobox",
@@ -59,7 +59,8 @@ export const templateJson = [{
             { value: "dark-green",          label: "Dark Green" },
             { value: "svelte-orange",       label: "Svelte Orange" },
             { value: "punk-pink",           label: "Punk Pink" }
-        ]
+        ],
+        "value" : "dark-green"
     },{
         "id"            : "7",
         "shape"         : "button",
