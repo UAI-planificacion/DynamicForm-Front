@@ -9,6 +9,7 @@
         CalendarBlankIcon
     }                           from "$icons";
     import type { ShapeInput }  from "$models";
+    import { Tooltip }          from "$components";
 
 
     export let shapeInput       : ShapeInput;
@@ -75,23 +76,31 @@
 </header>
 
 <Separator.Root
-    class="my-2 shrink-0 bg-zinc-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+    class="my-2 shrink-0 bg-zinc-300 dark:bg-zinc-700 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
 />
 
 <div class="flex items-center gap-2 text-sm">
-    {#if shapeInput.label }
-        <div class="bg-sky-300 rounded-xl py-1 px-3 w-auto flex items-center gap-1">
-            <FlagIcon />
-            { shapeInput.label }
-        </div>
-    {/if }
 
-    {#if shapeInput.placeholder}
-        <div class="bg-cyan-300 rounded-xl py-1 px-3 w-auto flex items-center gap-1">
-            <svg width="22px" height="22px" viewBox="-1.6 -1.6 19.20 19.20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#fff" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #fff; --darkreader-inline-stroke: #fff;" stroke="#fff" stroke-width="0.00016" data-darkreader-inline-stroke="" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#fff" stroke-width="0.192" data-darkreader-inline-stroke="" style="--darkreader-inline-stroke: #fff;"></g><g id="SVGRepo_iconCarrier"> <path fill="#fff" d="M16 5c0-0.6-0.4-1-1-1h-14c-0.6 0-1 0.4-1 1v6c0 0.6 0.4 1 1 1h14c0.6 0 1-0.4 1-1v-6zM15 11h-14v-6h14v6z" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #fff;"></path> <path fill="#fff" d="M2 6h1v4h-1v-4z" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #fff;"></path> </g></svg>
-            { shapeInput.placeholder }
-        </div>
-    {/if}
+    <Tooltip
+        value       = { shapeInput.label }
+        message     = "Etiqueta" 
+        background  = "bg-sky-300"
+        color       = "bg-white"
+        border      = "border border-zinc-200"
+    >
+        <FlagIcon />
+    </Tooltip>
+
+    <Tooltip
+        value       = { shapeInput.placeholder }
+        message     = "Placeholder" 
+        background  = "bg-cyan-300"
+        color       = "bg-white"
+        border      = " border-zinc-200"
+    >
+        <svg width="22px" height="22px" viewBox="-1.6 -1.6 19.20 19.20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#fff" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #fff; --darkreader-inline-stroke: #fff;" stroke="#fff" stroke-width="0.00016" data-darkreader-inline-stroke="" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#fff" stroke-width="0.192" data-darkreader-inline-stroke="" style="--darkreader-inline-stroke: #fff;"></g><g id="SVGRepo_iconCarrier"> <path fill="#fff" d="M16 5c0-0.6-0.4-1-1-1h-14c-0.6 0-1 0.4-1 1v6c0 0.6 0.4 1 1 1h14c0.6 0 1-0.4 1-1v-6zM15 11h-14v-6h14v6z" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #fff;"></path> <path fill="#fff" d="M2 6h1v4h-1v-4z" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #fff;"></path> </g></svg>
+
+    </Tooltip>
 
     {#if shapeInput.shape === 'input' }
         <div class="bg-indigo-300 rounded-xl py-1 px-3 w-auto flex items-center gap-1">
@@ -135,7 +144,7 @@
 
 {#if shapeInput.description}
     <Separator.Root
-        class="my-2 shrink-0 bg-zinc-300 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
+        class="my-2 shrink-0 bg-zinc-300 dark:bg-zinc-700 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
     />
 
     <footer class="text-gray-500 ">

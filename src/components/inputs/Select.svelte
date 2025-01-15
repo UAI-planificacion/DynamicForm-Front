@@ -25,7 +25,7 @@
         }}
     >
         <Select.Trigger
-            class       = "inline-flex h-input w-full items-center rounded-9px border border-border-input bg-background px-[11px] text-sm transition-colors placeholder:text-foreground-alt/50 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background rounded-lg h-10 justify-between disabled:bg-gray-100"
+            class       = "inline-flex h-input w-full items-center rounded-9px border border-border-input dark:border-zinc-700 bg-background px-[11px] text-sm transition-colors placeholder:text-foreground-alt/50 focus:outline-none focus:ring-1 rounded-lg h-10 justify-between disabled:bg-gray-100 dark:disabled:bg-zinc-800 dark:disabled:border-zinc-800 dark:text-zinc-300 focus:ring-zinc-600"
             aria-label  = { shapeInput.name }
         >
             <Select.Value
@@ -37,7 +37,7 @@
         </Select.Trigger>
 
         <Select.Content
-            class               = "w-full rounded-xl border border-muted bg-background px-1 py-2 shadow-popover outline-none bg-white dark:bg-zinc-800 z-10"
+            class               = "w-full rounded-xl border border-muted dark:border-zinc-700 bg-background px-1 py-2 shadow-popover outline-none bg-white dark:bg-zinc-800 z-10 dark:text-zinc-300"
             sideOffset          = { 5 }
             collisionPadding    = { 0 }
         >

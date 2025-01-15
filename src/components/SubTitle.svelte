@@ -2,4 +2,6 @@
     export let title: string;
 </script>
 
-<h2 class="text-xl font-semibold text-cyan-500">{title}</h2>
+<div class="flex items-end h-14 bg-black dark:bg-zinc-800 px-6 py-3 rounded-lg">
+    <h2 class="text-lg font-semibold text-white">{title}</h2>
+</div>

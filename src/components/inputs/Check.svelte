@@ -7,7 +7,7 @@
     import { styles }               from "$lib";
 
 
-    export let className    : string = "read read-only:cursor-help peer inline-flex size-[25px] items-center justify-center rounded-md border border-muted bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40";
+    export let className    : string = "read read-only:cursor-help peer inline-flex size-[25px] items-center justify-center rounded-md border border-muted dark:border-zinc-600  bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40";
     export let shapeInput   : ShapeInput;
     export let onChange     : ( checked: boolean ) => void;
     export let checked      : "indeterminate" | boolean | undefined = "indeterminate";

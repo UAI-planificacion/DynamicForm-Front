@@ -6,6 +6,7 @@ export const templateJson = [{
         "label"         : "Name",
         "required"      : true,
         "placeholder"   : "Enter your name",
+        "value": "Kevin"
     }, {
         "id"        : "2",
         "shape"     : "select",
@@ -18,14 +19,16 @@ export const templateJson = [{
             { value: "dark-green",          label: "Dark Green" },
             { value: "svelte-orange",       label: "Svelte Orange" },
             { value: "punk-pink",           label: "Punk Pink" }
-        ]
+        ],
+        "value": 'punk-pink'
     }, {
         "id"        : "3",
         "shape"     : "textarea",
         "type"      : "text",
         "name"      : "lastname",
         "label"     : "Lastname",
-        "required"  : true
+        "required"  : true,
+        "rows"      : 4
     },{
         "id"        : "4",
         "shape"     : "datepicker",
@@ -33,12 +36,17 @@ export const templateJson = [{
         "name"      : "ages",
         "label"     : "Selecciona una fecha",
         "required"  : true,
+        "date" : {
+            "year": 2026,
+            "month": 5,
+            "day": 12,
+        }
     },{
         "id"        : "5",
         "shape"     : "check",
         "name"      : "confirm",
         "label"     : "Confirmar",
-        "checked"   : true,
+        "checked"   : false,
     }, {
         "id"        : "6",
         "shape"     : "combobox",

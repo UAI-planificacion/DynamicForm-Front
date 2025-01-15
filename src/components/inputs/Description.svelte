@@ -30,7 +30,7 @@
         {/if}
     </span>
 {:else if shapeInput.description}
-    <span class="text-sm text-gray-500 font-semibold">
+    <span class="text-sm text-zinc-500 dark:text-zinc-400 font-semibold">
         { shapeInput?.description }
     </span>
 {/if}

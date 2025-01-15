@@ -4,7 +4,7 @@
 
     import { Accordion, type Selected } from "bits-ui";
 	import { v4 as uuid }	            from 'uuid';
-    import type { DateValue }           from "@internationalized/date";
+    import { type DateValue }           from "@internationalized/date";
 
     import {
         DeleteIcon,
@@ -132,7 +132,7 @@
 </script>
 
 
-<card class="hover:brightness-105 shadow-md rounded-md p-5 border-1 border-zinc-300 border bg-white w-full">
+<card class="hover:brightness-105 shadow-md rounded-md p-5 border-1 border-zinc-300 dark:border-zinc-800 border bg-white dark:bg-zinc-900 w-full dark:hover:brightness-110">
     {#if editing === false}
         <Viewer
             { shapeInput }
@@ -155,7 +155,6 @@
                     }}
                     { onSelectedChange }
                 />
-                <!-- onSelectedChange = {( selected: Selected<string> | undefined ) => shapeInput.shape = selected?.value as InputType || 'none' } -->
 
                 <Input
                     shapeInput = {{
@@ -244,7 +243,6 @@
                         }}
                         onSelectedChange = { onSelectedType }
                     />
-                            <!-- onSelectedChange = {( selected: Selected<string> | undefined ) => shapeInput.type = selected?.value as Types || 'none' } -->
 
                     <Input
                         shapeInput = {{
@@ -379,10 +377,10 @@
             {/if}
 
             <Accordion.Root class="w-full">
-                <Accordion.Item value="validations" class="group border-b border-dark-10 px-1.5">
+                <Accordion.Item value="validations" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
                     <Accordion.Header>
                         <Accordion.Trigger
-                            class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 "
+                            class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
                         >
                             Validaciones
 
@@ -551,10 +549,10 @@
                         {/if}
                     </Accordion.Content>
                 </Accordion.Item>
-                <Accordion.Item value="accordion" class="group border-b border-dark-10 px-1.5">
+                <Accordion.Item value="accordion" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
                     <Accordion.Header>
                         <Accordion.Trigger
-                            class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 "
+                            class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
                         >
                             Atributos opcionales
 

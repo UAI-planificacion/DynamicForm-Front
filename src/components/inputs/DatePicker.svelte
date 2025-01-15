@@ -24,31 +24,39 @@
     const year  = date.getFullYear();
     const month = date.getMonth() - 1;
     const day   = date.getDate();
+
+    // const currrentSelected = new CalendarDate( year, month, day );
+
+    let currentDate: DateValue | undefined = shapeInput.date ? new CalendarDate( shapeInput.date.year, shapeInput.date.month, shapeInput.date.day ) : undefined
+    // shapeInput.currentDate ? currrentSelected:
+    // shapeInput.date ? new CalendarDate( shapeInput.date.year, shapeInput.date.month, shapeInput.date.day ) : undefined;
 </script>
 
 
+<!-- value           = { shapeInput.currentDate === true ? new CalendarDate( year, month, day ) : normalizeDate( shapeInput.date )} -->
+<!-- onValueChange   = {( value ) => { onValueChange( value ); setError(); currentDate = value }} -->
 <DatePicker.Root
-    onValueChange   = {( value ) => { onValueChange( value ); setError(); }}
+    onValueChange   = {( value ) => { onValueChange( value ); setError(); currentDate = value }}
     locale          = "es"
     weekdayFormat   = "short"
     fixedWeeks      = { true }
     disabled        = { shapeInput.disabled }
     readonly        = { shapeInput.readonly }
     multiple        = { shapeInput.multiple }
-    value           = { shapeInput.currentDate ? new CalendarDate( year, month, day ) : shapeInput.date }
+    value           = {  currentDate}
     minValue        = { shapeInput.minValue }
     maxValue        = { shapeInput.maxValue }
 >
     <div class="flex w-full flex-col gap-1.5">
         {#if shapeInput.label}
-            <DatePicker.Label class={`block select-none text-sm font-medium ${ shapeInput.disabled ? 'text-gray-500' : 'text-gray-700' }`}>
+            <DatePicker.Label class={`block select-none text-sm font-medium ${ shapeInput.disabled ? 'text-zinc-500 dark:text-zinc-400' : 'text-zinc-700 dark:text-zinc-300' }`}>
                 { shapeInput.label }
             </DatePicker.Label>
         {/if}
 
         <DatePicker.Input
             let:segments
-            class={`rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input bg-background px-2 py-3 text-sm tracking-[0.01em] ${ shapeInput.disabled ? 'text-gray-500' : '' } focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover`}
+            class={`rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input dark:border-zinc-700 dark:text-zinc-300 bg-background px-2 py-3 text-sm tracking-[0.01em] ${ shapeInput.disabled ? 'text-gray-500' : '' } focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover`}
         >
             {#each segments as { part, value }}
                 <div class="inline-block select-none">
@@ -81,7 +89,7 @@
             class               = "z-50"
         >
             <DatePicker.Calendar
-                class="rounded-lg border border-dark-10 bg-zinc-800 p-3 shadow-popover"
+                class="rounded-lg border border-dark-10 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-3 shadow-popover dark:text-zinc-300 "
                 let:months
                 let:weekdays
             >
@@ -105,7 +113,7 @@
                     {#each months as month}
                         <DatePicker.Grid class="w-full border-collapse select-none space-y-1">
                             <DatePicker.GridHead>
-                                <DatePicker.GridRow class="mb-1 flex w-full justify-between bg-zinc-600 rounded-lg">
+                                <DatePicker.GridRow class="mb-1 flex w-full justify-between bg-zinc-200 dark:bg-zinc-600 rounded-lg">
                                     {#each weekdays as day}
                                     <!-- Semanas -->
                                         <DatePicker.HeadCell class="w-10 rounded-md text-xs !font-normal text-muted-foreground capitalize p-1">
@@ -126,7 +134,7 @@
                                                 <DatePicker.Day
                                                     {date}
                                                     month={month.value}
-                                                    class="group relative inline-flex size-10 items-center justify-center whitespace-nowrap rounded-9px border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-foreground data-[selected]:bg-blue-500 data-[selected]:rounded-lg data-[disabled]:text-zinc-700  data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through hover:bg-slate-600 hover:rounded-lg"
+                                                    class="group relative inline-flex size-10 items-center justify-center whitespace-nowrap rounded-9px border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-foreground data-[selected]:bg-blue-500 data-[selected]:rounded-lg data-[disabled]:text-zinc-400 dark:data-[disabled]:text-zinc-500 data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through hover:bg-zinc-200 dark:hover:bg-zinc-600 hover:rounded-lg"
                                                 >
                                                 <!-- svelte-ignore element_invalid_self_closing_tag -->
                                                     <div class="absolute top-[5px] hidden size-1 rounded-full bg-foreground transition-all group-data-[today]:block group-data-[selected]:bg-background bg-blue-500" />

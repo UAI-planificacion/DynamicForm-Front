@@ -93,7 +93,7 @@
 			</div>
 
 			<button
-				class="w-full flex justify-center hover:brightness-105 shadow-md rounded-lg p-5 border-1 border-zinc-300 border bg-white active:scale-[0.99] active:brightness-90"
+				class="w-full flex justify-center hover:brightness-105 dark:hover:brightness-110 shadow-md rounded-lg p-5 border-1 border-zinc-300 dark:border-zinc-700 border bg-white dark:bg-zinc-900 active:scale-[0.99] active:brightness-90"
 				on:click={addItem}
 			>
 				<AddIcon />
