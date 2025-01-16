@@ -35,6 +35,7 @@
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
 		"bits-ui": "^0.22.0",
+		"marked": "^15.0.6",
 		"svelte-dnd-action": "^0.9.54",
 		"uuid": "^11.0.4"
 	}

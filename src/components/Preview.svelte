@@ -81,7 +81,7 @@
 			}[item.shape || 'none'];
 		});
 
-		if ( template.some( item => !item.valid ) ) {
+		if ( template.some( item => !item.valid )) {
 			console.log("🚀 ~ Hay un error en el formulario")
 			return;
 		}
@@ -96,7 +96,7 @@
 
     {#each template as shapeInput, index }
 		<div class="flex gap-1.5">
-		<!-- <div class={`flex gap-2 ${inputActive === index + 1 ? 'border-0 border-amber-00 border pr-2 py-2 rounded-lg   bg-zinc-300/20  ' : ''}`}> -->
+		<!-- <div class={`flex gap-2 ${inputActive === index + 1 ? 'border-0 border-amber-00 border pr-2 py-2 rounded-lg bg-zinc-300/20' : ''}`}> -->
 			<Enumeration
 				number	= { index + 1 }
 				active	= { inputActive === index + 1 }

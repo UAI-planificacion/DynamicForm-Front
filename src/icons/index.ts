@@ -29,3 +29,4 @@ export { default as TelIcon }           from './TelIcon.svelte';
 export { default as SearchIcon }        from './SearchIcon.svelte';
 export { default as TextIcon }          from './TextIcon.svelte';
 export { default as DisabledIcon }      from './DisabledIcon.svelte';
+export { default as InterrogationIcon } from './InterrogationIcon.svelte';

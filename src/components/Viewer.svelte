@@ -22,7 +22,8 @@
         UrlIcon,
         EmailIcon,
         PasswordIcon,
-        DisabledIcon
+        DisabledIcon,
+        InterrogationIcon
     }                           from "$icons";
     import type { ShapeInput }  from "$models";
     import { Tooltip }          from "$components";
@@ -42,7 +43,7 @@
         'textarea'      : 'Caja de texto',
         'datepicker'    : 'Fecha',
         'button'        : 'Botón',
-    }[name || ''] || 'Sin valor' );
+    }[name || ''] || 'Entrada no reconocida' );
 </script>
 
 
@@ -66,8 +67,10 @@
                 <SelectIcon />
             {:else if shapeInput.shape === 'datepicker'}
                 <DateIcon />
-            {:else}
+            {:else if shapeInput.shape === 'input'}
                 <InputIcon />
+            {:else}
+                <InterrogationIcon />
             {/if}
 
             <span class="text-zinc-800 font-semibold">
