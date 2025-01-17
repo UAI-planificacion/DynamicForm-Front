@@ -57,8 +57,6 @@
 
 <MarkdownEditor bind:value/>
 
-<pre class="bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-100 p-5 rounded-lg break-words shadow-lg">{JSON.stringify(value, null, 2)}</pre>
-
 <main class="space-y-2">
 	<Combobox
 		shapeInput={{
