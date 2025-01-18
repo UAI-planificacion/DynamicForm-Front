@@ -52,7 +52,6 @@
 
 	let value = '';
 	import MarkdownEditor from "$components/markdown/MarkdownEditor.svelte";
-
 </script>
 
 <MarkdownEditor bind:value/>
