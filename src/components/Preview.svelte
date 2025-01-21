@@ -11,7 +11,8 @@
 		DatePicker,
 		TextArea,
 		Enumeration,
-		SubTitle
+		SubTitle,
+		MarkdownEditor
 	} 							from "$components";
 	import {
 		errorSelect,
@@ -72,6 +73,7 @@
 			template[index].valid = {
 				'input'			: errorInput( item, formValues[ item.name ]),
 				'textarea'		: errorTextArea( item, formValues[ item.name ]),
+				'markdown'		: errorTextArea( item, formValues[ item.name ]),
 				'check'			: errorCheck( item, formValues[ item.name ]),
 				'combobox'		: errorSelect( item, formValues[ item.name ]),
 				'select'		: errorSelect( item, formValues[ item.name ]),
@@ -150,6 +152,13 @@
 			<!-- TextArea -->
 			{:else if shapeInput.shape === 'textarea'}
 				<TextArea
+					{ shapeInput }
+					onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
+					value		= { formValues[ shapeInput.name ]}
+					setError	= {() => shapeInput.valid = errorTextArea( shapeInput, formValues[ shapeInput.name ])}
+				/>
+			{:else if shapeInput.shape === 'markdown'}
+				<MarkdownEditor
 					{ shapeInput }
 					onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
 					value		= { formValues[ shapeInput.name ]}

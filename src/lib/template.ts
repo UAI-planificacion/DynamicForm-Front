@@ -68,4 +68,14 @@ export const templateJson = [{
         "label"         : "Send",
         "apiUrlSend"    : "http://localhost:5173/api/send"
     },
+    {
+        "id"        : "8",
+        "shape"     : "markdown",
+        "name"      : "markdown",
+        "label"     : "Markdown",
+        "preview"   : true,
+        "value"     : '',
+        "required"  : true,
+        "description" : "Esto es un ejemplo de Markdown",
+    },
 ];

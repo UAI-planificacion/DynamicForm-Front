@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
-    export let clickedCell: { row: number, col: number } | null;
-    export let open: boolean;
-    export let createTable : VoidFunction;
+    export let open             : boolean;
+    export let onTableGenerated : ( tableString: string ) => void;
+
 
     let initialRows : number = 4;
     let initialCols : number = 4;
@@ -13,17 +13,37 @@
     let cols        : number = initialCols;
     let hoveredRow  : number = -1;
     let hoveredCol  : number = -1;
-
-    let cells: boolean[][] = Array( maxRows )
+    let cells       : boolean[][] = Array( maxRows )
         .fill( false )
         .map(() => Array( maxCols ).fill( false ));
 
 
+    const genetateArray = (
+        spaces  : number,
+        fill    : string,
+        join    : string
+    ): string => Array( spaces ).fill( fill ).join( join );
+
+
+    function generateMarkdownTable(cell: { row: number, col: number }): string {
+        const rows          = cell.row;
+        const cols          = cell.col;
+        const header        = genetateArray( cols, 'Header', ' | ' );
+        const separator     = genetateArray( cols, '---', ' | ' );
+        const rows_content  = Array( rows )
+            .fill(0)
+            .map(() => genetateArray( cols, 'Cell', ' | ' ))
+            .join( '\n| ' );
+
+        return `| ${header} |\n| ${separator} |\n| ${rows_content} |`;
+    }
+
+
     function handleCellClick(row: number, col: number): void {
-        clickedCell = { row, col: col + 1 };
+        const clickedCell       = { row, col: col + 1 };
+        const generatedTable    = generateMarkdownTable( clickedCell );
+        onTableGenerated( generatedTable );
         open = !open;
-        createTable();
-        console.log(`Clicked cell: { row: ${row}, col: ${col} }`);
     }
 
 
@@ -41,6 +61,7 @@
         rows = Math.min( rows, maxRows );
         cols = Math.min( cols, maxCols );
     }
+
 
     function handleMouseLeave(): void {
         hoveredRow = -1;

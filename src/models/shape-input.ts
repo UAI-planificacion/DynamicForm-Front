@@ -1,7 +1,7 @@
 import { type DateValue } from "@internationalized/date";
 
 
-export type InputType  = 'input' | 'combobox' | 'check' | 'select' | 'textarea' | 'datepicker' | 'button' | 'none';
+export type InputType  = 'input' | 'combobox' | 'check' | 'select' | 'textarea' | 'datepicker' | 'button' | 'markdown' | 'none';
 export type Types      = 'text' | 'number' | 'password' | 'email' | 'url' | 'tel' | 'search';
 export type ShapeInput = {
     [key: string]   : unknown;
@@ -22,6 +22,7 @@ export type ShapeInput = {
     msgRequired?    : string;
     disabled?       : boolean;
     readonly?       : boolean;
+    preview?        : boolean;
     multiple?       : false;
     pattern?        : string;
     class?          : string;

@@ -22,7 +22,7 @@
 		readonly 	= { shapeInput.readonly }
 		disabled 	= { shapeInput.disabled }
 		placeholder	= { shapeInput.placeholder }
-		on:input    = { ( value ) => {onInput( value ); setError() }}
+		on:input    = { ( value ) => { onInput( value ); setError() }}
 		class       = { shapeInput.class ?? styles.textarea }
 	>{ shapeInput.value }</textarea>
 </Info>

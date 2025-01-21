@@ -19,7 +19,7 @@
 
 {#if !shapeInput.valid && shapeInput.shape !== 'button'}
     <span class="text-sm text-red-500 font-semibold">
-        {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea'}
+        {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown'}
             { showErrorInput( shapeInput, value )}
         {:else if shapeInput.shape === 'select' || shapeInput.shape === 'combobox'}
             { showErrorSelect( shapeInput, value )}

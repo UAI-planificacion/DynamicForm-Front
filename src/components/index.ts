@@ -21,3 +21,8 @@ export { default as SubTitle }      from './SubTitle.svelte';
 export { default as Tooltip }       from './Tooltip.svelte';
 
 export { default as Viewer } from './Viewer.svelte';
+export { default as Popover } from './ui/Popover.svelte';
+
+
+export { default as DynamicTable } from './markdown/DynamicTable.svelte';
+export { default as MarkdownEditor } from './markdown/MarkdownEditor.svelte';

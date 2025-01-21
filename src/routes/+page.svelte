@@ -48,13 +48,8 @@
 	const deleteItem = ( id: string ) => template = [
 		...template.filter( temp => temp.id !== id ) ?? []
 	];
-
-
-	let value = '';
-	import MarkdownEditor from "$components/markdown/MarkdownEditor.svelte";
 </script>
 
-<MarkdownEditor bind:value/>
 
 <main class="space-y-2">
 	<Combobox

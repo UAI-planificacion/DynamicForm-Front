@@ -21,7 +21,6 @@ const sizeHeading = ( size: number ): string => ({
 
 
 const renderMath = (text: string): string => {
-    console.log("🚀 ~ text:", text)
     // $$ Renderiza Fórmulas de múltiples líneas $$
     text = text.replace(/\$\$(.+?)\$\$/gs, (_, formula) =>
         `<div class="dark:text-zinc-200">${katex.renderToString(formula, { displayMode: true })}</div>`
@@ -122,18 +121,29 @@ marked.use({
 
         list: (token: Tokens.List): string => {
             const isOrdered = token.ordered;
+            const itemsHtml = token.items
+                .map(( item ) => {
+                    const cleanRaw      = item.raw.replace(/\n$/, '').trim();
+                    const checkboxMatch = cleanRaw.match(/^-\s*\[(\s*x?\s*)\]\s*(.*)$/i);
+
+                    if ( checkboxMatch ) {
+                        const isChecked = checkboxMatch[1].toLowerCase().includes('x');
+                        const text      = checkboxMatch[2];
+                        const checkbox  = `<input type="checkbox" ${isChecked ? 'checked' : ''} class="form-checkbox h-4 w-4 text-sky-500 rounded border-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 mr-2" />`;
+
+                        return `<li class="mb-2 -ml-2.5 flex items-center list-none">${checkbox}${renderMath(text)}</li>`;
+                    }
+
+                    return `<li class="mb-2 ml-3">${renderMath( item.text )}</li>`;
+                })
+                .join("");
+
             const listTag = isOrdered ? "ol" : "ul";
             const listClass = isOrdered
                 ? "list-decimal pl-5 mb-4 text-zinc-800 dark:text-zinc-300 marker:text-zinc-400 marker:font-bold dark:marker:text-zinc-500"
                 : "list-disc pl-5 mb-4 text-zinc-800 dark:text-zinc-300 marker:text-zinc-400 dark:marker:text-zinc-500";
-            const itemsHtml = token.items
-                .map((item) => `<li class="mb-2 ml-3">${renderMath(item.text)}</li>`)
-                .join("");
-            return `<${listTag} class="${listClass}">${itemsHtml}</${listTag}>`;
-        },
 
-        checkbox: ( token ) => {
-            return `<input type="checkbox">`
+            return `<${listTag} class="${listClass}">${itemsHtml}</${listTag}>`;
         },
 
         blockquote: (token) => {
