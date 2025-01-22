@@ -6,7 +6,7 @@ export { default as Input }         from './inputs/Input.svelte';
 export { default as Select }        from './inputs/Select.svelte';
 export { default as DatePicker }    from './inputs/DatePicker.svelte';
 export { default as Radio }         from './inputs/Radio.svelte';
-export { default as TextArea }         from './inputs/TextArea.svelte';
+export { default as TextArea }		from './inputs/TextArea.svelte';
 
 //Footer
 export { default as Footer }        from './Footer.svelte';
@@ -22,8 +22,7 @@ export { default as Tooltip }       from './Tooltip.svelte';
 
 export { default as Viewer } 	from './Viewer.svelte';
 export { default as Resizable } from './Resizable.svelte';
-export { default as Popover } 	from './ui/Popover.svelte';
 
-
-export { default as DynamicTable } from './markdown/DynamicTable.svelte';
-export { default as MarkdownEditor } from './markdown/MarkdownEditor.svelte';
+// MarkdownEditor
+export { default as DynamicTable } 		from './markdown/DynamicTable.svelte';
+export { default as MarkdownEditor }	from './markdown/MarkdownEditor.svelte';
