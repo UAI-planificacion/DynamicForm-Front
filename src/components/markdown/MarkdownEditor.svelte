@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Separator } from "bits-ui";
+	import { Separator, DropdownMenu } from "bits-ui";
 
 	import {
 		BoldMarkIcon,
@@ -20,24 +20,27 @@
 		Heading3MarkIcon,
 		Heading4MarkIcon,
 		HeadingMarkIcon
-	} 									from "$icons/markdown";
-	import { DynamicTable, Popover }	from "$components";
-	import marked 						from './marked.config';
-	import type { ShapeInput } 			from "$models";
-	import Info 						from "$components/inputs/Info.svelte";
-
+	} 							from "$icons/markdown";
+	import { DynamicTable }		from "$components";
+	import type { ShapeInput } 	from "$models";
+	import Info 				from "$components/inputs/Info.svelte";
+	import marked 				from './marked.config';
 
 	export let shapeInput	: ShapeInput;
 	export let value 		: string | undefined = undefined;
     export let onInput		: ( event: Event ) => void;
     export let setError     : VoidFunction = () => {};
+    export let dynamicMode  : boolean = false;
 
+	// Textarea
 	let textarea: HTMLTextAreaElement;
 	let selectionStart 		= 0;
 	let selectionEnd 		= 0;
-	let openPopoverTable 	= false;
-	let openPopoverHeading 	= false;
+	// Menus
+	let mobileMenuOpen = false;
+	let desktopTableOpen = false;
 
+	$: responsivePrefix = dynamicMode ? '@' : '';
 
 	function adjustTextareaHeight() {
 		if ( !textarea ) return;
@@ -123,9 +126,9 @@
 
 
 	function getCurrentLine(): string {
-		const lineStart = shapeInput!.value!.lastIndexOf('\n', selectionStart - 1) + 1;
-		const lineEnd 	= shapeInput!.value!.indexOf('\n', selectionStart);
-		return shapeInput!.value!.substring(lineStart, lineEnd === -1 ? shapeInput!.value!.length : lineEnd);
+		const lineStart = shapeInput!.value!.lastIndexOf( '\n', selectionStart - 1 ) + 1;
+		const lineEnd 	= shapeInput!.value!.indexOf( '\n', selectionStart );
+		return shapeInput!.value!.substring( lineStart, lineEnd === -1 ? shapeInput!.value!.length : lineEnd );
 	}
 
 
@@ -138,17 +141,17 @@
 		{
 			icon: Heading2MarkIcon,
 			title: 'Título 2',
-			action: () => insertText('## ', '\n', 'Título 2')
+			action: () => insertText('## ', '', 'Título 2')
 		},
 		{
 			icon: Heading3MarkIcon,
 			title: 'Título 3',
-			action: () => insertText('### ', '\n', 'Título 3')
+			action: () => insertText('### ', '', 'Título 3')
 		},
 		{
 			icon: Heading4MarkIcon,
 			title: 'Título 4',
-			action: () => insertText('#### ', '\n', 'Título 4')
+			action: () => insertText('#### ', '', 'Título 4')
 		},
 	];
 
@@ -218,65 +221,165 @@
 
 
 <Info { shapeInput } { onInput } { value }>
-
-
-<div class={`grid grid-cols-1 ${ shapeInput.preview ? 'sm:grid-cols-2' : '' } bg-white dark:bg-zinc-700 rounded-lg shadow-lg overflow-hidden`}>
+<div class={`grid grid-cols-1 ${shapeInput.preview ? `${responsivePrefix}2xl:grid-cols-2` : ''} bg-white dark:bg-zinc-700 rounded-lg shadow-lg overflow-hidden`}>
     <div class="relative">
-        <div class="border-b border-gray-200 dark:border-zinc-700 bg-black p-2 flex flex-wrap gap-1 h-14 dark:bg-zinc-800">
-			<Popover bind:open={openPopoverHeading}>
-				<button
-					slot		= "trigger"
-					class		= " hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
-					aria-label	= "Insert Heading"
-					title		= "Títulos"
-				>
-					<HeadingMarkIcon />
-				</button>
+        <div class="border-b border-gray-200 dark:border-zinc-700 bg-black p-1 md:p-2 flex items-center h-14 dark:bg-zinc-800">
 
-				<div class="bg-white shadow-lg dark:bg-zinc-600 p-2 rounded-lg gap-1 grid">
-					{#each headingTools as tool}
-						<button
-							on:click={() => { openPopoverHeading = false; tool.action() }}
-							class="p-2 hover:bg-zinc-700 rounded-lg transition-colors duration-200 text-gray-200 hover:text-gray-200 flex items-center justify-center min-w-[2.5rem] dark:hover:bg-zinc-700 bg-black dark:bg-zinc-500 dark:active:bg-zinc-700 active:scale-95"
-							title={tool.title}
-						>
-							<span class="text-sm font-medium dark:text-white">
-								<tool.icon />
-							</span>
-						</button>
-					{/each}
-				</div>
-			</Popover>
-
-            {#each tools as tool}
-                <button
-                    on:click	= { tool.action }
-                    class		= "p-2 hover:bg-zinc-700 rounded-lg transition-colors duration-200 text-gray-200 hover:text-gray-200 flex items-center justify-center min-w-[2.5rem] dark:hover:bg-zinc-600 dark:active:bg-zinc-700 active:scale-95"
-                    title		= { tool.title }
+            <!-- Desktop view -->
+            <div class="hidden ${responsivePrefix}sm:flex ${responsivePrefix}lg:hidden ${responsivePrefix}xl:flex flex-wrap ${responsivePrefix}sm:gap-0.5 ${responsivePrefix}md:gap-1 ${responsivePrefix}xl:gap-0.5 ${responsivePrefix}2xl:gap-1">
+                <DropdownMenu.Root
+                    closeOnItemClick={true}
+                    closeFocus={textarea}
                 >
-                    <span class="text-sm font-medium dark:text-white">
-						<tool.icon />
-					</span>
-                </button>
-            {/each}
+                    <DropdownMenu.Trigger
+                        class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
+                    >
+                        <HeadingMarkIcon />
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Content
+                        class="w-12 rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
+                        sideOffset={8}
+                    >
+                        {#each headingTools as tool}
+                            <DropdownMenu.Item
+                                class="flex h-10 hover:rounded-lg select-none items-center rounded-button py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700"
+                                on:click={tool.action}
+                            >
+                                <div class="flex items-center gap-2">
+                                    <tool.icon />
+                                </div>
+                            </DropdownMenu.Item>
+                        {/each}
+                    </DropdownMenu.Content>
+                </DropdownMenu.Root>
 
-			<Popover bind:open={ openPopoverTable }>
-				<button
-					slot		= "trigger"
-					class		= "hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-700 dark:text-zinc-200"
-					aria-label	= "Insert Table"
-					title		= "Tabla"
-				>
-					<TableMarkIcon />
-				</button>
+                {#each tools as tool}
+                    <button
+                        on:click={tool.action}
+                        class="p-2 hover:bg-zinc-700 rounded-lg transition-colors duration-200 text-gray-200 hover:text-gray-200 flex items-center justify-center min-w-[2.5rem] dark:hover:bg-zinc-600 dark:active:bg-zinc-700 active:scale-95"
+                        title={tool.title}
+                    >
+                        <span class="text-sm font-medium dark:text-white">
+                            <tool.icon />
+                        </span>
+                    </button>
+                {/each}
 
-				<div class="bg-white shadow-lg dark:bg-zinc-600 p-3 rounded-lg">
-					<DynamicTable
-						bind:open={ openPopoverTable }
-						onTableGenerated={ insertText }
-					/>
-				</div>
-			</Popover>
+                <DropdownMenu.Root 
+                    bind:open={desktopTableOpen}
+                    closeOnItemClick={true}
+                    closeFocus={textarea}
+                >
+                    <DropdownMenu.Trigger
+                        class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-700 dark:text-zinc-200"
+                    >
+                        <TableMarkIcon />
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Content
+                        class="rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
+                        sideOffset={8}
+                    >
+                        <DynamicTable
+                            onTableGenerated={( table ) => {
+                                insertText( table );
+                                desktopTableOpen = false;
+                            }}
+                        />
+                    </DropdownMenu.Content>
+                </DropdownMenu.Root>
+            </div>
+
+            <!-- Mobile menu -->
+            <DropdownMenu.Root 
+                bind:open={mobileMenuOpen}
+                closeOnItemClick={true}
+                closeFocus={textarea}
+            >
+                <DropdownMenu.Trigger
+                    class="${responsivePrefix}sm:hidden ${responsivePrefix}lg:flex ${responsivePrefix}xl:hidden mr-2 hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content
+                    class="w-full max-w-[229px] rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
+                    sideOffset={8}
+                >
+                    <DropdownMenu.Sub>
+                        <DropdownMenu.SubTrigger
+                            class="flex h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700 data-[state=open]:bg-zinc-700"
+                        >
+                            <div class="flex items-center gap-2">
+                                <HeadingMarkIcon />
+                                <span>Títulos</span>
+                            </div>
+                            <div class="ml-auto flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </DropdownMenu.SubTrigger>
+                        <DropdownMenu.SubContent
+                            class=" rounded-lg w-28 bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-lg"
+                            sideOffset={10}
+                        >
+                            {#each headingTools as tool}
+                                <DropdownMenu.Item
+                                    class="flex h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700"
+                                    on:click={tool.action}
+                                >
+                                    <div class="flex items-center gap-2">
+                                        <tool.icon />
+                                        <span>{tool.title}</span>
+                                    </div>
+                                </DropdownMenu.Item>
+                            {/each}
+                        </DropdownMenu.SubContent>
+                    </DropdownMenu.Sub>
+
+                    {#each tools as tool}
+                        <DropdownMenu.Item
+                            class="flex h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700"
+                            on:click={tool.action}
+                        >
+                            <div class="flex items-center gap-2">
+                                <tool.icon />
+                                <span>{tool.title}</span>
+                            </div>
+                        </DropdownMenu.Item>
+                    {/each}
+
+                    <DropdownMenu.Sub>
+                        <DropdownMenu.SubTrigger
+                            class="flex h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700 data-[state=open]:bg-zinc-700"
+                        >
+                            <div class="flex items-center gap-2">
+                                <TableMarkIcon />
+                                <span>Insertar Tabla</span>
+                            </div>
+                            <div class="ml-auto flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </DropdownMenu.SubTrigger>
+                        <DropdownMenu.SubContent
+                            class="rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
+                            sideOffset={10}
+                        >
+                            <DynamicTable
+                                onTableGenerated={( table ) => {
+                                    insertText( table );
+                                    mobileMenuOpen = false;
+                                }}
+                            />
+                        </DropdownMenu.SubContent>
+                    </DropdownMenu.Sub>
+                </DropdownMenu.Content>
+            </DropdownMenu.Root>
+
+            <h3 class="text-gray-200 dark:text-zinc-200 font-medium ${responsivePrefix}sm:hidden ${responsivePrefix}lg:flex ${responsivePrefix}xl:hidden ml-2">Editor</h3>
         </div>
 
 		<div class="p-2">
@@ -284,17 +387,18 @@
 				name        = { shapeInput.name }
 				id          = { shapeInput.id }
 				bind:value={ shapeInput.value }
-                bind:this	= { textarea }
-                on:select	= { updateSelection }
+                bind:this={ textarea }
 				required 	= { shapeInput.required }
 				minlength   = { shapeInput.minLength }
 				maxlength   = { shapeInput.maxLength }
-				on:input    = { ( value ) => {onInput( value ); setError() }}
-				readonly 	= { shapeInput.readonly }
-				disabled 	= { shapeInput.disabled }
+				rows        = { shapeInput.rows }
+                on:select	= { updateSelection }
                 on:keyup	= { updateSelection }
                 on:click	= { updateSelection }
                 on:keydown	= { handleKeydown }
+				on:input    = { ( value ) => {onInput( value ); setError() }}
+				readonly 	= { shapeInput.readonly }
+				disabled 	= { shapeInput.disabled }
                 class		= "w-full min-h-64 border-none focus:ring-0 resize-none bg-transparent dark:text-zinc-200 overflow-hidden"
                 placeholder = { shapeInput.placeholder }
             ></textarea>

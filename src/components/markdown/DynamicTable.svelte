@@ -1,7 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
-    export let open             : boolean;
     export let onTableGenerated : ( tableString: string ) => void;
 
 
@@ -33,9 +32,9 @@
         const rows_content  = Array( rows )
             .fill(0)
             .map(() => genetateArray( cols, 'Cell', ' | ' ))
-            .join( '\n| ' );
+            .join( ' |\n| ' );
 
-        return `| ${header} |\n| ${separator} |\n| ${rows_content} |`;
+        return `| ${header} |\n| ${separator} |\n| ${rows_content} |\n\n`;
     }
 
 
@@ -43,7 +42,6 @@
         const clickedCell       = { row, col: col + 1 };
         const generatedTable    = generateMarkdownTable( clickedCell );
         onTableGenerated( generatedTable );
-        open = !open;
     }
 
 

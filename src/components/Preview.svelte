@@ -26,7 +26,7 @@
 
     export let template		: ShapeInput[] = [];
 	export let inputActive 	: number;
-
+	export let dynamicMode	: boolean = false;
 
 	const formValues = template.reduce(( acc, item ) => {
 		const keys 	= ["value", "checked", "date"];
@@ -163,6 +163,7 @@
 					onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
 					value		= { formValues[ shapeInput.name ]}
 					setError	= {() => shapeInput.valid = errorTextArea( shapeInput, formValues[ shapeInput.name ])}
+					dynamicMode={ dynamicMode }
 				/>
 			<!-- Default -->
 			{:else}
