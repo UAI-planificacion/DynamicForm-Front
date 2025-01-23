@@ -9,6 +9,7 @@ export const options: ShapeOptions[] = [
     { label: 'Aréa de texto', 	value: 'textarea' },
     { label: 'Fecha', 			value: 'datepicker' },
     { label: 'Botón', 			value: 'button' },
+    { label: 'Markdown', 		value: 'markdown' },
 ];
 
 

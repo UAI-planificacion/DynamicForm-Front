@@ -94,15 +94,18 @@
 
 
 <container class="space-y-3 h-full overflow-auto">
-	<SubTitle title="Vista Previa" />
+	{#if dynamicMode}
+		<SubTitle title="Vista Previa" />
+	{/if}
 
     {#each template as shapeInput, index }
-		<div class="flex gap-1.5">
-		<!-- <div class={`flex gap-2 ${inputActive === index + 1 ? 'border-0 border-amber-00 border pr-2 py-2 rounded-lg bg-zinc-300/20' : ''}`}> -->
-			<Enumeration
-				number	= { index + 1 }
-				active	= { inputActive === index + 1 }
-			/>
+		<div class={`flex ${dynamicMode ? "gap-1.5" : "" } ${inputActive === index + 1 ? ' pr-2 py-2 rounded-lg bg-zinc-200 dark:bg-zinc-800' : ''}`}>
+			{#if dynamicMode}
+				<Enumeration
+					number	= { index + 1 }
+					active	= { inputActive === index + 1 }
+				/>
+			{/if}
 			<!-- Input -->
 			{#if shapeInput.shape === 'input'}
 				<Input
@@ -115,7 +118,11 @@
 			{:else if shapeInput.shape === 'select'}
 				<Select
 					{ shapeInput }
-					onSelectedChange	= {( selected: Selected<string> | undefined ) => handleSelect( selected, shapeInput.name )}
+					onSelectedChange	= {( selected: Selected<string> | Selected<string>[] | undefined ) => {
+						// !TODO:Hay que cambiar esto, tiene que agregar también un multiple
+						if ( selected instanceof Array ) return;
+						handleSelect( selected, shapeInput.name )}
+					}
 					value 				= { formValues[ shapeInput.name ]}
 					setError 			= {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
 				/>
@@ -172,5 +179,8 @@
 		</div>
 	{/each}
 
-    <pre class="bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-100 p-5 rounded-lg break-words shadow-lg">{JSON.stringify(formValues, null, 2)}</pre>
+	{#if dynamicMode}
+		<SubTitle title="Información obtenida" />
+		<pre class="bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-100 p-5 rounded-lg break-words shadow-lg">{JSON.stringify(formValues, null, 2)}</pre>
+	{/if}
 </container>

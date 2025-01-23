@@ -49,48 +49,52 @@
 </script>
 
 
-<header class="flex justify-between items-center">
-    <div class="flex items-center gap-2">
-        <Tooltip
-            value       = { shapeInput.shape }
-            message     = "Tipo de entrada" 
-            background  = "bg-amber-300"
-            color       = "bg-zinc-200 text-zinc-800 dark:bg-zinc-500 dark:text-zinc-200"
-        >
-            {#if shapeInput.shape === 'button'}
-                <ButtonIcon />
-            {:else if shapeInput.shape === 'check'}
-                <CheckInputIcon />
-            {:else if shapeInput.shape === 'textarea'}
-                <TextareaIcon />
-            {:else if shapeInput.shape === 'combobox'}
-                <ComboboxIcon />
-            {:else if shapeInput.shape === 'select'}
-                <SelectIcon />
-            {:else if shapeInput.shape === 'datepicker'}
-                <DateIcon />
-            {:else if shapeInput.shape === 'input'}
-                <InputIcon />
-            {:else if shapeInput.shape === 'markdown'}
-                <MarkdownIcon />
-            {:else}
-                <InterrogationIcon />
-            {/if}
+<header class="flex flex-wrap sm:flex-nowrap justify-between items-center gap-2">
+    <div class="w-full sm:w-auto grid grid-cols-1 sm:flex sm:flex-nowrap items-start sm:items-center gap-2">
+        <div class="flex items-center gap-2">
+            <Tooltip
+                value       = { shapeInput.shape }
+                message     = "Tipo de entrada" 
+                background  = "bg-amber-300"
+                color       = "bg-zinc-200 text-zinc-800 dark:bg-zinc-500 dark:text-zinc-200"
+            >
+                {#if shapeInput.shape === 'button'}
+                    <ButtonIcon />
+                {:else if shapeInput.shape === 'check'}
+                    <CheckInputIcon />
+                {:else if shapeInput.shape === 'textarea'}
+                    <TextareaIcon />
+                {:else if shapeInput.shape === 'combobox'}
+                    <ComboboxIcon />
+                {:else if shapeInput.shape === 'select'}
+                    <SelectIcon />
+                {:else if shapeInput.shape === 'datepicker'}
+                    <DateIcon />
+                {:else if shapeInput.shape === 'input'}
+                    <InputIcon />
+                {:else if shapeInput.shape === 'markdown'}
+                    <MarkdownIcon />
+                {:else}
+                    <InterrogationIcon />
+                {/if}
 
-            <span class="text-zinc-800 font-semibold">
-                { inputES( shapeInput.shape )}
-            </span>
-        </Tooltip>
+                <span class="text-zinc-800 font-semibold">
+                    { inputES( shapeInput.shape )}
+                </span>
+            </Tooltip>
+        </div>
 
-        <Tooltip
-            value       = { shapeInput.name }
-            message     = "Nombre" 
-            background  = "bg-green-300"
-            color       = "bg-zinc-200 text-zinc-800 dark:bg-zinc-500 dark:text-zinc-200"
-        >
-            <NameIcon />
-            { shapeInput.name }
-        </Tooltip>
+        <div class="flex items-center gap-2">
+            <Tooltip
+                value       = { shapeInput.name }
+                message     = "Nombre" 
+                background  = "bg-green-300"
+                color       = "bg-zinc-200 text-zinc-800 dark:bg-zinc-500 dark:text-zinc-200"
+            >
+                <NameIcon />
+                { shapeInput.name }
+            </Tooltip>
+        </div>
     </div>
 
     <div class="flex gap-3 items-center">
@@ -114,7 +118,7 @@
     class="my-2 shrink-0 bg-zinc-300 dark:bg-zinc-700 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
 />
 
-<div class="flex items-center gap-2 text-sm">
+<div class="flex flex-wrap items-center gap-2 text-sm">
     <Tooltip
         value       = { shapeInput.label }
         message     = "Etiqueta" 

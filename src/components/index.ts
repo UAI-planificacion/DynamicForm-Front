@@ -7,6 +7,8 @@ export { default as Select }        from './inputs/Select.svelte';
 export { default as DatePicker }    from './inputs/DatePicker.svelte';
 export { default as Radio }         from './inputs/Radio.svelte';
 export { default as TextArea }		from './inputs/TextArea.svelte';
+export { default as Switch }		from './inputs/Switch.svelte';
+export { default as Info }			from './inputs/Info.svelte';
 
 //Footer
 export { default as Footer }        from './Footer.svelte';

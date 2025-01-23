@@ -23,7 +23,7 @@ export type ShapeInput = {
     disabled?       : boolean;
     readonly?       : boolean;
     preview?        : boolean;
-    multiple?       : false;
+    multiple?       : boolean;
     pattern?        : string;
     class?          : string;
     min?            : number;
@@ -37,7 +37,7 @@ export type ShapeInput = {
     options?        : ShapeOptions[];
     rows?           : number;
     checked?        : boolean;
-    selected?       : boolean;
+    selected?       : string | string[] | undefined;
     apiUrlSend?     : string;
 }
 

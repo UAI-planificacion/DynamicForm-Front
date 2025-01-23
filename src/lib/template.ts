@@ -73,6 +73,7 @@ export const templateJson = [{
         "shape"     : "markdown",
         "name"      : "markdown",
         "label"     : "Markdown",
+		"placeholder" : "Escribe algo en Markdown",
         "preview"   : true,
         "value"     : '',
         "required"  : true,

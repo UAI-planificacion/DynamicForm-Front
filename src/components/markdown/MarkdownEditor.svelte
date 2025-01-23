@@ -13,18 +13,16 @@
 		NumberListMarkIcon,
 		ListMarkIcon,
 		CheckListMarkIcon,
-		LineMarkIcon,
 		FormulaMarkIcon,
 		Heading1MarkIcon,
 		Heading2MarkIcon,
 		Heading3MarkIcon,
 		Heading4MarkIcon,
 		HeadingMarkIcon
-	} 							from "$icons/markdown";
-	import { DynamicTable }		from "$components";
-	import type { ShapeInput } 	from "$models";
-	import Info 				from "$components/inputs/Info.svelte";
-	import marked 				from './marked.config';
+	} 								from "$icons/markdown";
+	import { DynamicTable, Info }	from "$components";
+	import type { ShapeInput } 		from "$models";
+	import marked 					from './marked.config';
 
 	export let shapeInput	: ShapeInput;
 	export let value 		: string | undefined = undefined;
@@ -40,7 +38,7 @@
 	let mobileMenuOpen = false;
 	let desktopTableOpen = false;
 
-	$: responsivePrefix = dynamicMode ? '@' : '';
+	$: prefix = dynamicMode ? '@' : '';
 
 	function adjustTextareaHeight() {
 		if ( !textarea ) return;
@@ -207,26 +205,49 @@
 			action	: () => insertText('```\n', '\n```')
 		},
         {
-            icon: LineMarkIcon,
-            title: 'Línea',
-			action: () => insertText('___\n')
-        },
-        {
             icon: FormulaMarkIcon,
             title: 'Fórmula',
 			action: () => insertText('$', '$')
         }
 	];
+
+
+	const updateGridClass = () =>
+		shapeInput.preview
+			? dynamicMode
+				? '@xl:grid-cols-2'
+				: 'sm:grid-cols-2'
+			: 'grid-cols-1';
+
+
+	const updateGridButtonsDesktop = () =>
+		shapeInput.preview
+			? dynamicMode
+				? 'hidden @6xl:px-0 @6xl:flex @6xl:gap-0 @7xl:px-2 @7xl:gap-1'
+				: 'hidden xl:flex md:gap-1 2xl:gap-1.5 p-2'
+			: dynamicMode
+				? 'hidden @xl:flex @xl:gap-0.5 @xl:ml-0.5 @2xl:ml-2 @2xl:gap-1'
+				: 'hidden xl:hidden ml-2';
+
+
+	const updateGridButtonsMobile = () =>
+		shapeInput.preview
+			? dynamicMode
+				? 'flex @6xl:hidden ml-2'
+				: 'flex xl:hidden ml-2'
+			: dynamicMode
+				? 'flex @xl:hidden ml-2'
+				: 'flex xl:hidden ml-2';
 </script>
 
 
 <Info { shapeInput } { onInput } { value }>
-<div class={`grid grid-cols-1 ${shapeInput.preview ? `${responsivePrefix}2xl:grid-cols-2` : ''} bg-white dark:bg-zinc-700 rounded-lg shadow-lg overflow-hidden`}>
+<div class="grid {updateGridClass()} bg-white dark:bg-zinc-700 rounded-lg shadow-lg overflow-hidden">
     <div class="relative">
-        <div class="border-b border-gray-200 dark:border-zinc-700 bg-black p-1 md:p-2 flex items-center h-14 dark:bg-zinc-800">
+        <div class="border-b border-gray-200 dark:border-zinc-700 bg-black  flex items-center h-14 dark:bg-zinc-800">
 
             <!-- Desktop view -->
-            <div class="hidden ${responsivePrefix}sm:flex ${responsivePrefix}lg:hidden ${responsivePrefix}xl:flex flex-wrap ${responsivePrefix}sm:gap-0.5 ${responsivePrefix}md:gap-1 ${responsivePrefix}xl:gap-0.5 ${responsivePrefix}2xl:gap-1">
+            <div class="hidden flex-wrap {updateGridButtonsDesktop()}">
                 <DropdownMenu.Root
                     closeOnItemClick={true}
                     closeFocus={textarea}
@@ -296,7 +317,7 @@
                 closeFocus={textarea}
             >
                 <DropdownMenu.Trigger
-                    class="${responsivePrefix}sm:hidden ${responsivePrefix}lg:flex ${responsivePrefix}xl:hidden mr-2 hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
+                    class="{updateGridButtonsMobile()} hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -379,7 +400,7 @@
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
 
-            <h3 class="text-gray-200 dark:text-zinc-200 font-medium ${responsivePrefix}sm:hidden ${responsivePrefix}lg:flex ${responsivePrefix}xl:hidden ml-2">Editor</h3>
+            <h3 class="text-zinc-200 font-medium {updateGridButtonsMobile()}">Editor</h3>
         </div>
 
 		<div class="p-2">

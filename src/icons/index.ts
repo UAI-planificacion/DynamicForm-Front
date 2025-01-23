@@ -31,6 +31,7 @@ export { default as TextIcon }          from './TextIcon.svelte';
 export { default as DisabledIcon }      from './DisabledIcon.svelte';
 export { default as InterrogationIcon } from './InterrogationIcon.svelte';
 export { default as MarkdownIcon }      from './MarkdownIcon.svelte';
+export { default as LoaderIcon }      	from './LoaderIcon.svelte';
 
 // Markdown
 export * from './markdown';

@@ -1,14 +1,14 @@
 <script lang="ts">
     import { Select, type Selected } from "bits-ui";
 
-    import type { ShapeInput }          from "$models/shape-input";
+    import type { ShapeInput }          from "$models";
     import { CheckIcon, CaretDownIcon } from "$icons";
-    import Info                         from "./Info.svelte";
+    import { Info }                   	from "$components";
 
 
     export let shapeInput       : ShapeInput;
     export let value            : string | undefined = undefined;
-    export let onSelectedChange : ( value: Selected<string> | undefined ) => void;
+    export let onSelectedChange : ( value : Selected<string> | Selected<string>[] | undefined ) => void;
     export let setError         : VoidFunction = () => {};
 
     let selected : Selected<string> | undefined = shapeInput.options?.find( option => option.value === shapeInput.value );
@@ -21,6 +21,7 @@
         items               = { shapeInput.options }
         required            = { shapeInput.required }
         disabled            = { shapeInput.disabled }
+        multiple            = { shapeInput.multiple }
         onSelectedChange    = {( event ) => {
             onSelectedChange( event );
             setError();
@@ -59,8 +60,8 @@
         </Select.Content>
 
         <Select.Input
-            name        = {shapeInput.name }
-            required    = {shapeInput.required }
+            name        = { shapeInput.name }
+            required	= { shapeInput.required }
         />
     </Select.Root>
 </Info>

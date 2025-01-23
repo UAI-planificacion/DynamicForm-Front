@@ -10,7 +10,8 @@
         DeleteIcon,
         CaretDownIcon,
         AddIcon,
-        JsonIcon
+        JsonIcon,
+        LoaderIcon
     }                                   from "$icons";
     import type {
         InputType,
@@ -22,12 +23,13 @@
         Check,
         DatePicker,
         Input,
+        MarkdownEditor,
         Select,
         TextArea,
         Viewer
     }                                   from "$components";
     import { options, styles, types }   from "$lib";
-
+    import { read, utils }               from 'xlsx';
 
     export let shapeInput       : ShapeInput;
     export let onDelete         : VoidFunction;
@@ -56,15 +58,90 @@
     }[length ?? 0] || 'h-36' );
 
 
-    const addNewOption = () => 
-        shapeInput.options = [
-            ...shapeInput.options ?? [], {
-                id      : uuid(),
-                label   : '',
-                value   : ''
-            }
-        ];
+    let selectedFile: File | null = null;
+    let isLoading = false;
+    let isAddingOption = false;
 
+    const addNewOption = async () => {
+        isAddingOption = true;
+        try {
+            shapeInput.options = [
+                ...shapeInput.options ?? [], {
+                    id      : uuid(),
+                    label   : '',
+                    value   : ''
+                }
+            ];
+        } finally {
+            isAddingOption = false;
+        }
+    };
+
+    const processJsonData = (data: any[]): ShapeOptions[] => {
+        return data.map(item => ({
+            id: uuid(),
+            label: item.label || item.name || '',
+            value: item.value || item.id || ''
+        }));
+    };
+
+    const processExcelData = (data: any[]): ShapeOptions[] =>
+        data.map(row => {
+            const value = row['value'] || '';
+            const label = row['label'] || '';
+
+            return {
+                id: uuid(),
+                value,
+                label
+            };
+        });
+
+    const handleFileChange = async (event: Event): Promise<void> => {
+        const target = event.target as HTMLInputElement;
+        const file = target.files?.[0] || null;
+
+        if ( !file ) return;
+
+        const fileExt = file.name.split('.').pop()?.toLowerCase();
+
+		if ( !['json', 'xlsx', 'xls' ].includes( fileExt || '' )) {
+            alert('Solo se permiten archivos JSON o Excel (.xlsx, .xls)');
+            return;
+        }
+
+        isLoading = true;
+
+		try {
+            if ( fileExt === 'json' ) {
+                const text 		= await file.text();
+                const data 		= JSON.parse( text );
+                const options 	= processJsonData( Array.isArray( data ) ? data : [ data ]);
+
+				shapeInput.options = options;
+            } else {
+                const buffer 		= await file.arrayBuffer();
+                const workbook 		= read( buffer );
+                const firstSheet 	= workbook.Sheets[ workbook.SheetNames[ 0 ]];
+                const data 			= utils.sheet_to_json( firstSheet );
+                const options 		= processExcelData( data );
+
+				shapeInput.options = options;
+            }
+        } catch ( error ) {
+            console.error('Error al procesar el archivo:', error);
+            alert('Error al procesar el archivo. Asegúrate de que el formato sea correcto.');
+        } finally {
+            isLoading = false;
+            if ( target ) target.value = '';
+        }
+    };
+
+    const triggerFileInput = (): void => {
+        const fileInput = document.getElementById( 'fileInput' ) as HTMLInputElement;
+
+		if ( fileInput ) fileInput.click();
+    };
 
     const deleteOption = ( item: ShapeOptions ) =>
         shapeInput.options = [
@@ -72,26 +149,10 @@
         ];
 
 
-    let selectedFile: File | null = null;
+    function onSelectedChange( selected: Selected<string> | Selected<string>[] | undefined ) {
+		if ( selected === undefined || selected instanceof Array ) return;
 
-    const handleFileChange = (event: Event): void => {
-        const target = event.target as HTMLInputElement;
-        const file = target.files?.[0] || null;
-
-        if (file) {
-            selectedFile = file;
-            console.log('Archivo seleccionado:', file);
-        }
-    };
-
-    const triggerFileInput = (): void => {
-        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-        if (fileInput) fileInput.click();
-    };
-
-
-    function onSelectedChange( selected: Selected<string> | undefined ) {
-        shapeInput.shape = selected?.value as InputType || 'none';
+		shapeInput.shape = selected?.value as InputType || 'none';
 
         if ( shapeInput.shape === 'textarea' ) {
             shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
@@ -102,6 +163,16 @@
             shapeInput.msgMaxLength = undefined;
             shapeInput.msgMin       = undefined
             shapeInput.msgMax       = undefined
+        }
+
+		shapeInput.value = '';
+
+        if ( shapeInput.shape === 'select' || shapeInput.shape === 'combobox' && shapeInput.options?.length === 0 ) {
+            shapeInput.options = [{
+                id      : uuid(),
+                label   : '',
+                value   : ''
+            }]
         }
 
         if ( shapeInput.shape !== 'input' ) return;
@@ -125,8 +196,11 @@
         }
     }
 
-    function onSelectedType( selected: Selected<string> | undefined ) {
-        shapeInput.type = selected?.value as Types || 'none';
+    function onSelectedType( selected: Selected<string> | Selected<string>[] | undefined ) {
+		if ( selected === undefined || selected instanceof Array ) return;
+
+		shapeInput.type 	= selected?.value as Types || 'none';
+	
         onChangeType();
     }
 </script>
@@ -229,7 +303,7 @@
                 {/if}
             </div>
 
-            {#if shapeInput.shape === 'input'}
+            {#if shapeInput.shape === 'input' }
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center">
                     <Select
                         shapeInput = {{
@@ -295,41 +369,65 @@
                     />
                 </div>
 
+			{:else if shapeInput.shape === 'markdown' }
+				<MarkdownEditor
+					shapeInput ={{
+						id		    : uuid(),
+						label       : 'Valor por defecto',
+						name	    : 'value',
+						placeholder : 'Ingrese el valor por defecto',
+						value       : shapeInput.value,
+						preview		: false
+					}}
+					dynamicMode	= { true }
+					onInput		= {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
+				/>
+
             {:else if shapeInput.shape === 'combobox' || shapeInput.shape === 'select' }
                 <div class="grid grid-cols-2 items-center ">
-                    <span>Valor</span>
+                    <span class="text-sm text-zinc-900 dark:text-zinc-200">Valor</span>
 
                     <div class="flex justify-between items-center">
-                        <span>Label</span>
+                        <span class="text-sm text-zinc-900 dark:text-zinc-200">Label</span>
 
                         <div class="flex items-center gap-2">
                             <button
-                                class   = "hover:brightness-105 active:scale-95 active:brightness-90"
-                                on:click= { triggerFileInput }
+                                class="hover:brightness-105 active:scale-95 active:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                                on:click={triggerFileInput}
+                                disabled={isLoading}
                             >
-                                <JsonIcon />
+                                {#if isLoading}
+                                    <LoaderIcon />
+                                {:else}
+                                    <JsonIcon />
+                                {/if}
                             </button>
 
                             <input
-                                id          = "fileInput"
-                                type        = "file"
-                                class       = "hidden"
-                                accept      = ".json,.xlsx,.csv,.txt"
-                                on:change   = { handleFileChange }
+                                id="fileInput"
+                                type="file"
+                                class="hidden"
+                                accept=".json,.xlsx,.xls"
+                                on:change={handleFileChange}
                             />
 
                             <button
-                                class       = "hover:brightness-105 active:scale-95 active:brightness-90"
-                                on:click    = { addNewOption }
+                                class="hover:brightness-105 active:scale-95 active:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                                on:click={addNewOption}
+                                disabled={isLoading || isAddingOption}
                             >
-                                <AddIcon width="21px" height="21px" />
+                                {#if isAddingOption}
+                                    <LoaderIcon />
+                                {:else}
+                                    <AddIcon width="21px" height="21px" />
+                                {/if}
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <div class={`${heightOptions( shapeInput.options?.length )} w-full overflow-auto gap-2 grid grid-cols-2 pr-2`}>
-                    {#each shapeInput.options ?? [{ id: uuid(), label: '', value: '' }] as item }
+                    {#each shapeInput.options ?? [] as item }
                         <Input
                             shapeInput = {{
                                 id		    : uuid(),
@@ -372,7 +470,10 @@
                         value       : shapeInput.value,
                         options     : [{ id: uuid(), label: 'Sin valor por defecto', value: '' }, ...shapeInput.options ?? [] ],
                     }}
-                    onSelectedChange={( selected: Selected<string> | undefined ) => shapeInput.value = selected?.value }
+                    onSelectedChange={( selected: Selected<string> | Selected<string>[] | undefined ) => {
+						if ( selected instanceof Array ) return;
+						shapeInput.value = selected?.value
+					}}
                 />
             {/if}
 
@@ -423,9 +524,9 @@
                             </div>
                         {/if}
 
-                        {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' }
+                        {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' }
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center">
-                                {#if shapeInput.type !== 'number' ||  shapeInput.shape === 'textarea' }
+                                {#if shapeInput.type !== 'number' ||  shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' }
                                     <Input
                                         shapeInput = {{
                                             id		    : uuid(),
@@ -593,7 +694,19 @@
                                 /> -->
                             </div>
                         {:else}
-                            <div class="grid grid-cols-1 sm:grid-cols-2 items-center justify-between">
+                            <div class="grid grid-cols-1 {shapeInput.shape === 'markdown' ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} items-center justify-between">
+								{#if shapeInput.shape === 'markdown'}
+									<Check
+										shapeInput = {{
+											id		: uuid(),
+											label   : 'Previsualización',
+											name	: 'preview',
+											checked : shapeInput.preview
+										}}
+										onChange = {( e ) => shapeInput.preview = e as boolean }
+									/>
+								{/if}
+
                                 <Check
                                     shapeInput = {{
                                         id		: uuid(),
