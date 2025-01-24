@@ -64,82 +64,77 @@ export function showErrorCheck(
 
 export const errorSelect = (
     shapeInput  : ShapeInput,
-    value?      : string | undefined
+    value?      : string | string[] | undefined
 ): boolean => showErrorSelect( shapeInput, value ) === undefined;
 
 
-export const showErrorSelect = (
+export function showErrorSelect(
     shapeInput  : ShapeInput,
-    value?      : string | undefined
-): string | undefined => {
+    value?      : string | string[] | undefined
+): string | undefined {
     if ( !shapeInput.required ) return undefined;
 
-    if (( value === '' || !value ) && shapeInput.required )
-        return shapeInput.msgRequired;
+    if ( shapeInput.required && (!value || (Array.isArray(value) && value.length === 0)) )
+        return shapeInput?.msgRequired;
 }
 
 
 export const errorInput = (
     shapeInput  : ShapeInput,
-    value?      : string | undefined
-): boolean => {
-    return showErrorInput( shapeInput, value ) === undefined;
-}
+    value?      : string | string[] | undefined
+): boolean => showErrorInput( shapeInput, value ) === undefined;
 
 
 export const errorTextArea = (
     shapeInput  : ShapeInput,
-    value?      : string | undefined
-): boolean => {
-    return showErrorText( shapeInput, value ) === undefined;
-}
+    value?      : string | string[] | undefined
+): boolean => showErrorText( shapeInput, value ) === undefined;
 
 
 export function showErrorInput(
     shapeInput  : ShapeInput,
-    value?      : string | undefined
+    value?      : string | string[] | undefined
 ): string | undefined {
-    if ( shapeInput.required && value === '' || !value )
-        return shapeInput.msgRequired;
+    if ( !shapeInput.required ) return undefined;
 
-    if ( shapeInput.type  === 'number' ) {
-        if ( !shapeInput.required && value === '' )
-            return undefined;
+    const stringValue = Array.isArray(value) ? value.join(', ') : value;
 
-        if ( !shapeInput.min ) return undefined;
+    if ( shapeInput.required && !stringValue )
+        return shapeInput?.msgRequired;
 
-        if ( Number( value ) < shapeInput.min )
-            return shapeInput.msgMin;
+    if ( shapeInput.type === 'number' ) {
+        const numberValue = Number( stringValue );
 
-        if ( !shapeInput.max ) return undefined;
+        if ( shapeInput.min && numberValue < shapeInput.min )
+            return shapeInput?.msgMin;
 
-        if ( Number( value ) > shapeInput.max )
-            return shapeInput.msgMax;
+        if ( shapeInput.max && numberValue > shapeInput.max )
+            return shapeInput?.msgMax;
     }
+    else {
+        if ( shapeInput.minLength && stringValue && stringValue.length < shapeInput.minLength )
+            return shapeInput?.msgMinLength;
 
-    return showErrorText( shapeInput, value );
+        if ( shapeInput.maxLength && stringValue && stringValue.length > shapeInput.maxLength )
+            return shapeInput?.msgMaxLength;
+    }
 }
 
 
 export function showErrorText(
     shapeInput  : ShapeInput,
-    value?      : string | undefined
+    value?      : string | string[] | undefined
 ): string | undefined {
-    if ( !shapeInput.required && ( value === '' ||  !value ))
-        return undefined;
+    if ( !shapeInput.required ) return undefined;
 
-    if ( shapeInput.required && ( value === '' || !value ))
-        return shapeInput.msgRequired
+    const stringValue = Array.isArray(value) ? value.join(', ') : value;
 
-    const length = value?.length ?? 0;
+    if ( shapeInput.required && !stringValue )
+        return shapeInput?.msgRequired;
 
-    if ( shapeInput.minLength ) {
-        if ( length < shapeInput.minLength )
-            return shapeInput.msgMinLength;
-    }
+    if ( shapeInput.minLength && stringValue && stringValue.length < shapeInput.minLength )
+        return shapeInput?.msgMinLength;
 
-    if ( shapeInput.maxLength ) {
-        if ( length > shapeInput.maxLength )
-            return shapeInput.msgMaxLength;
-    }
+    if ( shapeInput.maxLength && stringValue && stringValue.length > shapeInput.maxLength )
+        return shapeInput?.msgMaxLength;
 }

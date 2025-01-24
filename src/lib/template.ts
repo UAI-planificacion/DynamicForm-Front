@@ -20,7 +20,7 @@ export const templateJson = [{
             { value: "svelte-orange",       label: "Svelte Orange" },
             { value: "punk-pink",           label: "Punk Pink" }
         ],
-        "value": 'punk-pink'
+        "selected": 'punk-pink'
     }, {
         "id"        : "3",
         "shape"     : "textarea",
@@ -60,23 +60,32 @@ export const templateJson = [{
             { value: "svelte-orange",       label: "Svelte Orange" },
             { value: "punk-pink",           label: "Punk Pink" }
         ],
-        "value" : "dark-green"
-    },{
-        "id"            : "7",
-        "shape"         : "button",
-        "name"          : "Send",
-        "label"         : "Send",
-        "apiUrlSend"    : "http://localhost:5173/api/send"
+        "selected" : "dark-green"
+    }, {
+        "id"        	: "7",
+        "shape"     	: "markdown",
+        "name"      	: "markdown",
+        "label"     	: "Markdown",
+		"placeholder" 	: "Escribe algo en Markdown",
+        "preview"   	: true,
+        "value"     	: '',
+        "description" 	: "Esto es un ejemplo de Markdown",
+    }, {
+        "id"        		: "8",
+        "shape"     		: "button",
+        "name"      		: "Send",
+        "label"     		: "Send",
+        "urlSend"   		: "https://daylify.up.railway.app/api/v1/holidays/",
+		"method"    		: "get",
+		"externalErrorMsg"	: "Error de conexión",
+		"invalidErrorMsg"	: "Formulario inválido",
+		"httpList" 			: [
+			{ code: 200, message: "Operación exitosa" },
+			{ code: 400, message: "Error en la operación" },
+			{ code: 500, message: "Error en el servidor" },
+		],
     },
-    {
-        "id"        : "8",
-        "shape"     : "markdown",
-        "name"      : "markdown",
-        "label"     : "Markdown",
-		"placeholder" : "Escribe algo en Markdown",
-        "preview"   : true,
-        "value"     : '',
-        "required"  : true,
-        "description" : "Esto es un ejemplo de Markdown",
-    },
+    
 ];
+
+

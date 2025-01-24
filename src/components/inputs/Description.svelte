@@ -11,9 +11,9 @@
 
 
     export let shapeInput   : ShapeInput;
-    export let value        : string            | undefined = undefined;
-    export let checked      : "indeterminate"   | boolean | undefined = "indeterminate";
-    export let date         : DateValue         | undefined = undefined;
+    export let value        : string | string[] | undefined = undefined;
+    export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
+    export let date         : DateValue | undefined = undefined;
 </script>
 
 

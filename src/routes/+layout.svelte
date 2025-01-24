@@ -1,11 +1,16 @@
 <script lang="ts">
 	import '../app.css';
 
+	import { Toaster } from 'svelte-french-toast';
+
 	import { Footer, Header } from '$components';
 
 
 	let { children } = $props();
 </script>
+
+
+<Toaster />
 
 
 <main class="flex flex-col min-h-screen bg-white dark:bg-zinc-900">

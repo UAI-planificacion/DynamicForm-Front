@@ -15,6 +15,7 @@
     }                                   from "$icons";
     import type {
         InputType,
+        Method,
         ShapeInput,
         ShapeOptions,
         Types
@@ -26,10 +27,16 @@
         MarkdownEditor,
         Select,
         TextArea,
-        Viewer
-    }                                   from "$components";
-    import { options, styles, types }   from "$lib";
-    import { read, utils }               from 'xlsx';
+        Viewer,
+        Combobox
+    }						from "$components";
+    import {
+		options,
+		styles,
+		types,
+		httpCodes
+	}   					from "$lib";
+    import { read, utils }	from 'xlsx';
 
     export let shapeInput       : ShapeInput;
     export let onDelete         : VoidFunction;
@@ -48,8 +55,6 @@
     });
 
 
-    let editing = false;
-
     const heightOptions = ( length?: number ) => ({
         [0]: 'h-0',
         [1]: 'h-auto',
@@ -58,9 +63,10 @@
     }[length ?? 0] || 'h-36' );
 
 
-    let selectedFile: File | null = null;
-    let isLoading = false;
-    let isAddingOption = false;
+    let isLoading 		= false;
+    let isAddingOption 	= false;
+    let editing 		= false;
+
 
     const addNewOption = async () => {
         isAddingOption = true;
@@ -77,15 +83,16 @@
         }
     };
 
-    const processJsonData = (data: any[]): ShapeOptions[] => {
-        return data.map(item => ({
+
+	const processJsonData = (data: any[]): ShapeOptions[] =>
+		data.map(item => ({
             id: uuid(),
             label: item.label || item.name || '',
             value: item.value || item.id || ''
         }));
-    };
 
-    const processExcelData = (data: any[]): ShapeOptions[] =>
+
+	const processExcelData = (data: any[]): ShapeOptions[] =>
         data.map(row => {
             const value = row['value'] || '';
             const label = row['label'] || '';
@@ -97,7 +104,8 @@
             };
         });
 
-    const handleFileChange = async (event: Event): Promise<void> => {
+
+	const handleFileChange = async (event: Event): Promise<void> => {
         const target = event.target as HTMLInputElement;
         const file = target.files?.[0] || null;
 
@@ -137,13 +145,15 @@
         }
     };
 
-    const triggerFileInput = (): void => {
+
+	const triggerFileInput = (): void => {
         const fileInput = document.getElementById( 'fileInput' ) as HTMLInputElement;
 
 		if ( fileInput ) fileInput.click();
     };
 
-    const deleteOption = ( item: ShapeOptions ) =>
+
+	const deleteOption = ( item: ShapeOptions ) =>
         shapeInput.options = [
             ...shapeInput.options?.filter( option => option.id !== item.id ) ?? []
         ];
@@ -196,13 +206,26 @@
         }
     }
 
-    function onSelectedType( selected: Selected<string> | Selected<string>[] | undefined ) {
+
+	function onSelectedType( selected: Selected<string> | Selected<string>[] | undefined ) {
 		if ( selected === undefined || selected instanceof Array ) return;
 
-		shapeInput.type 	= selected?.value as Types || 'none';
-	
+		shapeInput.type = selected?.value as Types || 'none';
+
         onChangeType();
     }
+
+
+	const deleteHttpCode = ( index: number ) =>
+        shapeInput.httpList = shapeInput.httpList
+			?.filter((_, i) => i !== index);
+
+
+	const addHttpCode = () =>
+        shapeInput.httpList = [
+            ...shapeInput.httpList ?? [], 
+            { code: 200, message: '' }
+        ];
 </script>
 
 
@@ -224,7 +247,7 @@
                         placeholder	: 'Ingrese el tipo de entrada',
                         required 	: true,
                         label		: 'Input',
-                        value       : shapeInput.shape,
+                        selected	: shapeInput.shape,
                         options,
                     }}
                     { onSelectedChange }
@@ -300,6 +323,7 @@
                         }}
                         onInput = {( event: Event ) => shapeInput.placeholder = ( event.target as HTMLInputElement ).value }
                     />
+				
                 {/if}
             </div>
 
@@ -312,7 +336,7 @@
                             placeholder	: 'Ingrese el tipo',
                             required 	: true,
                             label		: 'Tipo de entrada',
-                            value       : shapeInput.type,
+                            selected	: shapeInput.type,
                             options     : types,
                         }}
                         onSelectedChange = { onSelectedType }
@@ -330,17 +354,6 @@
                         onInput = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
                     />
                 </div>
-
-            {:else if shapeInput.shape === 'button' }
-                <Input
-                    shapeInput = {{
-                        id		    : uuid(),
-                        label       : 'Url para la petición HTTPS',
-                        name	    : 'utl',
-                        placeholder : 'Ingrese la url donde se realizará la petición',
-                    }}
-                    onInput = {( event: Event ) => shapeInput.apiUrlSend = ( event.target as HTMLInputElement ).value }
-                />
 
             {:else if shapeInput.shape === 'textarea' }
                 <div class="grid grid-cols-1 sm:grid-cols-2 space-x-2 items-center">
@@ -426,7 +439,7 @@
                     </div>
                 </div>
 
-                <div class={`${heightOptions( shapeInput.options?.length )} w-full overflow-auto gap-2 grid grid-cols-2 pr-2`}>
+                <div class={`${heightOptions( shapeInput.options?.length )} p-1 w-full overflow-auto gap-2 grid grid-cols-1 @lg:grid-cols-2 pr-2`}>
                     {#each shapeInput.options ?? [] as item }
                         <Input
                             shapeInput = {{
@@ -450,9 +463,9 @@
                             />
 
                             <button
-                                class       = "hover:brightness-105 active:scale-95 mt-2 disabled:active:scale-100 disabled:opacity-50"
-                                on:click    = {() => deleteOption( item )}
-                                disabled    = { shapeInput.options?.length === 1 }
+                                class="hover:brightness-105 active:scale-95 mt-2 disabled:active:scale-100 disabled:opacity-50"
+                                on:click={() => deleteOption(item)}
+                                disabled={shapeInput.options?.length === 1}
                             >
                                 <DeleteIcon />
                             </button>
@@ -460,21 +473,98 @@
                     {/each}
                 </div>
 
-                <Select
-                    shapeInput={{
-                        id			: uuid(),
-                        name 		: 'default-value',
-                        placeholder	: 'Ingrese un valor por defecto',
-                        required 	: true,
-                        label		: 'Valor por defecto',
-                        value       : shapeInput.value,
-                        options     : [{ id: uuid(), label: 'Sin valor por defecto', value: '' }, ...shapeInput.options ?? [] ],
-                    }}
-                    onSelectedChange={( selected: Selected<string> | Selected<string>[] | undefined ) => {
-						if ( selected instanceof Array ) return;
-						shapeInput.value = selected?.value
-					}}
-                />
+				
+
+                {#if shapeInput.shape === 'select'}
+                    <Select
+                        shapeInput={{
+                            id			: uuid(),
+                            name 		: 'default-value',
+                            placeholder	: 'Ingrese un valor por defecto',
+                            required 	: true,
+                            label		: 'Valor por defecto',
+                            selected    : shapeInput.selected,
+                            multiple    : shapeInput.multiple,
+                            options     : [{ id: uuid(), label: 'Sin valor por defecto', value: '' }, ...shapeInput.options ?? [] ],
+                        }}
+                        onSelectedChange={( selected: Selected<string> | Selected<string>[] | undefined ) => {
+                            if (Array.isArray(selected)) {
+                                shapeInput.selected = selected.map(s => s.value);
+                            } else {
+                                shapeInput.selected = selected?.value;
+                            }
+                        }}
+                    />
+                {:else}
+                    <Combobox
+                        shapeInput={{
+                            id			: uuid(),
+                            name 		: 'default-value',
+                            placeholder	: 'Ingrese un valor por defecto',
+                            required 	: true,
+                            label		: 'Valor por defecto',
+                            selected    : shapeInput.selected,
+                            multiple    : shapeInput.multiple,
+                            options     : [{ id: uuid(), label: 'Sin valor por defecto', value: '' }, ...shapeInput.options ?? [] ],
+                        }}
+                        onSelectedChange={( selected: Selected<string> | Selected<string>[] | undefined ) => {
+                            if (Array.isArray(selected)) {
+                                shapeInput.selected = selected.map(s => s.value);
+                            } else {
+                                shapeInput.selected = selected?.value;
+                            }
+                        }}
+                    />
+                {/if}
+
+                <div class="flex items-center gap-4">
+                    <Check
+                        shapeInput = {{
+                            id      : uuid(),
+                            name    : 'multiple',
+                            label   : 'Selección múltiple',
+                            checked : shapeInput.multiple
+                        }}
+                        onChange = {( e ) => {
+                            shapeInput.multiple = e as boolean;
+                            shapeInput.selected = undefined;
+                        }}
+                    />
+                </div>
+
+			{:else if shapeInput.shape === 'button'}
+					<div class="grid @lg:grid-cols-[1fr,2fr] grid-cols-1 gap-2 items-center">
+						<Select
+							shapeInput = {{
+								id			: uuid(),
+								label		: 'Método HTTP',
+								name		: 'method',
+								placeholder	: 'Selecciona el método',
+								selected	: shapeInput.method,
+								options		: [
+									{ value: 'get', label: 'GET' },
+									{ value: 'post', label: 'POST' },
+									{ value: 'put', label: 'PUT' },
+									{ value: 'delete', label: 'DELETE' }
+								]
+							}}
+							onSelectedChange = {(value) => {
+								if (value instanceof Array || value === undefined) return;
+								shapeInput.method = value.value as Method;
+							}}
+						/>
+
+						<Input
+							shapeInput = {{
+								id			: uuid(),
+								label		: 'URL de la API',
+								name		: 'urlSend',
+								placeholder	: 'Ingresa la URL de la API',
+								value		: shapeInput.urlSend
+							}}
+							onInput = {(event) => shapeInput.urlSend = (event.target as HTMLInputElement).value}
+						/>
+					</div>
             {/if}
 
             <Accordion.Root class="w-full">
@@ -484,7 +574,6 @@
                             class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
                         >
                             Validaciones
-
                             <span
                                 class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10"
                             >
@@ -522,6 +611,73 @@
                                     onInput = {( event: Event ) => shapeInput.msgRequired = ( event.target as HTMLInputElement ).value }
                                 />
                             </div>
+						{:else if shapeInput.shape === 'button' }
+							<div class="grid">
+								<div class="grid grid-cols-[1fr,2fr,auto] gap-2 items-center">
+									<div class="flex flex-col gap-2">
+										<span class="text-sm font-semibold text-zinc-900 dark:text-zinc-200">Código HTTP</span>
+									</div>
+									<div class="flex flex-col gap-2 ml-1">
+										<span class="text-sm font-semibold text-zinc-900 dark:text-zinc-200">Mensaje</span>
+									</div>
+									<div class="flex flex-col gap-2">
+										<button
+											type="button"
+											class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 bg-primary text-primary-foreground shadow hover:bg-primary/90"
+											on:click={addHttpCode}
+										>
+											<AddIcon width={"21px"} height={"21px"} />
+										</button>
+									</div>
+								</div>
+
+								<div class={`${heightOptions( shapeInput.httpList?.length )} grid @lg:grid-cols-[1fr,2fr,auto] grid-cols-1 gap-2 items-center overflow-auto`}>
+									{#each shapeInput.httpList ?? [] as http, index}
+											<Select
+												shapeInput = {{
+													id			: uuid(),
+													shape		: 'select',
+													name		: 'code',
+													placeholder	: 'Código HTTP',
+													required	: true,
+													options		: httpCodes,
+													selected	: http.code.toString()
+												}}
+												onSelectedChange = {(value) => {
+													if ( value instanceof Array || value === undefined) return;
+													if (!shapeInput.httpList) return;
+													shapeInput.httpList[index].code = parseInt(value.value);
+												}}
+											/>
+
+											<Input
+												shapeInput = {{
+													id			: uuid(),
+													name		: 'message',
+													shape		: 'input',
+													placeholder	: 'Mensaje de respuesta',
+													required	: true,
+													value		: http.message
+												}}
+												onInput = {(event) => {
+													if (!shapeInput.httpList) return;
+													shapeInput.httpList[index].message = (event.target as HTMLInputElement).value;
+												}}
+											/>
+
+											<button
+												aria-label="Eliminar código HTTP"
+												type="button"
+												class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 px-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
+												on:click={() => deleteHttpCode(index)}
+												disabled={shapeInput.httpList?.length === 1}
+											>
+												<DeleteIcon />
+											</button>
+									{/each}
+								</div>
+							</div>
+						
                         {/if}
 
                         {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' }
@@ -650,7 +806,56 @@
                         {/if}
                     </Accordion.Content>
                 </Accordion.Item>
-                <Accordion.Item value="accordion" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
+
+				{#if shapeInput.shape === 'button'}
+					<Accordion.Item value="form" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
+						<Accordion.Header>
+							<Accordion.Trigger
+								class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
+							>
+								Formulario
+
+								<span
+									class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10"
+								>
+									<CaretDownIcon />
+								</span>
+							</Accordion.Trigger>
+						</Accordion.Header>
+
+						<Accordion.Content
+							transition          = { slide }
+							transitionConfig    = {{ duration: 200 }}
+							class               = "pb-3 tracking-[-0.01em] space-y-2"
+						>
+							<div class="grid @lg:grid-cols-2 grid-cols-1 gap-2 items-center">
+								<Input
+									shapeInput = {{
+										id		    : uuid(),
+										label       : 'Mensaje de error externo',
+										name	    : 'external-error',
+										placeholder : 'Ingresa el mensaje para error externo',
+										value       : shapeInput.externalErrorMsg,
+									}}
+									onInput = {( event: Event ) => shapeInput.externalErrorMsg = ( event.target as HTMLInputElement ).value }
+								/>
+
+								<Input
+									shapeInput = {{
+										id		    : uuid(),
+										label       : 'Formulario inválido',
+										name	    : 'invalid-form',
+										placeholder : 'Ingresa el mensaje para formulario inválido',
+										value       : shapeInput.invalidErrorMsg,
+									}}
+									onInput = {( event: Event ) => shapeInput.invalidErrorMsg = ( event.target as HTMLInputElement ).value }
+								/>
+							</div>
+						</Accordion.Content>
+					</Accordion.Item>
+				{/if}
+
+				<Accordion.Item value="accordion" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
                     <Accordion.Header>
                         <Accordion.Trigger
                             class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"

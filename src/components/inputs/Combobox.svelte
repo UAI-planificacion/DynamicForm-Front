@@ -6,18 +6,37 @@
     import Info                         from "./Info.svelte";
 
     export let shapeInput       : ShapeInput;
-    export let value            : string | undefined = undefined;
-    export let onSelectedChange : ( value: Selected<string> | undefined ) => void;
+    export let value            : string | string[] | undefined = undefined;
+    export let onSelectedChange : ( value: Selected<string> | Selected<string>[] | undefined ) => void;
     export let setError         : VoidFunction = () => {};
 
 
     let inputValue      = "";
     let touchedInput    = false;
     let open            = false;
-    let selected        = shapeInput.options?.find( option => option.value === shapeInput.value );
+    let selected : Selected<string> | Selected<string>[] | undefined;
+
+    $: {
+        if (shapeInput.multiple) {
+            // Handle multiple selection
+            if (Array.isArray(shapeInput.selected)) {
+                selected = shapeInput.options?.filter(opt => 
+                    shapeInput.selected?.includes(opt.value)
+                ).map(opt => ({ label: opt.label, value: opt.value }));
+            }
+        } else {
+            // Handle single selection
+            selected = shapeInput.options?.find(option => 
+                option.value === (Array.isArray(shapeInput.selected) ? shapeInput.selected[0] : shapeInput.selected)
+            );
+        }
+    }
 
     $: filtered = inputValue && touchedInput
-        ? shapeInput.options?.filter(( option ) => option.value.includes( inputValue.toLowerCase() ))
+        ? shapeInput.options?.filter(( option ) => 
+            option.label.toLowerCase().includes( inputValue.toLowerCase() ) ||
+            option.value.toLowerCase().includes( inputValue.toLowerCase() )
+        )
         : shapeInput.options;
 </script>
 
@@ -26,6 +45,7 @@
     <Combobox.Root
         items               = { filtered }
         disabled            = { shapeInput.disabled }
+        multiple           = { shapeInput.multiple }
         onSelectedChange    = { ( event ) => { onSelectedChange( event ); setError() }}
         { selected }
         bind:inputValue

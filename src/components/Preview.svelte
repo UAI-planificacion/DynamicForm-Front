@@ -1,4 +1,5 @@
 <script lang="ts">
+	import toast 				from 'svelte-french-toast';
 	import { type DateValue }	from "@internationalized/date";
     import { type Selected }	from "bits-ui";
 
@@ -19,17 +20,22 @@
 		errorCheck,
 		errorInput,
 		errorTextArea,
-		errorDatePicker
+		errorDatePicker,
+		successToast,
+		errorToast,
 	}							from "$lib";
     import type { ShapeInput }  from "$models";
 
 
-    export let template		: ShapeInput[] = [];
+	export let template		: ShapeInput[] = [];
 	export let inputActive 	: number;
 	export let dynamicMode	: boolean = false;
 
+	let loading = false;
+
+
 	const formValues = template.reduce(( acc, item ) => {
-		const keys 	= ["value", "checked", "date"];
+		const keys 	= [ "value", "checked", "date", "selected" ];
 		const value = keys.find(( key ) => item[key] !== undefined )
 			? item[keys.find(( key ) => item[key] !== undefined ) as keyof typeof item]
 			: undefined;
@@ -58,17 +64,16 @@
 	}
 
 
-	function handleSelect( selected: Selected<string> | undefined, name: string ) {
-		formValues[name] = selected?.value || "";
-	}
-
-
 	function handleCheck( isChecked: boolean, name: string ) {
 		formValues[name] = isChecked;
 	}
 
 
-	function onClick() {
+	async function onClick() {
+		const button = template.find( item => item.shape === 'button' );
+
+		if ( !button ) return;
+
 		template.forEach(( item, index ) => {
 			template[index].valid = {
 				'input'			: errorInput( item, formValues[ item.name ]),
@@ -84,16 +89,62 @@
 		});
 
 		if ( template.some( item => !item.valid )) {
-			console.log("🚀 ~ Hay un error en el formulario")
+			toast.error( button!.invalidErrorMsg ?? "Hay un error en el formulario", errorToast() );
 			return;
 		}
 
-		console.log("🚀 ~ Formulario válido")
+		// toast.promise(
+		// 	fetch(button!.apiUrlSend!, {
+		// 		method: 'POST',
+		// 		headers: {
+		// 			'Content-Type': 'application/json'
+		// 		},
+		// 		body: JSON.stringify(formValues)
+		// 	}),
+		// 	{
+		// 		loading	: 'Enviando formulario...',
+		// 		success	: 'Formulario enviado correctamente',
+		// 		error	: 'Error en la operación'
+		// 	},
+		// 	{
+		// 		loading	: loadingToast(),
+		// 		success	: successToast(),
+		// 		error	: errorToast()
+		// 	}
+		// );
+
+		loading = true;
+		try {
+			const response 	= await fetch( '/api/send', {
+				method	: 'POST',
+				headers	: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					formValues,
+					button
+				})
+			});
+
+			const result = await response.json();
+
+			if ( !result.success ) {
+				toast.error( result.message, errorToast() );
+				return;
+			}
+
+			toast.success( result.message, successToast() );
+		} catch ( error ) {
+			console.error( 'Error al enviar formulario:', error );
+			toast.error( button!.externalErrorMsg ?? "Error de conexión", errorToast() );
+		} finally {
+			loading = false;
+		}
 	}
 </script>
 
 
-<container class="space-y-3 h-full overflow-auto">
+<container class="space-y-3 h-full overflow-auto text-cyan-500">
 	{#if dynamicMode}
 		<SubTitle title="Vista Previa" />
 	{/if}
@@ -119,26 +170,37 @@
 				<Select
 					{ shapeInput }
 					onSelectedChange	= {( selected: Selected<string> | Selected<string>[] | undefined ) => {
-						// !TODO:Hay que cambiar esto, tiene que agregar también un multiple
-						if ( selected instanceof Array ) return;
-						handleSelect( selected, shapeInput.name )}
-					}
-					value 				= { formValues[ shapeInput.name ]}
-					setError 			= {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
+                        if (Array.isArray(selected)) {
+                            formValues[shapeInput.name] = selected.map(s => s.value);
+                        } else {
+                            formValues[shapeInput.name] = selected?.value;
+                        }
+                        shapeInput.valid = errorSelect(shapeInput, formValues[shapeInput.name]);
+                    }}
+					value = { formValues[ shapeInput.name ]}
+					setError = {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
 				/>
 			<!-- Combobox -->
 			{:else if shapeInput.shape === 'combobox'}
 				<Combobox
 					{ shapeInput }
-					onSelectedChange	= {( selected: Selected<string> | undefined ) => handleSelect( selected, shapeInput.name )}
-					value 				= { formValues[ shapeInput.name ]}
-					setError 			= {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
+					onSelectedChange	= {( selected: Selected<string> | Selected<string>[] | undefined ) => {
+                        if (Array.isArray(selected)) {
+                            formValues[shapeInput.name] = selected.map(s => s.value);
+                        } else {
+                            formValues[shapeInput.name] = selected?.value;
+                        }
+                        shapeInput.valid = errorSelect(shapeInput, formValues[shapeInput.name]);
+                    }}
+					value = { formValues[ shapeInput.name ]}
+					setError = {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
 				/>
 			<!-- Button -->
 			{:else if shapeInput.shape === 'button'}
 				<Button
 					{ shapeInput }
 					{ onClick }
+					{ loading }
 				/>
 			<!-- Check -->
 			{:else if shapeInput.shape === 'check'}
@@ -177,10 +239,13 @@
 				<p class="text-red-500">La entrada es inválida.</p>
 			{/if}
 		</div>
-	{/each}
+	{ /each }
 
-	{#if dynamicMode}
+	{ #if dynamicMode }
 		<SubTitle title="Información obtenida" />
-		<pre class="bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-100 p-5 rounded-lg break-words shadow-lg">{JSON.stringify(formValues, null, 2)}</pre>
-	{/if}
+
+		<pre
+			class="bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-100 p-5 rounded-lg break-words shadow-lg"
+		>{ JSON.stringify( formValues, null, 2 )}</pre>
+	{ /if }
 </container>

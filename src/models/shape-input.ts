@@ -38,7 +38,24 @@ export type ShapeInput = {
     rows?           : number;
     checked?        : boolean;
     selected?       : string | string[] | undefined;
-    apiUrlSend?     : string;
+    httpList?			: Http[];
+	externalErrorMsg?   : string;
+	invalidErrorMsg?	: string;
+    urlSend?     		: string;
+	method?				: Method;
+	// form? 			: Form;
+}
+
+
+export type Method = 'get' | 'post' | 'put' | 'delete';
+
+export type Form = {
+	httpList?			: Http[];
+	externalErrorMsg?   : string;
+	invalidErrorMsg?	: string;
+    urlSend?     		: string;
+	method?				: Method;
+	inBody?				: boolean;
 }
 
 
@@ -46,4 +63,10 @@ export type ShapeOptions = {
     id?     : string;
     label   : string;
     value   : string;
+}
+
+
+export type Http = {
+	code	: number;
+	message	: string;
 }

@@ -11,7 +11,23 @@
     export let onSelectedChange : ( value : Selected<string> | Selected<string>[] | undefined ) => void;
     export let setError         : VoidFunction = () => {};
 
-    let selected : Selected<string> | undefined = shapeInput.options?.find( option => option.value === shapeInput.value );
+    let selected : Selected<string> | Selected<string>[] | undefined;
+
+    $: {
+        if (shapeInput.multiple) {
+            // Handle multiple selection
+            if (Array.isArray(shapeInput.selected)) {
+                selected = shapeInput.options?.filter(opt => 
+                    shapeInput.selected?.includes(opt.value)
+                ).map(opt => ({ label: opt.label, value: opt.value }));
+            }
+        } else {
+            // Handle single selection
+            selected = shapeInput.options?.find(option => 
+                option.value === (Array.isArray(shapeInput.selected) ? shapeInput.selected[0] : shapeInput.selected)
+            );
+        }
+    }
 </script>
 
 
@@ -20,8 +36,8 @@
         { selected }
         items               = { shapeInput.options }
         required            = { shapeInput.required }
-        disabled            = { shapeInput.disabled }
         multiple            = { shapeInput.multiple }
+        disabled            = { shapeInput.disabled }
         onSelectedChange    = {( event ) => {
             onSelectedChange( event );
             setError();

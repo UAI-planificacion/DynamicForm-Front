@@ -6,8 +6,8 @@
 
     export let shapeInput       : ShapeInput;
     export let onInput          : ( event: Event ) => void = () => {};
-    export let onSelectedChange : ( value: Selected<string> | undefined ) => void = () => {};
-    export let value            : string | undefined = undefined;
+    export let onSelectedChange : ( value: Selected<string> | Selected<string>[] | undefined ) => void = () => {};
+    export let value            : string | string[] | undefined = undefined;
 </script>
 
 <div class="w-full space-y-1.5">
