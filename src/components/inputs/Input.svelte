@@ -22,6 +22,6 @@
         readonly    = { shapeInput.readonly }
         value       = { shapeInput.value }
         on:input    = {( event ) => { onInput( event ); setError(); }}
-        class       = { shapeInput.class ?? styles.input }
+        class       = {( shapeInput.class ) ?? ( styles.input as string )}
     />
 </Info>

@@ -1,18 +1,24 @@
 <script lang="ts">
     import { Checkbox, Label } from "bits-ui";
 
-    import { CheckIcon, MinusIcon } from "$icons";
-    import Description              from "./Description.svelte";
-    import type { ShapeInput }      from "$models";
-    import { styles }               from "$lib";
+    import  {
+		CheckIcon,
+		MinusIcon
+	}					from "$icons";
+    import type {
+		InputStyle,
+		ShapeInput
+	}					from "$models";
+    import { styles }	from "$lib";
+    import Description	from "./Description.svelte";
 
 
-    export let className    : string = "read read-only:cursor-help peer inline-flex size-[25px] items-center justify-center rounded-md border border-muted dark:border-zinc-600  bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40";
     export let shapeInput   : ShapeInput;
     export let onChange     : ( checked: boolean ) => void;
     export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
     export let setError     : VoidFunction = () => {};
 </script>
+
 
 <div class="space-y-1">
     <div class="flex items-center space-x-3">
@@ -21,8 +27,8 @@
             checked         = { shapeInput.checked }
             disabled        = { shapeInput.disabled }
             aria-labelledby = { shapeInput.label}
-            class           = { shapeInput.class ?? className }
-            onCheckedChange = {( e ) => { shapeInput.readonly ? undefined : onChange( e as boolean ); setError()}}
+            class           = {( shapeInput.class as InputStyle )?.box ?? ( styles.check as InputStyle ).box }
+            onCheckedChange = {( event ) => { shapeInput.readonly ? undefined : onChange( event as boolean ); setError() }}
         >
             <Checkbox.Indicator
                 let:isChecked
@@ -40,7 +46,7 @@
         <Label.Root
             id      = { shapeInput.label }
             for     = { shapeInput.id }
-            class   = { shapeInput.class ?? styles.check }
+            class   = {( shapeInput.class as InputStyle )?.label ?? ( styles.check as InputStyle ).label }
         >
             { shapeInput.label }
         </Label.Root>

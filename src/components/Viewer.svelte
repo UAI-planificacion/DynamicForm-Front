@@ -105,12 +105,14 @@
             <EditIcon />
         </button>
 
-        <button
-            class       = "justify-center hover:brightness-105 shadow-md active:scale-95"
-            on:click    = { onDelete }
-        >
-            <DeleteIcon />
-        </button>
+		{#if shapeInput.shape !== 'button'}
+			<button
+				class       = "justify-center hover:brightness-105 shadow-md active:scale-95"
+				on:click    = { onDelete }
+			>
+				<DeleteIcon />
+			</button>
+		{/if}
     </div>
 </header>
 

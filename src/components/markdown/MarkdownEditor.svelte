@@ -35,10 +35,9 @@
 	let selectionStart 		= 0;
 	let selectionEnd 		= 0;
 	// Menus
-	let mobileMenuOpen = false;
-	let desktopTableOpen = false;
+	let mobileMenuOpen 		= false;
+	let desktopTableOpen 	= false;
 
-	$: prefix = dynamicMode ? '@' : '';
 
 	function adjustTextareaHeight() {
 		if ( !textarea ) return;

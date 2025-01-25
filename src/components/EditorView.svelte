@@ -4,6 +4,7 @@
 
     import { Accordion, type Selected } from "bits-ui";
 	import { v4 as uuid }	            from 'uuid';
+    import { read, utils }				from 'xlsx';
     import { type DateValue }           from "@internationalized/date";
 
     import {
@@ -12,14 +13,15 @@
         AddIcon,
         JsonIcon,
         LoaderIcon
-    }                                   from "$icons";
+    }						from "$icons";
     import type {
+  InputStyle,
         InputType,
         Method,
         ShapeInput,
         ShapeOptions,
         Types
-    }                                   from "$models";
+    }						from "$models";
     import {
         Check,
         DatePicker,
@@ -35,8 +37,7 @@
 		styles,
 		types,
 		httpCodes
-	}   					from "$lib";
-    import { read, utils }	from 'xlsx';
+	}						from "$lib";
 
     export let shapeInput       : ShapeInput;
     export let onDelete         : VoidFunction;
@@ -52,6 +53,11 @@
             shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
             shapeInput.msgMaxLength ??= `El campo superior a los ${shapeInput.maxLength ?? 0} caracteres permitidos.`
         }
+
+		if ( shapeInput.shape === 'button' ) {
+			shapeInput.externalErrorMsg ??= 'Ocurrió un error en la conexión.'
+			shapeInput.invalidErrorMsg	??= 'Hay un error en el formulario.'
+		}
     });
 
 
@@ -226,6 +232,14 @@
             ...shapeInput.httpList ?? [], 
             { code: 200, message: '' }
         ];
+
+    // Función para actualizar los estilos de manera reactiva
+    const updateStyle = (key: string, value: string) => {
+        shapeInput = {
+            ...shapeInput,
+            [key]: value
+        };
+    };
 </script>
 
 
@@ -240,18 +254,20 @@
     {:else}
         <section class="space-y-2">
             <div class="grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
-                <Select
-                    shapeInput = {{
-                        id			: uuid(),
-                        name 		: 'shape',
-                        placeholder	: 'Ingrese el tipo de entrada',
-                        required 	: true,
-                        label		: 'Input',
-                        selected	: shapeInput.shape,
-                        options,
-                    }}
-                    { onSelectedChange }
-                />
+				{#if shapeInput.shape !== 'button'}
+					<Select
+						shapeInput = {{
+							id			: uuid(),
+							name 		: 'shape',
+							placeholder	: 'Ingrese el tipo de entrada',
+							required 	: true,
+							label		: 'Input',
+							selected	: shapeInput.shape,
+							options,
+						}}
+						{ onSelectedChange }
+					/>
+				{/if}
 
                 <Input
                     shapeInput = {{
@@ -899,7 +915,7 @@
                                 /> -->
                             </div>
                         {:else}
-                            <div class="grid grid-cols-1 {shapeInput.shape === 'markdown' ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} items-center justify-between">
+                            <div class="grid grid-cols-1 {shapeInput.shape === 'markdown' ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} items-center justify-between py-1">
 								{#if shapeInput.shape === 'markdown'}
 									<Check
 										shapeInput = {{
@@ -934,17 +950,176 @@
                             </div>
                         {/if}
 
-                        <TextArea 
-                            shapeInput = {{
-                                id          : uuid(),
-                                name        : 'class',
-                                label       : 'Estilos con tailwind',
-                                placeholder : 'Ingrese los estilos',
-                                rows        : 4,
-                                value       : shapeInput.class ?? styles[shapeInput.shape || 'none'] as string
-                            }}
-                            onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
-                        />
+						{#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'button' }
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos con tailwind',
+									placeholder : 'Ingrese los estilos',
+									rows        : 4,
+									value       : ( shapeInput.class ) ?? ( styles[shapeInput.shape || 'none'] as string )
+								}}
+								onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
+							/>
+						{:else if shapeInput.shape === 'check'}
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos con tailwind',
+									placeholder : 'Ingrese los estilos',
+									rows        : 4,
+									value       : shapeInput.class ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
+								}}
+								onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
+							/>
+
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos con tailwind',
+									placeholder : 'Ingrese los estilos',
+									rows        : 4,
+									value       : shapeInput.labelStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).label
+								}}
+								onInput = {( event: Event ) => shapeInput.labelStyle = ( event.target as HTMLInputElement ).value }
+							/>
+						{:else if shapeInput.shape === 'select' }
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Componente principal box',
+									placeholder : 'Ingrese los estilos de la caja',
+									rows        : 3,
+									value       : shapeInput.class ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
+								}}
+								onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
+							/>
+
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos del contenido',
+									placeholder : 'Ingrese los estilos del contenido',
+									rows        : 2,
+									value       : shapeInput.contentStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).content
+								}}
+								onInput = {( event: Event ) => shapeInput.contentStyle = ( event.target as HTMLInputElement ).value }
+							/>
+
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos de cada item',
+									placeholder : 'Ingrese los estilos de cada item',
+									rows        : 2,
+									value       : shapeInput.itemStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).item
+								}}
+								onInput = {( event: Event ) => shapeInput.itemStyle = ( event.target as HTMLInputElement ).value }
+							/>
+						{:else if shapeInput.shape === 'combobox' }
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Componente principal box',
+									placeholder : 'Ingrese los estilos de la caja',
+									rows        : 3,
+									value       : shapeInput.class ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
+								}}
+								onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
+							/>
+
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos del input',
+									placeholder : 'Ingrese los estilos del input',
+									rows        : 2,
+									value       : shapeInput.inputStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).input
+								}}
+								onInput = {( event: Event ) => shapeInput.inputStyle = ( event.target as HTMLInputElement ).value }
+							/>
+
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos del contenido',
+									placeholder : 'Ingrese los estilos del contenido',
+									rows        : 2,
+									value       : shapeInput.contentStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).content
+								}}
+								onInput = {( event: Event ) => shapeInput.contentStyle = ( event.target as HTMLInputElement ).value }
+							/>
+
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos de cada item',
+									placeholder : 'Ingrese los estilos de cada item',
+									rows        : 2,
+									value       : shapeInput.itemStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).item
+								}}
+								onInput = {( event: Event ) => shapeInput.itemStyle = ( event.target as HTMLInputElement ).value }
+							/>
+						{:else if shapeInput.shape === 'datepicker' }
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Componente principal box',
+									placeholder : 'Ingrese los estilos de la caja',
+									rows        : 3,
+									value       : shapeInput.class ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
+								}}
+								onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
+							/>
+
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos del input',
+									placeholder : 'Ingrese los estilos del input',
+									rows        : 5,
+									value       : shapeInput.inputStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).input
+								}}
+								onInput = {( event: Event ) => shapeInput.inputStyle = ( event.target as HTMLInputElement ).value }
+							/>
+
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos del contenido',
+									placeholder : 'Ingrese los estilos del contenido',
+									rows        : 2,
+									value       : shapeInput.contentStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).content
+								}}
+								onInput = {( event: Event ) => shapeInput.contentStyle = ( event.target as HTMLInputElement ).value }
+							/>
+
+							<TextArea
+								shapeInput = {{
+									id          : uuid(),
+									name        : 'class',
+									label       : 'Estilos del label',
+									placeholder : 'Ingrese los estilos del label',
+									rows        : 2,
+									value       : shapeInput.labelStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).label
+								}}
+								onInput = {( event: Event ) => shapeInput.labelStyle = ( event.target as HTMLInputElement ).value }
+							/>
+							
+						{/if}
                     </Accordion.Content>
                 </Accordion.Item>
             </Accordion.Root>

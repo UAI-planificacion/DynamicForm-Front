@@ -144,7 +144,7 @@
 </script>
 
 
-<container class="space-y-3 h-full overflow-auto text-cyan-500">
+<container class="space-y-3 h-full overflow-auto">
 	{#if dynamicMode}
 		<SubTitle title="Vista Previa" />
 	{/if}
@@ -177,7 +177,7 @@
                         }
                         shapeInput.valid = errorSelect(shapeInput, formValues[shapeInput.name]);
                     }}
-					value = { formValues[ shapeInput.name ]}
+					bind:value = { formValues[ shapeInput.name ]}
 					setError = {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
 				/>
 			<!-- Combobox -->

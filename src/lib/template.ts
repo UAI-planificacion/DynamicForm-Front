@@ -29,7 +29,8 @@ export const templateJson = [{
         "label"     : "Lastname",
         "required"  : true,
         "rows"      : 4,
-        "value"     : "Valor por defecto"
+        "value"     : "Valor por defecto",
+		"placeholder": "Enter your lastname"
     },{
         "id"        : "4",
         "shape"     : "datepicker",
@@ -53,6 +54,7 @@ export const templateJson = [{
         "name"      : "combobox",
         "label"     : "Combobox",
         "required"  : true,
+		"multiple"  : true,
         "placeholder" : "Selecciona una opción",
         "options" : [
             { value: "light-monochrome",    label: "Light Monochrome" },
@@ -60,7 +62,7 @@ export const templateJson = [{
             { value: "svelte-orange",       label: "Svelte Orange" },
             { value: "punk-pink",           label: "Punk Pink" }
         ],
-        "selected" : "dark-green"
+        "selected" : ["dark-green", "punk-pink"]
     }, {
         "id"        	: "7",
         "shape"     	: "markdown",

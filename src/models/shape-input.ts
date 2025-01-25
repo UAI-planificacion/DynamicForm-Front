@@ -1,5 +1,13 @@
 import { type DateValue } from "@internationalized/date";
 
+export type InputStyle = {
+    box?     	: string;
+    content?	: string;
+    item?   	: string;
+	label?  	: string;
+	input?  	: string;
+}
+
 
 export type InputType  = 'input' | 'combobox' | 'check' | 'select' | 'textarea' | 'datepicker' | 'button' | 'markdown' | 'none';
 export type Types      = 'text' | 'number' | 'password' | 'email' | 'url' | 'tel' | 'search';
@@ -26,6 +34,10 @@ export type ShapeInput = {
     multiple?       : boolean;
     pattern?        : string;
     class?          : string;
+	labelStyle? 	: string;
+	contentStyle? 	: string;
+	itemStyle? 		: string;
+	inputStyle? 	: string;
     min?            : number;
     max?            : number;
     minLength?      : number;
