@@ -1,6 +1,5 @@
 <script lang="ts">
     import { Combobox, type Selected } from "bits-ui";
-    import { onMount } from 'svelte';
 
     import {
         CaretDownIcon,

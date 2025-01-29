@@ -15,7 +15,7 @@
         LoaderIcon
     }						from "$icons";
     import type {
-  InputStyle,
+        InputStyle,
         InputType,
         Method,
         ShapeInput,
@@ -36,7 +36,8 @@
 		options,
 		styles,
 		types,
-		httpCodes
+		httpCodes,
+		methods
 	}						from "$lib";
 
     export let shapeInput       : ShapeInput;
@@ -557,12 +558,7 @@
 								name		: 'method',
 								placeholder	: 'Selecciona el método',
 								selected	: shapeInput.method,
-								options		: [
-									{ value: 'get', label: 'GET' },
-									{ value: 'post', label: 'POST' },
-									{ value: 'put', label: 'PUT' },
-									{ value: 'delete', label: 'DELETE' }
-								]
+								options		: methods
 							}}
 							onSelectedChange = {(value) => {
 								if (value instanceof Array || value === undefined) return;
@@ -958,9 +954,9 @@
 									label       : 'Estilos con tailwind',
 									placeholder : 'Ingrese los estilos',
 									rows        : 4,
-									value       : ( shapeInput.class ) ?? ( styles[shapeInput.shape || 'none'] as string )
+									value       : ( shapeInput.class_ ) ?? ( styles[shapeInput.shape || 'none'] as string )
 								}}
-								onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
+								onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
 							/>
 						{:else if shapeInput.shape === 'check'}
 							<TextArea
@@ -970,9 +966,9 @@
 									label       : 'Estilos con tailwind',
 									placeholder : 'Ingrese los estilos',
 									rows        : 4,
-									value       : shapeInput.class ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
+									value       : shapeInput.class_ ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
 								}}
-								onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
+								onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
 							/>
 
 							<TextArea
@@ -994,9 +990,9 @@
 									label       : 'Componente principal box',
 									placeholder : 'Ingrese los estilos de la caja',
 									rows        : 3,
-									value       : shapeInput.class ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
+									value       : shapeInput.class_ ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
 								}}
-								onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
+								onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
 							/>
 
 							<TextArea
@@ -1030,9 +1026,9 @@
 									label       : 'Componente principal box',
 									placeholder : 'Ingrese los estilos de la caja',
 									rows        : 3,
-									value       : shapeInput.class ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
+									value       : shapeInput.class_ ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
 								}}
-								onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
+								onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
 							/>
 
 							<TextArea
@@ -1078,9 +1074,9 @@
 									label       : 'Componente principal box',
 									placeholder : 'Ingrese los estilos de la caja',
 									rows        : 3,
-									value       : shapeInput.class ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
+									value       : shapeInput.class_ ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
 								}}
-								onInput = {( event: Event ) => shapeInput.class = ( event.target as HTMLInputElement ).value }
+								onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
 							/>
 
 							<TextArea

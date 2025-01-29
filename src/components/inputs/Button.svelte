@@ -18,7 +18,7 @@
 		on:click	= { onClick }
 		disabled	= { shapeInput.disabled || loading }
 		name 		= { shapeInput.name }
-		class		= { shapeInput.class ?? styles.button }
+		class		= { shapeInput.class_ ?? styles.button }
 		>
 			{#if loading}
 				<span class="mr-2">

@@ -24,3 +24,20 @@ export const httpCodes: ShapeOptions[] = [
     { id: '16', value: '503', label: '503 - Servicio no disponible' },
     { id: '17', value: '504', label: '504 - Tiempo de espera agotado' }
 ];
+
+
+export const methods: ShapeOptions[] = [
+	{ id: '1', value: 'get', 	label: 'GET' },
+	{ id: '2', value: 'post', 	label: 'POST' },
+	{ id: '3', value: 'put', 	label: 'PUT' },
+	{ id: '5', value: 'patch', 	label: 'PATCH' }
+];
+
+
+export enum METHOD {
+    GET     = 'get',
+    POST    = 'post',
+    DELETE  = 'delete',
+    PUT     = 'put',
+    PATCH   = 'patch',
+}

@@ -23,6 +23,6 @@
 		disabled 	= { shapeInput.disabled }
 		placeholder	= { shapeInput.placeholder }
 		on:input    = { ( value ) => { onInput( value ); setError() }}
-		class       = { shapeInput.class ?? styles.textarea }
+		class       = { shapeInput.class_ ?? styles.textarea }
 	>{ shapeInput.value }</textarea>
 </Info>

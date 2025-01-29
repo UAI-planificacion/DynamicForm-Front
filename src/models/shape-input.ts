@@ -11,9 +11,19 @@ export type InputStyle = {
 
 export type InputType  = 'input' | 'combobox' | 'check' | 'select' | 'textarea' | 'datepicker' | 'button' | 'markdown' | 'none';
 export type Types      = 'text' | 'number' | 'password' | 'email' | 'url' | 'tel' | 'search';
+
+
+export type DynamicForm = {
+    _id      : string;
+    name    : string;
+    user_id : string;
+    details : ShapeInput[];
+}
+
+
 export type ShapeInput = {
     [key: string]   : unknown;
-    id              : string;
+    id             : string;
     name            : string;
     shape?          : InputType;
     label?          : string;
@@ -33,7 +43,7 @@ export type ShapeInput = {
     preview?        : boolean;
     multiple?       : boolean;
     pattern?        : string;
-    class?          : string;
+    class_?         : string;
 	labelStyle? 	: string;
 	contentStyle? 	: string;
 	itemStyle? 		: string;

@@ -28,3 +28,7 @@ export { default as Resizable } from './Resizable.svelte';
 // MarkdownEditor
 export { default as DynamicTable } 		from './markdown/DynamicTable.svelte';
 export { default as MarkdownEditor }	from './markdown/MarkdownEditor.svelte';
+
+
+// MicrosoftAuth
+export { default as MicrosoftAuth } from './Auth/microsoftAuth.svelte';
