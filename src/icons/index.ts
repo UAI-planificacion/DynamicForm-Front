@@ -34,6 +34,7 @@ export { default as MarkdownIcon }      from './MarkdownIcon.svelte';
 export { default as LoaderIcon }      	from './LoaderIcon.svelte';
 export { default as LoadIcon }      	from './LoadIcon.svelte';
 export { default as MicrosoftIcon }		from './MicrosoftIcon.svelte';
+export { default as SaveIcon }		    from './SaveIcon.svelte';
 
 // Markdown
 export * from './markdown';

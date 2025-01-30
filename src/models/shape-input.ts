@@ -69,7 +69,7 @@ export type ShapeInput = {
 }
 
 
-export type Method = 'get' | 'post' | 'put' | 'delete';
+export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export type Form = {
 	httpList?			: Http[];

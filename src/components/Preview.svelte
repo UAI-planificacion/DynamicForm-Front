@@ -70,7 +70,12 @@
 
 
 	async function onClick() {
-		const button = template.find( item => item.shape === 'button' );
+        if ( Object.keys( formValues ).length === 0 ) {
+            toast.error( 'Por favor, cree un formulario válido.', errorToast() );
+            return;
+        };
+
+        const button = template.find( item => item.shape === 'button' );
 
 		if ( !button ) return;
 

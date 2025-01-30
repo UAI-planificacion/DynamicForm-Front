@@ -24,7 +24,8 @@ export default async function connectRequest<T>(
     { method, body, id }: Connect
 ): Promise<T | ApiError> {
     try {
-
+        console.log('🚀 ~ file: fetch.ts:27 ~ body:', body)
+        
         const url = `${URL}/${id ?? ''}`;
         const response = await fetch(
             url
@@ -38,7 +39,10 @@ export default async function connectRequest<T>(
             }
         });
 
-        console.log('🚀 ~ file: fetch.ts:28 ~ response:', `${URL}/${id}`)
+        console.log('🚀 ~ file: fetch.ts:31 ~ response:', response)
+
+        console.log('🚀 ~ file: fetch.ts:28 ~ response:', url)
+
 
 
         if ( !response.ok ) {

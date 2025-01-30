@@ -35,9 +35,9 @@ export const methods: ShapeOptions[] = [
 
 
 export enum METHOD {
-    GET     = 'get',
-    POST    = 'post',
-    DELETE  = 'delete',
-    PUT     = 'put',
-    PATCH   = 'patch',
+    GET     = 'GET',
+    POST    = 'POST',
+    DELETE  = 'DELETE',
+    PUT     = 'PUT',
+    PATCH   = 'PATCH',
 }
