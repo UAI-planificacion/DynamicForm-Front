@@ -9,6 +9,8 @@
 
 	import { v4 as uuid }	            from 'uuid';
 	import { Separator, type Selected }	from "bits-ui";
+    import toast                        from "svelte-french-toast";
+
 
 	import {
 		Preview,
@@ -24,15 +26,25 @@
         ShapeOptions,
         DynamicForm
     }                                       from '$models';
-	import { AddIcon, SaveIcon }	        from "$icons";
-	import { buttonTemplate, ROUTER}        from "$lib";
+	import {
+        buttonTemplate,
+        errorToast,
+        ROUTER,
+        successToast
+    }                                       from "$lib";
+	import { AddIcon, LoadIcon, SaveIcon }	        from "$icons";
 	import { dynamicMode, dynamicForms } 	from "$stores";
 
 
 	const flipDurationMs = 100;
+    const defaultSelected = 'Nuevo formulario';
 
-    let dynamicForm : DynamicForm = { _id: '', name : '' , details: [] , user_id: 'kevincandia'};
-	let inputActive = 0;
+    let dynamicForm     : DynamicForm = { _id: '', name : '' , details: [] , user_id: 'kevincandia'};
+    let options         : ShapeOptions[] = [];
+	let inputActive     = 0;
+    let optionSelected  = '';
+    let isLoading       = false;
+    
 
 
     // Esta función se ejecutará cada vez que dynamicForm.details cambie
@@ -46,7 +58,7 @@
             }));
 
             options = [ ...options, {
-                label: 'Nuevo formulario',
+                label: defaultSelected,
                 value: 'new'
             }];
         }
@@ -78,30 +90,135 @@
 	$: if ( !$dynamicMode ) inputActive = 0;
 
 
-    let options: ShapeOptions[] = [];
-
-
     onMount( async () => {
-        const values = await fetch( ROUTER.DYNAMIC_FORM.GET_ALL )
-            .then( res => res.json() );
+        isLoading = true;
 
-        const forms: DynamicForm[] = values.response;
+        await fetch( ROUTER.DYNAMIC_FORM.GET_ALL )
+        .then( async res => {
+            if ( !res.ok ) {
+                toast.error( 'Failed to fetch dynamic forms', errorToast() );
+                return null;
+            }
 
-        dynamicForms.init( forms );
-
-        // options = forms.map( form => ({
-        //     label: form.name,
-        //     value: form._id
-        // }));
-
-        // options = [ ...options, {
-        //     label: 'Nuevo formulario',
-        //     value: 'new'
-        // }];
+            const data = await res.json();
+            dynamicForms.init( data.response as DynamicForm[] );
+        } )
+        .catch( err => {
+            console.error( err );
+            toast.error( 'Failed to fetch dynamic forms', errorToast() );
+        } )
+        .finally(() => isLoading = false );
     });
 
 
-    let optionSelected = '';
+    async function saveTemplate() {
+        console.log( '🚀 ~ file: +page.svelte:121 ~ dynamicForm:', dynamicForm );
+
+        if ( dynamicForm.name === '' || dynamicForm.name === defaultSelected ) {
+            toast.error( "Hay un error en el formulario", errorToast() )
+            return;
+        }
+
+        isLoading = true;
+
+        await fetch(
+            ROUTER.DYNAMIC_FORM.CREATE, {
+                body    : JSON.stringify( dynamicForm ),
+                method  : 'POST'
+            }
+        ).then( async res => {
+            if ( !res.ok ) {
+                toast.error( 'Failed to create dynamic form', errorToast() );
+                return null;
+            }
+
+            const data = await res.json();
+            const form: DynamicForm = data.response;
+
+            dynamicForms.add( form );
+
+            optionSelected = form.name;
+
+            // options = $dynamicForms.map( form => ({
+            //     label: form.name,
+            //     value: form._id
+            // }));
+
+            handleTemplateChange({ 
+                label: form.name,
+                value: form._id
+            });
+
+            toast.success( 'Formulario creado correctamente', successToast() );
+        })
+        .catch( err => {
+            console.error( err );
+            toast.error( 'Failed to create dynamic form', errorToast() );
+        })
+        .finally(() => isLoading = false );
+    }
+
+
+    async function updatedTemplate() {
+        if ( dynamicForm.name === '' ) {
+            toast.error( "Hay un error en el formulario", errorToast() )
+            return;
+        }
+
+        isLoading = true;
+
+        await fetch(
+            ROUTER.DYNAMIC_FORM.UPDATE( dynamicForm._id ), {
+                method  : 'PUT',
+                body    : JSON.stringify( dynamicForm )
+            }
+        ).then( async res => {
+            if ( !res.ok ) return;
+
+            const data = await res.json();
+
+            dynamicForms.update( dynamicForm._id, data.response );
+
+            toast.success( "Formulario actualizado correctamente", successToast() );
+        })
+        .catch( _ => toast.error( "Ocurrió un error al actualizar el formulario", errorToast() ))
+        .finally(() => isLoading = false );
+    }
+
+
+    async function deletedTemplate( id: string ) {
+        isLoading = true;
+
+        await fetch(
+            ROUTER.DYNAMIC_FORM.DELETE( id ), {
+                method: 'DELETE'
+            }
+        ).then( res =>  {
+            console.log('🚀 ~ file: DELETED +page.svelte:180 ~ res:', res)
+            if ( !res.ok ) {
+                toast.error( 'Failed to delete dynamic form', errorToast() );
+                return null;
+            };
+
+            dynamicForms.remove( id );
+            handleTemplateChange({ 
+                label: defaultSelected,
+                value: 'new'
+            });
+
+            formName.value = '';
+            formName.selected = '';
+
+            toast.success( "Formulario eliminado correctamente", successToast() );
+
+        }
+        ).catch( err => {
+            console.error( err );
+            toast.error( 'Failed to delete dynamic form', errorToast() );
+        })
+        .finally(() => isLoading = false );
+    }
+
 
     function handleTemplateChange(
         selected: Selected<string> | Selected<string>[] | undefined
@@ -133,63 +250,6 @@
     }
 
 
-    async function saveTemplate() {
-        console.log( '🚀 ~ file: +page.svelte:121 ~ dynamicForm:', dynamicForm );
-
-        if ( dynamicForm.name === '' ) {
-            return;
-        }
-
-        const values = await fetch(
-            ROUTER.DYNAMIC_FORM.CREATE, {
-                body    : JSON.stringify( dynamicForm ),
-                method  : 'POST'
-            }
-        ).then( res => res.json() );
-
-        console.log('🚀 ~ file: +page.svelte:146 ~ values:', values)
-
-
-        const form: DynamicForm = values.response;
-
-        dynamicForms.add( form );
-    }
-
-
-    async function updatedTemplate() {
-        const response = await fetch(
-            ROUTER.DYNAMIC_FORM.UPDATE( dynamicForm._id ), {
-                method  : 'PUT',
-                body    : JSON.stringify( dynamicForm )
-            }
-        ).then( async res => {
-            if ( !res.ok ) return;
-
-            const data = await res.json();
-            console.log('🚀 ~ file: +page.svelte:166 ~ response:', data.response)
-
-            dynamicForms.update( dynamicForm._id, data.response );
-        } );
-
-    }
-
-
-    async function deletedTemplate( id: string ) {
-
-        await fetch(
-            ROUTER.DYNAMIC_FORM.DELETE( id ), {
-                method: 'DELETE'
-            }
-        ).then( res =>  {
-
-            if ( !res.ok ) return;
-
-            dynamicForms.remove( id );
-        }
-        );
-    }
-
-
     const formName: ShapeInput = {
 		id			: uuid(),
 		name		: 'template-name',
@@ -199,6 +259,7 @@
         shape		: 'input',
         msgRequired : 'El campo es requerido.',
         valid       : true,
+        disabled    : isLoading
     }
 </script>
 
@@ -210,12 +271,15 @@
 		out:fly = {{ y: 20, duration: 300 }}
 	>
 		<Combobox
-			shapeInput={{
+			shapeInput = {{
 				id			: uuid(),
 				name		: 'search',
+                shape       : 'combobox',
 				options,
 				label		: 'Plantillas de formularios',
-				placeholder	: 'Seleccione una plantilla'
+				placeholder	: 'Seleccione una plantilla',
+                disabled    : isLoading,
+                selected    : optionSelected
 			}}
 			onSelectedChange = { handleTemplateChange }
 		/>
@@ -292,34 +356,49 @@
                                 <button
                                     class       = "h-10 sm:h-9 w-20 sm:w-40 md:w-36 bg-amber-500 dark:bg-amber-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
                                     on:click    = { saveTemplate }
+                                    disabled    = { isLoading }
                                 >
                                     <SaveIcon />
 
-                                    <span class="hidden sm:block">
-                                        Crear
-                                    </span>
+                                    {#if isLoading }
+                                        <LoadIcon />
+                                    {:else }
+                                        <span class="hidden sm:block">
+                                            Crear
+                                        </span>
+                                    {/if}
                                 </button>
                             {:else }
                                 <button
                                     class       = "h-10 sm:h-9 w-20 md:w-36 bg-amber-500 dark:bg-amber-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
                                     on:click    = { updatedTemplate }
+                                    disabled    = { isLoading }
                                 >
                                     <SaveIcon />
 
-                                    <span class="hidden md:block">
-                                        Modificar
-                                    </span>
+                                    {#if isLoading }
+                                        <LoadIcon />
+                                    {:else }
+                                        <span class="hidden sm:block">
+                                            Actualizar
+                                        </span>
+                                    {/if}
                                 </button>
 
                                 <button
                                     class       = "h-10 sm:h-9 w-20 md:w-36 bg-red-500 dark:bg-red-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
                                     on:click    = {() => deletedTemplate( dynamicForm._id )}
+                                    disabled    = { isLoading }
                                 >
                                     <SaveIcon />
 
-                                    <span class="hidden md:block">
-                                        Eliminar
-                                    </span>
+                                    {#if isLoading }
+                                        <LoadIcon />
+                                    {:else }
+                                        <span class="hidden md:block">
+                                            Eliminar
+                                        </span>
+                                    {/if}
                                 </button>
                             {/if}
                         </div>

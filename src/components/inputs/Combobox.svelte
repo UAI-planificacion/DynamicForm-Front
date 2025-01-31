@@ -13,14 +13,15 @@
     import { styles }   from "$lib";
 
 
-    export let shapeInput: ShapeInput;
-    export let value: string | string[] | undefined = undefined;
-    export let onSelectedChange: (value: Selected<string> | Selected<string>[] | undefined) => void;
-    export let setError: VoidFunction = () => {};
+    export let shapeInput       : ShapeInput;
+    export let value            : string | string[] | undefined = undefined;
+    export let onSelectedChange : ( value: Selected<string> | Selected<string>[] | undefined ) => void;
+    export let setError         : VoidFunction = () => {};
 
-    let inputValue = "";
-    let touchedInput = false;
-    let open = false;
+
+    let inputValue      : string    = "";
+    let touchedInput    : boolean   = false;
+    let open            : boolean   = false;
 
     // Convertir las opciones a formato Selected
     function toSelected(value: string): Selected<string> | undefined {
@@ -61,43 +62,28 @@
     }
 
     let selected = getSelectedValue();
+    let selectedValue = selected;
 
-    // Reactividad para la selección inicial y cambios
+    // Combined reactive logic to handle all updates
     $: {
         if (shapeInput.selected !== undefined) {
             const newSelected = getSelectedValue();
             selected = newSelected;
-            if (!touchedInput || !open) {
+            selectedValue = newSelected;
+            
+            // Only update input value if we're not in the middle of user input
+            if (!open) {
                 updateInputValue(newSelected);
             }
         }
     }
 
-    // Reactividad para actualizar el texto cuando cambia selectedValue
-    $: {
-        if (selectedValue) {
-            updateInputValue(selectedValue);
-        }
-    }
-
-    // Manejar cambios en la selección
-    function handleSelectedChange(value: Selected<string> | Selected<string>[] | undefined) {
-        selected = value;
-        selectedValue = value;
-        updateInputValue(value);
-        onSelectedChange(value);
-        setError();
-    }
-
-    // Actualizar texto cuando se cierra el combobox
-    $: if (!open && selectedValue) {
-        updateInputValue(selectedValue);
-    }
-
-    // Manejar cambios en el input
-    $: {
-        if (touchedInput) {
-            inputValue = inputValue;
+    // Handle input value updates separately
+    function handleSelectionChange(newValue: Selected<string> | Selected<string>[] | undefined) {
+        selectedValue = newValue;
+        updateInputValue(newValue);
+        if (onSelectedChange) {
+            onSelectedChange(newValue);
         }
     }
 
@@ -109,42 +95,52 @@
         )
         : shapeInput.options;
 
-    let selectedValue: Selected<string> | Selected<string>[] | undefined = getSelectedValue();
+    // Actualizar texto cuando se cierra el combobox
+    $: if ( !open && selectedValue ) {
+        updateInputValue( selectedValue );
+    }
+
+    // Manejar cambios en el input
+    $: {
+        if ( touchedInput ) {
+            inputValue = inputValue;
+        }
+    }
 </script>
 
 
 <Info {shapeInput} {onSelectedChange} {value}>
 	<Combobox.Root
-		items={filtered}
-		disabled={shapeInput.disabled}
-		multiple={shapeInput.multiple}
-		onSelectedChange={( value ) => {handleSelectedChange( value ); selectedValue = value}}
-		selected={selectedValue}
+		items               = { filtered }
+		disabled            = { shapeInput.disabled }
+		multiple            = { shapeInput.multiple }
+		onSelectedChange    = { ( value ) => { handleSelectionChange( value ); setError(); }}
+		selected            = { selectedValue }
 		bind:inputValue
 		bind:touchedInput
 		bind:open
 	>
-        <div class={(styles.combobox as InputStyle).box}>
+        <div class={( styles.combobox as InputStyle ).box }>
             <Combobox.Input
-                class={(styles.combobox as InputStyle).input}
-                placeholder={shapeInput.placeholder}
-                aria-label={shapeInput.label}
+                class       = {( styles.combobox as InputStyle).input }
+                placeholder = { shapeInput.placeholder }
+                aria-label  = { shapeInput.label }
             />
             <CaretDownIcon />
         </div>
 
         <Combobox.Content
-            class={(styles.combobox as InputStyle).content}
-            sideOffset={5}
+            class       = {( styles.combobox as InputStyle ).content }
+            sideOffset  = { 5 }
         >
-            {#each filtered! as option (option.value)}
+            {#each filtered! as option ( option.value )}
                 <Combobox.Item
-                    class={(styles.combobox as InputStyle).item}
-                    value={option.value}
-                    label={option.label}
+                    class   = {( styles.combobox as InputStyle ).item }
+                    value   = { option.value }
+                    label   = { option.label }
                 >
                     {option.label}
-                    <Combobox.ItemIndicator class="ml-auto" asChild={false}>
+                    <Combobox.ItemIndicator class="ml-auto" asChild={ false }>
                         <CheckIcon />
                     </Combobox.ItemIndicator>
                 </Combobox.Item>
@@ -155,6 +151,6 @@
             {/each}
         </Combobox.Content>
 
-        <Combobox.HiddenInput name={shapeInput.name} />
+        <Combobox.HiddenInput name={ shapeInput.name } />
     </Combobox.Root>
 </Info>
