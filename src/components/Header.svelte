@@ -5,6 +5,7 @@
 
 	import { Switch, ToggleTheme, MicrosoftAuth } 	from "$components";
 	import { dynamicMode, toggleTheme, theme  } 	from "$stores";
+    import { MicrosoftIcon }                        from "$icons";
 
 
 	export let loadingStatus: Avatar.Props["loadingStatus"] = undefined;
@@ -91,11 +92,9 @@
 				<DropdownMenu.Separator class="my-2 h-px bg-zinc-200 dark:bg-zinc-700" />
 
 				<DropdownMenu.Item class="flex h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">
-					<button class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#2F2F2F] hover:bg-[#272727] text-white rounded-lg transition-colors">
-						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 23 23">
-							<path fill="currentColor" d="M11.5 12.5v-6h11v6zm0 11v-6h11v6zm-11-11v-6h6v6zm0 11v-6h6v6z"/>
-						</svg>
-						<span>Iniciar con Microsoft</span>
+					<button class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-700 hover:brightness-110 text-white rounded-lg transition-colors">
+						<MicrosoftIcon />
+						<span>Cerrar sesión</span>
 					</button>
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>

@@ -13,7 +13,8 @@
 		TextArea,
 		Enumeration,
 		SubTitle,
-		MarkdownEditor
+		MarkdownEditor,
+		DataView
 	} 							from "$components";
 	import {
 		errorSelect,
@@ -26,29 +27,60 @@
 	}							from "$lib";
     import type { ShapeInput }  from "$models";
 
-
-	export let template		: ShapeInput[] = [];
+    export let template		: ShapeInput[] = [];
 	export let inputActive 	: number;
 	export let dynamicMode	: boolean = false;
 
 	let loading = false;
 
+    let formValues: Record<string, any> = {};
+    let previousTemplate = template;
 
-	const formValues = template.reduce(( acc, item ) => {
-		const keys 	= [ "value", "checked", "date", "selected" ];
-		const value = keys.find(( key ) => item[key] !== undefined )
-			? item[keys.find(( key ) => item[key] !== undefined ) as keyof typeof item]
-			: undefined;
+    // Cargar valores por defecto cuando cambie el template completamente
+    $: {
+        if ( template !== previousTemplate ) {
+            // Primero limpiamos los valores
+            formValues = {};
+            
+            // Luego cargamos los valores por defecto del nuevo template
+            formValues = template.reduce((acc, item) => {
+                const keys = ["value", "checked", "date", "selected"];
+                const value = keys.find((key) => item[key] !== undefined)
+                    ? item[keys.find((key) => item[key] !== undefined) as keyof typeof item]
+                    : undefined;
 
-		if ( value ) {
-			acc[item.name] = value;
-		}
+                if (item.shape !== 'button' && value !== undefined) {
+                    acc[item.name] = value;
+                }
+                return acc;
+            }, {} as Record<string, any>);
 
-		return acc;
-	}, {} as Record<string, any> );
+            previousTemplate = template;
+        }
+    }
 
+    // Limpiar y actualizar formValues cuando template cambie
+    $: {
+        if ( template ) {
+            const initialValues = template.reduce((acc, item) => {
+                const keys = ["value", "checked", "date", "selected"];
+                const value = keys.find((key) => item[key] !== undefined)
+                    ? item[keys.find((key) => item[key] !== undefined) as keyof typeof item]
+                    : undefined;
 
-	function handleDatePicker( event: DateValue, name: string ) {
+                // Solo agregar al formValues si no es un botón y el valor no existe ya en formValues
+                if (item.shape !== 'button' && value !== undefined && !(item.name in formValues)) {
+                    acc[item.name] = value;
+                }
+
+                return acc;
+            }, {} as Record<string, any>);
+
+            formValues = { ...formValues, ...initialValues };
+        }
+    }
+
+	const handleDatePicker = ( event: DateValue, name: string ) => {
 		if ( !event ) {
 			formValues[name] = null;
 			return;
@@ -58,16 +90,13 @@
 		formValues[name] = { year, month: ( month - 1 ), day };
 	}
 
-
-	function handleInput (event: Event, name: string ) {
+	const handleInput = ( event: Event, name: string ) => {
 		formValues[name] = (event.target as HTMLInputElement).value;
 	}
 
-
-	function handleCheck( isChecked: boolean, name: string ) {
+	const handleCheck = ( isChecked: boolean, name: string ) => {
 		formValues[name] = isChecked;
 	}
-
 
 	async function onClick() {
         if ( Object.keys( formValues ).length === 0 ) {
@@ -98,28 +127,9 @@
 			return;
 		}
 
-		// toast.promise(
-		// 	fetch(button!.apiUrlSend!, {
-		// 		method: 'POST',
-		// 		headers: {
-		// 			'Content-Type': 'application/json'
-		// 		},
-		// 		body: JSON.stringify(formValues)
-		// 	}),
-		// 	{
-		// 		loading	: 'Enviando formulario...',
-		// 		success	: 'Formulario enviado correctamente',
-		// 		error	: 'Error en la operación'
-		// 	},
-		// 	{
-		// 		loading	: loadingToast(),
-		// 		success	: successToast(),
-		// 		error	: errorToast()
-		// 	}
-		// );
-
 		loading = true;
-		try {
+
+        try {
 			const response 	= await fetch( '/api/send', {
 				method	: 'POST',
 				headers	: {
@@ -147,7 +157,6 @@
 		}
 	}
 </script>
-
 
 <container class="space-y-3 h-full overflow-auto">
 	{#if dynamicMode}
@@ -247,10 +256,8 @@
 	{ /each }
 
 	{ #if dynamicMode }
-		<SubTitle title="Información obtenida" />
+        <SubTitle title="Información obtenida" />
 
-		<pre
-			class="bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-100 p-5 rounded-lg break-words shadow-lg"
-		>{ JSON.stringify( formValues, null, 2 )}</pre>
+        <DataView {formValues} />
 	{ /if }
 </container>

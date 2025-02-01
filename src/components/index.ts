@@ -16,7 +16,10 @@ export { default as Header }        from './Header.svelte';
 export { default as ToggleTheme }   from './ToggleTheme.svelte';
 
 // Others
-export { default as Preview }       from './Preview.svelte';
+export { default as Preview }       from './Preview/Preview.svelte';
+export { default as DataView }       from './Preview/DataView.svelte';
+
+
 export { default as EditorView }    from './EditorView.svelte';
 export { default as Enumeration }   from './Enumeration.svelte';
 export { default as SubTitle }      from './SubTitle.svelte';
@@ -32,3 +35,7 @@ export { default as MarkdownEditor }	from './markdown/MarkdownEditor.svelte';
 
 // MicrosoftAuth
 export { default as MicrosoftAuth } from './Auth/microsoftAuth.svelte';
+
+
+// Modal
+export { default as DeleteModel } from './Modal/DeleteModel.svelte';
