@@ -207,6 +207,7 @@
             };
 
             dynamicForms.remove( dynamicForm._id );
+
             handleTemplateChange({ 
                 label: defaultSelected,
                 value: 'new'

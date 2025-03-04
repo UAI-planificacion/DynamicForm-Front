@@ -1,6 +1,6 @@
 import
     connectRequest,
-    { isApiError }  from './fetch';
+    { isApiError, type ApiError }  from './fetch';
 import { METHOD }   from '$lib';
 
 
@@ -27,7 +27,7 @@ export class DynamicFormService {
 
 
     async delete( id: string ): Promise<boolean> {
-        const response = await connectRequest<boolean>({ id, method: METHOD.DELETE });
+        const response = await connectRequest<boolean | ApiError>({ id, method: METHOD.DELETE });
 
         return isApiError( response ) ? false : true;
     }

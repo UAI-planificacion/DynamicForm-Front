@@ -24,10 +24,8 @@ export default async function connectRequest<T>(
     { method, body, id }: Connect
 ): Promise<T | ApiError> {
     try {
-        console.log('🚀 ~ file: fetch.ts:27 ~ body:', body)
-
-        const url = `${URL}/${id ?? ''}`;
-        const response = await fetch(
+        const url       = `${URL}/${id ?? ''}`;
+        const response  = await fetch(
             url
         , {
             method,
@@ -39,9 +37,6 @@ export default async function connectRequest<T>(
             }
         });
 
-        console.log('🚀 ~ file: fetch.ts:31 ~ response:', response)
-        console.log('🚀 ~ file: fetch.ts:28 ~ response:', url)
-
         if ( !response.ok ) {
             const errorData = await response.json();
 
@@ -51,8 +46,12 @@ export default async function connectRequest<T>(
             } as ApiError;
         }
 
+        if ( response.status === 204 ) return Promise.resolve( true as T );
+
         return await response.json() as T;
     } catch ( error: any ) {
+        console.log('🚀 ~ file: fetch.ts:53 ~ error:', error)
+
         return {
             message : error.message || 'An unknown error occurred',
             code    : error.code    || 'NETWORK_ERROR',

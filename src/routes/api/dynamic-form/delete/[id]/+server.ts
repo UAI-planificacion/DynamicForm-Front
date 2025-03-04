@@ -10,19 +10,8 @@ export const DELETE = async ({ params }: RequestEvent): Promise<Response> => {
         if ( !id ) throw error( 400, 'ID is required' );
 
         const dynamicForm   = new DynamicFormService();
-        const response      = await dynamicForm.delete( id );
 
-        if ( !response ) {
-            return new Response( JSON.stringify({ 
-                error: "Dynamic form not found",
-                status: 404
-            }), { 
-                status: 404,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-        }
+        await dynamicForm.delete( id );
 
         return new Response( null, { 
             status  : 204,

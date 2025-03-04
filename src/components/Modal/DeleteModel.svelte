@@ -5,15 +5,23 @@
         Dialog,
         Label,
         Separator
-    }                       from "bits-ui";
-    import CloseIconIcon    from "$icons/CloseIconIcon.svelte";
-    import { LoadIcon, SaveIcon } from '$icons';
+    }               from "bits-ui";
+    import {
+        LoadIcon,
+        SaveIcon,
+        CloseIcon
+    }               from '$icons';
 
     export let onConfirm : VoidFunction;
     export let formName  : string;
     export let isLoading : boolean;
 
     let textDelete = '';
+
+    function handleKeydown( e : KeyboardEvent ) {
+        if ( e.key === 'Enter' && textDelete === formName )
+            onConfirm();
+    }
 </script>
 
 <Dialog.Root>
@@ -70,7 +78,7 @@
                         placeholder     = "Ingrese la palabra de confirmación"
                         type            = "text"
                         autocomplete    = "off"
-                        on:keydown      = { ( e ) => e.key === 'Enter' && onConfirm() }
+                        on:keydown      = { handleKeydown }
                     />
                 </div>
             </div>
@@ -95,7 +103,7 @@
                 class="absolute right-5 top-5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-98"
             >
                 <div>
-                    <CloseIconIcon/>
+                    <CloseIcon />
 
                     <span class="sr-only text-white">Cerrar</span>
                 </div>
