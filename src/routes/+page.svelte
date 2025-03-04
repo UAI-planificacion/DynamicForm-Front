@@ -338,7 +338,11 @@
                         </container>
 
                         <div slot="right" class="overflow-auto mr-1">
-                            <Preview template={ dynamicForm.details } { inputActive } dynamicMode={ $dynamicMode } />
+                            <Preview
+                                { inputActive }
+                                template    = { dynamicForm.details }
+                                dynamicMode = { $dynamicMode }
+                            />
                         </div>
                     </Resizable>
 
@@ -397,14 +401,21 @@
                     </div>
                 </div>
             {:else}
-                <Separator.Root orientation="horizontal" class="w-full h-[1px] rounded-lg bg-zinc-300 dark:bg-zinc-600" />
+                <Separator.Root
+                    orientation = "horizontal"
+                    class       = "w-full h-[1px] rounded-lg bg-zinc-300 dark:bg-zinc-600"
+                />
 
                 <div 
                     class		= "mt-5"
                     in:scale	= {{ duration: 300, start: 0.95 }}
                     out:scale	= {{ duration: 300, start: 1 }}
                 >
-                    <Preview template = { dynamicForm.details } { inputActive } dynamicMode = { $dynamicMode } />
+                    <Preview
+                        { inputActive }
+                        template    = { dynamicForm.details }
+                        dynamicMode = { $dynamicMode }
+                    />
                 </div>
             {/if}
         </div>

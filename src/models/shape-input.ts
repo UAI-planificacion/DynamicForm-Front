@@ -23,7 +23,7 @@ export type DynamicForm = {
 
 export type ShapeInput = {
     [key: string]   : unknown;
-    id             : string;
+    id              : string;
     name            : string;
     shape?          : InputType;
     label?          : string;
