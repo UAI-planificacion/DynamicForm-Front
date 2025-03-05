@@ -1,31 +1,41 @@
 <script lang="ts">
-	import { fly } from "svelte/transition";
+    import { goto } from "$app/navigation";
+	import { fly }  from "svelte/transition";
 
 	import { Avatar, DropdownMenu } from "bits-ui";
 
 	import { Switch, ToggleTheme, MicrosoftAuth } 	from "$components";
 	import { dynamicMode, toggleTheme, theme  } 	from "$stores";
     import { MicrosoftIcon }                        from "$icons";
-
+    import { authClient, signOut }                  from "$lib";
 
 	export let loadingStatus: Avatar.Props["loadingStatus"] = undefined;
+
+    const session = authClient.useSession();
 </script>
 
 
 <header class="h-20 flex bg-slate-50 dark:bg-zinc-800 w-full py-5 px-8 xl:px-40 justify-between items-center shadow-lg">
-	<h1 class="text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-yellow-500 to-amber-600 bg-clip-text text-transparent font-bold">
-		Formulario Dinámico
-	</h1>
+    <div class="flex items-center space-x-1">
+        <h1 class="text-xl sm:text-lg md:text-2xl bg-gradient-to-r from-yellow-500 to-amber-600 bg-clip-text text-transparent font-bold">
+            Formulario Dinámico
+        </h1>
 
-	<MicrosoftAuth />
+        <h2 class="text-sm sm:text-base bg-gradient-to-r from-gray-500 to-gray-300 bg-clip-text text-transparent font-bold">
+            | UAI
+        </h2>
+    </div>
 
-	<div class="flex items-center gap-3">
+    {#if !$session.data}
+        <MicrosoftAuth />
+    {:else}
+    <div class="flex items-center gap-3">
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger
 				class= "flex items-center gap-4 w-full transition-colors"
 			>
 				<span class=" font-semibold dark:text-zinc-100">
-					Nombre del usuario
+					{$session?.data?.user?.name}
 				</span>
 
 				<Avatar.Root
@@ -92,7 +102,13 @@
 				<DropdownMenu.Separator class="my-2 h-px bg-zinc-200 dark:bg-zinc-700" />
 
 				<DropdownMenu.Item class="flex h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">
-					<button class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-700 hover:brightness-110 text-white rounded-lg transition-colors">
+					<button
+                        class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-700 hover:brightness-110 text-white rounded-lg transition-colors"
+                        on:click = { async () => {
+                            await signOut();
+                            goto("/");
+                        }}
+                    >
 						<MicrosoftIcon />
 						<span>Cerrar sesión</span>
 					</button>
@@ -100,4 +116,7 @@
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</div>
+    {/if}
+
+	
 </header>

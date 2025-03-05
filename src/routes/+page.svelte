@@ -1,434 +1,257 @@
 <script lang="ts">
-	import {
-		dndzone,
-		type DndEvent
-	} 							from "svelte-dnd-action";
-	import { flip }				from 'svelte/animate';
-	import { fade, fly, scale } from 'svelte/transition';
-    import { onMount }          from "svelte";
+    import { onMount } from 'svelte';
 
-	import { v4 as uuid }	            from 'uuid';
-	import { Separator, type Selected }	from "bits-ui";
-    import toast                        from "svelte-french-toast";
+    import { authClient, signOut }                  from "$lib";
+  import { MicrosoftAuth } from '$components';
+  import { goto } from '$app/navigation';
 
 
-	import {
-		Preview,
-		EditorView,
-		Enumeration,
-		SubTitle,
-		Input,
-		Combobox,
-		Resizable,
-        DeleteModel
-	}							            from '$components';
-	import type {
-        ShapeInput,
-        ShapeOptions,
-        DynamicForm
-    }                                       from '$models';
-	import {
-        buttonTemplate,
-        errorToast,
-        ROUTER,
-        successToast
-    }                                       from "$lib";
-	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
-	import { dynamicMode, dynamicForms } 	from "$stores";
+    const session = authClient.useSession();
 
-
-	const flipDurationMs = 100;
-    const defaultSelected = 'Nuevo formulario';
-
-    let dynamicForm     : DynamicForm = { _id: '', name : '' , details: [] , user_id: 'kevincandia'};
-    let options         : ShapeOptions[] = [];
-	let inputActive     = 0;
-    let optionSelected  = '';
-    let isLoading       = true;
-
-    // Esta función se ejecutará cada vez que dynamicForm.details cambie
-    $: {
-        if ( $dynamicForms ) {
-            options = [...$dynamicForms.map( form => ({
-                label: form.name,
-                value: form._id
-            })), {
-                label: defaultSelected,
-                value: 'new'
-            }]
-        }
+    type VisibleSection = {
+        [key: string]  : boolean,
+        hero        : boolean,
+        features    : boolean,
+        about       : boolean,
+        cta         : boolean
     }
 
+    let features = [
+        {
+            title: 'Formularios Personalizables',
+            description: 'Crea y personaliza formularios según las necesidades específicas de cada departamento académico.',
+            icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
+        },
+        {
+            title: 'Análisis de Datos',
+            description: 'Visualiza y analiza las respuestas recibidas con herramientas estadísticas integradas.',
+            icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
+        },
+        {
+            title: 'Integración Académica',
+            description: 'Conecta con los sistemas existentes de la Universidad Adolfo Ibáñez.',
+            icon: 'M13 10V3L4 14h7v7l9-11h-7z'
+        },
+        {
+            title: 'Experiencia Responsive',
+            description: 'Accede desde cualquier dispositivo con una experiencia de usuario optimizada.',
+            icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z'
+        }
+    ];
+    
+    let isMenuOpen = false;
+    
+    function toggleMenu() {
+        isMenuOpen = !isMenuOpen;
+    }
 
-	const handleConsider = ( env: CustomEvent<DndEvent<ShapeInput>> ) =>
-		dynamicForm.details = [ ...env.detail.items ];
-
-
-    const handleFinalize = ( env: CustomEvent<DndEvent<ShapeInput>> ) =>
-		dynamicForm.details = [ ...env.detail.items ];
-
-
-	const addItem = () => dynamicForm.details = [
-		{
-			id		: uuid(),
-			name 	: '',
-			shape	: 'none',
-		}, ...dynamicForm.details,
-	];
-
-
-	const deleteItem = ( id: string ) => dynamicForm.details = [
-		...dynamicForm.details.filter( temp => temp.id !== id ) ?? []
-	];
-
-
-	$: if ( !$dynamicMode ) inputActive = 0;
-
-
-    onMount( async () => {
-        await fetch( ROUTER.DYNAMIC_FORM.GET_ALL )
-        .then( async res => {
-            if ( !res.ok ) {
-                console.error( res );
-                toast.error( 'Falla al obtener los formularios dinámicos', errorToast() );
-                return null;
+    let visibleSections: VisibleSection = {
+        hero: false,
+        features: false,
+        about: false,
+        cta: false
+    };
+    
+    onMount(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const sectionId = entry.target.id;
+                if (sectionId && sectionId in visibleSections) {
+                visibleSections[sectionId] = true;
+                }
             }
-
-            const data = await res.json();
-
-            if ( data.response.code === "NETWORK_ERROR" ) {
-                console.error( data.response );
-                toast.error( 'Ocurrio un error inesperado. El servidor no responde', errorToast() );
-                return null;
-            }
-
-            dynamicForms.init( data.response as DynamicForm[] );
-        } )
-        .catch( err => {
-            console.error( err );
-            toast.error( 'Failed to fetch dynamic forms', errorToast() );
-        } )
-        .finally(() => isLoading = false );
+            });
+        }, { threshold: 0.1 });
+        
+        Object.keys(visibleSections).forEach(sectionId => {
+            const element = document.getElementById(sectionId);
+            if (element) observer.observe(element);
+        });
     });
-
-    function validateForm(): boolean {
-        if ( dynamicForm.name === '' || dynamicForm.name === undefined || dynamicForm.name === null ) {
-            toast.error( "El nombre del formulario es requerido.", errorToast() )
-            formName.valid = false;
-            return false;
-        }
-
-        if ( dynamicForm.details.length === 1 ) {
-            toast.error( "Debe agregar al menos un elemento al formulario", errorToast() )
-            return false;
-        }
-
-        isLoading           = true;
-        formName.disabled   = true;
-        return true;
-    }
-
-    function enableAll() {
-        isLoading = false;
-        formName.disabled = false;
-    }
-
-
-    async function saveTemplate() {
-        if ( !validateForm() ) return;
-
-        await fetch(
-            ROUTER.DYNAMIC_FORM.CREATE, {
-                body    : JSON.stringify( dynamicForm ),
-                method  : 'POST'
-            }
-        ).then( async res => {
-            if ( !res.ok ) {
-                toast.error( 'Failed to create dynamic form', errorToast() );
-                return null;
-            }
-
-            const data = await res.json();
-            const form: DynamicForm = data.response;
-
-            dynamicForms.add( form );
-
-            optionSelected = form.name;
-
-            handleTemplateChange({ 
-                label: form.name,
-                value: form._id
-            });
-
-            toast.success( 'Formulario creado correctamente', successToast() );
-        })
-        .catch( err => {
-            console.error( err );
-            toast.error( 'Failed to create dynamic form', errorToast() );
-        })
-        .finally( enableAll );
-    }
-
-
-    async function updatedTemplate() {
-        if ( !validateForm() ) return;
-
-        await fetch(
-            ROUTER.DYNAMIC_FORM.UPDATE( dynamicForm._id ), {
-                method  : 'PUT',
-                body    : JSON.stringify( dynamicForm )
-            }
-        ).then( async res => {
-            if ( !res.ok ) return;
-
-            const data = await res.json();
-
-            dynamicForms.update( dynamicForm._id, data.response );
-
-            toast.success( "Formulario actualizado correctamente", successToast() );
-        })
-        .catch( _ => toast.error( "Ocurrió un error al actualizar el formulario", errorToast() ))
-        .finally( enableAll );
-    }
-
-
-    async function deletedTemplate() {
-        isLoading           = true;
-        formName.disabled   = true;
-
-        await fetch(
-            ROUTER.DYNAMIC_FORM.DELETE( dynamicForm._id ), {
-                method: 'DELETE'
-            }
-        ).then( res =>  {
-            if ( !res.ok ) {
-                toast.error( 'Failed to delete dynamic form', errorToast() );
-                return null;
-            };
-
-            dynamicForms.remove( dynamicForm._id );
-
-            handleTemplateChange({ 
-                label: defaultSelected,
-                value: 'new'
-            });
-
-            formName.value = '';
-
-            toast.success( "Formulario eliminado correctamente", successToast() );
-        }
-        ).catch( err => {
-            console.error( err );
-            toast.error( 'Failed to delete dynamic form', errorToast() );
-        })
-        .finally( enableAll );
-    }
-
-
-    function handleTemplateChange(
-        selected: Selected<string> | Selected<string>[] | undefined
-    ): void {
-        if ( !selected || selected instanceof Array ) return;
-
-        optionSelected = selected.value;
-        formName.value = optionSelected === 'new' ? '' : selected.label;
-
-        if ( selected.value === 'new' ) {
-            dynamicForm = {
-                ...dynamicForm,
-                name    : '',
-                details : [ buttonTemplate ],
-            };
-
-            return;
-        }
-
-        const selectedForm = $dynamicForms
-            .find( form => form._id === selected.value );
-
-        if ( !selectedForm ) {
-            dynamicForm.details = [];
-            return;
-        }
-
-        dynamicForm = { ...selectedForm, name: selected.label! };
-    }
-
-
-    const formName: ShapeInput = {
-		id			: uuid(),
-		name		: 'template-name',
-		label		: 'Nombre de la nueva plantilla',
-		placeholder	: 'Escribe aquí para crear el nombre de la plantilla',
-        required	: true,
-        shape		: 'input',
-        msgRequired : 'El campo es requerido.',
-        valid       : true,
-    }
 </script>
 
+<div class="min-h-screen flex flex-col bg-gray-50">
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <h1 class="text-xl sm:text-lg md:text-2xl bg-gradient-to-r from-yellow-500 to-amber-600 bg-clip-text text-transparent font-bold">
+                    Formulario Dinámico
+                </h1>
 
-<main class="px-4 py-5 mx-auto 2xl:mx-36 space-y-5 overflow-hidden">
-	<div 
-		class   = "mx-1"
-		in:fly  = {{ y: -20, duration: 300 }}
-		out:fly = {{ y: 20, duration: 300 }}
-	>
-		<Combobox
-			shapeInput = {{
-				id			: uuid(),
-				name		: 'search',
-                shape       : 'combobox',
-				options,
-				label		: 'Plantillas de formularios',
-				placeholder	: 'Seleccione una plantilla',
-                disabled    : isLoading,
-                selected    : optionSelected
-			}}
-			onSelectedChange = { handleTemplateChange }
-		/>
-	</div>
+                <h2 class="text-sm sm:text-base bg-gradient-to-r from-gray-900 to-gray-500 bg-clip-text text-transparent font-bold">
+                    | UAI
+                </h2>
+            </div>
 
-    {#if dynamicForm.details.length > 0}
-        <div
-            class		= "mt-5"
-            in:scale	= {{ duration: 300, start: 0.95 }}
-            out:scale	= {{ duration: 300, start: 1 }}
-        >
-            {#if $dynamicMode}
-                <div
-                    out:fade	= {{ duration: 300, delay: 300 }}
-                    in:fade		= {{ duration: 300, delay: 300 }}
-                    class		= "space-y-5"
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex space-x-8">
+            <a href="/" class="text-gray-700 hover:text-blue-900 relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-900 after:transition-all hover:after:w-full">Inicio</a>
+            <a href="/docs" class="text-gray-700 hover:text-blue-900 relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-900 after:transition-all hover:after:w-full">Documentación</a>
+            <a href="/form" class="text-gray-700 hover:text-blue-900 relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-900 after:transition-all hover:after:w-full">Formulario</a>
+
+            
+            </nav>
+
+                  
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden" on:click={toggleMenu} aria-label="Menú">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+            </svg>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        {#if isMenuOpen}
+            <div class="md:hidden bg-white py-2 px-4 shadow-md">
+                <nav class="flex flex-col space-y-3">
+                    <a href="/" class="py-2 text-gray-700 hover:text-blue-900" on:click={toggleMenu}>Inicio</a>
+                    <a href="/docs" class="py-2 text-gray-700 hover:text-blue-900" on:click={toggleMenu}>Documentación</a>
+                    <a href="/form" class="py-2 text-gray-700 hover:text-blue-900" on:click={toggleMenu}>Formulario</a>
+                </nav>
+            </div>
+        {/if}
+    </header>
+
+    <main class="flex-grow">
+    <!-- Hero Section -->
+    <section id="hero" class="bg-gradient-to-r from-blue-900 to-blue-600 text-white py-20 px-4">
+        <div class="container mx-auto text-center">
+        <div class="transform transition-all duration-1000 {visibleSections.hero ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Bienvenido a Formulario Dinámico</h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">La plataforma de la Universidad Adolfo Ibáñez para crear, gestionar y analizar formularios de manera eficiente.</p>
+        </div>
+        <div class="flex flex-col sm:flex-row justify-center gap-4 transform transition-all duration-1000 delay-300 {visibleSections.hero ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}">
+            {#if !$session.data}
+                <MicrosoftAuth />
+            {:else}
+                <button
+                    class       = "bg-white text-blue-900 hover:bg-gray-100 font-semibold py-3 px-6 rounded-md transition-colors duration-300"
+                    on:click    = {() => goto('/form')}
                 >
-                    <Resizable>
-                        <container slot="left" class="ml-1 h-full flex flex-col space-y-3 overflow-y-auto">
-                            <SubTitle title="Editor" />
+                    Comenzar ahora
+                </button>
+            {/if}
 
-                            <div
-                                class		= "flex-1 space-y-3 overflow-y-auto"
-                                use:dndzone = {{ items: dynamicForm.details, flipDurationMs, dropTargetStyle: {} }}
-                                on:consider = { handleConsider }
-                                on:finalize = { handleFinalize }
-                            >
-                                {#each dynamicForm.details ?? [] as item, index ( item.id )}
-                                    <div animate:flip={{ duration: flipDurationMs }}>
-                                        <div class="flex gap-1.5">
-                                            <Enumeration
-                                                number	= { index + 1 }
-                                                active	= { inputActive === index + 1 }
-                                            />
+            <button
+                class       = "bg-transparent hover:bg-blue-800 text-white border border-white font-semibold py-3 px-6 rounded-md transition-colors duration-300"
+                on:click    = {() => goto('/docs')}
+            >
+                Conocer más
+            </button>
+        </div>
+        </div>
+    </section>
 
-                                            <EditorView
-                                                bind:shapeInput	= { dynamicForm.details[index] }
-                                                onDelete		= { () => deleteItem( item.id )}
-                                                inputActive 	= { () => inputActive = index + 1 }
-                                                inputDesactive	= { () => inputActive = 0 }
-                                            />
-                                        </div>
-                                    </div>
-                                {/each}
-                            </div>
+    <!-- Features Section -->
+    <section id="features" class="py-16 px-4 bg-white">
+        <div class="container mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12 transform transition-all duration-1000 {visibleSections.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}">Características principales</h2>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {#each features as feature, i}
+            <div class="bg-white rounded-lg p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 transform {visibleSections.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}" style="transition-delay: {i * 150}ms">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={feature.icon} />
+                </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-900">{feature.title}</h3>
+                <p class="text-gray-600">{feature.description}</p>
+            </div>
+            {/each}
+        </div>
+        </div>
+    </section>
 
-                            <button
-                                class="flex-shrink-0 w-full flex justify-center hover:brightness-105 dark:hover:brightness-110 shadow-md rounded-lg p-5 border-1 border-zinc-300 dark:border-zinc-700 border bg-white dark:bg-zinc-900 active:scale-[0.99] active:brightness-90"
-                                on:click={ addItem }
-                            >
-                                <AddIcon />
-                            </button>
-                        </container>
+    <!-- About Section -->
+    <section id="about" class="py-16 px-4 bg-gray-50">
+        <div class="container mx-auto">
+        <div class="flex flex-col md:flex-row items-center gap-12">
+            <div class="md:w-1/2 transform transition-all duration-1000 {visibleSections.about ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}">
+            <h2 class="text-3xl font-bold mb-6 text-gray-900">Acerca de Formulario Dinámico</h2>
+            <p class="text-gray-700 mb-4">
+                Formulario Dinámico es una aplicación desarrollada específicamente para la Universidad Adolfo Ibáñez, 
+                diseñada para simplificar la creación y gestión de formularios en el entorno académico.
+            </p>
+            <p class="text-gray-700 mb-4">
+                Nuestra plataforma permite a profesores, administrativos y estudiantes crear formularios personalizados
+                para encuestas, evaluaciones, inscripciones y más, todo en un entorno seguro y fácil de usar.
+            </p>
+            <p class="text-gray-700">
+                Con herramientas de análisis integradas, podrás obtener insights valiosos de los datos recopilados
+                para mejorar procesos y tomar decisiones informadas.
+            </p>
+            </div>
+            <div class="md:w-1/2 transform transition-all duration-1000 delay-300 {visibleSections.about ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}">
+            <div class="bg-white p-1 rounded-lg shadow-lg">
+                <img 
+                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                alt="Universidad Adolfo Ibáñez campus" 
+                class="rounded-lg w-full h-auto"
+                />
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
 
-                        <div slot="right" class="overflow-auto mr-1">
-                            <Preview
-                                { inputActive }
-                                template    = { dynamicForm.details }
-                                dynamicMode = { $dynamicMode }
-                            />
-                        </div>
-                    </Resizable>
+    <!-- CTA Section -->
+    <section id="cta" class="py-16 px-4 bg-blue-50">
+        <div class="container mx-auto text-center transform transition-all duration-1000 {visibleSections.cta ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}">
+            <h2 class="text-3xl font-bold mb-6 text-gray-900">¿Listo para comenzar?</h2>
+            <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
+                Únete a la comunidad de la Universidad Adolfo Ibáñez y comienza a crear formularios dinámicos hoy mismo.
+            </p>
 
-                    <div
-                        class   = "flex flex-row items-start w-full gap-2"
-                        in:fade = {{ duration: 1000, delay: 50 }}
-                    >
-                        <Input 
-                            shapeInput  = { formName }
-                            onInput     = {( value : Event ) => dynamicForm.name = ( value.target as HTMLInputElement ).value}
-                            value       = { dynamicForm.name }
-                            setError    = { () => formName.valid = dynamicForm.name.length > 0 }
-                        />
-
-                        <div class="flex items-start gap-2 mt-[1.7rem]">
-                            {#if optionSelected === 'new' }
-                                <button
-                                    class       = "h-10 sm:h-9 w-20 sm:w-40 md:w-36 bg-amber-500 dark:bg-amber-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
-                                    on:click    = { saveTemplate }
-                                    disabled    = { isLoading }
-                                >
-                                    <SaveIcon />
-
-                                    {#if isLoading }
-                                        <LoadIcon />
-                                    {:else }
-                                        <span class="hidden sm:block">
-                                            Crear
-                                        </span>
-                                    {/if}
-                                </button>
-                            {:else }
-                                <button
-                                    class       = "h-10 sm:h-9 w-20 md:w-36 bg-amber-500 dark:bg-amber-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
-                                    on:click    = { updatedTemplate }
-                                    disabled    = { isLoading }
-                                >
-                                    <SaveIcon />
-
-                                    {#if isLoading }
-                                        <LoadIcon />
-                                    {:else }
-                                        <span class="hidden sm:block">
-                                            Actualizar
-                                        </span>
-                                    {/if}
-                                </button>
-
-                                <DeleteModel
-                                    onConfirm   = { deletedTemplate }
-                                    formName    = { dynamicForm.name }
-                                    { isLoading }
-                                />
-                            {/if}
-                        </div>
-                    </div>
+            {#if !$session.data}
+                <div class="flex justify-center">
+                    <MicrosoftAuth />
                 </div>
             {:else}
-                <Separator.Root
-                    orientation = "horizontal"
-                    class       = "w-full h-[1px] rounded-lg bg-zinc-300 dark:bg-zinc-600"
-                />
-
-                <div 
-                    class		= "mt-5"
-                    in:scale	= {{ duration: 300, start: 0.95 }}
-                    out:scale	= {{ duration: 300, start: 1 }}
+                <button
+                    class="bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-md transition-colors duration-300"
+                    on:click    = {() => goto('/form')}
                 >
-                    <Preview
-                        { inputActive }
-                        template    = { dynamicForm.details }
-                        dynamicMode = { $dynamicMode }
-                    />
-                </div>
+                    Crear mi primer formulario
+                </button>
             {/if}
         </div>
-    {:else}
-        <div
-            class		= "w-full h-full flex flex-col items-center justify-center"
-            in:scale	= {{ duration: 300, start: 0.95 }}
-            out:scale	= {{ duration: 300, start: 1 }}
-        >
-            <span class="text-lg text-zinc-700 dark:text-zinc-400 transition-colors">
-                Por favor, selecciona una plantilla
-            </span>
+    </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gray-800 text-white py-12 px-4">
+    <div class="container mx-auto">
+        <div class="grid md:grid-cols-3 gap-8">
+        <div>
+            <h3 class="text-xl font-semibold mb-4">Formulario Dinámico</h3>
+            <p class="text-gray-300">
+            Una aplicación de la Universidad Adolfo Ibáñez para la gestión eficiente de formularios académicos.
+            </p>
         </div>
-    {/if}
-</main>
+        <div>
+            <h3 class="text-xl font-semibold mb-4">Enlaces rápidos</h3>
+            <ul class="space-y-2 text-gray-300">
+            <li><a href="#hero" class="hover:text-white transition-colors duration-200">Inicio</a></li>
+            <li><a href="#features" class="hover:text-white transition-colors duration-200">Características</a></li>
+            <li><a href="#about" class="hover:text-white transition-colors duration-200">Acerca de</a></li>
+            <li><a href="https://www.uai.cl" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors duration-200">Sitio web UAI</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold mb-4">Contacto</h3>
+            <ul class="space-y-2 text-gray-300">
+            <li>Email: formulario.dinamico@uai.cl</li>
+            <li>Teléfono: +56 2 2331 1000</li>
+            <li>Dirección: Diagonal las Torres 2640, Peñalolén, Santiago</li>
+            </ul>
+        </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+        <p>&copy; {new Date().getFullYear()} Universidad Adolfo Ibáñez. Todos los derechos reservados.</p>
+        </div>
+    </div>
+    </footer>
+</div>
