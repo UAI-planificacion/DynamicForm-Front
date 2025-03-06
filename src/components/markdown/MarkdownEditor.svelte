@@ -243,7 +243,7 @@
 <Info { shapeInput } { onInput } { value }>
 <div class="grid {updateGridClass()} bg-white dark:bg-zinc-700 rounded-lg shadow-lg overflow-hidden">
     <div class="relative">
-        <div class="border-b border-gray-200 dark:border-zinc-700 bg-black  flex items-center h-14 dark:bg-zinc-800">
+        <div class="border-b border-gray-200 dark:border-zinc-700 bg-black flex items-center h-14 dark:bg-zinc-800">
 
             <!-- Desktop view -->
             <div class="hidden flex-wrap {updateGridButtonsDesktop()}">
@@ -286,18 +286,19 @@
                 {/each}
 
                 <DropdownMenu.Root 
-                    bind:open={desktopTableOpen}
-                    closeOnItemClick={true}
-                    closeFocus={textarea}
+                    bind:open           = { desktopTableOpen }
+                    closeOnItemClick    = { true }
+                    closeFocus          = { textarea }
                 >
                     <DropdownMenu.Trigger
                         class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-700 dark:text-zinc-200"
                     >
                         <TableMarkIcon />
                     </DropdownMenu.Trigger>
+
                     <DropdownMenu.Content
-                        class="rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
-                        sideOffset={8}
+                        class       = "rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
+                        sideOffset  = { 8 }
                     >
                         <DynamicTable
                             onTableGenerated={( table ) => {
@@ -340,6 +341,7 @@
                                 </svg>
                             </div>
                         </DropdownMenu.SubTrigger>
+
                         <DropdownMenu.SubContent
                             class=" rounded-lg w-28 bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-lg"
                             sideOffset={10}

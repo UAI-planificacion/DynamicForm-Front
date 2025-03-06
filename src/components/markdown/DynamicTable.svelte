@@ -96,13 +96,13 @@
         {#each Array(rows) as _, i}
             {#each Array(cols) as _, j}
                 <div
-                    class="w-4 h-4 border border-zinc-300 dark:border-zinc-500 transition-colors duration-200 ease-in-out rounded cursor-pointer"
-                    class:bg-sky-500={cells[i][j]}
-                    on:mouseenter={() => handleMouseEnter(i, j)}
-                    on:click={() => handleCellClick(i, j)}
-                    on:keydown={(e) => e.key === 'Enter' && handleCellClick(i, j)}
-                    role="grid"
-                    tabindex="0"
+                    class           = "w-4 h-4 border border-zinc-600 dark:border-zinc-500 transition-colors duration-200 ease-in-out rounded cursor-pointer"
+                    class:bg-sky-500= {cells[i][j]}
+                    on:mouseenter   = {() => handleMouseEnter(i, j)}
+                    on:click        = {() => handleCellClick(i, j)}
+                    on:keydown      = {(e) => e.key === 'Enter' && handleCellClick(i, j)}
+                    role            = "grid"
+                    tabindex        = "0"
                 ></div>
             {/each}
         {/each}
@@ -110,7 +110,7 @@
     </div>
 </div>
 
-<span class="mx-auto flex justify-center mt-1 dark:text-zinc-100">
+<span class="mx-auto flex justify-center mt-1 text-zinc-200">
     {#if hoveredRow >= 0 && hoveredCol >= 0}
         {hoveredRow + 1} x {hoveredCol + 1}
     {:else}

@@ -1,0 +1,187 @@
+<script lang="ts">
+    import { fade, scale } from 'svelte/transition';
+    
+    export let value    : string    = "12:00";
+    export let label    : string    = "Seleccionar hora";
+    export let id       : string    = "analog-time-picker";
+    export let required : boolean   = false;
+    export let disabled : boolean   = false;
+
+    let isOpen              = false;
+    let hours               = 12;
+    let minutes             = 0;
+    let isSelectingHours    = true;
+    let isPM                = hours >= 12;
+
+    $: formattedTime    = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    $: value            = formattedTime;
+    $: hourHandAngle    = (( hours % 12 ) * 30 ) - 90;
+    $: minuteHandAngle  = ( minutes * 6 ) - 90;
+
+    const hoursArray    = Array.from({ length: 12 }, (_, i) => i === 0 ? 12 : i);
+    const hoursArrayPM  = Array.from({ length: 12 }, (_, i) => i === 0 ? 12 : i + 12);
+    const minutesArray  = Array.from({ length: 12 }, (_, i) => i * 5);
+
+    const confirmSelection  = (): boolean => isOpen = false;
+    const selectMinute      = ( minute: number ): number => minutes = minute;
+
+
+    function getPosition(
+        index: number,
+        total: number,
+        radius: number
+    ): { x: number, y: number } {
+        const angle = ((index / total) * 2 * Math.PI) - (Math.PI / 2);
+        const x = radius * Math.cos(angle);
+        const y = radius * Math.sin(angle);
+        return { x, y };
+    }
+
+
+    function selectHour( hour: number ): void {
+        hours = isPM && hour < 12 ? hour + 12 : ( hour === 12 && !isPM ? 0 : hour );
+        isSelectingHours = false;
+    }
+
+
+    function toggleAMPM(): void {
+        isPM = !isPM;
+
+        if ( hours < 12 && isPM ) {
+            hours += 12;
+        } else if ( hours >= 12 && !isPM ) {
+            hours -= 12;
+        }
+    }
+
+
+    function togglePicker(): void {
+        if ( disabled ) return;
+        isOpen = !isOpen;
+        isSelectingHours = true;
+    }
+
+
+    function handleClickOutside( event: MouseEvent ): void {
+        const target = event.target as HTMLElement;
+        const picker = document.getElementById( id );
+
+        if ( picker && !picker.contains( target ))
+            isOpen = false;
+    }
+</script>
+
+<svelte:window on:click={ handleClickOutside } />
+
+<div class="relative w-full max-w-xs" {id}>
+    <label for={`${id}-input`} class="block text-sm font-medium text-gray-700 mb-1">
+        {label} {required ? '*' : ''}
+    </label>
+
+    <button
+        type="button"
+        id={`${id}-input`}
+        class="w-full px-4 py-2 text-left bg-white border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 {disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}"
+        on:click={togglePicker}
+        {disabled}
+        aria-haspopup="true"
+        aria-expanded={isOpen}
+    >
+        { formattedTime }
+    </button>
+
+    {#if isOpen}
+        <div 
+            class="absolute z-10 mt-1 bg-white rounded-lg shadow-xl p-4"
+            transition:fade={{ duration: 150 }}
+        >
+            <div class="flex flex-col items-center">
+                <div class="flex space-x-4 mb-4">
+                    <button 
+                        class="px-3 py-1 rounded-md {isSelectingHours ? 'bg-primary-600 text-white' : 'text-gray-600'}"
+                        on:click={() => isSelectingHours = true}
+                    >
+                        Horas
+                    </button>
+
+                    <button 
+                        class="px-3 py-1 rounded-md {!isSelectingHours ? 'bg-primary-600 text-white' : 'text-gray-600'}"
+                        on:click={() => isSelectingHours = false}
+                    >
+                        Minutos
+                    </button>
+
+                    <button
+                        type="button"
+                        class="px-4 py-2 text-sm bg-primary-600 text-white hover:bg-primary-700 rounded-md"
+                        on:click={confirmSelection}
+                    >
+                        Aceptar
+                    </button>
+                </div>
+
+                <!-- Reloj analógico -->
+                <div class="relative w-64 h-64 rounded-full border-4 border-gray-200 mb-4">
+                    <!-- Botón AM/PM central -->
+                    <button 
+                        class="absolute top-1/2 left-1/2 w-10 h-10 rounded-full bg-primary-600 text-white transform -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center text-sm font-medium hover:bg-primary-700 transition-colors"
+                        on:click={toggleAMPM}
+                    >
+                        {isPM ? 'PM' : 'AM'}
+                    </button>
+
+                    {#if isSelectingHours}
+                    <!-- Selector de horas -->
+                        <div 
+                            transition:scale={{ duration: 200, start: 0.8 }}
+                            class="absolute inset-0"
+                        >
+                            <!-- Aguja de la hora -->
+                            <div 
+                                class="absolute top-1/2 left-1/2 h-1 bg-primary-600 rounded-full origin-left z-10"
+                                style="width: 30%; transform: translateY(-50%) rotate({hourHandAngle}deg);"
+                            ></div>
+
+                            <!-- Números de las horas -->
+                            {#each isPM ? hoursArrayPM : hoursArray as hour, i}
+                                {@const pos = getPosition(i, 12, 100)}
+                                <button 
+                                    class="absolute w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary-100 {(hours === hour) || (hours === 0 && hour === 12 && !isPM) ? 'bg-primary-600 text-white' : ''}"
+                                    style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
+                                    on:click={() => selectHour(hour)}
+                                >
+                                    {`${hour < 10 ? '0' : ''}${hour}`}
+                                </button>
+                            {/each}
+                        </div>
+                    {:else}
+                        <!-- Selector de minutos -->
+                        <div 
+                            transition:scale={{ duration: 200, start: 0.8 }}
+                            class="absolute inset-0"
+                        >
+                            <!-- Aguja de los minutos -->
+                            <div 
+                                class="absolute top-1/2 left-1/2 h-1 bg-primary-600 rounded-full origin-left "
+                                style="width: 40%; transform: translateY(-50%) rotate({minuteHandAngle}deg);"
+                            ></div>
+
+                            <!-- Números de los minutos -->
+                            {#each minutesArray as minute, i}
+                                {@const pos = getPosition(i, 12, 100)}
+
+                                <button 
+                                    class="absolute w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary-100 {minutes === minute ? 'bg-primary-600 text-white' : ''}"
+                                    style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
+                                    on:click={() => selectMinute(minute)}
+                                >
+                                    {`${minute < 10 ? '0' : ''}${minute}`}
+                                </button>
+                            {/each}
+                        </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    {/if}
+</div>
