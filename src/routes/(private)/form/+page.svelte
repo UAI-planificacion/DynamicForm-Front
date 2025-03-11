@@ -11,7 +11,6 @@
 	import { Separator, type Selected }	from "bits-ui";
     import toast                        from "svelte-french-toast";
 
-
 	import {
 		Preview,
 		EditorView,
@@ -35,6 +34,8 @@
     }                                       from "$lib";
 	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
 	import { dynamicMode, dynamicForms } 	from "$stores";
+  import Timer from "$components/inputs/time-picker/Timer.svelte";
+  import AnalogTime from "$components/inputs/time-picker/AnalogTime.svelte";
 
 
 	const flipDurationMs = 100;
@@ -267,6 +268,9 @@
     }
 </script>
 
+
+<Timer />
+<AnalogTime/>
 
 <main class="px-4 py-5 mx-auto 2xl:mx-36 space-y-5 overflow-hidden">
 	<div 
