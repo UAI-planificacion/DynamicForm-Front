@@ -1,5 +1,6 @@
-import type { ToastOptions } from 'svelte-french-toast';
-import { derived, get } from 'svelte/store';
+import type { ToastOptions }    from 'svelte-french-toast';
+import { derived, get }         from 'svelte/store';
+
 import { theme } from '$stores';
 
 

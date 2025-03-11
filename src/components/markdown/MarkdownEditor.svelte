@@ -247,9 +247,9 @@
 
             <!-- Desktop view -->
             <div class="hidden flex-wrap {updateGridButtonsDesktop()}">
+                <!-- closeOnItemClick={true} -->
+                <!-- closeFocus={textarea} -->
                 <DropdownMenu.Root
-                    closeOnItemClick={true}
-                    closeFocus={textarea}
                 >
                     <DropdownMenu.Trigger
                         class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
@@ -263,7 +263,7 @@
                         {#each headingTools as tool}
                             <DropdownMenu.Item
                                 class="flex h-10 hover:rounded-lg select-none items-center rounded-button py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700"
-                                on:click={tool.action}
+                                onclick={tool.action}
                             >
                                 <div class="flex items-center gap-2">
                                     <tool.icon />
@@ -285,10 +285,10 @@
                     </button>
                 {/each}
 
+                <!-- closeOnItemClick    = { true } -->
+                <!-- closeFocus          = { textarea } -->
                 <DropdownMenu.Root 
                     bind:open           = { desktopTableOpen }
-                    closeOnItemClick    = { true }
-                    closeFocus          = { textarea }
                 >
                     <DropdownMenu.Trigger
                         class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-700 dark:text-zinc-200"
@@ -311,10 +311,10 @@
             </div>
 
             <!-- Mobile menu -->
+            <!-- closeOnItemClick={true} -->
+            <!-- closeFocus={textarea} -->
             <DropdownMenu.Root 
                 bind:open={mobileMenuOpen}
-                closeOnItemClick={true}
-                closeFocus={textarea}
             >
                 <DropdownMenu.Trigger
                     class="{updateGridButtonsMobile()} hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
@@ -349,7 +349,7 @@
                             {#each headingTools as tool}
                                 <DropdownMenu.Item
                                     class="flex h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700"
-                                    on:click={tool.action}
+                                    onclick={tool.action}
                                 >
                                     <div class="flex items-center gap-2">
                                         <tool.icon />
@@ -363,7 +363,7 @@
                     {#each tools as tool}
                         <DropdownMenu.Item
                             class="flex h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700"
-                            on:click={tool.action}
+                            onclick={tool.action}
                         >
                             <div class="flex items-center gap-2">
                                 <tool.icon />

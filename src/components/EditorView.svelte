@@ -1,11 +1,10 @@
 <script lang="ts">
     import { onMount }  from "svelte";
-    import { slide }    from "svelte/transition";
 
-    import { Accordion, type Selected } from "bits-ui";
-	import { v4 as uuid }	            from 'uuid';
-    import { read, utils }				from 'xlsx';
-    import { type DateValue }           from "@internationalized/date";
+    import { Accordion }        from "bits-ui";
+	import { v4 as uuid }	    from 'uuid';
+    import { read, utils }		from 'xlsx';
+    import { type DateValue }   from "@internationalized/date";
 
     import {
         DeleteIcon,
@@ -18,8 +17,9 @@
         InputStyle,
         InputType,
         Method,
+        SelectInput,
         ShapeInput,
-        ShapeOptions,
+        ShapeOption,
         Types
     }						from "$models";
     import {
@@ -27,10 +27,9 @@
         DatePicker,
         Input,
         MarkdownEditor,
-        Select,
         TextArea,
         Viewer,
-        Combobox
+        VirtualSelect,
     }						from "$components";
     import {
 		options,
@@ -79,7 +78,8 @@
         isAddingOption = true;
         try {
             shapeInput.options = [
-                ...shapeInput.options ?? [], {
+                ...(shapeInput.options as ShapeOption[]) ?? [], 
+                {
                     id      : uuid(),
                     label   : '',
                     value   : ''
@@ -91,7 +91,7 @@
     };
 
 
-	const processJsonData = (data: any[]): ShapeOptions[] =>
+	const processJsonData = (data: any[]): ShapeOption[] =>
 		data.map(item => ({
             id: uuid(),
             label: item.label || item.name || '',
@@ -99,7 +99,7 @@
         }));
 
 
-	const processExcelData = (data: any[]): ShapeOptions[] =>
+	const processExcelData = (data: any[]): ShapeOption[] =>
         data.map(row => {
             const value = row['value'] || '';
             const label = row['label'] || '';
@@ -160,16 +160,16 @@
     };
 
 
-	const deleteOption = ( item: ShapeOptions ) =>
+	const deleteOption = ( item: ShapeOption ) =>
         shapeInput.options = [
-            ...shapeInput.options?.filter( option => option.id !== item.id ) ?? []
+            ...(shapeInput.options as ShapeOption[])?.filter( option => option.id !== item.id ) ?? []
         ];
 
 
-    function onSelectedChange( selected: Selected<string> | Selected<string>[] | undefined ) {
+    function onSelectedChange( selected: SelectInput ) {
 		if ( selected === undefined || selected instanceof Array ) return;
 
-		shapeInput.shape = selected?.value as InputType || 'none';
+		shapeInput.shape = selected as InputType || 'none';
 
         if ( shapeInput.shape === 'textarea' ) {
             shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
@@ -214,10 +214,10 @@
     }
 
 
-	function onSelectedType( selected: Selected<string> | Selected<string>[] | undefined ) {
+	function onSelectedType( selected: SelectInput ) {
 		if ( selected === undefined || selected instanceof Array ) return;
 
-		shapeInput.type = selected?.value as Types || 'none';
+		shapeInput.type = selected as Types || 'none';
 
         onChangeType();
     }
@@ -233,14 +233,6 @@
             ...shapeInput.httpList ?? [], 
             { code: 200, message: '' }
         ];
-
-    // Función para actualizar los estilos de manera reactiva
-    const updateStyle = (key: string, value: string) => {
-        shapeInput = {
-            ...shapeInput,
-            [key]: value
-        };
-    };
 </script>
 
 
@@ -256,7 +248,7 @@
         <section class="space-y-2">
             <div class="grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
 				{#if shapeInput.shape !== 'button'}
-					<Select
+					<!-- <Select
 						shapeInput = {{
 							id			: uuid(),
 							name 		: 'shape',
@@ -267,7 +259,23 @@
 							options,
 						}}
 						{ onSelectedChange }
-					/>
+					/> -->
+
+                    <VirtualSelect
+                        shapeInput = {{
+                            id			: uuid(),
+                            name		: 'shape',
+                            shape       : 'select',
+                            options,
+                            multiple    : false,
+                            search      : false,
+                            heightPanel : 5,
+                            label		: 'Input',
+                            placeholder	: 'Ingrese el tipo de entrada',
+                            selected    : shapeInput.shape,
+                        }}
+                        { onSelectedChange }
+                    />
 				{/if}
 
                 <Input
@@ -346,7 +354,7 @@
 
             {#if shapeInput.shape === 'input' }
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center">
-                    <Select
+                    <VirtualSelect
                         shapeInput = {{
                             id			: uuid(),
                             name 		: 'type',
@@ -413,7 +421,7 @@
 					onInput		= {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
 				/>
 
-            {:else if shapeInput.shape === 'combobox' || shapeInput.shape === 'select' }
+            {:else if shapeInput.shape === 'select' }
                 <div class="grid grid-cols-2 items-center ">
                     <span class="text-sm text-zinc-900 dark:text-zinc-200">Valor</span>
 
@@ -462,10 +470,10 @@
                             shapeInput = {{
                                 id		    : uuid(),
                                 name	    : uuid(),
-                                value       : item.value,
+                                value       : ( item as ShapeOption ).value,
                                 placeholder : 'Ingrese el valor',
                             }}
-                            onInput = {( event: Event ) => item.value = ( event.target as HTMLInputElement ).value }
+                            onInput = {( event: Event ) => ( item as ShapeOption ).value = ( event.target as HTMLInputElement ).value }
                         />
 
                         <div class="flex gap-2 items-start">
@@ -473,15 +481,15 @@
                                 shapeInput = {{
                                     id		    : uuid(),
                                     name	    : uuid(),
-                                    value       : item.label,
+                                    value       : ( item as ShapeOption ).label,
                                     placeholder : 'Ingrese la etiqueta para mostrar',
                                 }}
-                                onInput = {( event: Event ) => item.label = ( event.target as HTMLInputElement ).value }
+                                onInput = {( event: Event ) => ( item as ShapeOption ).label = ( event.target as HTMLInputElement ).value }
                             />
 
                             <button
                                 class="hover:brightness-105 active:scale-95 mt-2 disabled:active:scale-100 disabled:opacity-50"
-                                on:click={() => deleteOption(item)}
+                                on:click={() => deleteOption(( item as ShapeOption ))}
                                 disabled={shapeInput.options?.length === 1}
                             >
                                 <DeleteIcon />
@@ -490,10 +498,8 @@
                     {/each}
                 </div>
 
-				
-
                 {#if shapeInput.shape === 'select'}
-                    <Select
+                    <!-- <Select
                         shapeInput={{
                             id			: uuid(),
                             name 		: 'default-value',
@@ -511,9 +517,24 @@
                                 shapeInput.selected = selected?.value;
                             }
                         }}
+                    /> -->
+
+                    <VirtualSelect
+                        shapeInput = {{
+                            id			: uuid(),
+                            name 		: 'default-value',
+                            placeholder	: 'Ingrese un valor por defecto',
+                            required 	: true,
+                            label		: 'Valor por defecto',
+                            selected	: shapeInput.selected,
+                            multiple    : shapeInput.multiple,
+                            search      : false,
+                            options     : [{ id: uuid(), label: 'Sin valor por defecto', value: '' }, ...(shapeInput.options as ShapeOption[]) ?? [] ],
+                        }}
+                        onSelectedChange = { onSelectedType }
                     />
-                {:else}
-                    <Combobox
+                <!-- {:else} -->
+                    <!-- <Combobox
                         shapeInput={{
                             id			: uuid(),
                             name 		: 'default-value',
@@ -531,7 +552,7 @@
                                 shapeInput.selected = selected?.value;
                             }
                         }}
-                    />
+                    /> -->
                 {/if}
 
                 <div class="flex items-center gap-4">
@@ -551,7 +572,7 @@
 
 			{:else if shapeInput.shape === 'button'}
 					<div class="grid @lg:grid-cols-[1fr,2fr] grid-cols-1 gap-2 items-center">
-						<Select
+						<!-- <Select
 							shapeInput = {{
 								id			: uuid(),
 								label		: 'Método HTTP',
@@ -564,7 +585,25 @@
 								if (value instanceof Array || value === undefined) return;
 								shapeInput.method = value.value as Method;
 							}}
-						/>
+						/> -->
+
+                        <VirtualSelect
+                            shapeInput = {{
+                                id			: uuid(),
+                                label		: 'Método HTTP',
+								name		: 'method',
+								placeholder	: 'Selecciona el método',
+                                required 	: true,
+                                selected	: shapeInput.selected,
+                                multiple    : shapeInput.multiple,
+                                search      : false,
+								options		: methods
+                            }}
+                            onSelectedChange = {(value) => {
+								if (value instanceof Array || value === undefined) return;
+								shapeInput.method = value as Method;
+							}}
+                        />
 
 						<Input
 							shapeInput = {{
@@ -579,7 +618,7 @@
 					</div>
             {/if}
 
-            <Accordion.Root class="w-full">
+            <Accordion.Root class="w-full" type="single">
                 <Accordion.Item value="validations" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
                     <Accordion.Header>
                         <Accordion.Trigger
@@ -595,8 +634,6 @@
                     </Accordion.Header>
 
                     <Accordion.Content
-                        transition          = { slide }
-                        transitionConfig    = {{ duration: 200 }}
                         class               = "pb-3 tracking-[-0.01em] space-y-2"
                     >
                         {#if shapeInput.shape !== 'button' }
@@ -645,7 +682,7 @@
 
 								<div class={`${heightOptions( shapeInput.httpList?.length )} grid @lg:grid-cols-[1fr,2fr,auto] grid-cols-1 gap-2 items-center overflow-auto`}>
 									{#each shapeInput.httpList ?? [] as http, index}
-											<Select
+											<!-- <Select
 												shapeInput = {{
 													id			: uuid(),
 													shape		: 'select',
@@ -660,7 +697,26 @@
 													if (!shapeInput.httpList) return;
 													shapeInput.httpList[index].code = parseInt(value.value);
 												}}
-											/>
+											/> -->
+
+                                            <VirtualSelect
+                                                shapeInput = {{
+                                                    id			: uuid(),
+                                                    shape		: 'select',
+                                                    name		: 'code',
+                                                    placeholder	: 'Código HTTP',
+                                                    required 	: true,
+                                                    selected	: http.code.toString(),
+                                                    multiple    : shapeInput.multiple,
+                                                    search      : false,
+                                                    options		: httpCodes,
+                                                }}
+                                                onSelectedChange = {(value) => {
+													if ( value instanceof Array || value === undefined) return;
+													if (!shapeInput.httpList) return;
+													shapeInput.httpList[index].code = parseInt( value );
+												}}
+                                            />
 
 											<Input
 												shapeInput = {{
@@ -836,8 +892,6 @@
 						</Accordion.Header>
 
 						<Accordion.Content
-							transition          = { slide }
-							transitionConfig    = {{ duration: 200 }}
 							class               = "pb-3 tracking-[-0.01em] space-y-2"
 						>
 							<div class="grid @lg:grid-cols-2 grid-cols-1 gap-2 items-center">
@@ -883,8 +937,6 @@
                     </Accordion.Header>
 
                     <Accordion.Content
-                        transition          = { slide }
-                        transitionConfig    = {{ duration: 200 }}
                         class               = "pb-3 tracking-[-0.01em] space-y-2"
                     >
                         <Input

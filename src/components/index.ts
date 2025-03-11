@@ -1,9 +1,8 @@
 //Inputs
 export { default as Button }        from './inputs/Button.svelte';
 export { default as Check }         from './inputs/Check.svelte';
-export { default as Combobox }      from './inputs/Combobox.svelte';
+export { default as VirtualSelect } from './inputs/VirtualSelect.svelte';
 export { default as Input }         from './inputs/Input.svelte';
-export { default as Select }        from './inputs/Select.svelte';
 export { default as DatePicker }    from './inputs/DatePicker.svelte';
 export { default as Radio }         from './inputs/Radio.svelte';
 export { default as TextArea }		from './inputs/TextArea.svelte';

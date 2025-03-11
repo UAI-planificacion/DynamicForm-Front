@@ -15,7 +15,7 @@
 
 <div class="space-y-1.5 w-full">
 	<Button.Root
-		on:click	= { onClick }
+        onclick		= { onClick }
 		disabled	= { shapeInput.disabled || loading }
 		name 		= { shapeInput.name }
 		class		= { shapeInput.class_ ?? styles.button }

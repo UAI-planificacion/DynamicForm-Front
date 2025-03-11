@@ -1,6 +1,6 @@
 <script lang="ts">
     import { styles }           from "$lib";
-    import type { ShapeInput }  from "$models/shape-input";
+    import type { ShapeInput }  from "$models";
     import Info                 from "./Info.svelte";
 
 

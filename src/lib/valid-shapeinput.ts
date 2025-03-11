@@ -40,7 +40,6 @@ export function showErrorDatePicker(
 export const errorCheck = (
     shapeInput  : ShapeInput,
     checked?    : "indeterminate" | boolean | undefined
-
 ): boolean => showErrorCheck( shapeInput, checked ) === undefined;
 
 
@@ -74,7 +73,7 @@ export function showErrorSelect(
 ): string | undefined {
     if ( !shapeInput.required ) return undefined;
 
-    if ( shapeInput.required && (!value || (Array.isArray(value) && value.length === 0)) )
+    if ( shapeInput.required && ( !value || ( Array.isArray( value ) && value.length === 0 )))
         return shapeInput?.msgRequired;
 }
 
@@ -97,7 +96,7 @@ export function showErrorInput(
 ): string | undefined {
     if ( !shapeInput.required ) return undefined;
 
-    const stringValue = Array.isArray(value) ? value.join(', ') : value;
+    const stringValue = Array.isArray(value) ? value.join( ', ' ) : value;
 
     if ( shapeInput.required && !stringValue )
         return shapeInput?.msgRequired;
@@ -127,7 +126,7 @@ export function showErrorText(
 ): string | undefined {
     if ( !shapeInput.required ) return undefined;
 
-    const stringValue = Array.isArray(value) ? value.join(', ') : value;
+    const stringValue = Array.isArray( value ) ? value.join( ', ' ) : value;
 
     if ( shapeInput.required && !stringValue )
         return shapeInput?.msgRequired;

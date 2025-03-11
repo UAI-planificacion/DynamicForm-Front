@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { X } from 'lucide-svelte';
     import { onMount } from 'svelte';
     
     // Tipos para la documentación
@@ -282,53 +283,56 @@ Authorization: Bearer tu_token_de_acceso
     
     // Función para cambiar el tema
     function toggleDarkMode() {
-    isDarkMode = !isDarkMode;
-    if (isDarkMode) {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark');
-    }
+        isDarkMode = !isDarkMode;
+
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
     }
     
     // Función para obtener el contenido activo
     function getActiveContent() {
-    const section = docSections.find(s => s.id === activeSection);
-    if (!section) return '';
-    
-    const item = section.items.find(i => i.id === activeItem);
-    return item ? item.content : '';
+        const section = docSections.find(s => s.id === activeSection);
+
+        if (!section) return '';
+
+        const item = section.items.find(i => i.id === activeItem);
+
+        return item ? item.content : '';
     }
-    
+
     // Función para filtrar elementos por búsqueda
     function getFilteredSections() {
-    if (!searchQuery.trim()) return docSections;
-    
-    return docSections.map(section => {
-        const filteredItems = section.items.filter(item => 
-        item.title.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        
-        return {
-        ...section,
-        items: filteredItems
-        };
-    }).filter(section => section.items.length > 0);
+        if (!searchQuery.trim()) return docSections;
+
+        return docSections.map(section => {
+            const filteredItems = section.items.filter(item => 
+                item.title.toLowerCase().includes( searchQuery.toLowerCase() )
+            );
+
+            return {
+                ...section,
+                items: filteredItems
+            };
+        }).filter( section => section.items.length > 0 );
     }
     
     // Animaciones al montar el componente
     onMount(() => {
-    // Inicializar animaciones o configuraciones adicionales aquí
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-        }
+        // Inicializar animaciones o configuraciones adicionales aquí
+        const observer = new IntersectionObserver(( entries ) => {
+            entries.forEach( entry => {
+                if ( entry.isIntersecting ) {
+                    entry.target.classList.add( 'show' );
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll( '.animate-on-scroll' ).forEach(el => {
+            observer.observe( el );
         });
-    }, { threshold: 0.1 });
-    
-    document.querySelectorAll('.animate-on-scroll').forEach(el => {
-        observer.observe(el);
-    });
     });
 </script>
 
@@ -406,7 +410,7 @@ Authorization: Bearer tu_token_de_acceso
         </div>
         {/if}
     </header>
-    
+
     <div class="flex flex-1 overflow-hidden">
         <!-- Sidebar -->
         <aside 
@@ -469,10 +473,12 @@ Authorization: Bearer tu_token_de_acceso
         
         <!-- Overlay for mobile sidebar -->
         {#if isSidebarOpen}
-        <div 
-            class="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
-            on:click={() => isSidebarOpen = false}
-        ></div>
+            <button
+                class="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+                on:click={() => isSidebarOpen = false}
+            >
+                <X class="w-6 h-6" />
+            </button>
         {/if}
         
         <!-- Main content -->
@@ -578,10 +584,6 @@ Authorization: Bearer tu_token_de_acceso
     transition: opacity 0.6s, transform 0.6s;
     }
     
-    .animate-on-scroll.show {
-    opacity: 1;
-    transform: translateY(0);
-    }
     
     /* Estilos para el contenido HTML renderizado */
     :global(.dark) :global(pre) {

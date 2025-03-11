@@ -37,9 +37,9 @@
                 </span>
             </div>
 
+            <!-- transition={slide} -->
             <Collapsible.Content
                 class="ml-5 space-y-0"
-                transition={slide}
             >
                 {#each Object.entries(value) as [subKey, subValue]}
                     <svelte:self key={subKey} value={subValue} />

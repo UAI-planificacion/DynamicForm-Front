@@ -1,9 +1,9 @@
-import type { ShapeOptions } from "$models";
+import type { ShapeOption } from "$models";
 
 
-export const options: ShapeOptions[] = [
+export const options: ShapeOption[] = [
     { label: 'Entrada', 		value: 'input' },
-    { label: 'Buscador', 		value: 'combobox' },
+    // { label: 'Buscador', 		value: 'combobox' },
     { label: 'Verificador',     value: 'check' },
     { label: 'Seleccionable',	value: 'select' },
     { label: 'Aréa de texto', 	value: 'textarea' },
@@ -13,7 +13,7 @@ export const options: ShapeOptions[] = [
 ];
 
 
-export const types: ShapeOptions[] = [
+export const types: ShapeOption[] = [
     { label: 'Texto', 		value: 'text' },
     { label: 'Numérico',    value: 'number' },
     { label: 'Contraseña', 	value: 'password' },

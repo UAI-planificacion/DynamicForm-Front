@@ -40,13 +40,13 @@
     </Dialog.Trigger>
 
     <Dialog.Portal>
+        <!-- transition={fade} -->
+        <!-- transitionConfig={{ duration: 150 }} -->
         <Dialog.Overlay
-            transition={fade}
-            transitionConfig={{ duration: 150 }}
             class="fixed inset-0 z-50 bg-black/60"
         />
+        <!-- transition={fly} -->
         <Dialog.Content
-            transition={fly}
             class="fixed left-[50%] top-[50%] z-50 w-full max-w-[94%] text-zinc-900 dark:text-white translate-x-[-50%] translate-y-[-50%] rounded-lg border dark:border-zinc-700 bg-white dark:bg-zinc-900 p-6 shadow-lg outline-none sm:max-w-[490px] md:w-full"
         >
             <Dialog.Title
@@ -93,7 +93,7 @@
                 <Dialog.Close
                     disabled    = { formName !== textDelete }
                     class       = "dark:disabled:bg-red-950 disabled:brightness-100 disabled:scale-100 disabled:cursor-not-allowed inline-flex bg-red-500/80 py-2 px-4 rounded-lg dark:bg-red-800 h-10 items-center justify-center rounded-input text-[15px] font-semibold text-background shadow-mini hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 "
-                    on:click    = { onConfirm }
+                    onclick    = { onConfirm }
                 >
                     Confirmar
                 </Dialog.Close>

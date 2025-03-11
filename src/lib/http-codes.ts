@@ -1,6 +1,6 @@
-import type { ShapeOptions } from "$models";
+import type { ShapeOption } from "$models";
 
-export const httpCodes: ShapeOptions[] = [
+export const httpCodes: ShapeOption[] = [
     // 2xx Success
     { id: '1', value: '200', label: '200 - OK' },
     { id: '2', value: '201', label: '201 - Creado' },
@@ -26,7 +26,7 @@ export const httpCodes: ShapeOptions[] = [
 ];
 
 
-export const methods: ShapeOptions[] = [
+export const methods: ShapeOption[] = [
 	{ id: '1', value: 'get', 	label: 'GET' },
 	{ id: '2', value: 'post', 	label: 'POST' },
 	{ id: '3', value: 'put', 	label: 'PUT' },

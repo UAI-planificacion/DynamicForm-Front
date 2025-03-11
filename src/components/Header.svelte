@@ -9,7 +9,7 @@
     import { MicrosoftIcon }                        from "$icons";
     import { authClient, signOut }                  from "$lib";
 
-	export let loadingStatus: Avatar.Props["loadingStatus"] = undefined;
+    let loadingStatus = $state<Avatar.RootProps["loadingStatus"]>("loading");
 
     const session = authClient.useSession();
 </script>
@@ -56,20 +56,19 @@
 
 			<DropdownMenu.Content
 				class="w-full max-w-[229px] transition-colors rounded-xl border border-muted dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 shadow-lg"
-				transition={fly}
 				sideOffset={8}
 			>
 				<DropdownMenu.Item class="flex h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">
 					<div 
 						class		= "flex items-center justify-between w-full rounded-lg px-2 py-1 "
-						on:click	= {(event) => {
+						onclick	= {(event) => {
 							const target = event.target as HTMLElement;
 
 							if ( !target.closest( '.switch-component' )) {
 								$dynamicMode = !$dynamicMode;
 							}
 						}}
-						on:keydown	= {( event ) => event.key === 'Enter' && ( $dynamicMode = !$dynamicMode )}
+						onkeydown	= {( event ) => event.key === 'Enter' && ( $dynamicMode = !$dynamicMode )}
 						role		= "button"
 						tabindex	= "0"
 					>
@@ -85,8 +84,8 @@
 				<DropdownMenu.Item class="flex h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">
 					<div 
 						class		= "flex items-center justify-between w-full rounded-lg px-2 py-1 transition-colors"
-						on:click	= {toggleTheme}
-						on:keydown	= {(e) => e.key === 'Enter' && toggleTheme()}
+						onclick	= {toggleTheme}
+						onkeydown	= {(e) => e.key === 'Enter' && toggleTheme()}
 						role		= "button"
 						tabindex	= "0"
 					>
@@ -104,7 +103,7 @@
 				<DropdownMenu.Item class="flex h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">
 					<button
                         class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-700 hover:brightness-110 text-white rounded-lg transition-colors"
-                        on:click = { async () => {
+                        onclick = { async () => {
                             await signOut();
                             goto("/");
                         }}

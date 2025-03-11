@@ -17,14 +17,17 @@
 		Enumeration,
 		SubTitle,
 		Input,
-		Combobox,
+		// Combobox,
 		Resizable,
         DeleteModel
 	}							            from '$components';
 	import type {
         ShapeInput,
-        ShapeOptions,
-        DynamicForm
+        ShapeOption,
+        DynamicForm,
+
+        SelectInput
+
     }                                       from '$models';
 	import {
         buttonTemplate,
@@ -34,15 +37,18 @@
     }                                       from "$lib";
 	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
 	import { dynamicMode, dynamicForms } 	from "$stores";
-  import Timer from "$components/inputs/time-picker/Timer.svelte";
-  import AnalogTime from "$components/inputs/time-picker/AnalogTime.svelte";
+    import VirtualSelect from "$components/inputs/VirtualSelect.svelte";
+
+    // import Timer from "$components/inputs/time-picker/Timer.svelte";
+    // import AnalogTime from "$components/inputs/time-picker/AnalogTime.svelte";
+    // import DateRangePicker from "$components/inputs/DateRangePicker.svelte";
 
 
 	const flipDurationMs = 100;
     const defaultSelected = 'Nuevo formulario';
 
     let dynamicForm     : DynamicForm = { _id: '', name : '' , details: [] , user_id: 'kevincandia'};
-    let options         : ShapeOptions[] = [];
+    let options         : ShapeOption[] = [];
 	let inputActive     = 0;
     let optionSelected  = '';
     let isLoading       = true;
@@ -156,10 +162,11 @@
 
             optionSelected = form.name;
 
-            handleTemplateChange({ 
-                label: form.name,
-                value: form._id
-            });
+            handleTemplateChange( form._id );
+            // handleTemplateChange({ 
+            //     label: form.name,
+            //     value: form._id
+            // });
 
             toast.success( 'Formulario creado correctamente', successToast() );
         })
@@ -203,22 +210,22 @@
             }
         ).then( res =>  {
             if ( !res.ok ) {
-                toast.error( 'Failed to delete dynamic form', errorToast() );
+                toast.error( 'Ocurrió un error al eliminar el formulario', errorToast() );
                 return null;
             };
 
             dynamicForms.remove( dynamicForm._id );
 
-            handleTemplateChange({ 
-                label: defaultSelected,
-                value: 'new'
-            });
+            handleTemplateChange( 'new' );
+            // handleTemplateChange({ 
+            //     label: defaultSelected,
+            //     value: 'new'
+            // });
 
             formName.value = '';
 
             toast.success( "Formulario eliminado correctamente", successToast() );
-        }
-        ).catch( err => {
+        }).catch( err => {
             console.error( err );
             toast.error( 'Failed to delete dynamic form', errorToast() );
         })
@@ -227,14 +234,13 @@
 
 
     function handleTemplateChange(
-        selected: Selected<string> | Selected<string>[] | undefined
+        selected: SelectInput
     ): void {
         if ( !selected || selected instanceof Array ) return;
 
-        optionSelected = selected.value;
-        formName.value = optionSelected === 'new' ? '' : selected.label;
+        formName.value = selected === 'new' ? '' : selected;
 
-        if ( selected.value === 'new' ) {
+        if ( selected === 'new' ) {
             dynamicForm = {
                 ...dynamicForm,
                 name    : '',
@@ -245,14 +251,14 @@
         }
 
         const selectedForm = $dynamicForms
-            .find( form => form._id === selected.value );
+            .find( form => form._id === selected );
 
         if ( !selectedForm ) {
             dynamicForm.details = [];
             return;
         }
 
-        dynamicForm = { ...selectedForm, name: selected.label! };
+        dynamicForm = { ...selectedForm, name: selected! };
     }
 
 
@@ -269,28 +275,28 @@
 </script>
 
 
-<Timer />
-<AnalogTime/>
-
 <main class="px-4 py-5 mx-auto 2xl:mx-36 space-y-5 overflow-hidden">
 	<div 
 		class   = "mx-1"
 		in:fly  = {{ y: -20, duration: 300 }}
 		out:fly = {{ y: 20, duration: 300 }}
 	>
-		<Combobox
-			shapeInput = {{
-				id			: uuid(),
-				name		: 'search',
-                shape       : 'combobox',
-				options,
-				label		: 'Plantillas de formularios',
-				placeholder	: 'Seleccione una plantilla',
+        <VirtualSelect
+            shapeInput = {{
+                id			: uuid(),
+                name		: 'search',
+                shape       : 'select',
+                options,
+                multiple    : false,
+                search      : true,
+                heightPanel : 8,
+                label		: 'Plantillas de formularios',
+                placeholder	: 'Seleccione una plantilla',
                 disabled    : isLoading,
                 selected    : optionSelected
-			}}
-			onSelectedChange = { handleTemplateChange }
-		/>
+            }}
+            onSelectedChange = { handleTemplateChange }
+        />
 	</div>
 
     {#if dynamicForm.details.length > 0}
@@ -430,7 +436,7 @@
             in:scale	= {{ duration: 300, start: 0.95 }}
             out:scale	= {{ duration: 300, start: 1 }}
         >
-            <span class="text-lg text-zinc-700 dark:text-zinc-400 transition-colors">
+            <span class="text-md text-zinc-700 dark:text-zinc-400 transition-colors">
                 Por favor, selecciona una plantilla
             </span>
         </div>

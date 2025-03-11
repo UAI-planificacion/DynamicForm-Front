@@ -18,6 +18,7 @@ const config = {
 			$models		: 'src/models',
 			$stores		: 'src/stores',
             $services   : 'src/services',
+            $lib        : 'src/lib'
         }
 	}
 };

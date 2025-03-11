@@ -29,9 +29,9 @@
             </span>
         </div>
 
+        <!-- transition={slide} -->
         <Collapsible.Content
             class="ml-5 space-y-0"
-            transition={slide}
         >
             {#each Object.entries(formValues) as [key, value]}
                 <DataKey key={key} value={value} />

@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { goto }     from '$app/navigation';
+    import { onMount }  from 'svelte';
 
-    import { authClient, signOut }                  from "$lib";
-  import { MicrosoftAuth } from '$components';
-  import { goto } from '$app/navigation';
+    import { authClient }       from "$lib";
+    import { MicrosoftAuth }    from '$components';
 
 
     const session = authClient.useSession();
@@ -93,7 +93,6 @@
             
             </nav>
 
-                  
             <!-- Mobile Menu Button -->
             <button class="md:hidden" on:click={toggleMenu} aria-label="Menú">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

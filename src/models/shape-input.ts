@@ -42,6 +42,9 @@ export type ShapeInput = {
     readonly?       : boolean;
     preview?        : boolean;
     multiple?       : boolean;
+    search?         : boolean;
+    searchPlaceholder? : string;
+    heightPanel?    : number;
     pattern?        : string;
     class_?         : string;
 	labelStyle? 	: string;
@@ -56,7 +59,7 @@ export type ShapeInput = {
     msgMax?         : string;
     msgMinLength?   : string;
     msgMaxLength?   : string;
-    options?        : ShapeOptions[];
+    options?        : ShapeOption[] | GroupOption[];
     rows?           : number;
     checked?        : boolean;
     selected?       : string | string[] | undefined;
@@ -81,7 +84,22 @@ export type Form = {
 }
 
 
-export type ShapeOptions = {
+export type SelectInput = string | string[] | SelectGroup[] | undefined;
+
+
+export type SelectGroup = {
+    group   : string;
+    values  : string[];
+}
+
+
+export type GroupOption = {
+    group   : string;
+    values  : ShapeOption[];
+};
+
+
+export type ShapeOption = {
     id?     : string;
     label   : string;
     value   : string;

@@ -9,15 +9,16 @@
 
 
 {#if value}
-    <Tooltip.Root openDelay={400}>
+<Tooltip.Provider>
+    <Tooltip.Root delayDuration={400}>
         <Tooltip.Trigger
             class={`${background} rounded-xl py-1 px-3 w-auto flex items-center gap-1`}
         >
             <slot />
         </Tooltip.Trigger>
 
+        <!-- transitionConfig = {{ y: 8, duration: 150 }} -->
         <Tooltip.Content
-            transitionConfig = {{ y: 8, duration: 150 }}
             sideOffset      = { 8 }
             class          = "z-50"
         >
@@ -32,4 +33,5 @@
             </div>
         </Tooltip.Content>
     </Tooltip.Root>
+</Tooltip.Provider>
 {/if}

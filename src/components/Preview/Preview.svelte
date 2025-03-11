@@ -5,9 +5,9 @@
 
     import {
 		Input,
-		Select,
+		// Select,
 		Check,
-		Combobox,
+		// Combobox,
 		Button,
 		DatePicker,
 		TextArea,
@@ -25,7 +25,8 @@
 		successToast,
 		errorToast,
 	}							from "$lib";
-    import type { ShapeInput }  from "$models";
+    import type { SelectInput, ShapeInput }  from "$models";
+  import VirtualSelect from '$components/inputs/VirtualSelect.svelte';
 
     export let template		: ShapeInput[] = [];
 	export let inputActive 	: number;
@@ -181,7 +182,21 @@
 				/>
 			<!-- Select -->
 			{:else if shapeInput.shape === 'select'}
-				<Select
+                <VirtualSelect
+                    { shapeInput }
+                    bind:value          = { formValues[ shapeInput.name ]}
+                    setError            = {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
+                    onSelectedChange	= {( value: SelectInput ) => {
+                        if (Array.isArray(value)) {
+                            formValues[shapeInput.name] = value.map(s => s);
+                        } else {
+                            formValues[shapeInput.name] = value;
+                        }
+                        shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ]);
+                    }}
+                />
+
+				<!-- <Select
 					{ shapeInput }
 					onSelectedChange	= {( selected: Selected<string> | Selected<string>[] | undefined ) => {
                         if (Array.isArray(selected)) {
@@ -193,9 +208,9 @@
                     }}
 					bind:value = { formValues[ shapeInput.name ]}
 					setError = {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
-				/>
+				/> -->
 			<!-- Combobox -->
-			{:else if shapeInput.shape === 'combobox'}
+			<!-- {:else if shapeInput.shape === 'combobox'}
 				<Combobox
 					{ shapeInput }
 					onSelectedChange	= {( selected: Selected<string> | Selected<string>[] | undefined ) => {
@@ -208,7 +223,7 @@
                     }}
 					value = { formValues[ shapeInput.name ]}
 					setError = {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
-				/>
+				/> -->
 			<!-- Button -->
 			{:else if shapeInput.shape === 'button'}
 				<Button
