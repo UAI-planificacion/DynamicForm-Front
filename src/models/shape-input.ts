@@ -9,7 +9,7 @@ export type InputStyle = {
 }
 
 
-export type InputType  = 'input' | 'combobox' | 'check' | 'select' | 'textarea' | 'datepicker' | 'button' | 'markdown' | 'none';
+export type InputType  = 'input' | 'check' | 'select' | 'textarea' | 'datepicker' | 'button' | 'markdown' | 'none';
 export type Types      = 'text' | 'number' | 'password' | 'email' | 'url' | 'tel' | 'search';
 
 

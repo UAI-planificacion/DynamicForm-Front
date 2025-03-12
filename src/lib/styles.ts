@@ -14,12 +14,6 @@ export const styles: Partial<Record<InputType, string | InputStyle>> = {
         content     : 'w-full rounded-xl border border-muted dark:border-zinc-700 bg-background px-1 py-2 shadow-popover outline-none bg-white dark:bg-zinc-800 z-10 dark:text-zinc-300',
         item        : 'flex h-10 w-full select-none items-center rounded-button py-3 pl-5 pr-1.5 text-sm outline-none transition-all duration-75 data-[highlighted]:bg-muted hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:rounded-lg'
     },
-    combobox    : {
-        box         : 'relative flex items-center w-full rounded-lg border border-border-input dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2 text-sm transition-colors placeholder:text-foreground-alt/50 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background disabled:bg-zinc-100 dark:disabled:bg-zinc-600 focus:ring-zinc-600',
-		input 		: 'w-full border-none text-sm bg-white outline-none transition-all duration-75 data-[highlighted]:bg-muted focus:ring-0 focus:outline-none active:outline-none disaabled:bg-gray-100 dark:bg-zinc-900 dark:text-zinc-300 dark:disabled:bg-zinc-600',
-        content     : 'w-full rounded-xl border border-muted dark:border-zinc-700 px-1 py-2 shadow-popover outline-none bg-white dark:bg-zinc-800 dark:text-zinc-300',
-        item        : 'flex h-10 w-full select-none items-center rounded-button py-3 pl-5 pr-1.5 text-sm capitalize outline-none transition-all duration-75 data-[highlighted]:bg-muted hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:rounded-lg focus:ring-0 focus:outline-none'
-    },
     datepicker  : {
         box			: 'rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input dark:border-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 px-2 py-3 text-sm tracking-[0.01em]-500 dark:data-[disabled]:bg-zinc-700 data-[disabled]:bg-zinc-100 focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover',
         content		: 'rounded-lg border border-dark-10 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-3 shadow-popover dark:text-zinc-300',

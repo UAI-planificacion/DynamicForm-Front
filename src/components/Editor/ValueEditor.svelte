@@ -1,62 +1,77 @@
 <script lang="ts">
     import { v4 as uuid } from 'uuid';
-    import { LoaderIcon, AddIcon, DeleteIcon, JsonIcon } from "$icons";
-    import type { ShapeOption } from "$models";
     import { read, utils } from 'xlsx';
-    import { Input } from "$components";
 
-    export let options: ShapeOption[] = [];
-    export let onOptionsChange: (newOptions: ShapeOption[]) => void;
+    import {
+        LoaderIcon,
+        AddIcon,
+        DeleteIcon,
+        JsonIcon
+    }                           from "$icons";
+    import type { ShapeOption } from "$models";
+    import { Input, ButtonUI }  from "$components";
+
+
+    export let options          : ShapeOption[] = [];
+    export let onOptionsChange  : ( newOptions: ShapeOption[] ) => void;
+
 
     let isLoading = false;
     let isAddingOption = false;
 
-    const addNewOption = async () => {
+
+    function addNewOption(): void {
         isAddingOption = true;
+
         try {
             const newOptions = [
                 ...options,
                 {
-                    id: uuid(),
-                    label: '',
-                    value: ''
+                    id      : uuid(),
+                    label   : '',
+                    value   : ''
                 }
             ];
-            onOptionsChange(newOptions);
+
+            onOptionsChange( newOptions );
         } finally {
             isAddingOption = false;
         }
     };
 
-    const deleteOption = (item: ShapeOption) => {
-        const newOptions = options.filter(option => option.id !== item.id);
-        onOptionsChange(newOptions);
+
+    function deleteOption( item: ShapeOption ): void {
+        const newOptions = options.filter( option => option.id !== item.id );
+        onOptionsChange( newOptions );
     };
 
-    const processJsonData = (data: any[]): ShapeOption[] =>
+
+    const processJsonData = ( data: any[] ): ShapeOption[] =>
         data.map(item => ({
-            id: uuid(),
-            label: item.label || item.name || '',
-            value: item.value || item.id || ''
+            id      : uuid(),
+            label   : item.label || item.name || '',
+            value   : item.value || item.id || ''
         }));
 
-    const processExcelData = (data: any[]): ShapeOption[] =>
+
+    const processExcelData = ( data: any[] ): ShapeOption[] =>
         data.map(row => ({
-            id: uuid(),
-            value: row['value'] || '',
-            label: row['label'] || ''
+            id      : uuid(),
+            value   : row['value'] || '',
+            label   : row['label'] || ''
         }));
 
-    const handleFileChange = async (event: Event): Promise<void> => {
-        const target = event.target as HTMLInputElement;
-        const file = target.files?.[0] || null;
 
-        if (!file) return;
+    async function handleFileChange( event: Event ): Promise<void> {
+        const target    = event.target as HTMLInputElement;
+        const file      = target.files?.[0] || null;
+
+        if ( !file ) return;
 
         const fileExt = file.name.split('.').pop()?.toLowerCase();
 
-        if (!['json', 'xlsx', 'xls'].includes(fileExt || '')) {
-            alert('Solo se permiten archivos JSON o Excel (.xlsx, .xls)');
+        if (!['json', 'xlsx', 'xls'].includes( fileExt || '' )) {
+            alert( 'Solo se permiten archivos JSON o Excel (.xlsx, .xls)' );
             return;
         }
 
@@ -64,29 +79,34 @@
 
         try {
             let newOptions: ShapeOption[];
-            if (fileExt === 'json') {
+
+            if ( fileExt === 'json' ) {
                 const text = await file.text();
-                const data = JSON.parse(text);
-                newOptions = processJsonData(Array.isArray(data) ? data : [data]);
+                const data = JSON.parse( text );
+
+                newOptions = processJsonData( Array.isArray( data ) ? data : [ data ]);
             } else {
-                const buffer = await file.arrayBuffer();
-                const workbook = read(buffer);
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const data = utils.sheet_to_json(firstSheet);
-                newOptions = processExcelData(data);
+                const buffer        = await file.arrayBuffer();
+                const workbook      = read( buffer );
+                const firstSheet    = workbook.Sheets[workbook.SheetNames[0]];
+                const data          = utils.sheet_to_json( firstSheet );
+
+                newOptions = processExcelData( data );
             }
-            onOptionsChange(newOptions);
-        } catch (error) {
-            console.error('Error al procesar el archivo:', error);
-            alert('Error al procesar el archivo. Asegúrate de que el formato sea correcto.');
+
+            onOptionsChange( newOptions );
+        } catch ( error ) {
+            console.error( 'Error al procesar el archivo:', error );
+            alert( 'Error al procesar el archivo. Asegúrate de que el formato sea correcto.' );
         } finally {
             isLoading = false;
-            if (target) target.value = '';
+            if ( target ) target.value = '';
         }
     };
 
-    const triggerFileInput = (): void => {
-        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+
+    function triggerFileInput(): void {
+        const fileInput = document.getElementById( 'fileInput' ) as HTMLInputElement;
         if (fileInput) fileInput.click();
     };
 </script>
@@ -98,39 +118,35 @@
         <span class="text-sm text-zinc-900 dark:text-zinc-200">Label</span>
 
         <div class="flex items-center gap-2">
-            <button
-                type="button"
-                class="text-sm"
-                on:click={triggerFileInput}
-                disabled={isLoading}
+            <ButtonUI
+                onClick     = { triggerFileInput }
+                disabled    = { isLoading }
             >
                 {#if isLoading}
                     <LoaderIcon />
                 {:else}
                     <JsonIcon />
                 {/if}
-            </button>
+            </ButtonUI>
 
             <input
-                id="fileInput"
-                type="file"
-                class="hidden"
-                accept=".json,.xlsx,.xls"
-                on:change={handleFileChange}
+                id          = "fileInput"
+                type        = "file"
+                class       = "hidden"
+                accept      = ".json,.xlsx,.xls"
+                on:change   = { handleFileChange }
             />
 
-            <button
-                type="button"
-                class="text-sm"
-                on:click={addNewOption}
-                disabled={isLoading || isAddingOption}
+            <ButtonUI
+                onClick     = { addNewOption }
+                disabled    = { isLoading || isAddingOption }
             >
                 {#if isAddingOption}
                     <LoaderIcon />
                 {:else}
                     <AddIcon />
                 {/if}
-            </button>
+            </ButtonUI>
         </div>
     </div>
 </div>

@@ -49,22 +49,7 @@ export const templateJson = [{
         "name"      : "confirm",
         "label"     : "Confirmar",
     }, {
-        "id"        : "6",
-        "shape"     : "combobox",
-        "name"      : "combobox",
-        "label"     : "Combobox",
-        "required"  : true,
-		"multiple"  : true,
-        "placeholder" : "Selecciona una opción",
-        "options" : [
-            { value: "light-monochrome",    label: "Light Monochrome" },
-            { value: "dark-green",          label: "Dark Green" },
-            { value: "svelte-orange",       label: "Svelte Orange" },
-            { value: "punk-pink",           label: "Punk Pink" }
-        ],
-        "selected" : ["dark-green", "punk-pink"]
-    }, {
-        "id"        	: "7",
+        "id"        	: "6",
         "shape"     	: "markdown",
         "name"      	: "markdown",
         "label"     	: "Markdown",
@@ -73,7 +58,7 @@ export const templateJson = [{
         "value"     	: '',
         "description" 	: "Esto es un ejemplo de Markdown",
     }, {
-        "id"        		: "8",
+        "id"        		: "7",
         "shape"     		: "button",
         "name"      		: "Send",
         "label"     		: "Send",

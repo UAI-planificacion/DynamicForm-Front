@@ -1,21 +1,19 @@
 <script lang="ts">
 	import toast 				from 'svelte-french-toast';
 	import { type DateValue }	from "@internationalized/date";
-    import { type Selected }	from "bits-ui";
 
     import {
 		Input,
-		// Select,
 		Check,
-		// Combobox,
 		Button,
 		DatePicker,
 		TextArea,
 		Enumeration,
 		SubTitle,
 		MarkdownEditor,
-		DataView
-	} 							from "$components";
+		DataView,
+        VirtualSelect
+	} 							            from "$components";
 	import {
 		errorSelect,
 		errorCheck,
@@ -24,35 +22,33 @@
 		errorDatePicker,
 		successToast,
 		errorToast,
-	}							from "$lib";
-    import type { SelectInput, ShapeInput }  from "$models";
-  import VirtualSelect from '$components/inputs/VirtualSelect.svelte';
+	}							            from "$lib";
+    import type { SelectInput, ShapeInput } from "$models";
+
 
     export let template		: ShapeInput[] = [];
 	export let inputActive 	: number;
 	export let dynamicMode	: boolean = false;
 
 	let loading = false;
-
     let formValues: Record<string, any> = {};
     let previousTemplate = template;
 
     // Cargar valores por defecto cuando cambie el template completamente
     $: {
         if ( template !== previousTemplate ) {
-            // Primero limpiamos los valores
             formValues = {};
-            
-            // Luego cargamos los valores por defecto del nuevo template
+
             formValues = template.reduce((acc, item) => {
                 const keys = ["value", "checked", "date", "selected"];
                 const value = keys.find((key) => item[key] !== undefined)
                     ? item[keys.find((key) => item[key] !== undefined) as keyof typeof item]
                     : undefined;
 
-                if (item.shape !== 'button' && value !== undefined) {
+                if ( item.shape !== 'button' && value !== undefined ) {
                     acc[item.name] = value;
                 }
+
                 return acc;
             }, {} as Record<string, any>);
 
@@ -115,7 +111,6 @@
 				'textarea'		: errorTextArea( item, formValues[ item.name ]),
 				'markdown'		: errorTextArea( item, formValues[ item.name ]),
 				'check'			: errorCheck( item, formValues[ item.name ]),
-				'combobox'		: errorSelect( item, formValues[ item.name ]),
 				'select'		: errorSelect( item, formValues[ item.name ]),
 				'datepicker'	: errorDatePicker( item, formValues[ item.name ]),
 				'button'		: true,
@@ -195,35 +190,6 @@
                         shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ]);
                     }}
                 />
-
-				<!-- <Select
-					{ shapeInput }
-					onSelectedChange	= {( selected: Selected<string> | Selected<string>[] | undefined ) => {
-                        if (Array.isArray(selected)) {
-                            formValues[shapeInput.name] = selected.map(s => s.value);
-                        } else {
-                            formValues[shapeInput.name] = selected?.value;
-                        }
-                        shapeInput.valid = errorSelect(shapeInput, formValues[shapeInput.name]);
-                    }}
-					bind:value = { formValues[ shapeInput.name ]}
-					setError = {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
-				/> -->
-			<!-- Combobox -->
-			<!-- {:else if shapeInput.shape === 'combobox'}
-				<Combobox
-					{ shapeInput }
-					onSelectedChange	= {( selected: Selected<string> | Selected<string>[] | undefined ) => {
-                        if (Array.isArray(selected)) {
-                            formValues[shapeInput.name] = selected.map(s => s.value);
-                        } else {
-                            formValues[shapeInput.name] = selected?.value;
-                        }
-                        shapeInput.valid = errorSelect(shapeInput, formValues[shapeInput.name]);
-                    }}
-					value = { formValues[ shapeInput.name ]}
-					setError = {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
-				/> -->
 			<!-- Button -->
 			{:else if shapeInput.shape === 'button'}
 				<Button

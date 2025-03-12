@@ -17,7 +17,6 @@ export { default as AsterikIcon }       from './AsterikIcon.svelte';
 export { default as ButtonIcon }        from './ButtonIcon.svelte';
 export { default as CheckInputIcon }    from './CheckInputIcon.svelte';
 export { default as TextareaIcon }      from './TextareaIcon.svelte';
-export { default as ComboboxIcon }      from './ComboboxIcon.svelte';
 export { default as SelectIcon }        from './SelectIcon.svelte';
 export { default as DateIcon }          from './DateIcon.svelte';
 export { default as PlaceholderIcon }   from './PlaceholderIcon.svelte';

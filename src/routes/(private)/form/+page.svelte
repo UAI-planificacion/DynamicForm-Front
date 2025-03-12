@@ -7,9 +7,9 @@
 	import { fade, fly, scale } from 'svelte/transition';
     import { onMount }          from "svelte";
 
-	import { v4 as uuid }	            from 'uuid';
-	import { Separator, type Selected }	from "bits-ui";
-    import toast                        from "svelte-french-toast";
+	import { v4 as uuid }   from 'uuid';
+	import { Separator }    from "bits-ui";
+    import toast            from "svelte-french-toast";
 
 	import {
 		Preview,
@@ -17,17 +17,15 @@
 		Enumeration,
 		SubTitle,
 		Input,
-		// Combobox,
 		Resizable,
-        DeleteModel
+        DeleteModel,
+        VirtualSelect
 	}							            from '$components';
 	import type {
         ShapeInput,
         ShapeOption,
         DynamicForm,
-
         SelectInput
-
     }                                       from '$models';
 	import {
         buttonTemplate,
@@ -37,7 +35,6 @@
     }                                       from "$lib";
 	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
 	import { dynamicMode, dynamicForms } 	from "$stores";
-    import VirtualSelect from "$components/inputs/VirtualSelect.svelte";
 
     // import Timer from "$components/inputs/time-picker/Timer.svelte";
     // import AnalogTime from "$components/inputs/time-picker/AnalogTime.svelte";
@@ -118,6 +115,7 @@
         .finally(() => isLoading = false );
     });
 
+
     function validateForm(): boolean {
         if ( dynamicForm.name === '' || dynamicForm.name === undefined || dynamicForm.name === null ) {
             toast.error( "El nombre del formulario es requerido.", errorToast() )
@@ -134,6 +132,7 @@
         formName.disabled   = true;
         return true;
     }
+
 
     function enableAll() {
         isLoading = false;
@@ -277,9 +276,9 @@
 
 <main class="px-4 py-5 mx-auto 2xl:mx-36 space-y-5">
     <div 
-        class="mx-1 relative"
-        in:fly={{ y: -20, duration: 300 }}
-        out:fly={{ y: 20, duration: 300 }}
+        class   = "mx-1 relative"
+        in:fly  = {{ y: -20, duration: 300 }}
+        out:fly = {{ y: 20, duration: 300 }}
     >
         <VirtualSelect
             shapeInput = {{
@@ -318,9 +317,14 @@
 
                             <div
                                 class		= "flex-1 space-y-3 overflow-y-auto"
-                                use:dndzone = {{ items: dynamicForm.details, flipDurationMs, dropTargetStyle: {} }}
                                 on:consider = { handleConsider }
                                 on:finalize = { handleFinalize }
+                                use:dndzone = {{
+                                    flipDurationMs,
+                                    items           : dynamicForm.details,
+                                    dropTargetStyle : {},
+                                    dragDisabled    : inputActive > 0
+                                }}
                             >
                                 {#each dynamicForm.details ?? [] as item, index ( item.id )}
                                     <div animate:flip={{ duration: flipDurationMs }}>
@@ -364,7 +368,7 @@
                     >
                         <Input 
                             shapeInput  = { formName }
-                            onInput     = {( value : Event ) => dynamicForm.name = ( value.target as HTMLInputElement ).value}
+                            onInput     = {( value : Event ) => dynamicForm.name = ( value.target as HTMLInputElement ).value }
                             value       = { dynamicForm.name }
                             setError    = { () => formName.valid = dynamicForm.name.length > 0 }
                         />

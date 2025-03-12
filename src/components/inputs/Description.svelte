@@ -21,7 +21,7 @@
     <span class="text-sm text-red-500 font-semibold">
         {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown'}
             { showErrorInput( shapeInput, value )}
-        {:else if shapeInput.shape === 'select' || shapeInput.shape === 'combobox'}
+        {:else if shapeInput.shape === 'select'}
             { showErrorSelect( shapeInput, value )}
         {:else if shapeInput.shape === 'check'}
             { showErrorCheck( shapeInput, checked )}

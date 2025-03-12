@@ -10,7 +10,6 @@
         CheckInputIcon,
         TextareaIcon,
         InputIcon,
-        ComboboxIcon,
         SelectIcon,
         DateIcon,
         NameIcon,
@@ -38,7 +37,6 @@
 
     const inputES = ( name: string | undefined ) => ({
         'input'         : 'Entrada',
-        'combobox'      : 'Buscador',
         'select'        : 'Seleccionable',
         'check'         : 'Verificable',
         'textarea'      : 'Caja de texto',
@@ -64,8 +62,6 @@
                     <CheckInputIcon />
                 {:else if shapeInput.shape === 'textarea'}
                     <TextareaIcon />
-                {:else if shapeInput.shape === 'combobox'}
-                    <ComboboxIcon />
                 {:else if shapeInput.shape === 'select'}
                     <SelectIcon />
                 {:else if shapeInput.shape === 'datepicker'}
