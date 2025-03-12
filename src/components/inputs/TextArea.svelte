@@ -15,7 +15,7 @@
 	<textarea
 		name        = { shapeInput.name }
 		id          = { shapeInput.id }
-		rows        = { shapeInput.rows }
+		rows        = { shapeInput.rows || 3 }
 		minlength   = { shapeInput.minLength }
 		maxlength   = { shapeInput.maxLength }
 		required 	= { shapeInput.required }

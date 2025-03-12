@@ -1,0 +1,178 @@
+<script lang="ts">
+    import { v4 as uuid } from 'uuid';
+    import { LoaderIcon, AddIcon, DeleteIcon, JsonIcon } from "$icons";
+    import type { ShapeOption } from "$models";
+    import { read, utils } from 'xlsx';
+    import { Input } from "$components";
+
+    export let options: ShapeOption[] = [];
+    export let onOptionsChange: (newOptions: ShapeOption[]) => void;
+
+    let isLoading = false;
+    let isAddingOption = false;
+
+    const addNewOption = async () => {
+        isAddingOption = true;
+        try {
+            const newOptions = [
+                ...options,
+                {
+                    id: uuid(),
+                    label: '',
+                    value: ''
+                }
+            ];
+            onOptionsChange(newOptions);
+        } finally {
+            isAddingOption = false;
+        }
+    };
+
+    const deleteOption = (item: ShapeOption) => {
+        const newOptions = options.filter(option => option.id !== item.id);
+        onOptionsChange(newOptions);
+    };
+
+    const processJsonData = (data: any[]): ShapeOption[] =>
+        data.map(item => ({
+            id: uuid(),
+            label: item.label || item.name || '',
+            value: item.value || item.id || ''
+        }));
+
+    const processExcelData = (data: any[]): ShapeOption[] =>
+        data.map(row => ({
+            id: uuid(),
+            value: row['value'] || '',
+            label: row['label'] || ''
+        }));
+
+    const handleFileChange = async (event: Event): Promise<void> => {
+        const target = event.target as HTMLInputElement;
+        const file = target.files?.[0] || null;
+
+        if (!file) return;
+
+        const fileExt = file.name.split('.').pop()?.toLowerCase();
+
+        if (!['json', 'xlsx', 'xls'].includes(fileExt || '')) {
+            alert('Solo se permiten archivos JSON o Excel (.xlsx, .xls)');
+            return;
+        }
+
+        isLoading = true;
+
+        try {
+            let newOptions: ShapeOption[];
+            if (fileExt === 'json') {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                newOptions = processJsonData(Array.isArray(data) ? data : [data]);
+            } else {
+                const buffer = await file.arrayBuffer();
+                const workbook = read(buffer);
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const data = utils.sheet_to_json(firstSheet);
+                newOptions = processExcelData(data);
+            }
+            onOptionsChange(newOptions);
+        } catch (error) {
+            console.error('Error al procesar el archivo:', error);
+            alert('Error al procesar el archivo. Asegúrate de que el formato sea correcto.');
+        } finally {
+            isLoading = false;
+            if (target) target.value = '';
+        }
+    };
+
+    const triggerFileInput = (): void => {
+        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+        if (fileInput) fileInput.click();
+    };
+</script>
+
+<div class="grid grid-cols-2 items-center">
+    <span class="text-sm text-zinc-900 dark:text-zinc-200">Valor</span>
+
+    <div class="flex justify-between items-center">
+        <span class="text-sm text-zinc-900 dark:text-zinc-200">Label</span>
+
+        <div class="flex items-center gap-2">
+            <button
+                type="button"
+                class="text-sm"
+                on:click={triggerFileInput}
+                disabled={isLoading}
+            >
+                {#if isLoading}
+                    <LoaderIcon />
+                {:else}
+                    <JsonIcon />
+                {/if}
+            </button>
+
+            <input
+                id="fileInput"
+                type="file"
+                class="hidden"
+                accept=".json,.xlsx,.xls"
+                on:change={handleFileChange}
+            />
+
+            <button
+                type="button"
+                class="text-sm"
+                on:click={addNewOption}
+                disabled={isLoading || isAddingOption}
+            >
+                {#if isAddingOption}
+                    <LoaderIcon />
+                {:else}
+                    <AddIcon />
+                {/if}
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class={`h-auto p-1 w-full overflow-auto gap-2 grid grid-cols-1 @lg:grid-cols-2 pr-2`}>
+    {#each options as item}
+        <Input
+            shapeInput={{
+                id: uuid(),
+                name: uuid(),
+                value: item.value,
+                placeholder: 'Ingrese el valor',
+                type: 'search'
+            }}
+            onInput={(event: Event) => {
+                item.value = (event.target as HTMLInputElement).value;
+                onOptionsChange(options);
+            }}
+        />
+
+        <div class="flex gap-2 items-start">
+            <Input
+                shapeInput={{
+                    id: uuid(),
+                    name: uuid(),
+                    value: item.label,
+                    placeholder: 'Ingrese la etiqueta para mostrar',
+                    type: 'search'
+                }}
+                onInput={(event: Event) => {
+                    item.label = (event.target as HTMLInputElement).value;
+                    onOptionsChange(options);
+                }}
+            />
+
+            <button
+                class="hover:brightness-105 active:scale-95 mt-2 disabled:active:scale-100 disabled:opacity-50"
+                on:click={() => deleteOption(item)}
+                disabled={options.length === 1}
+            >
+                <DeleteIcon />
+            </button>
+        </div>
+    {/each}
+</div>

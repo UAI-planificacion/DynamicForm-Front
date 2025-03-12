@@ -94,6 +94,7 @@ export type SelectGroup = {
 
 
 export type GroupOption = {
+    id?     : string;
     group   : string;
     values  : ShapeOption[];
 };

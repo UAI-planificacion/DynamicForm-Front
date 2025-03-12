@@ -1,19 +1,17 @@
 <script lang="ts">
     import { onMount }  from "svelte";
 
-    import { Accordion }        from "bits-ui";
+    import { Accordion, Tabs }  from "bits-ui";
 	import { v4 as uuid }	    from 'uuid';
-    import { read, utils }		from 'xlsx';
     import { type DateValue }   from "@internationalized/date";
 
     import {
         DeleteIcon,
         CaretDownIcon,
         AddIcon,
-        JsonIcon,
-        LoaderIcon
     }						from "$icons";
     import type {
+        GroupOption,
         InputStyle,
         InputType,
         Method,
@@ -30,6 +28,8 @@
         TextArea,
         Viewer,
         VirtualSelect,
+        ValueEditor,
+        GroupEditor,
     }						from "$components";
     import {
 		options,
@@ -69,101 +69,21 @@
     }[length ?? 0] || 'h-36' );
 
 
-    let isLoading 		= false;
-    let isAddingOption 	= false;
-    let editing 		= false;
+    const defaultOption: ShapeOption[] = [{
+        id: uuid(),
+        label: 'Item 1',
+        value: 'Item 1'
+    }]
 
-
-    const addNewOption = async () => {
-        isAddingOption = true;
-        try {
-            shapeInput.options = [
-                ...(shapeInput.options as ShapeOption[]) ?? [], 
-                {
-                    id      : uuid(),
-                    label   : '',
-                    value   : ''
-                }
-            ];
-        } finally {
-            isAddingOption = false;
+    let isGrouping: boolean = false;
+    let optionsSelected: ShapeOption[] = [];
+    let groupsSelected: GroupOption[] = [
+        {
+            group: '',
+            values: []
         }
-    };
-
-
-	const processJsonData = (data: any[]): ShapeOption[] =>
-		data.map(item => ({
-            id: uuid(),
-            label: item.label || item.name || '',
-            value: item.value || item.id || ''
-        }));
-
-
-	const processExcelData = (data: any[]): ShapeOption[] =>
-        data.map(row => {
-            const value = row['value'] || '';
-            const label = row['label'] || '';
-
-            return {
-                id: uuid(),
-                value,
-                label
-            };
-        });
-
-
-	const handleFileChange = async (event: Event): Promise<void> => {
-        const target = event.target as HTMLInputElement;
-        const file = target.files?.[0] || null;
-
-        if ( !file ) return;
-
-        const fileExt = file.name.split('.').pop()?.toLowerCase();
-
-		if ( !['json', 'xlsx', 'xls' ].includes( fileExt || '' )) {
-            alert('Solo se permiten archivos JSON o Excel (.xlsx, .xls)');
-            return;
-        }
-
-        isLoading = true;
-
-		try {
-            if ( fileExt === 'json' ) {
-                const text 		= await file.text();
-                const data 		= JSON.parse( text );
-                const options 	= processJsonData( Array.isArray( data ) ? data : [ data ]);
-
-				shapeInput.options = options;
-            } else {
-                const buffer 		= await file.arrayBuffer();
-                const workbook 		= read( buffer );
-                const firstSheet 	= workbook.Sheets[ workbook.SheetNames[ 0 ]];
-                const data 			= utils.sheet_to_json( firstSheet );
-                const options 		= processExcelData( data );
-
-				shapeInput.options = options;
-            }
-        } catch ( error ) {
-            console.error('Error al procesar el archivo:', error);
-            alert('Error al procesar el archivo. Asegúrate de que el formato sea correcto.');
-        } finally {
-            isLoading = false;
-            if ( target ) target.value = '';
-        }
-    };
-
-
-	const triggerFileInput = (): void => {
-        const fileInput = document.getElementById( 'fileInput' ) as HTMLInputElement;
-
-		if ( fileInput ) fileInput.click();
-    };
-
-
-	const deleteOption = ( item: ShapeOption ) =>
-        shapeInput.options = [
-            ...(shapeInput.options as ShapeOption[])?.filter( option => option.id !== item.id ) ?? []
-        ];
+    ]
+    let editing 		: boolean = false;
 
 
     function onSelectedChange( selected: SelectInput ) {
@@ -183,14 +103,6 @@
         }
 
 		shapeInput.value = '';
-
-        if ( shapeInput.shape === 'select' || shapeInput.shape === 'combobox' && shapeInput.options?.length === 0 ) {
-            shapeInput.options = [{
-                id      : uuid(),
-                label   : '',
-                value   : ''
-            }]
-        }
 
         if ( shapeInput.shape !== 'input' ) return;
 
@@ -246,21 +158,8 @@
         />
     {:else}
         <section class="space-y-2">
-            <div class="grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
+            <div class="grid grid-cols-1 @lg:grid-cols-2 items-center gap-2">
 				{#if shapeInput.shape !== 'button'}
-					<!-- <Select
-						shapeInput = {{
-							id			: uuid(),
-							name 		: 'shape',
-							placeholder	: 'Ingrese el tipo de entrada',
-							required 	: true,
-							label		: 'Input',
-							selected	: shapeInput.shape,
-							options,
-						}}
-						{ onSelectedChange }
-					/> -->
-
                     <VirtualSelect
                         shapeInput = {{
                             id			: uuid(),
@@ -269,7 +168,7 @@
                             options,
                             multiple    : false,
                             search      : false,
-                            heightPanel : 5,
+                            heightPanel : 6,
                             label		: 'Input',
                             placeholder	: 'Ingrese el tipo de entrada',
                             selected    : shapeInput.shape,
@@ -309,7 +208,7 @@
                                 label   : 'Valor por defecto',
                                 checked : shapeInput.checked
                             }} 
-                            onChange = {( e ) => shapeInput.checked = e as boolean }
+                            onChange = {( e ) => shapeInput.checked = e }
                         />
                     </div>
                 {:else if shapeInput.shape === 'datepicker'}
@@ -322,7 +221,7 @@
                                     label   : 'Día actual',
                                     checked : shapeInput.currentDate
                                 }}
-                                onChange = {( e ) => shapeInput.currentDate = e as boolean }
+                                onChange = {( e ) => shapeInput.currentDate = e}
                             />
                         </div>
 
@@ -422,105 +321,54 @@
 				/>
 
             {:else if shapeInput.shape === 'select' }
-                <div class="grid grid-cols-2 items-center ">
-                    <span class="text-sm text-zinc-900 dark:text-zinc-200">Valor</span>
+                <Tabs.Root value="outbound">
+                    <Tabs.List
+                        class="mt-1 rounded-lg bg-dark-10 shadow-mini-inset dark:bg-background grid w-full grid-cols-2 gap-1 p-1 text-sm font-semibold leading-[0.01em] border border-zinc-300 dark:border-zinc-700"
+                    >
+                        <Tabs.Trigger
+                            value="outbound"
 
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-zinc-900 dark:text-zinc-200">Label</span>
+                            onclick={ ()=> isGrouping = false }
+                            class="data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-zinc-100 text-black dark:text-zinc-400 h-8 dark:data-[state=active]:text-black rounded-lg bg-transparent py-2"
+                        >
+                            Selección
+                        </Tabs.Trigger>
 
-                        <div class="flex items-center gap-2">
-                            <button
-                                class="hover:brightness-105 active:scale-95 active:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed"
-                                on:click={triggerFileInput}
-                                disabled={isLoading}
-                            >
-                                {#if isLoading}
-                                    <LoaderIcon />
-                                {:else}
-                                    <JsonIcon />
-                                {/if}
-                            </button>
+                        <Tabs.Trigger
+                            value="inbound"
+                            onclick={ ()=> isGrouping = true }
 
-                            <input
-                                id="fileInput"
-                                type="file"
-                                class="hidden"
-                                accept=".json,.xlsx,.xls"
-                                on:change={handleFileChange}
-                            />
+                            class="data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-zinc-100 text-black dark:text-zinc-400 h-8 dark:data-[state=active]:text-black rounded-lg bg-transparent py-2"
+                        >
+                            Grupos
+                        </Tabs.Trigger>
+                    </Tabs.List>
 
-                            <button
-                                class="hover:brightness-105 active:scale-95 active:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed"
-                                on:click={addNewOption}
-                                disabled={isLoading || isAddingOption}
-                            >
-                                {#if isAddingOption}
-                                    <LoaderIcon />
-                                {:else}
-                                    <AddIcon width="21px" height="21px" />
-                                {/if}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class={`${heightOptions( shapeInput.options?.length )} p-1 w-full overflow-auto gap-2 grid grid-cols-1 @lg:grid-cols-2 pr-2`}>
-                    {#each shapeInput.options ?? [] as item }
-                        <Input
-                            shapeInput = {{
-                                id		    : uuid(),
-                                name	    : uuid(),
-                                value       : ( item as ShapeOption ).value,
-                                placeholder : 'Ingrese el valor',
+                    <Tabs.Content value="outbound" class="select-none pt-3">
+                        <ValueEditor
+                            options={ optionsSelected }
+                            onOptionsChange={(newOptions: ShapeOption[]) => {
+                                optionsSelected = newOptions;
+                                shapeInput.options = optionsSelected;
                             }}
-                            onInput = {( event: Event ) => ( item as ShapeOption ).value = ( event.target as HTMLInputElement ).value }
                         />
+                    </Tabs.Content>
 
-                        <div class="flex gap-2 items-start">
-                            <Input
-                                shapeInput = {{
-                                    id		    : uuid(),
-                                    name	    : uuid(),
-                                    value       : ( item as ShapeOption ).label,
-                                    placeholder : 'Ingrese la etiqueta para mostrar',
-                                }}
-                                onInput = {( event: Event ) => ( item as ShapeOption ).label = ( event.target as HTMLInputElement ).value }
-                            />
+                    <Tabs.Content value="inbound" class="select-none pt-3">
+                        <GroupEditor
+                            groups = {groupsSelected}
+                            onGroupsChange={(newGroups: GroupOption[]) => {
+                                groupsSelected = newGroups;
+                                shapeInput.options = groupsSelected
+                            }}
+                        />
+                    </Tabs.Content>
+                </Tabs.Root>
 
-                            <button
-                                class="hover:brightness-105 active:scale-95 mt-2 disabled:active:scale-100 disabled:opacity-50"
-                                on:click={() => deleteOption(( item as ShapeOption ))}
-                                disabled={shapeInput.options?.length === 1}
-                            >
-                                <DeleteIcon />
-                            </button>
-                        </div>
-                    {/each}
-                </div>
-
-                {#if shapeInput.shape === 'select'}
-                    <!-- <Select
-                        shapeInput={{
-                            id			: uuid(),
-                            name 		: 'default-value',
-                            placeholder	: 'Ingrese un valor por defecto',
-                            required 	: true,
-                            label		: 'Valor por defecto',
-                            selected    : shapeInput.selected,
-                            multiple    : shapeInput.multiple,
-                            options     : [{ id: uuid(), label: 'Sin valor por defecto', value: '' }, ...shapeInput.options ?? [] ],
-                        }}
-                        onSelectedChange={( selected: Selected<string> | Selected<string>[] | undefined ) => {
-                            if (Array.isArray(selected)) {
-                                shapeInput.selected = selected.map(s => s.value);
-                            } else {
-                                shapeInput.selected = selected?.value;
-                            }
-                        }}
-                    /> -->
-
+                <div class="grid gap-3">
                     <VirtualSelect
-                        shapeInput = {{
+                        onSelectedChange    = { onSelectedType }
+                        shapeInput          = {{
                             id			: uuid(),
                             name 		: 'default-value',
                             placeholder	: 'Ingrese un valor por defecto',
@@ -529,64 +377,56 @@
                             selected	: shapeInput.selected,
                             multiple    : shapeInput.multiple,
                             search      : false,
-                            options     : [{ id: uuid(), label: 'Sin valor por defecto', value: '' }, ...(shapeInput.options as ShapeOption[]) ?? [] ],
+                            options     : [{
+                                id      : uuid(),
+                                label   : 'Sin valor por defecto',
+                                value   : 'none'
+                            }, ...( shapeInput.options as ShapeOption[] ) ?? defaultOption ],
                         }}
-                        onSelectedChange = { onSelectedType }
                     />
-                <!-- {:else} -->
-                    <!-- <Combobox
-                        shapeInput={{
-                            id			: uuid(),
-                            name 		: 'default-value',
-                            placeholder	: 'Ingrese un valor por defecto',
-                            required 	: true,
-                            label		: 'Valor por defecto',
-                            selected    : shapeInput.selected,
-                            multiple    : shapeInput.multiple,
-                            options     : [{ id: uuid(), label: 'Sin valor por defecto', value: '' }, ...shapeInput.options ?? [] ],
-                        }}
-                        onSelectedChange={( selected: Selected<string> | Selected<string>[] | undefined ) => {
-                            if (Array.isArray(selected)) {
-                                shapeInput.selected = selected.map(s => s.value);
-                            } else {
-                                shapeInput.selected = selected?.value;
-                            }
-                        }}
-                    /> -->
-                {/if}
 
-                <div class="flex items-center gap-4">
-                    <Check
-                        shapeInput = {{
-                            id      : uuid(),
-                            name    : 'multiple',
-                            label   : 'Selección múltiple',
-                            checked : shapeInput.multiple
-                        }}
-                        onChange = {( e ) => {
-                            shapeInput.multiple = e as boolean;
-                            shapeInput.selected = undefined;
-                        }}
-                    />
+                    <div class="grid grid-cols-1 @lg:grid-cols-2 items-center gap-2">
+                        <Check
+                            shapeInput = {{
+                                id      : uuid(),
+                                name    : 'multiple',
+                                label   : 'Selección múltiple',
+                                checked : shapeInput.multiple
+                            }}
+                            onChange = {( e ) => {
+                                shapeInput.multiple = e;
+                                shapeInput.selected = undefined;
+                            }}
+                        />
+
+                        <div class="grid grid-cols-1 @xl:grid-cols-2 items-center gap-2">
+                            <Check
+                                onChange    = {( e ) => shapeInput.search = e }
+                                shapeInput  = {{
+                                    id      : uuid(),
+                                    name    : 'search',
+                                    label   : 'Con buscador',
+                                    checked : shapeInput.search
+                                }}
+                            />
+
+                            <Input
+                                shapeInput = {{
+                                    id		    : uuid(),
+                                    name	    : 'search-placeholder',
+                                    value       : shapeInput.searchPlaceholder,
+                                    placeholder : 'Ingrese el placeholder del buscador',
+                                    type        : 'text',
+                                    disabled    : !shapeInput.search
+                                }}
+                                onInput = {( event: Event ) => shapeInput.searchPlaceholder = ( event.target as HTMLInputElement ).value }
+                            />
+                        </div>
+                    </div>
+
                 </div>
-
 			{:else if shapeInput.shape === 'button'}
 					<div class="grid @lg:grid-cols-[1fr,2fr] grid-cols-1 gap-2 items-center">
-						<!-- <Select
-							shapeInput = {{
-								id			: uuid(),
-								label		: 'Método HTTP',
-								name		: 'method',
-								placeholder	: 'Selecciona el método',
-								selected	: shapeInput.method,
-								options		: methods
-							}}
-							onSelectedChange = {(value) => {
-								if (value instanceof Array || value === undefined) return;
-								shapeInput.method = value.value as Method;
-							}}
-						/> -->
-
                         <VirtualSelect
                             shapeInput = {{
                                 id			: uuid(),
@@ -682,23 +522,6 @@
 
 								<div class={`${heightOptions( shapeInput.httpList?.length )} grid @lg:grid-cols-[1fr,2fr,auto] grid-cols-1 gap-2 items-center overflow-auto`}>
 									{#each shapeInput.httpList ?? [] as http, index}
-											<!-- <Select
-												shapeInput = {{
-													id			: uuid(),
-													shape		: 'select',
-													name		: 'code',
-													placeholder	: 'Código HTTP',
-													required	: true,
-													options		: httpCodes,
-													selected	: http.code.toString()
-												}}
-												onSelectedChange = {(value) => {
-													if ( value instanceof Array || value === undefined) return;
-													if (!shapeInput.httpList) return;
-													shapeInput.httpList[index].code = parseInt(value.value);
-												}}
-											/> -->
-
                                             <VirtualSelect
                                                 shapeInput = {{
                                                     id			: uuid(),

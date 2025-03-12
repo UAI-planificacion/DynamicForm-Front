@@ -55,7 +55,7 @@
 			</DropdownMenu.Trigger>
 
 			<DropdownMenu.Content
-				class="w-full max-w-[229px] transition-colors rounded-xl border border-muted dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 shadow-lg"
+				class="w-full z-50 max-w-[229px] transition-colors rounded-xl border border-muted dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 shadow-lg"
 				sideOffset={8}
 			>
 				<DropdownMenu.Item class="flex h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">

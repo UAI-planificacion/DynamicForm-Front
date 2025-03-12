@@ -50,7 +50,7 @@
     let dynamicForm     : DynamicForm = { _id: '', name : '' , details: [] , user_id: 'kevincandia'};
     let options         : ShapeOption[] = [];
 	let inputActive     = 0;
-    let optionSelected  = '';
+    let optionSelected  = 'new';
     let isLoading       = true;
 
     // Esta función se ejecutará cada vez que dynamicForm.details cambie
@@ -275,33 +275,34 @@
 </script>
 
 
-<main class="px-4 py-5 mx-auto 2xl:mx-36 space-y-5 overflow-hidden">
-	<div 
-		class   = "mx-1"
-		in:fly  = {{ y: -20, duration: 300 }}
-		out:fly = {{ y: 20, duration: 300 }}
-	>
+<main class="px-4 py-5 mx-auto 2xl:mx-36 space-y-5">
+    <div 
+        class="mx-1 relative"
+        in:fly={{ y: -20, duration: 300 }}
+        out:fly={{ y: 20, duration: 300 }}
+    >
         <VirtualSelect
             shapeInput = {{
-                id			: uuid(),
-                name		: 'search',
-                shape       : 'select',
+                id			        : uuid(),
+                name		        : 'search',
+                shape               : 'select',
+                multiple            : false,
+                search              : true,
+                heightPanel         : 6,
+                label		        : 'Plantillas de formularios',
+                placeholder	        : 'Seleccione una plantilla',
+                searchPlaceholder   : 'Buscar plantilla',
+                disabled            : isLoading,
+                selected            : optionSelected,
                 options,
-                multiple    : false,
-                search      : true,
-                heightPanel : 8,
-                label		: 'Plantillas de formularios',
-                placeholder	: 'Seleccione una plantilla',
-                disabled    : isLoading,
-                selected    : optionSelected
             }}
             onSelectedChange = { handleTemplateChange }
         />
-	</div>
+    </div>
 
     {#if dynamicForm.details.length > 0}
         <div
-            class		= "mt-5"
+            class		= "mt-5 z-0 relative"
             in:scale	= {{ duration: 300, start: 0.95 }}
             out:scale	= {{ duration: 300, start: 1 }}
         >

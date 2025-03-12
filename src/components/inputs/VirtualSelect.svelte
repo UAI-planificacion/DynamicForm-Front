@@ -11,6 +11,7 @@
         SelectGroup
     }           from '$models';
     import Info from './Info.svelte';
+    import { Input } from '$components';
 
 
     export let shapeInput       : ShapeInput;
@@ -23,59 +24,51 @@
     let selectedItems: ShapeOption[] = [];
     let filteredData: ShapeOption[] | GroupOption[] | undefined = [];
     let comboboxElement: HTMLDivElement;
+    let dropdownElement: HTMLDivElement;
     let listContainer: HTMLDivElement;
     let scrollTop = 0;
     let visibleItems: ShapeOption[] | GroupOption[] = [];
     let totalHeight = 0;
     let itemPositions: { index: number; offset: number }[] = [];
-    let hoveredIndex: number | null = null;
-
-    const ITEM_HEIGHT = 40; // Height of each item in pixels
-    const GROUP_HEADER_HEIGHT = 40; // Height of group headers
-    const CONTAINER_HEIGHT = 36 * ( shapeInput.heightPanel ?? 5 ); // Max height of the dropdown
-    const BUFFER_ITEMS = 1; // Number of items to render above/below visible area
-
+    let hoveredIndex: string | null = null;
 
     const isGroupOption = (
         item: ShapeOption | GroupOption
     ): item is GroupOption => 'group' in item && 'values' in item;
 
 
-    function calculateItemPositions( items: ShapeOption[] | GroupOption[] ): void {
+    function calculateItemPositions(): void {
         let currentOffset = 0;
-
-        itemPositions = items.map(( item, index ) => {
+        itemPositions = filteredData?.map((item, index) => {
             const position = { index, offset: currentOffset };
 
-            if ( isGroupOption( item )) {
-                currentOffset += GROUP_HEADER_HEIGHT + ( item.values.length * ITEM_HEIGHT );
+            if (isGroupOption(item)) {
+                currentOffset += 40 + (item.values.length * 36);
             } else {
-                currentOffset += ITEM_HEIGHT;
+                currentOffset += 36;
             }
 
             return position;
-        });
+        }) ?? [];
 
         totalHeight = currentOffset;
     }
 
 
-    function findVisibleRange( scrollTop: number ): { startIndex: number; endIndex: number } {
-        const visibleStart  = Math.max( 0, scrollTop - ( ITEM_HEIGHT * BUFFER_ITEMS ));
-        const visibleEnd    = scrollTop + CONTAINER_HEIGHT + ( ITEM_HEIGHT * BUFFER_ITEMS );
+    function findVisibleRange(scrollTop: number): { startIndex: number; endIndex: number } {
+        const containerHeight = calculateDropdownHeight();
+        const buffer = containerHeight;
+        
+        const visibleStart = Math.max(0, scrollTop - buffer);
+        const visibleEnd = scrollTop + containerHeight + buffer;
 
-        let startIndex = itemPositions.findIndex( pos => pos.offset >= visibleStart );
+        let startIndex = itemPositions.findIndex(pos => pos.offset >= visibleStart);
+        if (startIndex === -1) startIndex = itemPositions.length;
 
-        if ( startIndex === -1 ) startIndex = 0;
-
-        let endIndex = itemPositions.findIndex( pos => pos.offset > visibleEnd );
-
+        let endIndex = itemPositions.findIndex(pos => pos.offset > visibleEnd);
         if (endIndex === -1) endIndex = itemPositions.length;
-    
-        return {
-            startIndex  : Math.max( 0, startIndex - 1 ),
-            endIndex    : Math.min( itemPositions.length, endIndex + 1 )
-        };
+
+        return { startIndex, endIndex };
     }
 
 
@@ -135,7 +128,7 @@
             filteredData = shapeInput.options || [];
         }
 
-        calculateItemPositions( filteredData! );
+        calculateItemPositions();
         updateVisibleItems();
     }
 
@@ -227,8 +220,52 @@
         ? selectedItems.length > 0
             ? `Se han seleccionado ${selectedItems.length} elementos`
             : shapeInput.placeholder || ''
-        : selectedItems[0]?.label || 'Seleccionar elemento';
+        : selectedItems[0]?.label || shapeInput.placeholder;
 
+
+    async function handleOpen() {
+        isOpen = !isOpen;
+        if ( isOpen ) {
+            adjustDropdownPosition();
+        }
+    }
+
+    function adjustDropdownPosition() {
+        if (!dropdownElement || !comboboxElement) return;
+
+        const rect = comboboxElement.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const spaceBelow = viewportHeight - rect.bottom;
+        const spaceAbove = rect.top;
+        const dropdownHeight = dropdownElement.offsetHeight;
+
+        dropdownElement.style.left = `${rect.left}px`;
+
+        if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+            // Position above if there's more space above
+            dropdownElement.style.bottom = `${viewportHeight - rect.top}px`;
+            dropdownElement.style.top = 'auto';
+            dropdownElement.style.marginBottom = '0.25rem';
+            dropdownElement.style.marginTop = '0';
+        } else {
+            // Position below
+            dropdownElement.style.top = `${rect.bottom}px`;
+            dropdownElement.style.bottom = 'auto';
+            dropdownElement.style.marginTop = '0.25rem';
+            dropdownElement.style.marginBottom = '0';
+        }
+    }
+
+    function calculateDropdownHeight() {
+        const searchHeight = shapeInput.search ? 32 : 0;
+        const contentHeight = !filteredData?.length ? 36 
+            : filteredData.length === 1 ? 40
+            : filteredData.reduce((h, item) => isGroupOption(item) 
+                ? h + 40 * (1 + item.values.length) : h + 40, 0);
+            
+        const maxHeight = 36 * (shapeInput.heightPanel ?? 5);
+        return searchHeight + Math.min(contentHeight, maxHeight - searchHeight);
+    }
 
     function handleClickOutside( event: MouseEvent ): void {
         if ( comboboxElement && !comboboxElement.contains( event.target as Node )) {
@@ -241,18 +278,20 @@
         hoveredIndex = null;
     }
 
-    function handleMouseEnter(index: number): void {
+    function handleMouseEnter(index: string): void {
         hoveredIndex = index;
     }
 
 
     onMount(() => {
-        document.addEventListener( 'click', handleClickOutside );
-        calculateItemPositions( filteredData ?? [] );
+        window.addEventListener('resize', adjustDropdownPosition);
+        document.addEventListener('click', handleClickOutside);
+        calculateItemPositions();
         updateVisibleItems();
 
         return () => {
-            document.removeEventListener( 'click', handleClickOutside );
+            window.removeEventListener('resize', adjustDropdownPosition);
+            document.removeEventListener('click', handleClickOutside);
         }
     });
 </script>
@@ -261,21 +300,22 @@
 <Info { shapeInput } { onSelectedChange } { value }>
 <div class="relative w-full" bind:this={comboboxElement}>
     <button
-        type        = "button"
-        class       = "flex w-full items-center justify-between rounded-lg border-[1.5px] border-zinc-200 bg-white px-3 py-2 text-sm transition-all hover:bg-zinc-100 focus-visible:outline-none focus-visible:border-[2px] focus-visible:border-zinc-400 dark:focus-visible:border-zinc-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
-        on:click    = {() => (isOpen = !isOpen)}
+        type="button"
+        class="flex w-full items-center justify-between rounded-lg border-[1.5px] border-zinc-200 bg-white px-3 py-2 text-sm transition-all hover:bg-zinc-100 focus-visible:outline-none focus-visible:border-[2px] focus-visible:border-zinc-400 dark:focus-visible:border-zinc-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        on:click={handleOpen}
+        disabled={shapeInput.disabled}
     >
         <span class="truncate text-zinc-500 dark:text-zinc-300">{displayText}</span>
 
         <div class="flex items-center gap-2">
             {#if shapeInput.multiple && selectedItems.length > 0}
                 <div
-                    class       = "p-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
-                    on:click    = { clearSelection }
-                    title       = "Limpiar selección"
-                    role        = "button"
-                    on:keydown  = {( event ) => { if ( event.key === 'Enter' || event.key === ' ' ) clearSelection( event ); }}
-                    tabindex    = "0" 
+                    class="p-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
+                    on:click|stopPropagation={clearSelection}
+                    title="Limpiar selección"
+                    role="button"
+                    on:keydown={(event) => { if (event.key === 'Enter' || event.key === ' ') clearSelection(event); }}
+                    tabindex="0" 
                 >
                     <X class="h-3 w-3 text-gray-400"/>
                 </div>
@@ -286,30 +326,50 @@
     </button>
 
     {#if isOpen}
-        <div class="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-zinc-200 bg-white text-zinc-950 shadow-md animate-slideDown dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50">
+        <div 
+            bind:this={dropdownElement}
+            class="fixed z-40 overflow-hidden rounded-lg border border-zinc-200 bg-white text-zinc-950 shadow-lg dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+            style="
+                min-width: {comboboxElement?.offsetWidth}px;
+                max-width: {comboboxElement?.offsetWidth}px;
+                {dropdownElement?.style.top || ''};
+                {dropdownElement?.style.left || ''};
+                {dropdownElement?.style.bottom || ''};
+                margin-top: {dropdownElement?.style.marginTop || '0.25rem'};
+                margin-bottom: {dropdownElement?.style.marginBottom || '0'};
+            "
+        >
             {#if shapeInput.search}
-                <div class="sticky top-0 p-2 bg-white border-b border-zinc-200 z-10 dark:bg-zinc-800 dark:border-zinc-700">
-                    <input
-                        bind:value={searchTerm}
-                        type        = "search"
-                        class       = "flex h-9 w-full rounded-lg border-[1.5px] border-zinc-200 bg-white px-3 py-1 text-sm shadow-sm transition-all placeholder:text-zinc-500 focus-visible:outline-none focus-visible:border-[2px] focus-visible:border-zinc-400 dark:focus-visible:border-zinc-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder:text-zinc-400"
-                        placeholder = { shapeInput.searchPlaceholder }
+                <div class="p-1 sticky top-0 bg-white dark:bg-zinc-800">
+                    <Input
+                        shapeInput = {{
+                            id		    : 'search-items',
+                            name	    : 'label',
+                            placeholder : shapeInput.searchPlaceholder || 'Busca un elemento...'
+                        }}
+                    onInput = {( event: Event ) => searchTerm = ( event.target as HTMLInputElement ).value }
                     />
+
                 </div>
             {/if}
 
-            {#if !filteredData?.length}
-                <div class="p-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
+            {#if !shapeInput.options?.length}
+                <div class="py-1 text-center text-sm text-zinc-500 dark:text-zinc-400">
+                    No hay elementos disponibles
+                </div>
+            {:else if !filteredData?.length}
+                <div class="py-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
                     No se encontraron elementos
                 </div>
             {:else}
                 <div
                     bind:this={listContainer}
-                    class       ="overflow-auto z-50"
-                    style       ="height: {CONTAINER_HEIGHT}px;"
-                    on:scroll   ={ handleScroll }
+                    class="px-1 mt-1"
+                    class:overflow-auto={filteredData.length > 1 && calculateDropdownHeight() < totalHeight}
+                    style="height: {calculateDropdownHeight()}px;"
                     role="listbox"
                     aria-label="Lista de opciones"
+                    on:scroll={filteredData.length > 1 ? handleScroll : null}
                 >
                     <div 
                         style="height: {totalHeight}px; position: relative;" 
@@ -321,12 +381,12 @@
                             style="position: absolute; left: 0; right: 0;"
                             role="presentation"
                         >
-                            {#each visibleItems as item, index}
+                            {#each visibleItems as item, i (item.id ?? i)}
                                 {#if isGroupOption(item)}
                                     <div class="group">
                                         <button
                                             type="button"
-                                            class="flex w-full items-center justify-between px-3 py-2 text-sm font-semibold bg-gray-50 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                                            class="dark:text-zinc-400 flex w-full items-center justify-between px-3 py-2 text-sm font-bold bg-transparent dark:bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-700/50 focus:bg-zinc-100 rounded-lg dark:focus:bg-zinc-700 focus:outline-none transition-colors"
                                             on:click={() => toggleGroup(item)}
                                         >
                                             <span>{item.group}</span>
@@ -342,19 +402,22 @@
                                             {/if}
                                         </button>
 
-                                        {#each item.values as option}
+                                        {#each item.values as option, optionIndex}
+                                            {@const itemKey = `${i}-${optionIndex}`}
                                             <button
                                                 type="button"
-                                                class="flex w-full items-center justify-between px-6 py-2 text-sm transition-colors rounded-lg focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-700 {hoveredIndex === index ? 'bg-zinc-100 dark:bg-zinc-700' : ''} {selectedItems.some(i => i.value === option.value) ? 'bg-zinc-200 dark:bg-zinc-600' : ''}"
+                                                class="flex w-full items-center justify-between px-6 py-2 text-sm transition-colors rounded-lg focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-700 {hoveredIndex === itemKey ? 'bg-zinc-100 dark:bg-zinc-700' : ''} {selectedItems.some(selected => selected.value === option.value) ? 'bg-zinc-200 dark:bg-zinc-600' : ''} hover:bg-zinc-100 dark:hover:bg-zinc-700/50"
                                                 on:click={() => toggleItem(option)}
-                                                on:mouseenter={() => handleMouseEnter(index)}
+                                                on:mouseenter={() => {
+                                                    hoveredIndex = itemKey;
+                                                }}
                                                 on:mouseleave={handleMouseLeave}
                                                 role="option"
-                                                aria-selected={selectedItems.some(i => i.value === option.value)}
+                                                aria-selected={selectedItems.some(selected => selected.value === option.value)}
                                             >
                                                 <span>{option.label}</span>
 
-                                                {#if selectedItems.some(i => i.value === option.value)}
+                                                {#if selectedItems.some(selected => selected.value === option.value)}
                                                     <Check class="h-4 w-4 text-green-600" />
                                                 {/if}
                                             </button>
@@ -363,16 +426,18 @@
                                 {:else}
                                     <button
                                         type="button"
-                                        class="flex w-full items-center justify-between px-3 py-2 text-sm transition-colors rounded-lg focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-700 {hoveredIndex === index ? 'bg-zinc-100 dark:bg-zinc-700' : ''} {selectedItems.some(selected => selected.value === item.value) ? 'bg-zinc-200 dark:bg-zinc-600' : ''}"
+                                        class="flex w-full items-center justify-between px-3 py-2 text-sm transition-colors rounded-lg focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-700 {hoveredIndex === `item-${i}` ? 'bg-zinc-100 dark:bg-zinc-700' : ''} {selectedItems.some(selected => selected.value === item.value) ? 'bg-zinc-200 dark:bg-zinc-600' : ''} hover:bg-zinc-100 dark:hover:bg-zinc-700/50"
                                         on:click={() => toggleItem(item)}
-                                        on:mouseenter={() => handleMouseEnter(index)}
+                                        on:mouseenter={() => {
+                                            hoveredIndex = `item-${i}`;
+                                        }}
                                         on:mouseleave={handleMouseLeave}
                                         role="option"
                                         aria-selected={selectedItems.some(selected => selected.value === item.value)}
                                     >
                                         <span>{item.label}</span>
 
-                                        {#if selectedItems.some(i => i.value === item.value)}
+                                        {#if selectedItems.some(selected => selected.value === item.value)}
                                             <Check class="h-4 w-4 text-green-600" />
                                         {/if}
                                     </button>

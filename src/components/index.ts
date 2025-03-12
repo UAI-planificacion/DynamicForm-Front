@@ -38,3 +38,7 @@ export { default as MicrosoftAuth } from './Auth/microsoftAuth.svelte';
 
 // Modal
 export { default as DeleteModel } from './Modal/DeleteModel.svelte';
+
+// New Components
+export { default as ValueEditor }     from './ValueEditor.svelte';
+export { default as GroupEditor }     from './GroupEditor.svelte';
