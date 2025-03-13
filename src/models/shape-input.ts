@@ -62,7 +62,7 @@ export type ShapeInput = {
     options?        : ShapeOption[] | GroupOption[];
     rows?           : number;
     checked?        : boolean;
-    selected?       : string | string[] | undefined;
+    selected?       : Selected;
     httpList?			: Http[];
 	externalErrorMsg?   : string;
 	invalidErrorMsg?	: string;
@@ -71,6 +71,8 @@ export type ShapeInput = {
 	// form? 			: Form;
 }
 
+
+export type Selected = string | string[] | SelectGroup[] | undefined;
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 

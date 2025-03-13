@@ -1,12 +1,14 @@
 <script lang="ts">
-    import { v4 as uuid } from 'uuid';
-    import { read, utils } from 'xlsx';
+    import { v4 as uuid }   from 'uuid';
+    import { read, utils }  from 'xlsx';
+    import { Accordion }    from 'bits-ui';
 
     import {
         LoaderIcon,
         AddIcon,
         DeleteIcon,
-        JsonIcon
+        JsonIcon,
+        CaretDownIcon
     }                           from "$icons";
     import type { ShapeOption } from "$models";
     import { Input, ButtonUI }  from "$components";
@@ -37,13 +39,13 @@
         } finally {
             isAddingOption = false;
         }
-    };
+    }
 
 
     function deleteOption( item: ShapeOption ): void {
         const newOptions = options.filter( option => option.id !== item.id );
         onOptionsChange( newOptions );
-    };
+    }
 
 
     const processJsonData = ( data: any[] ): ShapeOption[] =>
@@ -102,93 +104,121 @@
             isLoading = false;
             if ( target ) target.value = '';
         }
-    };
+    }
 
 
     function triggerFileInput(): void {
         const fileInput = document.getElementById( 'fileInput' ) as HTMLInputElement;
         if (fileInput) fileInput.click();
-    };
+    }
+
+
+    function keyAddOption( event: KeyboardEvent ): void {
+        if ( event.key === 'Enter' ) addNewOption();
+    }
 </script>
 
-<div class="grid grid-cols-2 items-center">
-    <span class="text-sm text-zinc-900 dark:text-zinc-200">Valor</span>
 
-    <div class="flex justify-between items-center">
-        <span class="text-sm text-zinc-900 dark:text-zinc-200">Label</span>
-
-        <div class="flex items-center gap-2">
-            <ButtonUI
-                onClick     = { triggerFileInput }
-                disabled    = { isLoading }
+<Accordion.Root class="w-full" type="single">
+    <Accordion.Item
+        value="values"
+        class="border-b border-b-zinc-400 dark:border-b-zinc-600 transition-colors"
+    >
+        <Accordion.Header>
+            <Accordion.Trigger
+                class="group flex w-full flex-1 select-none items-center justify-between py-2 text-[15px] font-medium transition-all hover:rounded-lg hover:bg-zinc-300/70 dark:hover:bg-zinc-800/70"
             >
-                {#if isLoading}
-                    <LoaderIcon />
+                <span class="ml-3 text-sm text-zinc-900 dark:text-zinc-200">Valor</span>
+
+                <span class="@xl:ml-24 ml-0 text-sm text-zinc-900 dark:text-zinc-200">Label</span>
+
+                <div class="flex justify-between items-center gap-2 mr-2">
+                    <div class="flex items-center gap-2">
+                        <ButtonUI
+                            onClick     = { triggerFileInput }
+                            disabled    = { isLoading }
+                        >
+                            {#if isLoading}
+                                <LoaderIcon />
+                            {:else}
+                                <JsonIcon />
+                            {/if}
+                        </ButtonUI>
+
+                        <input
+                            id          = "fileInput"
+                            type        = "file"
+                            class       = "hidden"
+                            accept      = ".json,.xlsx,.xls"
+                            on:change   = { handleFileChange }
+                        />
+
+                        <ButtonUI
+                            onClick     = { addNewOption }
+                            disabled    = { isLoading || isAddingOption }
+                        >
+                            {#if isAddingOption}
+                                <LoaderIcon />
+                            {:else}
+                                <AddIcon />
+                            {/if}
+                        </ButtonUI>
+                    </div>
+
+                    <span class="transition-transform duration-200 group-data-[state=open]:rotate-180">
+                        <CaretDownIcon />
+                    </span>
+                </div>
+            </Accordion.Trigger>
+        </Accordion.Header>
+
+        <Accordion.Content
+            class="data-[state=closed]:animate-accordion-up my-2 data-[state=open]:animate-accordion-down max-h-72 overflow-auto tracking-[-0.01em]"
+        >
+            <div class={`h-auto p-1 w-full overflow-auto gap-2 grid grid-cols-1 @lg:grid-cols-2 pr-2`}>
+                {#each options as item}
+                    <Input
+                        shapeInput={{
+                            id: uuid(),
+                            name: uuid(),
+                            value: item.value,
+                            placeholder: 'Ingrese el valor',
+                            type: 'search'
+                        }}
+                        onInput={(event: Event) => {
+                            item.value = (event.target as HTMLInputElement).value;
+                            onOptionsChange(options);
+                        }}
+                    />
+
+                    <div class="flex gap-2 items-start">
+                        <Input
+                            shapeInput={{
+                                id          : uuid(),
+                                name        : uuid(),
+                                value       : item.label,
+                                placeholder : 'Ingrese la etiqueta para mostrar',
+                                type        : 'search'
+                            }}
+                            onInput={( event: Event ) => {
+                                item.label = (event.target as HTMLInputElement).value;
+                                onOptionsChange(options);
+                            }}
+                            onKeyup={ keyAddOption }
+                        />
+
+                        <ButtonUI
+                            onClick     = {() => deleteOption( item )}
+                            disabled    = { options.length === 1 }
+                            styles      = "mt-1.5"
+                        >
+                            <DeleteIcon />
+                        </ButtonUI>
+                    </div>
                 {:else}
-                    <JsonIcon />
-                {/if}
-            </ButtonUI>
-
-            <input
-                id          = "fileInput"
-                type        = "file"
-                class       = "hidden"
-                accept      = ".json,.xlsx,.xls"
-                on:change   = { handleFileChange }
-            />
-
-            <ButtonUI
-                onClick     = { addNewOption }
-                disabled    = { isLoading || isAddingOption }
-            >
-                {#if isAddingOption}
-                    <LoaderIcon />
-                {:else}
-                    <AddIcon />
-                {/if}
-            </ButtonUI>
-        </div>
-    </div>
-</div>
-
-<div class={`h-auto p-1 w-full overflow-auto gap-2 grid grid-cols-1 @lg:grid-cols-2 pr-2`}>
-    {#each options as item}
-        <Input
-            shapeInput={{
-                id: uuid(),
-                name: uuid(),
-                value: item.value,
-                placeholder: 'Ingrese el valor',
-                type: 'search'
-            }}
-            onInput={(event: Event) => {
-                item.value = (event.target as HTMLInputElement).value;
-                onOptionsChange(options);
-            }}
-        />
-
-        <div class="flex gap-2 items-start">
-            <Input
-                shapeInput={{
-                    id: uuid(),
-                    name: uuid(),
-                    value: item.label,
-                    placeholder: 'Ingrese la etiqueta para mostrar',
-                    type: 'search'
-                }}
-                onInput={(event: Event) => {
-                    item.label = (event.target as HTMLInputElement).value;
-                    onOptionsChange(options);
-                }}
-            />
-
-            <button
-                class="hover:brightness-105 active:scale-95 mt-2 disabled:active:scale-100 disabled:opacity-50"
-                on:click={() => deleteOption(item)}
-                disabled={options.length === 1}
-            >
-                <DeleteIcon />
-            </button>
-        </div>
-    {/each}
-</div>
+                    <span class="text-sm text-zinc-900 dark:text-zinc-500">No hay opciones</span>
+                {/each}
+            </div>
+        </Accordion.Content>
+    </Accordion.Item>
+</Accordion.Root>

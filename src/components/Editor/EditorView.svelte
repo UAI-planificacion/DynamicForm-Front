@@ -75,15 +75,20 @@
         value: 'Item 1'
     }]
 
-    let isGrouping: boolean = false;
-    let optionsSelected: ShapeOption[] = [];
-    let groupsSelected: GroupOption[] = [
+    let editing 		: boolean = false;
+    let optionsSelected : ShapeOption[] = [
+        {
+            id      : uuid(),
+            label   : '',
+            value   : ''
+        }
+    ];
+    let groupsSelected  : GroupOption[] = [
         {
             group: '',
             values: []
         }
     ]
-    let editing 		: boolean = false;
 
 
     function onSelectedChange( selected: SelectInput ) {
@@ -247,7 +252,6 @@
                         }}
                         onInput = {( event: Event ) => shapeInput.placeholder = ( event.target as HTMLInputElement ).value }
                     />
-				
                 {/if}
             </div>
 
@@ -278,7 +282,6 @@
                         onInput = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
                     />
                 </div>
-
             {:else if shapeInput.shape === 'textarea' }
                 <div class="grid grid-cols-1 sm:grid-cols-2 space-x-2 items-center">
                     <Input
@@ -305,7 +308,6 @@
                         onInput = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
                     />
                 </div>
-
 			{:else if shapeInput.shape === 'markdown' }
 				<MarkdownEditor
 					shapeInput ={{
@@ -319,47 +321,44 @@
 					dynamicMode	= { true }
 					onInput		= {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
 				/>
-
             {:else if shapeInput.shape === 'select' }
-                <Tabs.Root value="outbound">
+                <Tabs.Root value="options">
                     <Tabs.List
                         class="mt-1 rounded-lg bg-dark-10 shadow-mini-inset dark:bg-background grid w-full grid-cols-2 gap-1 p-1 text-sm font-semibold leading-[0.01em] border border-zinc-300 dark:border-zinc-700"
                     >
                         <Tabs.Trigger
-                            value="outbound"
-
-                            onclick={ ()=> isGrouping = false }
-                            class="data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-zinc-100 text-black dark:text-zinc-400 h-8 dark:data-[state=active]:text-black rounded-lg bg-transparent py-2"
+                            value   = "options"
+                            onclick = { () => shapeInput.options = [...optionsSelected ]}
+                            class   = "data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-zinc-100 text-black dark:text-zinc-400 h-8 dark:data-[state=active]:text-black rounded-lg bg-transparent py-2"
                         >
                             Selección
                         </Tabs.Trigger>
 
                         <Tabs.Trigger
-                            value="inbound"
-                            onclick={ ()=> isGrouping = true }
-
-                            class="data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-zinc-100 text-black dark:text-zinc-400 h-8 dark:data-[state=active]:text-black rounded-lg bg-transparent py-2"
+                            value   = "groups"
+                            onclick = { () => shapeInput.options = [...groupsSelected ]}
+                            class   = "data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-zinc-100 text-black dark:text-zinc-400 h-8 dark:data-[state=active]:text-black rounded-lg bg-transparent py-2"
                         >
                             Grupos
                         </Tabs.Trigger>
                     </Tabs.List>
 
-                    <Tabs.Content value="outbound" class="select-none pt-3">
+                    <Tabs.Content value="options" class="select-none pt-3">
                         <ValueEditor
-                            options={ optionsSelected }
-                            onOptionsChange={(newOptions: ShapeOption[]) => {
-                                optionsSelected = newOptions;
-                                shapeInput.options = optionsSelected;
+                            options         = { optionsSelected }
+                            onOptionsChange = {(newOptions: ShapeOption[]) => {
+                                optionsSelected     = [...newOptions];
+                                shapeInput.options  = optionsSelected;
                             }}
                         />
                     </Tabs.Content>
 
-                    <Tabs.Content value="inbound" class="select-none pt-3">
+                    <Tabs.Content value="groups" class="select-none pt-3">
                         <GroupEditor
-                            groups = {groupsSelected}
-                            onGroupsChange={(newGroups: GroupOption[]) => {
-                                groupsSelected = newGroups;
-                                shapeInput.options = groupsSelected
+                            groups          = { groupsSelected }
+                            onGroupsChange  = {( newGroups: GroupOption[] ) => {
+                                groupsSelected      = [...newGroups];
+                                shapeInput.options  = groupsSelected
                             }}
                         />
                     </Tabs.Content>
@@ -423,39 +422,39 @@
                             />
                         </div>
                     </div>
-
                 </div>
-			{:else if shapeInput.shape === 'button'}
-					<div class="grid @lg:grid-cols-[1fr,2fr] grid-cols-1 gap-2 items-center">
-                        <VirtualSelect
-                            shapeInput = {{
-                                id			: uuid(),
-                                label		: 'Método HTTP',
-								name		: 'method',
-								placeholder	: 'Selecciona el método',
-                                required 	: true,
-                                selected	: shapeInput.selected,
-                                multiple    : shapeInput.multiple,
-                                search      : false,
-								options		: methods
-                            }}
-                            onSelectedChange = {(value) => {
-								if (value instanceof Array || value === undefined) return;
-								shapeInput.method = value as Method;
-							}}
-                        />
 
-						<Input
-							shapeInput = {{
-								id			: uuid(),
-								label		: 'URL de la API',
-								name		: 'urlSend',
-								placeholder	: 'Ingresa la URL de la API',
-								value		: shapeInput.urlSend
-							}}
-							onInput = {(event) => shapeInput.urlSend = (event.target as HTMLInputElement).value}
-						/>
-					</div>
+            {:else if shapeInput.shape === 'button'}
+                <div class="grid @lg:grid-cols-[1fr,2fr] grid-cols-1 gap-2 items-center">
+                    <VirtualSelect
+                        shapeInput = {{
+                            id			: uuid(),
+                            label		: 'Método HTTP',
+                            name		: 'method',
+                            placeholder	: 'Selecciona el método',
+                            required 	: true,
+                            selected	: shapeInput.selected,
+                            multiple    : shapeInput.multiple,
+                            search      : false,
+                            options		: methods
+                        }}
+                        onSelectedChange = {( value ) => {
+                            if (value instanceof Array || value === undefined) return;
+                            shapeInput.method = value as Method;
+                        }}
+                    />
+
+                    <Input
+                        shapeInput = {{
+                            id			: uuid(),
+                            label		: 'URL de la API',
+                            name		: 'urlSend',
+                            placeholder	: 'Ingresa la URL de la API',
+                            value		: shapeInput.urlSend
+                        }}
+                        onInput = {( event ) => shapeInput.urlSend = ( event.target as HTMLInputElement ).value }
+                    />
+                </div>
             {/if}
 
             <Accordion.Root class="w-full" type="single">
@@ -473,9 +472,7 @@
                         </Accordion.Trigger>
                     </Accordion.Header>
 
-                    <Accordion.Content
-                        class               = "pb-3 tracking-[-0.01em] space-y-2"
-                    >
+                    <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
                         {#if shapeInput.shape !== 'button' }
                             <div class=" grid grid-cols-2 gap-2 items-center">
                                 <Check
@@ -568,7 +565,6 @@
 									{/each}
 								</div>
 							</div>
-						
                         {/if}
 
                         {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' }
@@ -714,9 +710,7 @@
 							</Accordion.Trigger>
 						</Accordion.Header>
 
-						<Accordion.Content
-							class               = "pb-3 tracking-[-0.01em] space-y-2"
-						>
+						<Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
 							<div class="grid @lg:grid-cols-2 grid-cols-1 gap-2 items-center">
 								<Input
 									shapeInput = {{
@@ -759,9 +753,7 @@
                         </Accordion.Trigger>
                     </Accordion.Header>
 
-                    <Accordion.Content
-                        class               = "pb-3 tracking-[-0.01em] space-y-2"
-                    >
+                    <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
                         <Input
                             shapeInput = {{
                                 id		    : uuid(),

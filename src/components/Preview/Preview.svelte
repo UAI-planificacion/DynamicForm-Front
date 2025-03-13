@@ -30,6 +30,9 @@
 	export let inputActive 	: number;
 	export let dynamicMode	: boolean = false;
 
+    const keys = ["value", "checked", "date", "selected"];
+
+
 	let loading = false;
     let formValues: Record<string, any> = {};
     let previousTemplate = template;
@@ -40,7 +43,6 @@
             formValues = {};
 
             formValues = template.reduce((acc, item) => {
-                const keys = ["value", "checked", "date", "selected"];
                 const value = keys.find((key) => item[key] !== undefined)
                     ? item[keys.find((key) => item[key] !== undefined) as keyof typeof item]
                     : undefined;
@@ -58,26 +60,44 @@
 
     // Limpiar y actualizar formValues cuando template cambie
     $: {
-        if ( template ) {
+        if (template) {
+            // Obtener los nombres válidos del template
+            const validNames = template
+                .filter(item => item.shape !== 'button' && item.name?.trim())
+                .map(item => item.name);
+
+            // Crear un nuevo objeto con los valores iniciales
             const initialValues = template.reduce((acc, item) => {
-                const keys = ["value", "checked", "date", "selected"];
                 const value = keys.find((key) => item[key] !== undefined)
                     ? item[keys.find((key) => item[key] !== undefined) as keyof typeof item]
                     : undefined;
 
-                // Solo agregar al formValues si no es un botón y el valor no existe ya en formValues
-                if (item.shape !== 'button' && value !== undefined && !(item.name in formValues)) {
+                // Solo agregar si es un nombre válido y tiene un valor
+                if (item.shape !== 'button' && item.name?.trim() && value !== undefined) {
                     acc[item.name] = value;
                 }
 
                 return acc;
             }, {} as Record<string, any>);
 
-            formValues = { ...formValues, ...initialValues };
+            // Mantener solo los valores con nombres válidos del template actual
+            const currentValues = Object.entries(formValues)
+                .filter(([key]) => validNames.includes(key))
+                .reduce((acc, [key, value]) => {
+                    acc[key] = value;
+                    return acc;
+                }, {} as Record<string, any>);
+
+            // Combinar valores actuales con los iniciales
+            formValues = {
+                ...initialValues,  // Valores por defecto del template
+                ...currentValues   // Valores actuales que coinciden con nombres válidos
+            };
         }
     }
 
-	const handleDatePicker = ( event: DateValue, name: string ) => {
+
+    function handleDatePicker( event: DateValue, name: string ): void {
 		if ( !event ) {
 			formValues[name] = null;
 			return;
@@ -87,15 +107,16 @@
 		formValues[name] = { year, month: ( month - 1 ), day };
 	}
 
-	const handleInput = ( event: Event, name: string ) => {
+
+    const handleInput = ( event: Event, name: string ): string =>
 		formValues[name] = (event.target as HTMLInputElement).value;
-	}
 
-	const handleCheck = ( isChecked: boolean, name: string ) => {
+
+    const handleCheck = ( isChecked: boolean, name: string ): boolean =>
 		formValues[name] = isChecked;
-	}
 
-	async function onClick() {
+
+    async function onClick() {
         if ( Object.keys( formValues ).length === 0 ) {
             toast.error( 'Por favor, cree un formulario válido.', errorToast() );
             return;
@@ -179,14 +200,13 @@
 			{:else if shapeInput.shape === 'select'}
                 <VirtualSelect
                     { shapeInput }
-                    bind:value          = { formValues[ shapeInput.name ]}
+                    value               = { formValues[ shapeInput.name ]}
                     setError            = {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
                     onSelectedChange	= {( value: SelectInput ) => {
-                        if (Array.isArray(value)) {
-                            formValues[shapeInput.name] = value.map(s => s);
-                        } else {
-                            formValues[shapeInput.name] = value;
-                        }
+                        formValues[shapeInput.name] = Array.isArray( value ) 
+                            ? value.map( s => s )
+                            : value;
+
                         shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ]);
                     }}
                 />

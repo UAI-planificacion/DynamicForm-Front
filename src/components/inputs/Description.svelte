@@ -6,12 +6,15 @@
         showErrorDatePicker,
         showErrorInput,
         showErrorSelect
-    }                           from "$lib";
-    import type { ShapeInput }  from "$models";
+    }               from "$lib";
+    import type {
+        ShapeInput,
+        Selected
+    }               from "$models";
 
 
     export let shapeInput   : ShapeInput;
-    export let value        : string | string[] | undefined = undefined;
+    export let value        : Selected = undefined;
     export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
     export let date         : DateValue | undefined = undefined;
 </script>
@@ -20,7 +23,7 @@
 {#if !shapeInput.valid && shapeInput.shape !== 'button'}
     <span class="text-sm text-red-500 font-semibold">
         {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown'}
-            { showErrorInput( shapeInput, value )}
+            { showErrorInput( shapeInput, value as string )}
         {:else if shapeInput.shape === 'select'}
             { showErrorSelect( shapeInput, value )}
         {:else if shapeInput.shape === 'check'}

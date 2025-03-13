@@ -1,23 +1,6 @@
-import type { ShapeInput }  from "$models";
-import type { DateValue }   from "@internationalized/date";
+import type { DateValue } from "@internationalized/date";
 
-
-// type ValueError = {
-//     shapeInput  : ShapeInput;
-//     value?      : string | undefined;
-// }
-
-
-// type CheckedError = {
-//     shapeInput  : ShapeInput;
-//     checked?     : "indeterminate" | boolean | undefined;
-// }
-
-
-// type DateError = {
-//     shapeInput  : ShapeInput;
-//     date?       : DateValue | undefined;
-// }
+import type { Selected, ShapeInput } from "$models";
 
 
 export const errorDatePicker = (
@@ -63,13 +46,13 @@ export function showErrorCheck(
 
 export const errorSelect = (
     shapeInput  : ShapeInput,
-    value?      : string | string[] | undefined
+    value?      : Selected | undefined
 ): boolean => showErrorSelect( shapeInput, value ) === undefined;
 
 
 export function showErrorSelect(
     shapeInput  : ShapeInput,
-    value?      : string | string[] | undefined
+    value?      : Selected | undefined
 ): string | undefined {
     if ( !shapeInput.required ) return undefined;
 
@@ -80,29 +63,27 @@ export function showErrorSelect(
 
 export const errorInput = (
     shapeInput  : ShapeInput,
-    value?      : string | string[] | undefined
+    value?      : string | undefined
 ): boolean => showErrorInput( shapeInput, value ) === undefined;
 
 
 export const errorTextArea = (
     shapeInput  : ShapeInput,
-    value?      : string | string[] | undefined
+    value?      : Selected | undefined
 ): boolean => showErrorText( shapeInput, value ) === undefined;
 
 
 export function showErrorInput(
     shapeInput  : ShapeInput,
-    value?      : string | string[] | undefined
+    value?      : string | undefined
 ): string | undefined {
     if ( !shapeInput.required ) return undefined;
 
-    const stringValue = Array.isArray(value) ? value.join( ', ' ) : value;
-
-    if ( shapeInput.required && !stringValue )
+    if ( shapeInput.required && !value )
         return shapeInput?.msgRequired;
 
     if ( shapeInput.type === 'number' ) {
-        const numberValue = Number( stringValue );
+        const numberValue = Number( value );
 
         if ( shapeInput.min && numberValue < shapeInput.min )
             return shapeInput?.msgMin;
@@ -111,10 +92,10 @@ export function showErrorInput(
             return shapeInput?.msgMax;
     }
     else {
-        if ( shapeInput.minLength && stringValue && stringValue.length < shapeInput.minLength )
+        if ( shapeInput.minLength && value && value.length < shapeInput.minLength )
             return shapeInput?.msgMinLength;
 
-        if ( shapeInput.maxLength && stringValue && stringValue.length > shapeInput.maxLength )
+        if ( shapeInput.maxLength && value && value.length > shapeInput.maxLength )
             return shapeInput?.msgMaxLength;
     }
 }
@@ -122,7 +103,7 @@ export function showErrorInput(
 
 export function showErrorText(
     shapeInput  : ShapeInput,
-    value?      : string | string[] | undefined
+    value?      : Selected | undefined
 ): string | undefined {
     if ( !shapeInput.required ) return undefined;
 

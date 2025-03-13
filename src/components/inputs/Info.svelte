@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type { ShapeInput }  from "$models/shape-input";
+    import type { Selected, ShapeInput }  from "$models";
     import Description          from "./Description.svelte";
 
     export let shapeInput       : ShapeInput;
     export let onInput          : ( event: Event ) => void = () => {};
-    export let onSelectedChange : ( value: string| string[] | undefined ) => void = () => {};
-    export let value            : string | string[] | undefined = undefined;
+    export let onSelectedChange : ( value: Selected ) => void = () => {};
+    export let value            : Selected = undefined;
 </script>
 
 <div class="w-full space-y-1.5">

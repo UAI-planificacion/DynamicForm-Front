@@ -8,6 +8,7 @@
     export let onInput      : ( event: Event ) => void;
     export let value        : string | undefined = undefined;
     export let setError     : VoidFunction = () => {};
+    export let onKeyup      : ( event: KeyboardEvent ) => void = () => {};
 </script>
 
 
@@ -22,6 +23,7 @@
         readonly    = { shapeInput.readonly }
         value       = { shapeInput.value }
         on:input    = {( event ) => { onInput( event ); setError(); }}
+        on:keyup    = { onKeyup }
         class       = {( shapeInput.class_ ) ?? ( styles.input as string )}
     />
 </Info>

@@ -60,26 +60,33 @@
 
         onGroupsChange( newGroups );
     };
+
+
+    function keyAddGroup( event: KeyboardEvent ): void {
+        if ( event.key === 'Enter' ) addNewGroup();
+    }
 </script>
 
 
-<div class="space-y-2">
-    {#each groups as group}
-        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 p-2 space-y-2">
+<div class="space-y-2 max-h-96 overflow-auto">
+    {#each groups as group, index}
+        <div class="rounded-lg border border-zinc-300 dark:border-zinc-800 p-2 space-y-2">
             <div class="flex items-center gap-2">
                 <Input
+                    onKeyup     = { keyAddGroup }
                     onInput     = {( e ) => updateGroupName( group.id!, e )}
                     shapeInput  = {{
                         id          : uuid(),
                         name        : "group",
                         value       : group.group,
-                        placeholder : 'Nombre del grupo',
+                        placeholder : `Nombre del grupo ${index + 1}`,
                         type        : 'search'
                     }}
                 />
 
                 <ButtonUI
                     onClick={() => addNewGroup()}
+                    disabled={ groups.length >= 10 }
                 >
                     <AddIcon  />
                 </ButtonUI>
