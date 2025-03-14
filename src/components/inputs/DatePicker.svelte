@@ -24,29 +24,38 @@
     export let setError         : VoidFunction = () => {};
 
 
-    const date  = new Date();
-    const year  = date.getFullYear();
-    const month = date.getMonth() - 1;
-    const day   = date.getDate();
-
-
     let currentDate: DateValue | undefined = shapeInput.currentDate
-        ? new CalendarDate( year, month, day )
+        ? new CalendarDate( new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() )
         : shapeInput.date
             ? new CalendarDate( shapeInput.date.year, shapeInput.date.month, shapeInput.date.day )
             : undefined;
 </script>
+<!-- numberOfMonths = {1} -->
 
 <DatePicker.Root
-    weekdayFormat="short"
-    fixedWeeks={true}
-    disabled={shapeInput.disabled}
-    readonly={shapeInput.readonly}
-    value={currentDate}
-    onValueChange={(value) => { 
+    locale                  = "es-ES"
+    weekdayFormat           = "short"
+    fixedWeeks              = { true }
+    minValue                = { shapeInput.minValue }
+    maxValue                = { shapeInput.maxValue }
+    disabled                = { shapeInput.disabled }
+    required                = { shapeInput.required }
+    calendarLabel           = { shapeInput.label }
+    readonly                = { shapeInput.readonly }
+    disableDaysOutsideMonth = { true }
+    value                   = { currentDate }
+    onValueChange           = {( value ) => { 
         onValueChange(value); 
         setError(); 
         currentDate = value;
+    }}
+    isDateDisabled={( value: DateValue ) => {
+        if (
+            !shapeInput.invalidDates ||
+            shapeInput.invalidDates.length === 0
+        ) return false;
+
+        return shapeInput.invalidDates.includes( value.toString() );
     }}
 >
     <div class="flex w-full flex-col gap-1.5">
@@ -82,7 +91,12 @@
             {/snippet}
         </DatePicker.Input>
 
-        <DatePicker.Content sideOffset={6} class="z-50">
+        <DatePicker.Content
+            sideOffset  = { 6 }
+            class       = "z-50"
+            align       = "end"
+            alignOffset = { 0 }
+        >
             <DatePicker.Calendar class={(styles.datepicker as InputStyle).content}>
                 {#snippet children({ months, weekdays })}
                     <DatePicker.Header class="flex items-center justify-between">
@@ -120,9 +134,9 @@
                                                     class="p-0! relative size-10 text-center text-sm"
                                                 >
                                                     <DatePicker.Day
-                                                        class="rounded-9px text-foreground hover:border-foreground data-selected:bg-foreground data-disabled:text-foreground/30 data-selected:text-background data-unavailable:text-muted-foreground data-disabled:pointer-events-none data-outside-month:pointer-events-none data-selected:font-medium data-unavailable:line-through group relative inline-flex size-10 items-center justify-center whitespace-nowrap border border-transparent bg-transparent p-0 text-sm font-normal transition-all"
+                                                        class="rounded-lg text-zinc-900 hover:bg-zinc-100 data-[selected]:bg-blue-500 data-[selected]:text-white data-[disabled]:text-zinc-500 data-[unavailable]:text-zinc-500 data-[disabled]:pointer-events-none data-[outside-month]:text-zinc-500 data-[outside-month]:pointer-events-none data-[selected]:font-medium data-[unavailable]:line-through group relative inline-flex size-10 items-center justify-center whitespace-nowrap border border-transparent bg-transparent p-0 text-sm font-normal transition-all dark:text-zinc-100 dark:hover:bg-zinc-700 dark:data-[disabled]:text-zinc-600 dark:data-[outside-month]:text-zinc-600 dark:data-[unavailable]:text-zinc-600"
                                                     >
-                                                        <div class="bg-foreground group-data-selected:bg-background group-data-today:block absolute top-[5px] hidden size-1 rounded-full transition-all"></div>
+                                                        <div class="bg-blue-500 group-data-[selected]:bg-white group-data-[today]:block absolute top-[5px] hidden size-1 rounded-full transition-all"></div>
                                                         {date.day}
                                                     </DatePicker.Day>
                                                 </DatePicker.Cell>

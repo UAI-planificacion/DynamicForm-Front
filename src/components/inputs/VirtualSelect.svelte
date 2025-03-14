@@ -218,18 +218,17 @@
             if (shapeInput.options?.some(isGroupOption)) {
                 // Buscar el grupo al que pertenece el item
                 const parentGroup = (shapeInput.options as GroupOption[])
-                    .find(g => g.values.some(v => v.value === item.value));
+                .find(g => g.values.some(v => v.value === item.value));
 
-                if (parentGroup) {
+                if ( parentGroup ) {
                     const selectedValues = selectedItems
                         .filter(selected => parentGroup.values.some(v => v.value === selected.value))
                         .map(selected => selected.value);
 
-                    // Crear SelectGroup con los items seleccionados del grupo
-                    const groupedValue = [{ 
-                        group: parentGroup.group, 
-                        values: selectedValues 
-                    }];
+                    // Si no hay valores seleccionados en este grupo, no lo incluimos
+                    const groupedValue = selectedValues.length > 0 
+                        ? [{ group: parentGroup.group, values: selectedValues }]
+                        : [];
 
                     // Mantener las selecciones de otros grupos
                     const otherGroups = (shapeInput.options as GroupOption[])
@@ -262,9 +261,8 @@
     // Manejar la apertura del dropdown
     function handleOpen(): void {
         isOpen = !isOpen;
-        if (isOpen) {
-            adjustDropdownPosition();
-        }
+
+        if ( isOpen ) adjustDropdownPosition();
     }
 
     const isGroupFullySelected = ( group: GroupOption ): boolean =>
@@ -281,8 +279,8 @@
             ) && !isGroupFullySelected( group );
 
 
-    function transformSelectedValue(items: ShapeOption[]): SelectInput {
-        if (!items.length) return undefined;
+    function transformSelectedValue( items: ShapeOption[] ): SelectInput {
+        if ( !items.length || items.length === 0 ) return [];
 
         if (!shapeInput.multiple) {
             return items[0].value;
@@ -363,14 +361,34 @@
     }
 
     function calculateDropdownHeight() {
-        const searchHeight = shapeInput.search ? 32 : 0;
-        const contentHeight = !filteredData?.length ? 36 
-            : filteredData.length === 1 ? 40
-            : filteredData.reduce((h, item) => isGroupOption(item) 
-                ? h + 40 * (1 + item.values.length) : h + 40, 0);
-            
-        const maxHeight = 36 * (shapeInput.heightPanel ?? 5);
-        return searchHeight + Math.min(contentHeight, maxHeight - searchHeight);
+        const searchHeight = shapeInput.search ? 48 : 0;  // Aumentado para dar más espacio al buscador
+        const padding = 16; // Padding total del contenedor (8px arriba y abajo)
+        
+        let contentHeight = 0;
+        
+        if (!filteredData?.length) {
+            contentHeight = 36; // Altura mínima para "No hay resultados"
+        } else {
+            contentHeight = filteredData.reduce((height, item) => {
+                if (isGroupOption(item)) {
+                    // 40px para el header del grupo + 36px por cada elemento en el grupo
+                    // Asegurar que siempre haya espacio para al menos un elemento en el grupo
+                    return height + 36 + (Math.max(1, item.values.length) * 36);
+                }
+                return height + 36; // 36px por cada elemento individual
+            }, 0);
+        }
+
+        // Usar el heightPanel como multiplicador de elementos, cada elemento es 36px
+        const maxHeight = (shapeInput.heightPanel ?? 5) * 36;
+        
+        // Asegurar que siempre haya espacio para al menos el grupo y un elemento
+        const minHeight = filteredData?.length && isGroupOption(filteredData[0]) ? 76 : 36;
+        
+        return Math.max(
+            minHeight,
+            Math.min(contentHeight + searchHeight + padding, maxHeight)
+        );
     }
 
     function handleClickOutside( event: MouseEvent ): void {

@@ -11,8 +11,8 @@
 		Enumeration,
 		SubTitle,
 		MarkdownEditor,
-		DataView,
-        VirtualSelect
+        VirtualSelect,
+        JsonViewer
 	} 							            from "$components";
 	import {
 		errorSelect,
@@ -259,6 +259,8 @@
 	{ #if dynamicMode }
         <SubTitle title="Información obtenida" />
 
-        <DataView {formValues} />
+        <div class="p-4 rounded-lg bg-white dark:bg-zinc-800 shadow-sm border border-zinc-200 dark:border-zinc-700">
+            <JsonViewer data={ formValues } />
+        </div>
 	{ /if }
 </container>

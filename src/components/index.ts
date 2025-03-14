@@ -20,9 +20,8 @@ export { default as Info }			from './inputs/Info.svelte';
 
 // Preview
 export { default as Preview }       from './Preview/Preview.svelte';
-export { default as DataView }      from './Preview/DataView.svelte';
-export { default as DataKey }       from './Preview/DataKey.svelte';
 export { default as Enumeration }   from './Preview/Enumeration.svelte';
+export { default as JsonViewer }    from './Preview/JsonViewer.svelte';
 
 // MarkdownEditor
 export { default as DynamicTable } 		from './markdown/DynamicTable.svelte';
