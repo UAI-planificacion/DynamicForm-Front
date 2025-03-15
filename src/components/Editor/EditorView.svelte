@@ -689,6 +689,16 @@
                                     }}
                                     onValueChange = {( value: DateValue ) => shapeInput.maxValue = value }
                                 />
+
+                                <Check
+                                    shapeInput = {{
+                                        id      : uuid(),
+                                        name    : 'is-range',
+                                        label   : 'Rango',
+                                        checked : shapeInput.isRange
+                                    }}
+                                    onChange = {( e ) => shapeInput.isRange = e}
+                                />
                             </div>
                         {/if}
                     </Accordion.Content>

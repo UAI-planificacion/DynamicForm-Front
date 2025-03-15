@@ -1,23 +1,40 @@
 import type { DateValue } from "@internationalized/date";
 
 import type { Selected, ShapeInput } from "$models";
+import type { DateRange } from "bits-ui";
+
+
+// export const errorDateRangePicker = (
+//     shapeInput  : ShapeInput,
+//     date?       : DateRange | undefined
+// ): boolean => showErrorDateRangePicker( shapeInput, date ) === undefined;
 
 
 export const errorDatePicker = (
     shapeInput  : ShapeInput,
-    date?       : DateValue | undefined
+    date?       : DateValue | DateRange | undefined
 ): boolean => showErrorDatePicker( shapeInput, date ) === undefined;
 
 
 export function showErrorDatePicker(
     shapeInput  : ShapeInput,
-    date?       : DateValue | undefined
+    date?       : DateValue | DateRange | undefined
 ): string | undefined {
-    if ( !shapeInput.required ) return undefined
+    console.log('🚀 ~ file:  SHOW ERROR DATE PICKER date:', date)
+    if ( !shapeInput.required ) return undefined;
 
     if ( shapeInput.required && !date )
         return shapeInput?.msgRequired;
 }
+// export function showErrorDateRangePicker(
+//     shapeInput  : ShapeInput,
+//     date?       : DateRange | undefined
+// ): string | undefined {
+//     if ( !shapeInput.required ) return undefined;
+
+//     if ( !date )
+//         return shapeInput?.msgRequired;
+// }
 
 
 export const errorCheck = (

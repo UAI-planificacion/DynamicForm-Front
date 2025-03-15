@@ -1,4 +1,5 @@
 import { type DateValue } from "@internationalized/date";
+import type { DateRange } from "bits-ui";
 
 export type InputStyle = {
     box?     	: string;
@@ -32,6 +33,8 @@ export type ShapeInput = {
     placeholder?    : string;
     value?          : string;
     date?           : DateValue;
+    dateRange?      : DateRange;
+    isRange?        : boolean;
     invalidDates?   : string[];
     minValue?       : DateValue;
     maxValue?       : DateValue;

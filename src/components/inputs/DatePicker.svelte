@@ -28,7 +28,7 @@
         ? new CalendarDate( new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() )
         : shapeInput.date
             ? new CalendarDate( shapeInput.date.year, shapeInput.date.month, shapeInput.date.day )
-            : undefined;
+            : value;
 </script>
 <!-- numberOfMonths = {1} -->
 
@@ -45,7 +45,7 @@
     disableDaysOutsideMonth = { true }
     value                   = { currentDate }
     onValueChange           = {( value ) => { 
-        onValueChange(value); 
+        onValueChange( value ); 
         setError(); 
         currentDate = value;
     }}

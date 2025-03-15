@@ -16,7 +16,7 @@ export const styles: Partial<Record<InputType, string | InputStyle>> = {
     },
     datepicker  : {
         box			: 'rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input dark:border-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 px-2 py-3 text-sm tracking-[0.01em]-500 dark:data-[disabled]:bg-zinc-700 data-[disabled]:bg-zinc-100 focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover',
-        content		: 'rounded-lg border border-dark-10 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-3 shadow-popover dark:text-zinc-300',
+        content		: 'rounded-lg border border-dark-10 shadow-md text-zinc-800 dark:text-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-3 shadow-popover dark:text-zinc-300',
 		label		: 'block select-none text-sm font-medium dark:text-zinc-200 dark:data-[disabled]:text-zinc-400 data-[disabled]:text-zinc-500',
 		input		: 'group relative inline-flex size-10 items-center justify-center whitespace-nowrap rounded-9px border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-foreground data-[selected]:bg-blue-500 data-[selected]:rounded-lg data-[disabled]:text-zinc-400 dark:data-[disabled]:text-zinc-500 data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through hover:bg-zinc-200 dark:hover:bg-zinc-600 hover:rounded-lg'
     },

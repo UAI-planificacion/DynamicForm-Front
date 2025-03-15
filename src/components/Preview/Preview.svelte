@@ -1,6 +1,8 @@
 <script lang="ts">
-	import toast 				from 'svelte-french-toast';
-	import { type DateValue }	from "@internationalized/date";
+    import type { DateRange } from 'bits-ui';
+    import { CalendarDate, type DateValue } from "@internationalized/date";
+
+    import toast 				from 'svelte-french-toast';
 
     import {
 		Input,
@@ -12,7 +14,8 @@
 		SubTitle,
 		MarkdownEditor,
         VirtualSelect,
-        JsonViewer
+        JsonViewer,
+        DateRangePicker
 	} 							            from "$components";
 	import {
 		errorSelect,
@@ -25,12 +28,12 @@
 	}							            from "$lib";
     import type { SelectInput, ShapeInput } from "$models";
 
-
     export let template		: ShapeInput[] = [];
 	export let inputActive 	: number;
 	export let dynamicMode	: boolean = false;
 
-    const keys = ["value", "checked", "date", "selected"];
+
+    const keys = ["value", "checked", "date", "selected", 'dateRange'];
 
 
 	let loading = false;
@@ -97,15 +100,50 @@
     }
 
 
-    function handleDatePicker( event: DateValue, name: string ): void {
-		if ( !event ) {
-			formValues[name] = null;
-			return;
-		}
+    function getValuesDate( date: DateValue | undefined ) : { year: number, month: number, day: number } | undefined {
+        if ( !date ) return undefined;
 
-		const { day, month, year } = event;
-		formValues[name] = { year, month: ( month - 1 ), day };
-	}
+        const { day, month, year } = date;
+        return { year, month: (month - 1), day };
+    }
+
+
+    const isDateRange = (
+        value: DateValue | DateRange | undefined
+    ): value is DateRange => 
+        value !== undefined && 'start' in value && 'end' in value;
+
+
+    function handleDatePicker(
+        event: DateValue | DateRange | undefined,
+        name: string
+    ): void {
+        if ( !event ) {
+            formValues[name] = null;
+            return;
+        }
+
+        if ( isDateRange( event )) {
+            formValues[name] = { 
+                start   : getValuesDate( event.start ),
+                end     : getValuesDate( event.end )
+            };
+
+            return;
+        }
+
+        formValues[name] = getValuesDate( event );
+    }
+
+    // $: dateRangeValue = (shapeInput: ShapeInput) => {
+    //     const value = formValues[shapeInput.name];
+    //     if ( !value || !value?.start || !value?.end) return undefined;
+
+    //     return {
+    //         start: new CalendarDate(value.start.year, value.start.month + 1, value.start.day),
+    //         end: new CalendarDate(value.end.year, value.end.month + 1, value.end.day)
+    //     };
+    // };
 
 
     const handleInput = ( event: Event, name: string ): string =>
@@ -128,14 +166,14 @@
 
 		template.forEach(( item, index ) => {
 			template[index].valid = {
-				'input'			: errorInput( item, formValues[ item.name ]),
-				'textarea'		: errorTextArea( item, formValues[ item.name ]),
-				'markdown'		: errorTextArea( item, formValues[ item.name ]),
-				'check'			: errorCheck( item, formValues[ item.name ]),
-				'select'		: errorSelect( item, formValues[ item.name ]),
-				'datepicker'	: errorDatePicker( item, formValues[ item.name ]),
-				'button'		: true,
-				'none'			: false
+				'input'			    : errorInput( item, formValues[ item.name ]),
+				'textarea'		    : errorTextArea( item, formValues[ item.name ]),
+				'markdown'		    : errorTextArea( item, formValues[ item.name ]),
+				'check'			    : errorCheck( item, formValues[ item.name ]),
+				'select'		    : errorSelect( item, formValues[ item.name ]),
+				'datepicker'	    : errorDatePicker( item, formValues[ item.name ]),
+				'button'		    : true,
+				'none'			    : false
 			}[item.shape || 'none'];
 		});
 
@@ -225,12 +263,33 @@
 					checked		= { formValues[ shapeInput.name ]}
 					setError	= {() => shapeInput.valid = errorCheck( shapeInput, formValues[ shapeInput.name ])}
 				/>
-			<!-- Datepicker -->
-			{:else if shapeInput.shape === 'datepicker'}
+			<!-- DatePicker -->
+			{:else if shapeInput.shape === 'datepicker' && !shapeInput.isRange}
 				<DatePicker
 					{ shapeInput }
 					onValueChange	= {( value: DateValue ) => handleDatePicker( value, shapeInput.name )}
 					value 			= { formValues[ shapeInput.name ]}
+					setError		= {() => shapeInput.valid = errorDatePicker( shapeInput, formValues[ shapeInput.name ])}
+				/>
+			<!-- DateRangePicker -->
+
+            <!-- onInvalid       = {( value: boolean ) =>{
+                console.log('🚀 ~ LLAMADO ON INVALID***:', value)
+                try {
+                    
+                    if ( value ) {
+                        shapeInput.valid = false;
+                        formValues[shapeInput.name] = undefined;
+                    }
+                } catch (error) {
+                console.log('🚀 ~ file: Preview.svelte:291 ~ error:', error)
+                }
+            }} -->
+			{:else if shapeInput.shape === 'datepicker' && shapeInput.isRange}
+				<DateRangePicker
+					{ shapeInput }
+					onValueChange	= {( value: DateRange | undefined ) => handleDatePicker( value, shapeInput.name )}
+					value 			= { formValues[ shapeInput.name ] }
 					setError		= {() => shapeInput.valid = errorDatePicker( shapeInput, formValues[ shapeInput.name ])}
 				/>
 			<!-- TextArea -->

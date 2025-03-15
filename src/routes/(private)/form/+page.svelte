@@ -35,6 +35,8 @@
     }                                       from "$lib";
 	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
 	import { dynamicMode, dynamicForms } 	from "$stores";
+  import Timer from "$components/inputs/time-picker/Timer.svelte";
+  import AnalogTime from "$components/inputs/time-picker/AnalogTime.svelte";
 
     // import Timer from "$components/inputs/time-picker/Timer.svelte";
     // import AnalogTime from "$components/inputs/time-picker/AnalogTime.svelte";
@@ -44,7 +46,7 @@
 	const flipDurationMs = 100;
     const defaultSelected = 'Nuevo formulario';
 
-    let dynamicForm     : DynamicForm = { _id: '', name : '' , details: [] , user_id: 'kevincandia'};
+    let dynamicForm     : DynamicForm = { _id: '', name : '' , details: [ buttonTemplate ] , user_id: 'kevincandia'};
     let options         : ShapeOption[] = [];
 	let inputActive     = 0;
     let optionSelected  = 'new';
@@ -272,6 +274,9 @@
         valid       : true,
     }
 </script>
+
+<Timer />
+<AnalogTime />
 
 
 <main class="px-4 py-5 mx-auto 2xl:mx-36 space-y-5">

@@ -23,7 +23,11 @@
     const minutesArray  = Array.from({ length: 12 }, (_, i) => i * 5);
 
     const confirmSelection  = (): boolean => isOpen = false;
-    const selectMinute      = ( minute: number ): number => minutes = minute;
+    const selectMinute      = ( minute: number ): number => {
+        minutes = minute;
+        isOpen = false;
+        return minutes;
+    };
 
 
     function getPosition(
@@ -73,7 +77,7 @@
 
 <svelte:window on:click={ handleClickOutside } />
 
-<div class="relative w-full max-w-xs" {id}>
+<div class="relative w-full" {id}>
     <label for={`${id}-input`} class="block text-sm font-medium text-gray-700 mb-1">
         {label} {required ? '*' : ''}
     </label>
@@ -92,7 +96,7 @@
 
     {#if isOpen}
         <div 
-            class="absolute z-10 mt-1 bg-white rounded-lg shadow-xl p-4"
+            class="absolute z-10 mt-1 bg-white dark:bg-zinc-800 rounded-lg shadow-xl p-4"
             transition:fade={{ duration: 150 }}
         >
             <div class="flex flex-col items-center">
@@ -110,21 +114,13 @@
                     >
                         Minutos
                     </button>
-
-                    <button
-                        type="button"
-                        class="px-4 py-2 text-sm bg-primary-600 text-white hover:bg-primary-700 rounded-md"
-                        on:click={confirmSelection}
-                    >
-                        Aceptar
-                    </button>
                 </div>
 
                 <!-- Reloj analógico -->
-                <div class="relative w-64 h-64 rounded-full border-4 border-gray-200 mb-4">
+                <div class="relative w-64 h-64 rounded-full border-4 border-gray-200 mb-4 p-1">
                     <!-- Botón AM/PM central -->
                     <button 
-                        class="absolute top-1/2 left-1/2 w-10 h-10 rounded-full bg-primary-600 text-white transform -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center text-sm font-medium hover:bg-primary-700 transition-colors"
+                        class="absolute top-1/2 left-1/2 w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-700 text-white transform -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center text-sm font-medium hover:bg-primary-700 transition-colors"
                         on:click={toggleAMPM}
                     >
                         {isPM ? 'PM' : 'AM'}
@@ -138,7 +134,7 @@
                         >
                             <!-- Aguja de la hora -->
                             <div 
-                                class="absolute top-1/2 left-1/2 h-1 bg-primary-600 rounded-full origin-left z-10"
+                                class="absolute top-1/2 left-1/2 h-1 bg-blue-500 rounded-full origin-left z-10"
                                 style="width: 30%; transform: translateY(-50%) rotate({hourHandAngle}deg);"
                             ></div>
 
@@ -146,7 +142,7 @@
                             {#each isPM ? hoursArrayPM : hoursArray as hour, i}
                                 {@const pos = getPosition(i, 12, 100)}
                                 <button 
-                                    class="absolute w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary-100 {(hours === hour) || (hours === 0 && hour === 12 && !isPM) ? 'bg-primary-600 text-white' : ''}"
+                                    class="absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full hover:bg-zinc-300 dark:hover:bg-zinc-700 {(hours === hour) || (hours === 0 && hour === 12 && !isPM) ? 'bg-primary-600 text-white' : ''}"
                                     style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                     on:click={() => selectHour(hour)}
                                 >
@@ -162,7 +158,7 @@
                         >
                             <!-- Aguja de los minutos -->
                             <div 
-                                class="absolute top-1/2 left-1/2 h-1 bg-primary-600 rounded-full origin-left "
+                                class="absolute top-1/2 left-1/2 h-1 bg-blue-500 rounded-full origin-left "
                                 style="width: 40%; transform: translateY(-50%) rotate({minuteHandAngle}deg);"
                             ></div>
 

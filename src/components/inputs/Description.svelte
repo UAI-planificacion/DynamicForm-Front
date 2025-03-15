@@ -11,12 +11,13 @@
         ShapeInput,
         Selected
     }               from "$models";
+    import type { DateRange } from "bits-ui";
 
 
     export let shapeInput   : ShapeInput;
     export let value        : Selected = undefined;
     export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
-    export let date         : DateValue | undefined = undefined;
+    export let date         : DateValue | DateRange | undefined = undefined;
 </script>
 
 
@@ -34,7 +35,7 @@
     </span>
 {:else if shapeInput.description}
     <span class="text-sm text-zinc-500 dark:text-zinc-400 font-semibold">
-        { shapeInput?.description || 'Nada' }
+        { shapeInput?.description }
     </span>
 {/if}
 
