@@ -31,6 +31,8 @@
             { showErrorCheck( shapeInput, checked )}
         {:else if shapeInput.shape === 'datepicker'}
             { showErrorDatePicker( shapeInput, date )}
+        {:else if shapeInput.shape === 'timer'}
+            { showErrorInput( shapeInput, value as string )}
         {/if}
     </span>
 {:else if shapeInput.description}

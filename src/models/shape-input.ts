@@ -10,7 +10,7 @@ export type InputStyle = {
 }
 
 
-export type InputType  = 'input' | 'check' | 'select' | 'textarea' | 'datepicker' | 'button' | 'markdown' | 'none';
+export type InputType  = 'input' | 'check' | 'timer' | 'select' | 'textarea' | 'datepicker' | 'button' | 'markdown' | 'none';
 export type Types      = 'text' | 'number' | 'password' | 'email' | 'url' | 'tel' | 'search';
 
 
@@ -38,6 +38,7 @@ export type ShapeInput = {
     invalidDates?   : string[];
     minValue?       : DateValue;
     maxValue?       : DateValue;
+    numberOfMonths? : number;
     currentDate?    : boolean
     required?       : boolean;
     valid?          : boolean;
@@ -72,9 +73,15 @@ export type ShapeInput = {
 	invalidErrorMsg?	: string;
     urlSend?     		: string;
 	method?				: Method;
+    time?               : Time;
 	// form? 			: Form;
 }
 
+
+export type Time = {
+    hourList    : number[];
+    minuteList  : number[];
+}
 
 export type Selected = string | string[] | SelectGroup[] | undefined;
 

@@ -9,6 +9,7 @@ export const options: ShapeOption[] = [
     { label: 'Fecha', 			value: 'datepicker' },
     // { label: 'Botón', 			value: 'button' },
     { label: 'Markdown', 		value: 'markdown' },
+    { label: 'Tiempo', 			value: 'time' },
 ];
 
 

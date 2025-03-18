@@ -275,7 +275,22 @@
     }
 </script>
 
-<Timer />
+<Timer 
+    shapeInput = {{
+        id: uuid(),
+        name: 'time',
+        shape: 'timer',
+        label: 'Seleccione la hora',
+        description: 'Hora de inicio',
+        time: {
+            hourList: Array.from({ length: 24 }, (_, i) => i),
+            minuteList: Array.from({ length: 60 }, (_, i) => i)
+        }
+    }}
+    value      = { '00:00' }
+    onInput    = { ()=> {} }
+    setError   = { ()=> {} }
+/>
 <AnalogTime />
 
 

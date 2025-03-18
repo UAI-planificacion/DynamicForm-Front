@@ -19,6 +19,10 @@ export { default as TextArea }		from './inputs/TextArea.svelte';
 export { default as Switch }		from './inputs/Switch.svelte';
 export { default as Info }			from './inputs/Info.svelte';
 
+
+// Editors
+export { default as GenerateValidDates } from './Editor/dates/GenerateValidDates.svelte';
+
 // Preview
 export { default as Preview }       from './Preview/Preview.svelte';
 export { default as Enumeration }   from './Preview/Enumeration.svelte';

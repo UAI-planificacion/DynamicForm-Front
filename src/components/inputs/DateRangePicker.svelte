@@ -1,6 +1,8 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+
     import { DateRangePicker, type DateRange }  from "bits-ui";
-    import { CalendarDate, type DateValue }                   from "@internationalized/date";
+    import { CalendarDate, type DateValue }     from "@internationalized/date";
 
     import {
         CalendarBlankIcon,
@@ -16,31 +18,53 @@
     export let value            : DateRange | any | undefined = undefined;
     export let onValueChange    : ( value: DateRange | undefined ) => void;
     export let setError         : VoidFunction = () => {};
-    // export let onInvalid        : ( value: boolean ) => void = () => {};
 
+    let internalValue   : DateRange | undefined;
+    let startDate       : DateValue | undefined;
+    let endDate         : DateValue | undefined;
 
-    // let currentDate: DateValue | undefined = shapeInput.currentDate
-    //     ? new CalendarDate( new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() )
-    //     : shapeInput.date
-    //         ? new CalendarDate( shapeInput.date.year, shapeInput.date.month, shapeInput.date.day )
-    //         : undefined;
+    const createEmptyDateRange = () => ({
+        start: undefined,
+        end: undefined
+    });
 
+    const dateRangeValue = (date : any) : DateRange => {
+        if (!date || !date.start || !date.end) {
+            return createEmptyDateRange();
+        }
 
-    const dateRangeValue = (date : any) : DateRange | undefined => {
-        if ( !date || !date?.start || !date?.end) return undefined;
-
-        return {
-            start: new CalendarDate(date.start.year, date.start.month + 1, date.start.day),
-            end: new CalendarDate(date.end.year, date.end.month + 1, date.end.day)
-        };
+        try {
+            return {
+                start: new CalendarDate(date.start.year, date.start.month + 1, date.start.day),
+                end: new CalendarDate(date.end.year, date.end.month + 1, date.end.day)
+            };
+        } catch {
+            return createEmptyDateRange();
+        }
     };
 
+    onMount(() => {
+        internalValue = dateRangeValue(value);
+    });
 
-    let startDate : DateValue | undefined;
-    let endDate : DateValue | undefined;
+    const handleDateChange = () => {
+        if (!startDate && !endDate && shapeInput.required) {
+            onValueChange(undefined);
+            setError();
+        }
+    };
+
+    const handleValueChange = (newValue: DateRange | undefined) => {
+        internalValue = newValue || createEmptyDateRange();
+        if (newValue?.start && newValue?.end) {
+            onValueChange(newValue);
+        } else {
+            onValueChange(undefined);
+        }
+        setError();
+    };
 </script>
 
-<!-- class         = { ( styles.datepicker as InputStyle ).box } -->
 <DateRangePicker.Root
     locale                  = "es-ES"
     weekdayFormat           = "short"
@@ -52,19 +76,18 @@
     calendarLabel           = { shapeInput.label }
     readonly                = { shapeInput.readonly }
     disableDaysOutsideMonth = { true }
-    numberOfMonths          = { 2 }
-    value                   = { shapeInput.dateRange || dateRangeValue(value) }
-    onStartValueChange      = {( e ) => startDate = e }
-    onEndValueChange		= {( e ) => {
-        endDate = e;
-        // onInvalid( !startDate && !endDate );
-    } }
-    onValueChange           = {( value ) => {
-        onValueChange( value );
-        setError();
-        // currentDate = value;
+    numberOfMonths          = { shapeInput.numberOfMonths }
+    value                   = { internalValue }
+    class                   = "w-full"
+    onStartValueChange      = {( e ) => {
+        startDate = e;
+        handleDateChange();
     }}
-    class="flex w-full flex-col gap-1.5 text-white"
+    onEndValueChange        = {( e ) => {
+        endDate = e;
+        handleDateChange();
+    }}
+    onValueChange           = { handleValueChange }
     isDateDisabled={( value: DateValue ) => {
         if (
             !shapeInput.invalidDates ||
@@ -99,7 +122,7 @@
                                 {:else}
                                     <DateRangePicker.Segment
                                         {part}
-                                        class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:text-muted-foreground focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
+                                        class="rounded-5px hover:bg-blue-500 focus:bg-blue-500 focus:text-foreground aria-[valuetext=Empty]:text-muted-foreground focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
                                     >
                                         {value}
                                     </DateRangePicker.Segment>

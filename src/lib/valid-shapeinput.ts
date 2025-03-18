@@ -20,7 +20,6 @@ export function showErrorDatePicker(
     shapeInput  : ShapeInput,
     date?       : DateValue | DateRange | undefined
 ): string | undefined {
-    console.log('🚀 ~ file:  SHOW ERROR DATE PICKER date:', date)
     if ( !shapeInput.required ) return undefined;
 
     if ( shapeInput.required && !date )

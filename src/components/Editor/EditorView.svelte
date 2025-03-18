@@ -30,6 +30,7 @@
         VirtualSelect,
         ValueEditor,
         GroupEditor,
+        GenerateValidDates
     }						from "$components";
     import {
 		options,
@@ -364,7 +365,10 @@
                     </Tabs.Content>
                 </Tabs.Root>
 
+                
+
                 <div class="grid gap-3">
+                    
                     <VirtualSelect
                         onSelectedChange    = { onSelectedType }
                         shapeInput          = {{
@@ -474,16 +478,30 @@
 
                     <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
                         {#if shapeInput.shape !== 'button' }
-                            <div class=" grid grid-cols-2 gap-2 items-center">
-                                <Check
-                                    shapeInput = {{
-                                        id		    : uuid(),
-                                        label       : 'Requerido',
-                                        name	    : 'required',
-                                        checked     : shapeInput.required
-                                    }}
-                                    onChange	= {( e ) => shapeInput.required = e as boolean }
-                                />
+                            <div class="grid grid-cols-1 @xl:grid-cols-2 gap-4 items-center">
+                                <div class=" flex items-center justify-between gap-2">
+                                    <Check
+                                        shapeInput = {{
+                                            id		    : uuid(),
+                                            label       : 'Requerido',
+                                            name	    : 'required',
+                                            checked     : shapeInput.required
+                                        }}
+                                        onChange	= {( e ) => shapeInput.required = e as boolean }
+                                    />
+
+                                    {#if shapeInput.shape === 'datepicker'}
+                                        <Check
+                                            shapeInput = {{
+                                                id      : uuid(),
+                                                name    : 'is-range',
+                                                label   : 'Con rango',
+                                                checked : shapeInput.isRange
+                                            }}
+                                            onChange = {( e ) => shapeInput.isRange = e}
+                                        />
+                                    {/if}
+                                </div>
 
                                 <Input
                                     shapeInput = {{
@@ -669,7 +687,7 @@
                                 {/if}
                             </div>
                         {:else if shapeInput.shape === 'datepicker'}
-                            <div class="grid grid-cols-2 gap-2 items-center">
+                            <div class="grid grid-cols-1 @xl:grid-cols-2 gap-2 items-center">
                                 <DatePicker
                                     shapeInput = {{
                                         id      : uuid(),
@@ -689,17 +707,12 @@
                                     }}
                                     onValueChange = {( value: DateValue ) => shapeInput.maxValue = value }
                                 />
-
-                                <Check
-                                    shapeInput = {{
-                                        id      : uuid(),
-                                        name    : 'is-range',
-                                        label   : 'Rango',
-                                        checked : shapeInput.isRange
-                                    }}
-                                    onChange = {( e ) => shapeInput.isRange = e}
-                                />
                             </div>
+
+                            <GenerateValidDates
+                                invalidDates            = { shapeInput.invalidDates }
+                                onInvalidDatesChange    = {( dates: string[] ) => shapeInput.invalidDates = dates }
+                            />  
                         {/if}
                     </Accordion.Content>
                 </Accordion.Item>

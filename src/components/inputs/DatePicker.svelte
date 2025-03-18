@@ -43,6 +43,7 @@
     calendarLabel           = { shapeInput.label }
     readonly                = { shapeInput.readonly }
     disableDaysOutsideMonth = { true }
+    numberOfMonths          = { shapeInput.numberOfMonths }
     value                   = { currentDate }
     onValueChange           = {( value ) => { 
         onValueChange( value ); 

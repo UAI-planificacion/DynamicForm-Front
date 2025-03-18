@@ -30,18 +30,6 @@
             class           = {( shapeInput.class_ as InputStyle )?.box ?? ( styles.check as InputStyle ).box }
             onCheckedChange = {( event ) => { shapeInput.readonly ? undefined : onChange( event as boolean ); setError() }}
         >
-            <!-- <Checkbox.Indicator
-                let:isChecked
-                let:isIndeterminate
-                class="inline-flex items-center justify-center text-background"
-            >
-                {#if isChecked}
-                    <CheckIcon />
-                {:else if isIndeterminate}
-                    <MinusIcon />
-                {/if}
-            </Checkbox.Indicator> -->
-
             {#snippet children({ checked, indeterminate })}
                 <div class="text-background inline-flex items-center justify-center">
                     {#if indeterminate}
