@@ -174,7 +174,7 @@
                             options,
                             multiple    : false,
                             search      : false,
-                            heightPanel : 6,
+                            heightPanel : 7,
                             label		: 'Input',
                             placeholder	: 'Ingrese el tipo de entrada',
                             selected    : shapeInput.shape,

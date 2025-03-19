@@ -27,6 +27,7 @@
     }                           from "$icons";
     import type { ShapeInput }  from "$models";
     import { Tooltip }          from "$components";
+    import { TimerIcon }        from "lucide-svelte";
 
 
     export let shapeInput       : ShapeInput;
@@ -43,6 +44,7 @@
         'datepicker'    : 'Fecha',
         'button'        : 'Botón',
         'markdown'      : 'Markdown',
+        'timer'         : 'Tiempo'
     }[name || ''] || 'Entrada no reconocida' );
 </script>
 
@@ -70,6 +72,8 @@
                     <InputIcon />
                 {:else if shapeInput.shape === 'markdown'}
                     <MarkdownIcon />
+                {:else if shapeInput.shape === 'timer'}
+                    <TimerIcon  class="w-[1.45rem] h-[1.45rem]"/>
                 {:else}
                     <InterrogationIcon />
                 {/if}
