@@ -35,12 +35,8 @@
     }                                       from "$lib";
 	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
 	import { dynamicMode, dynamicForms } 	from "$stores";
-  import Timer from "$components/inputs/time-picker/Timer.svelte";
-  import AnalogTime from "$components/inputs/time-picker/AnalogTime.svelte";
 
-    // import Timer from "$components/inputs/time-picker/Timer.svelte";
-    // import AnalogTime from "$components/inputs/time-picker/AnalogTime.svelte";
-    // import DateRangePicker from "$components/inputs/DateRangePicker.svelte";
+    import AnalogTime from "$components/inputs/time-picker/AnalogTime.svelte";
 
 
 	const flipDurationMs = 100;
@@ -275,22 +271,7 @@
     }
 </script>
 
-<Timer 
-    shapeInput = {{
-        id: uuid(),
-        name: 'time',
-        shape: 'timer',
-        label: 'Seleccione la hora',
-        description: 'Hora de inicio',
-        time: {
-            hourList: Array.from({ length: 24 }, (_, i) => i),
-            minuteList: Array.from({ length: 60 }, (_, i) => i)
-        }
-    }}
-    value      = { '00:00' }
-    onInput    = { ()=> {} }
-    setError   = { ()=> {} }
-/>
+
 <AnalogTime />
 
 

@@ -1,21 +1,23 @@
 <script lang="ts">
+    import type { DateRange } from "bits-ui";
 	import type { DateValue } from "@internationalized/date";
 
     import {
         showErrorCheck,
         showErrorDatePicker,
         showErrorInput,
-        showErrorSelect
+        showErrorSelect,
+        showErrorTimer
     }               from "$lib";
     import type {
         ShapeInput,
-        Selected
+        Selected,
+        Time
     }               from "$models";
-    import type { DateRange } from "bits-ui";
 
 
     export let shapeInput   : ShapeInput;
-    export let value        : Selected = undefined;
+    export let value        : Time | Selected = undefined;
     export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
     export let date         : DateValue | DateRange | undefined = undefined;
 </script>
@@ -26,13 +28,13 @@
         {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown'}
             { showErrorInput( shapeInput, value as string )}
         {:else if shapeInput.shape === 'select'}
-            { showErrorSelect( shapeInput, value )}
+            { showErrorSelect( shapeInput, value as Selected )}
         {:else if shapeInput.shape === 'check'}
             { showErrorCheck( shapeInput, checked )}
         {:else if shapeInput.shape === 'datepicker'}
             { showErrorDatePicker( shapeInput, date )}
         {:else if shapeInput.shape === 'timer'}
-            { showErrorInput( shapeInput, value as string )}
+            { showErrorTimer( shapeInput, value as Time )}
         {/if}
     </span>
 {:else if shapeInput.description}

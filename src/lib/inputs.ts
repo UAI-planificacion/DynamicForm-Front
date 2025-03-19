@@ -7,9 +7,9 @@ export const options: ShapeOption[] = [
     { label: 'Seleccionable',	value: 'select' },
     { label: 'Aréa de texto', 	value: 'textarea' },
     { label: 'Fecha', 			value: 'datepicker' },
-    // { label: 'Botón', 			value: 'button' },
     { label: 'Markdown', 		value: 'markdown' },
-    { label: 'Tiempo', 			value: 'time' },
+    { label: 'Tiempo', 			value: 'timer' },
+    // { label: 'Botón', 			value: 'button' },
 ];
 
 

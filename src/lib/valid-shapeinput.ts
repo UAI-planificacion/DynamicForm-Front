@@ -1,6 +1,6 @@
 import type { DateValue } from "@internationalized/date";
 
-import type { Selected, ShapeInput } from "$models";
+import type { Selected, ShapeInput, Time } from "$models";
 import type { DateRange } from "bits-ui";
 
 
@@ -75,6 +75,24 @@ export function showErrorSelect(
     if ( shapeInput.required && ( !value || ( Array.isArray( value ) && value.length === 0 )))
         return shapeInput?.msgRequired;
 }
+
+
+export const errorTimer = (
+    shapeInput  : ShapeInput,
+    value?      : Time | undefined
+): boolean => showErrorTimer( shapeInput, value ) === undefined;
+
+
+export function showErrorTimer(
+    shapeInput  : ShapeInput,
+    value?      : Time | undefined
+): string | undefined {
+    if ( !shapeInput.required ) return undefined;
+
+    if ( shapeInput.required && value === null || value?.hour === null || value?.minute === null )
+        return shapeInput?.msgRequired;
+}
+
 
 
 export const errorInput = (

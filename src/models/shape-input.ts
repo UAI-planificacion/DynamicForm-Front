@@ -79,8 +79,11 @@ export type ShapeInput = {
 
 
 export type Time = {
-    hourList    : number[];
-    minuteList  : number[];
+    hourList?   : number[];
+    minuteList? : number[];
+    hour?       : number;
+    minute?     : number;
+    isAnalogic? : boolean;
 }
 
 export type Selected = string | string[] | SelectGroup[] | undefined;

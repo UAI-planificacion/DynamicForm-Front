@@ -14,7 +14,11 @@
 		MarkdownEditor,
         VirtualSelect,
         JsonViewer,
-        DateRangePicker
+        DateRangePicker,
+        Timer,
+
+        AnalogicTimer
+
 	} 							            from "$components";
 	import {
 		errorSelect,
@@ -24,6 +28,7 @@
 		errorDatePicker,
 		successToast,
 		errorToast,
+    errorTimer,
 	}							            from "$lib";
     import type { SelectInput, ShapeInput } from "$models";
 
@@ -136,6 +141,16 @@
     }
 
 
+    const handleTime = ( time: string, name: string ) => {
+        const [ hour, minute ] = time.split( ':' );
+
+        formValues[name] = {
+            hour    :  hour     === '' ? null : Number( hour ),
+            minute  :  minute   === '' ? null : Number( minute )
+        };
+    }
+
+
     const handleInput = ( event: Event, name: string ): string =>
 		formValues[name] = (event.target as HTMLInputElement).value;
 
@@ -162,7 +177,7 @@
 				'check'			    : errorCheck( item, formValues[ item.name ]),
 				'select'		    : errorSelect( item, formValues[ item.name ]),
 				'datepicker'	    : errorDatePicker( item, formValues[ item.name ]),
-                'timer'             : errorInput( item, formValues[ item.name ]),
+                'timer'             : errorTimer( item, formValues[ item.name ]),
 				'button'		    : true,
 				'none'			    : false
 			}[item.shape || 'none'];
@@ -285,6 +300,22 @@
 					setError	= {() => shapeInput.valid = errorTextArea( shapeInput, formValues[ shapeInput.name ])}
 					dynamicMode={ dynamicMode }
 				/>
+            <!-- Time -->
+            {:else if shapeInput.shape === 'timer' }
+                <Timer
+                    { shapeInput }
+                    onTimerInput	= {( value: string ) => handleTime( value, shapeInput.name )}
+                    value			= { formValues[ shapeInput.name ]}
+                    setError	    = {() => shapeInput.valid = errorTimer( shapeInput, formValues[ shapeInput.name ])}
+                />
+            <!-- Analogic Time -->
+            <!-- {:else if shapeInput.shape === 'timer' && shapeInput.time?.isAnalogic} -->
+                <!-- <AnalogicTimer
+                    { shapeInput }
+                    onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
+                    value		= { formValues[ shapeInput.name ]}
+                    setError	= {() => shapeInput.valid = errorTextArea( shapeInput, formValues[ shapeInput.name ])}
+                /> -->
 			<!-- Default -->
 			{:else}
 				<p class="text-red-500">La entrada es inválida.</p>

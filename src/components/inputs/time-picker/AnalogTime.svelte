@@ -98,20 +98,20 @@
 
     {#if isOpen}
         <div 
-            class="absolute z-10 mt-1 bg-white dark:bg-zinc-800 rounded-lg shadow-xl p-4"
+            class="absolute right-4 z-40 mt-1 bg-white dark:bg-zinc-900 rounded-lg shadow-xl p-4"
             transition:fade={{ duration: 150 }}
         >
             <div class="flex flex-col items-center">
                 <div class="flex space-x-4 mb-4">
                     <button 
-                        class="px-3 py-1 rounded-md {isSelectingHours ? 'bg-primary-600 text-white' : 'text-gray-600'}"
+                        class="px-3 py-1 rounded-md {isSelectingHours ? 'bg-blue-500 dark:bg-blue-500 text-white' : 'text-gray-600'}"
                         on:click={() => isSelectingHours = true}
                     >
                         Horas
                     </button>
 
                     <button 
-                        class="px-3 py-1 rounded-md {!isSelectingHours ? 'bg-primary-600 text-white' : 'text-gray-600'}"
+                        class="px-3 py-1 rounded-md {!isSelectingHours ? 'bg-blue-500 dark:bg-blue-500 text-white' : 'text-gray-600'}"
                         on:click={() => isSelectingHours = false}
                     >
                         Minutos
@@ -122,7 +122,7 @@
                 <div class="relative w-64 h-64 rounded-full border-4 border-gray-200 mb-4 p-1">
                     <!-- Botón AM/PM central -->
                     <button 
-                        class="absolute top-1/2 left-1/2 w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-700 text-white transform -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center text-sm font-medium hover:bg-primary-700 transition-colors"
+                        class="hover:scale-105 duration-200 absolute top-1/2 left-1/2 w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-white transform -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center text-sm font-medium hover:bg-primary-700 transition-colors"
                         on:click={toggleAMPM}
                     >
                         {isPM ? 'PM' : 'AM'}
@@ -144,7 +144,7 @@
                             {#each isPM ? hoursArrayPM : hoursArray as hour, i}
                                 {@const pos = getPosition(i, 12, 100)}
                                 <button 
-                                    class="absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full hover:bg-zinc-300 dark:hover:bg-zinc-700 {(hours === hour) || (hours === 0 && hour === 12 && !isPM) ? 'bg-primary-600 text-white' : ''}"
+                                    class="hover:scale-105 transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 {(hours === hour) || (hours === 0 && hour === 12 && !isPM) ? '!bg-blue-500 !text-white hover:!bg-blue-600' : ''}"
                                     style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                     on:click={() => selectHour(hour)}
                                 >
@@ -169,7 +169,7 @@
                                 {@const pos = getPosition(i, 12, 100)}
 
                                 <button 
-                                    class="absolute w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary-100 {minutes === minute ? 'bg-primary-600 text-white' : ''}"
+                                    class="hover:scale-105 duration-200 absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 {minutes === minute ? '!bg-blue-500 !text-white hover:!bg-blue-600' : ''}"
                                     style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                     on:click={() => selectMinute(minute)}
                                 >
