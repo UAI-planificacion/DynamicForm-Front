@@ -36,8 +36,6 @@
 	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
 	import { dynamicMode, dynamicForms } 	from "$stores";
 
-    import AnalogTime from "$components/inputs/time-picker/AnalogTime.svelte";
-
 
 	const flipDurationMs = 100;
     const defaultSelected = 'Nuevo formulario';
@@ -270,9 +268,6 @@
         valid       : true,
     }
 </script>
-
-
-<AnalogTime />
 
 
 <main class="px-4 py-5 mx-auto 2xl:mx-36 space-y-5">

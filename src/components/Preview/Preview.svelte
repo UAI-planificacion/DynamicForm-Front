@@ -38,7 +38,7 @@
 	export let dynamicMode	: boolean = false;
 
 
-    const keys = ["value", "checked", "date", "selected", 'dateRange'];
+    const keys = ["value", "checked", "date", "selected", 'dateRange', 'timeValue'];
 
 
 	let loading = false;
@@ -66,40 +66,46 @@
         }
     }
 
-    // Limpiar y actualizar formValues cuando template cambie
+
+    let previousShapes: Record<string, string> = {};
+
     $: {
         if (template) {
-            // Obtener los nombres válidos del template
             const validNames = template
                 .filter(item => item.shape !== 'button' && item.name?.trim())
                 .map(item => item.name);
 
-            // Crear un nuevo objeto con los valores iniciales
             const initialValues = template.reduce((acc, item) => {
-                const value = keys.find((key) => item[key] !== undefined)
-                    ? item[keys.find((key) => item[key] !== undefined) as keyof typeof item]
-                    : undefined;
+                const validKey = keys.find((key) => item[key] !== undefined && item[key] !== '');
+                const value = validKey ? item[validKey] : undefined;
 
-                // Solo agregar si es un nombre válido y tiene un valor
-                if (item.shape !== 'button' && item.name?.trim() && value !== undefined) {
+                if (item.shape !== 'button' && item.name?.trim()) {
                     acc[item.name] = value;
                 }
 
                 return acc;
             }, {} as Record<string, any>);
 
-            // Mantener solo los valores con nombres válidos del template actual
-            const currentValues = Object.entries(formValues)
+            let currentValues = Object.entries(formValues)
                 .filter(([key]) => validNames.includes(key))
                 .reduce((acc, [key, value]) => {
                     acc[key] = value;
                     return acc;
                 }, {} as Record<string, any>);
 
-            // Combinar valores actuales con los iniciales
+            template.forEach(item => {
+                if (item.shape !== 'button' && item.name?.trim()) {
+                    const previousShape = previousShapes[item.name];
+                    if (previousShape !== undefined && previousShape !== item.shape) {
+                        currentValues[item.name] = undefined;
+                    }
+                    previousShapes[item.name] = item.shape as string;
+                }
+            });
+
             formValues = {
-                ...initialValues,  // Valores por defecto del template
-                ...currentValues   // Valores actuales que coinciden con nombres válidos
+                ...initialValues,
+                ...currentValues
             };
         }
     }
@@ -167,21 +173,22 @@
 
         const button = template.find( item => item.shape === 'button' );
 
-		if ( !button ) return;
-
 		template.forEach(( item, index ) => {
 			template[index].valid = {
-				'input'			    : errorInput( item, formValues[ item.name ]),
-				'textarea'		    : errorTextArea( item, formValues[ item.name ]),
-				'markdown'		    : errorTextArea( item, formValues[ item.name ]),
-				'check'			    : errorCheck( item, formValues[ item.name ]),
-				'select'		    : errorSelect( item, formValues[ item.name ]),
-				'datepicker'	    : errorDatePicker( item, formValues[ item.name ]),
-                'timer'             : errorTimer( item, formValues[ item.name ]),
-				'button'		    : true,
-				'none'			    : false
+				'input'         : errorInput( item, formValues[ item.name ]),
+				'textarea'		: errorTextArea( item, formValues[ item.name ]),
+				'markdown'		: errorTextArea( item, formValues[ item.name ]),
+				'check'			: errorCheck( item, formValues[ item.name ]),
+				'select'		: errorSelect( item, formValues[ item.name ]),
+				'datepicker'    : errorDatePicker( item, formValues[ item.name ]),
+                'timer'			: errorTimer( item, formValues[ item.name ]),
+				'button'		: true,
+				'none'			: false
 			}[item.shape || 'none'];
 		});
+
+        console.log('🚀 ~ file: Preview.svelte:187 ~ template:', template)
+		console.log('🚀 ~ file: Preview.svelte:174 ~ formValues:', formValues)
 
 		if ( template.some( item => !item.valid )) {
 			toast.error( button!.invalidErrorMsg ?? "Hay un error en el formulario", errorToast() );
@@ -301,7 +308,7 @@
 					dynamicMode={ dynamicMode }
 				/>
             <!-- Time -->
-            {:else if shapeInput.shape === 'timer' }
+            {:else if shapeInput.shape === 'timer' && !shapeInput.time?.isAnalogic }
                 <Timer
                     { shapeInput }
                     onTimerInput	= {( value: string ) => handleTime( value, shapeInput.name )}
@@ -309,13 +316,13 @@
                     setError	    = {() => shapeInput.valid = errorTimer( shapeInput, formValues[ shapeInput.name ])}
                 />
             <!-- Analogic Time -->
-            <!-- {:else if shapeInput.shape === 'timer' && shapeInput.time?.isAnalogic} -->
-                <!-- <AnalogicTimer
+            {:else if shapeInput.shape === 'timer' && shapeInput.time?.isAnalogic}
+                <AnalogicTimer
                     { shapeInput }
-                    onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
-                    value		= { formValues[ shapeInput.name ]}
-                    setError	= {() => shapeInput.valid = errorTextArea( shapeInput, formValues[ shapeInput.name ])}
-                /> -->
+                    onTimerInput    = {( value: string ) => handleTime( value, shapeInput.name )}
+                    value			= { formValues[ shapeInput.name ]}
+                    setError		= {() => shapeInput.valid = errorTimer( shapeInput, formValues[ shapeInput.name ])}
+                />
 			<!-- Default -->
 			{:else}
 				<p class="text-red-500">La entrada es inválida.</p>

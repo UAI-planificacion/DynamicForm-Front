@@ -30,14 +30,16 @@
         VirtualSelect,
         ValueEditor,
         GroupEditor,
-        GenerateValidDates
+        GenerateValidDates,
+        AnalogicTimer,
+        TimeGenerator
     }						from "$components";
     import {
 		options,
 		styles,
 		types,
 		httpCodes,
-		methods
+		methods,
 	}						from "$lib";
 
     export let shapeInput       : ShapeInput;
@@ -242,6 +244,16 @@
                             onValueChange = {( value: DateValue ) => shapeInput.date = value }
                         />
                     </div>
+                {:else if shapeInput.shape === 'timer'}
+                    <AnalogicTimer
+                        shapeInput = {{
+                            id      : uuid(),
+                            name    : 'time',
+                            label   : 'Tiempo',
+                            time    : shapeInput.time
+                        }}
+                        onTimerInput = { () => {} }
+                    />
                 {:else if shapeInput.shape !== 'button'}
                     <Input
                         shapeInput = {{
@@ -288,7 +300,7 @@
                     <Input
                         shapeInput = {{
                             id		    : uuid(),
-                            label       : 'Alto de la caja',
+                            label       : 'Altura de la caja',
                             name	    : 'rows',
                             placeholder : 'Ingrese el alto que tendrá la caja de texto',
                             value       : "4",
@@ -365,8 +377,6 @@
                     </Tabs.Content>
                 </Tabs.Root>
 
-                
-
                 <div class="grid gap-3">
                     
                     <VirtualSelect
@@ -427,7 +437,6 @@
                         </div>
                     </div>
                 </div>
-
             {:else if shapeInput.shape === 'button'}
                 <div class="grid @lg:grid-cols-[1fr,2fr] grid-cols-1 gap-2 items-center">
                     <VirtualSelect
@@ -499,6 +508,16 @@
                                                 checked : shapeInput.isRange
                                             }}
                                             onChange = {( e ) => shapeInput.isRange = e}
+                                        />
+                                    {:else if shapeInput.shape === 'timer'}
+                                        <Check 
+                                            shapeInput = {{
+                                                id      : uuid(),
+                                                name    : 'analogic',
+                                                label   : 'Reloj Análogo',
+                                                checked : shapeInput.time?.isAnalogic
+                                            }}
+                                            onChange = {( e ) => { shapeInput.time = { isAnalogic: e }}}
                                         />
                                     {/if}
                                 </div>
@@ -713,6 +732,19 @@
                                 invalidDates            = { shapeInput.invalidDates }
                                 onInvalidDatesChange    = {( dates: string[] ) => shapeInput.invalidDates = dates }
                             />  
+
+                        {:else if shapeInput.shape === 'timer' && !shapeInput.time?.isAnalogic}
+                            <span class="text-sm font-semibold text-zinc-500 dark:text-zinc-300">Generar horas y minutos</span>
+                            <TimeGenerator 
+                                onHourListChange={(hours: number[]) => shapeInput.time = {
+                                    ...shapeInput.time,
+                                    hourList: hours
+                                }}
+                                onMinuteListChange={(minutes: number[]) => shapeInput.time = {
+                                    ...shapeInput.time,
+                                    minuteList: minutes
+                                }}
+                            />
                         {/if}
                     </Accordion.Content>
                 </Accordion.Item>
