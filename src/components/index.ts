@@ -23,6 +23,7 @@ export { default as AnalogicTimer } from './inputs/time-picker/AnalogTime.svelte
 
 // Editors
 export { default as GenerateValidDates } from './Editor/dates/GenerateValidDates.svelte';
+export { default as TimeGenerator }      from './Editor/times/TimeGenerator.svelte';
 
 // Preview
 export { default as Preview }       from './Preview/Preview.svelte';
