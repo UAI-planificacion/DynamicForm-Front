@@ -19,8 +19,14 @@
 
 
     let open            = false;
-    let selectedHour    : number | undefined = value?.hour ?? shapeInput.time?.hour;
-    let selectedMinute  : number | undefined = value?.minute ?? shapeInput.time?.minute;
+    let [selectedHour, selectedMinute] = value 
+        ? [value.hour, value.minute]
+        : shapeInput.timeValue
+            ? [
+                parseInt(shapeInput.timeValue.split(':')[0]),
+                parseInt(shapeInput.timeValue.split(':')[1])
+            ]
+            : [undefined, undefined];
     let searchHour      = '';
     let searchMinute    = '';
 
@@ -42,9 +48,8 @@
         if (h !== undefined && m !== undefined && !Number.isNaN(h) && !Number.isNaN(m)) {
             selectedHour = h;
             selectedMinute = m;
-            if (shapeInput.time) {
-                shapeInput.time.hour = h;
-                shapeInput.time.minute = m;
+            if (shapeInput.timeValue) {
+                shapeInput.timeValue = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
             }
         }
     })();
@@ -67,9 +72,8 @@
     }
 
     function applySelection() {
-        if (shapeInput.time) {
-            shapeInput.time.hour = selectedHour;
-            shapeInput.time.minute = selectedMinute;
+        if (shapeInput.timeValue && selectedHour !== undefined && selectedMinute !== undefined) {
+            shapeInput.timeValue = `${selectedHour.toString().padStart(2, '0')}:${selectedMinute.toString().padStart(2, '0')}`;
         }
     }
 
@@ -84,7 +88,11 @@
         if ( selectedMinute === undefined ) return `${padStart( selectedHour )}:`;
         if ( isMinute ) open = false;
 
-        return `${padStart( selectedHour )}:${padStart( selectedMinute )}`;
+        const timeValue = `${padStart( selectedHour )}:${padStart( selectedMinute )}`;
+        if (shapeInput.timeValue) {
+            shapeInput.timeValue = timeValue;
+        }
+        return timeValue;
     }
 
 
@@ -105,20 +113,20 @@
     }
 
 
-    const hoursArray   : number[] = Array.from({ length: 24 }, (_, i) => i);
-    const minutesArray : number[] = Array.from({ length: 60 }, (_, i) => i);
+    $: hoursArray = shapeInput.time?.hourList ?? Array.from({ length: 24 }, (_, i) => i);
+    $: minutesArray = shapeInput.time?.minuteList ?? Array.from({ length: 60 }, (_, i) => i);
 
     $: filteredHours = searchHour 
-        ? (shapeInput.time?.hourList || hoursArray)?.filter(hour => 
+        ? hoursArray?.filter(hour => 
             hour.toString().padStart(2, '0').includes(searchHour)
         )
-        : (shapeInput.time?.hourList || hoursArray);
+        : hoursArray;
 
     $: filteredMinutes = searchMinute 
-        ? (shapeInput.time?.minuteList || minutesArray)?.filter(minute => 
+        ? minutesArray?.filter(minute => 
             minute.toString().padStart(2, '0').includes(searchMinute)
         )
-        : (shapeInput.time?.minuteList || minutesArray);
+        : minutesArray;
 
     const hourSearchInput: ShapeInput = {
         id          : `${shapeInput.id}-hour-search`,
