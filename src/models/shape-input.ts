@@ -32,6 +32,7 @@ export type ShapeInput = {
     type?           : Types;
     placeholder?    : string;
     value?          : string;
+    timeValue?      : string;
     date?           : DateValue;
     dateRange?      : DateRange;
     isRange?        : boolean;

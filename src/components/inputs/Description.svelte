@@ -17,7 +17,7 @@
 
 
     export let shapeInput   : ShapeInput;
-    export let value        : Time | Selected = undefined;
+    export let value        : Time | Selected | string = undefined;
     export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
     export let date         : DateValue | DateRange | undefined = undefined;
 </script>
@@ -34,7 +34,7 @@
         {:else if shapeInput.shape === 'datepicker'}
             { showErrorDatePicker( shapeInput, date )}
         {:else if shapeInput.shape === 'timer'}
-            { showErrorTimer( shapeInput, value as Time )}
+            { showErrorTimer( shapeInput, value as string )}
         {/if}
     </span>
 {:else if shapeInput.description}

@@ -6,7 +6,7 @@
     export let onInput          : ( event: Event ) => void = () => {};
     export let onTimerInput     : ( value: string ) => void = () => {};
     export let onSelectedChange : ( value: Selected ) => void = () => {};
-    export let value            : Time | Selected = undefined;
+    export let value            : Time | Selected | string = undefined;
 </script>
 
 <div class="w-full space-y-1.5">

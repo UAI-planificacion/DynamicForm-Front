@@ -79,20 +79,26 @@ export function showErrorSelect(
 
 export const errorTimer = (
     shapeInput  : ShapeInput,
-    value?      : Time | undefined
+    value?      : string | Time | undefined
 ): boolean => showErrorTimer( shapeInput, value ) === undefined;
 
 
 export function showErrorTimer(
     shapeInput  : ShapeInput,
-    value?      : Time | undefined
+    value?      : string | Time | undefined
 ): string | undefined {
     if ( !shapeInput.required ) return undefined;
 
-    if ( shapeInput.required && value === null || value?.hour === null || value?.minute === null )
+    if ( typeof value === 'string' ) {
+        if ( value === undefined || value === null || value === '' )
+            return shapeInput?.msgRequired;
+
+        return;
+    }
+
+    if ( shapeInput.required && ( value === undefined || value === null || value?.hour === null || value?.minute === null ))
         return shapeInput?.msgRequired;
 }
-
 
 
 export const errorInput = (
