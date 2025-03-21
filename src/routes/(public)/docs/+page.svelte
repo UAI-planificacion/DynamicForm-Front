@@ -337,63 +337,7 @@ Authorization: Bearer tu_token_de_acceso
 </script>
 
 <div class="{isDarkMode ? 'dark' : ''} min-h-screen">
-    <div class="flex flex-col min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-    <!-- Header -->
-    <header class="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
-        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center">
-            <button 
-            class="md:hidden mr-3 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-            on:click={() => isSidebarOpen = !isSidebarOpen}
-            aria-label="Toggle sidebar"
-            >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-            </button>
-            <a href="/" class="flex items-center">
-            <span class="font-bold text-xl text-blue-900 dark:text-blue-400 transition-colors duration-300">Formulario Dinámico</span>
-            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">Documentación</span>
-            </a>
-        </div>
-        
-        <div class="flex items-center space-x-3">
-            <button 
-            class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-            on:click={() => isSearchOpen = !isSearchOpen}
-            aria-label="Search"
-            >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            </button>
-            
-            <button 
-            class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-            on:click={toggleDarkMode}
-            aria-label="Toggle dark mode"
-            >
-            {#if isDarkMode}
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-            {:else}
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-            {/if}
-            </button>
-            
-            <a 
-            href="/" 
-            class="hidden sm:block text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
-            >
-            Volver al inicio
-            </a>
-        </div>
-        </div>
-        
-        <!-- Search bar (mobile) -->
+    <div class="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100 transition-colors duration-300">
         {#if isSearchOpen}
         <div class="border-t border-gray-200 dark:border-gray-700 py-3 px-4 transition-all duration-300 animate-in slide-in-from-top">
             <div class="relative">
@@ -409,24 +353,23 @@ Authorization: Bearer tu_token_de_acceso
             </div>
         </div>
         {/if}
-    </header>
-
-    <div class="flex flex-1 overflow-hidden">
+    
+        <div class="flex flex-1 overflow-hidden">
         <!-- Sidebar -->
         <aside 
-        class="w-64 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-300 overflow-y-auto
+        class="w-64 border-r border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 transition-all duration-300 overflow-y-auto
                 {isSidebarOpen ? 'fixed inset-y-0 left-0 z-20 shadow-lg md:shadow-none md:static md:block' : 'hidden md:block'}"
         >
         <!-- Search bar (desktop) -->
-        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="p-4 border-b border-gray-200 dark:border-zinc-700">
             <div class="relative">
             <input 
                 type="text" 
                 bind:value={searchQuery} 
                 placeholder="Buscar..." 
-                class="w-full px-4 py-2 pl-10 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                class="w-full px-4 py-2 pl-10 rounded-md border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors duration-300"
             />
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             </div>
@@ -437,7 +380,7 @@ Authorization: Bearer tu_token_de_acceso
             {#each getFilteredSections() as section}
             <div class="mb-6">
                 <h3 
-                class="flex items-center text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3"
+                class="flex items-center text-sm font-semibold text-gray-500 dark:text-zinc-400 uppercase tracking-wider mb-3"
                 >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={section.icon} />
@@ -451,8 +394,8 @@ Authorization: Bearer tu_token_de_acceso
                     <button
                         class="w-full text-left px-3 py-2 rounded-md text-sm transition-colors duration-200
                             {activeSection === section.id && activeItem === item.id 
-                                ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium' 
-                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
+                                ? 'bg-amber-100 dark:bg-amber-900/20 text-amber-900 dark:text-amber-400 font-medium' 
+                                : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-700'}"
                         on:click={() => {
                         activeSection = section.id;
                         activeItem = item.id;
@@ -470,89 +413,75 @@ Authorization: Bearer tu_token_de_acceso
             {/each}
         </nav>
         </aside>
-        
-        <!-- Overlay for mobile sidebar -->
+
         {#if isSidebarOpen}
-            <button
-                class="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
-                on:click={() => isSidebarOpen = false}
-            >
-                <X class="w-6 h-6" />
-            </button>
-        {/if}
-        
+        <button
+            class="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+            on:click={() => isSidebarOpen = false}
+        >
+            <X class="w-6 h-6" />
+        </button>
+    {/if}
         <!-- Main content -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-8 transition-all duration-300 animate-on-scroll">
-        <div class="max-w-3xl mx-auto">
-            {@html getActiveContent()}
-        </div>
-        
-        <!-- Navegación entre páginas -->
-        <div class="mt-12 border-t border-gray-200 dark:border-gray-700 pt-6 flex justify-between">
-            <button 
-            class="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
-            on:click={() => {
-                const currentSection = docSections.find(s => s.id === activeSection);
-                if (!currentSection) return;
-                
-                const currentItemIndex = currentSection.items.findIndex(i => i.id === activeItem);
-                if (currentItemIndex > 0) {
-                activeItem = currentSection.items[currentItemIndex - 1].id;
-                } else {
-                const sectionIndex = docSections.findIndex(s => s.id === activeSection);
-                if (sectionIndex > 0) {
-                    activeSection = docSections[sectionIndex - 1].id;
-                    activeItem = docSections[sectionIndex - 1].items[docSections[sectionIndex - 1].items.length - 1].id;
-                }
-                }
-            }}
-            >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-            Anterior
-            </button>
+        <main class="flex-1 overflow-y-auto bg-white dark:bg-zinc-950 p-4 md:p-8 transition-all duration-300 animate-on-scroll">
+            <div class="max-w-3xl mx-auto">
+                <div class="prose dark:prose-invert prose-amber max-w-none">
+                    {@html getActiveContent()}
+                </div>
+            </div>
             
-            <button 
-            class="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
-            on:click={() => {
-                const currentSection = docSections.find(s => s.id === activeSection);
-                if (!currentSection) return;
+            <!-- Navegación entre páginas -->
+            <div class="mt-12 border-t border-gray-200 dark:border-zinc-800 pt-6 flex justify-between">
+                <button 
+                class="flex items-center text-sm font-medium text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors duration-200"
+                on:click={() => {
+                    const currentSection = docSections.find(s => s.id === activeSection);
+                    if (!currentSection) return;
+                    
+                    const currentItemIndex = currentSection.items.findIndex(i => i.id === activeItem);
+                    if (currentItemIndex > 0) {
+                    activeItem = currentSection.items[currentItemIndex - 1].id;
+                    } else {
+                    const sectionIndex = docSections.findIndex(s => s.id === activeSection);
+                    if (sectionIndex > 0) {
+                        activeSection = docSections[sectionIndex - 1].id;
+                        activeItem = docSections[sectionIndex - 1].items[docSections[sectionIndex - 1].items.length - 1].id;
+                    }
+                    }
+                }}
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Anterior
+                </button>
                 
-                const currentItemIndex = currentSection.items.findIndex(i => i.id === activeItem);
-                if (currentItemIndex < currentSection.items.length - 1) {
-                activeItem = currentSection.items[currentItemIndex + 1].id;
-                } else {
-                const sectionIndex = docSections.findIndex(s => s.id === activeSection);
-                if (sectionIndex < docSections.length - 1) {
-                    activeSection = docSections[sectionIndex + 1].id;
-                    activeItem = docSections[sectionIndex + 1].items[0].id;
-                }
-                }
-            }}
-            >
-            Siguiente
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-            </button>
-        </div>
+                <button 
+                class="flex items-center text-sm font-medium text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors duration-200"
+                on:click={() => {
+                    const currentSection = docSections.find(s => s.id === activeSection);
+                    if (!currentSection) return;
+                    
+                    const currentItemIndex = currentSection.items.findIndex(i => i.id === activeItem);
+                    if (currentItemIndex < currentSection.items.length - 1) {
+                    activeItem = currentSection.items[currentItemIndex + 1].id;
+                    } else {
+                    const sectionIndex = docSections.findIndex(s => s.id === activeSection);
+                    if (sectionIndex < docSections.length - 1) {
+                        activeSection = docSections[sectionIndex + 1].id;
+                        activeItem = docSections[sectionIndex + 1].items[0].id;
+                    }
+                    }
+                }}
+                >
+                Siguiente
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                </button>
+            </div>
         </main>
     </div>
-    
-    <!-- Footer -->
-    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-4 px-4 transition-colors duration-300">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-        <div class="flex items-center mb-4 md:mb-0">
-            <span class="font-bold text-blue-900 dark:text-blue-400 transition-colors duration-300">Universidad Adolfo Ibáñez</span>
-            <span class="mx-2 text-gray-300 dark:text-gray-600">|</span>
-            <span class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">Formulario Dinámico</span>
-        </div>
-        <div class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
-            &copy; {new Date().getFullYear()} Universidad Adolfo Ibáñez. Todos los derechos reservados.
-        </div>
-        </div>
-    </footer>
     </div>
 </div>
 
