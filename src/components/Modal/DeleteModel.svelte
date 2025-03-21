@@ -62,11 +62,18 @@
             </Dialog.Description>
 
             <div class="flex flex-col items-start gap-1 pb-5 pt-5">
-                <Label.Root for="apiKey" class="text-sm font-medium flex items-center gap-1">
+                <Label.Root for="apiKey" class="text-sm font-medium flex flex-wrap items-center gap-1">
                     Escribe
-                    <span class="bg-red-500/40 dark:bg-red-700/40 rounded-lg py-0.5 px-2 text-red-500 dark:text-red-300">
-                        { formName }
-                    </span>
+                    <div class="relative group">
+                        <span class="mt-1.5 bg-red-500/40 dark:bg-red-700/40 rounded-lg py-0.5 px-2 text-red-500 dark:text-red-300 max-w-[280px] inline-block truncate">
+                            { formName }
+                        </span>
+                        {#if formName.length > 25}
+                            <div class="absolute left-1/2 -translate-x-1/2 bottom-full mt-1.5 hidden group-hover:block bg-zinc-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+                                { formName }
+                            </div>
+                        {/if}
+                    </div>
                     para confirmar
                 </Label.Root>
 
