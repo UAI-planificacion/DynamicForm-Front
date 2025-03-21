@@ -70,8 +70,8 @@
 	});
 </script>
 
-<div bind:this={container} class="flex w-full h-full overflow-hidden gap-2">
-	<div bind:this={leftPanel} class="overflow-auto relative @container {isMobileView ? 'transition-[width] duration-150' : ''}">
+<div bind:this={container} class="flex w-full h-full gap-2">
+	<div bind:this={leftPanel} class="relative @container {isMobileView ? 'transition-[width] duration-150' : ''} overflow-visible">
 		<slot name="left" />
 	</div>
 
@@ -84,7 +84,7 @@
 		aria-orientation="vertical"
 	/>
 
-	<div bind:this={rightPanel} class="overflow-auto relative @container {isMobileView ? 'transition-[width] duration-150' : ''}">
+	<div bind:this={rightPanel} class="relative @container {isMobileView ? 'transition-[width] duration-150' : ''} overflow-visible">
 		<slot name="right" />
 	</div>
 </div>
