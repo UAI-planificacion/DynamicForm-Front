@@ -9,6 +9,16 @@ import type { DateRange } from "bits-ui";
 //     date?       : DateRange | undefined
 // ): boolean => showErrorDateRangePicker( shapeInput, date ) === undefined;
 
+// export function showErrorDateRangePicker(
+//     shapeInput  : ShapeInput,
+//     date?       : DateRange | undefined
+// ): string | undefined {
+//     if ( !shapeInput.required ) return undefined;
+
+//     if ( !date )
+//         return shapeInput?.msgRequired;
+// }
+
 
 export const errorDatePicker = (
     shapeInput  : ShapeInput,
@@ -25,15 +35,6 @@ export function showErrorDatePicker(
     if ( shapeInput.required && !date )
         return shapeInput?.msgRequired;
 }
-// export function showErrorDateRangePicker(
-//     shapeInput  : ShapeInput,
-//     date?       : DateRange | undefined
-// ): string | undefined {
-//     if ( !shapeInput.required ) return undefined;
-
-//     if ( !date )
-//         return shapeInput?.msgRequired;
-// }
 
 
 export const errorCheck = (

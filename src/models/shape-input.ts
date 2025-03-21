@@ -53,6 +53,7 @@ export type ShapeInput = {
     heightPanel?    : number;
     pattern?        : string;
     class_?         : string;
+    boxStyle?       : string;
 	labelStyle? 	: string;
 	contentStyle? 	: string;
 	itemStyle? 		: string;

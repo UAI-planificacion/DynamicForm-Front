@@ -134,6 +134,7 @@
         placeholder : 'Buscar hora...',
         type        : 'search',
         shape       : 'input',
+        class_      : (styles.digital as InputStyle ).input
     };
 
     const minuteSearchInput: ShapeInput = {
@@ -142,6 +143,7 @@
         placeholder : 'Buscar minuto...',
         type        : 'search',
         shape       : 'input',
+        class_      : (styles.digital as InputStyle ).input
     };
 </script>
 
@@ -154,7 +156,7 @@
         disabled        = { shapeInput.disabled }
         type            = "button"
         id              = { `${ shapeInput.id }-input` }
-        class           = { `${( styles.datepicker as InputStyle ).box } flex justify-between items-center` }
+        class           = { `${( styles.digital as InputStyle ).box }` }
         aria-haspopup   = "true"
         aria-expanded   = { open }
         on:click        = { togglePicker }
@@ -170,7 +172,7 @@
 
     {#if open}
         <div 
-            class="absolute float-right right-0 z-40 mt-1 max-w-96 bg-white dark:bg-zinc-800 rounded-md shadow-lg"
+            class           = { `${( styles.digital as InputStyle ).content }` }
             transition:fade={{ duration: 150 }}
         >
             <div class="flex p-3">
@@ -187,11 +189,10 @@
                         >
                             {#each filteredHours ?? [] as hour}
                                 <button
-                                    type="button"
-                                    class="w-full text-center px-2 py-1 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-md transition-colors duration-200"
-                                    class:bg-zinc-200={selectedHour === hour}
-                                    class:dark:bg-zinc-900={selectedHour === hour}
-                                    on:click={() => toggleSelection('hour', hour)}
+                                    type            = "button"
+                                    data-selected   = { selectedHour === hour }
+                                    class           = { `${( styles.digital as InputStyle ).item }` }
+                                    on:click        = {() => toggleSelection('hour', hour) }
                                 >
                                     {hour.toString().padStart(2, '0')}
                                 </button>
@@ -212,11 +213,10 @@
                         >
                             {#each filteredMinutes ?? [] as minute}
                                 <button
-                                    type="button"
-                                    class="w-full text-center px-2 py-1 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-md transition-colors duration-200"
-                                    class:bg-zinc-200={selectedMinute === minute}
-                                    class:dark:bg-zinc-900={selectedMinute === minute}
-                                    on:click={() => toggleSelection('minute', minute)}
+                                    type            = "button"
+                                    data-selected   = { selectedMinute === minute }
+                                    class           = { `${( styles.digital as InputStyle ).item }` }
+                                    on:click        = {() => toggleSelection('minute', minute)}
                                 >
                                     {minute.toString().padStart(2, '0')}
                                 </button>

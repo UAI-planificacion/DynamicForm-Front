@@ -1,7 +1,9 @@
 import type { InputStyle, InputType } from "$models";
 
+type InputFull = InputType | 'digital' | 'analogic';
 
-export const styles: Partial<Record<InputType, string | InputStyle>> = {
+
+export const styles: Partial<Record<InputFull, string | InputStyle>> = {
     input       : 'block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-400 focus:ring-0.5 focus:ring-gray-400 placeholder:text-gray-400 sm:text-sm disabled:bg-slate-100 disabled:text-zinc-500 dark:disabled:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-300 dark:border-zinc-700 dark:disabled:bg-zinc-700',
 	textarea    : 'w-full rounded-md border border-gray-300 shadow-sm focus:border-gray-400 focus:ring-0.5 focus:ring-gray-400 placeholder:text-gray-400 sm:text-sm disabled:border-gray-200 dark:disabled:text-zinc-600 dark:bg-zinc-900 dark:text-zinc-300 dark:border-zinc-700 dark:disabled:bg-zinc-700 dark:disabled:placeholder:text-zinc-400',	
 	button      : 'w-full inline-flex h-12 text-white items-center justify-center rounded-input bg-black px-[21px] text-[15px] font-semibold text-background shadow-minitransition-all duration-200 hover:bg-dark/95 active:scale-[0.98] active:bg-zinc-700 rounded-xl disabled:scale-100 disabled:bg-zinc-600 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-zinc-800 dark:text-zinc-200 dark:disabled:bg-zinc-700 dark:disabled:text-zinc-400',
@@ -19,6 +21,17 @@ export const styles: Partial<Record<InputType, string | InputStyle>> = {
         content		: 'rounded-lg border border-dark-10 shadow-md text-zinc-800 dark:text-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-3 shadow-popover dark:text-zinc-300',
 		label		: 'block select-none text-sm font-medium dark:text-zinc-200 dark:data-[disabled]:text-zinc-400 data-[disabled]:text-zinc-500',
 		input		: 'group relative inline-flex size-10 items-center justify-center whitespace-nowrap rounded-9px border border-transparent bg-transparent p-0 text-sm font-normal text-foreground transition-all hover:border-foreground data-[disabled]:pointer-events-none data-[outside-month]:pointer-events-none data-[selected]:bg-foreground data-[selected]:bg-blue-500 data-[selected]:rounded-lg data-[disabled]:text-zinc-400 dark:data-[disabled]:text-zinc-500 data-[selected]:text-background data-[unavailable]:text-muted-foreground data-[unavailable]:line-through hover:bg-zinc-200 dark:hover:bg-zinc-600 hover:rounded-lg'
+    },
+    digital : {
+        box		: 'rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input dark:border-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 px-2 py-3 text-sm tracking-[0.01em]-500 dark:data-[disabled]:bg-zinc-700 data-[disabled]:bg-zinc-100 focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover flex justify-between items-center px-3',
+        content : 'absolute float-right right-0 z-40 mt-1 max-w-96 bg-white dark:bg-zinc-800 rounded-md shadow-lg',
+        item    : 'w-full text-center px-2 py-1 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-md transition-colors duration-200 data-[selected=true]:bg-zinc-200 dark:data-[selected=true]:bg-zinc-900',
+        input   : 'block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-400 focus:ring-0.5 focus:ring-gray-400 placeholder:text-gray-400 sm:text-sm disabled:bg-slate-100 disabled:text-zinc-500 dark:disabled:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-300 dark:border-zinc-700 dark:disabled:bg-zinc-700',
+    },
+    analogic : {
+        box		: 'rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input dark:border-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 px-2 py-3 text-sm tracking-[0.01em]-500 dark:data-[disabled]:bg-zinc-700 data-[disabled]:bg-zinc-100 focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover flex justify-between items-center px-3',
+        content : 'absolute float-right right-0 z-40 mt-1 max-w-96 bg-white dark:bg-zinc-800 rounded-md shadow-lg',
+        item    : 'transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full text-zinc-700 dark:text-zinc-300 hover:scale-105 data-[selected=true]:bg-blue-500 dark:data-[selected=true]:bg-blue-500 data-[selected=true]:text-white data-[disabled=true]:opacity-50 data-[disabled=true]:cursor-not-allowed hover:data-[disabled=false]:bg-zinc-200 dark:hover:data-[disabled=false]:bg-zinc-600',
     },
     none: ''
 }

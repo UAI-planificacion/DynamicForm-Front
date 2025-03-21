@@ -954,7 +954,7 @@
 								}}
 								onInput = {( event: Event ) => shapeInput.itemStyle = ( event.target as HTMLInputElement ).value }
 							/>
-						{:else if shapeInput.shape === 'datepicker' }
+						{:else if shapeInput.shape === 'datepicker' || shapeInput.shape === 'timer'}
 							<TextArea
 								shapeInput = {{
 									id          : uuid(),
@@ -962,7 +962,11 @@
 									label       : 'Componente principal box',
 									placeholder : 'Ingrese los estilos de la caja',
 									rows        : 3,
-									value       : shapeInput.class_ ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
+									value       : shapeInput.class_ ?? ( styles[
+                                        shapeInput.shape === 'timer' 
+                                        ? shapeInput.time?.isAnalogic ? 'analogic' : 'digital'
+                                        : shapeInput.shape
+                                    ] as InputStyle ).box
 								}}
 								onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
 							/>
@@ -974,7 +978,11 @@
 									label       : 'Estilos del input',
 									placeholder : 'Ingrese los estilos del input',
 									rows        : 5,
-									value       : shapeInput.inputStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).input
+									value       : shapeInput.inputStyle ?? ( styles[
+                                        shapeInput.shape === 'timer' 
+                                            ? shapeInput.time?.isAnalogic ? 'analogic' : 'digital'
+                                            : shapeInput.shape
+                                    ] as InputStyle ).input
 								}}
 								onInput = {( event: Event ) => shapeInput.inputStyle = ( event.target as HTMLInputElement ).value }
 							/>
@@ -986,7 +994,11 @@
 									label       : 'Estilos del contenido',
 									placeholder : 'Ingrese los estilos del contenido',
 									rows        : 2,
-									value       : shapeInput.contentStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).content
+									value       : shapeInput.contentStyle ?? ( styles[
+                                        shapeInput.shape === 'timer' 
+                                        ? shapeInput.time?.isAnalogic ? 'analogic' : 'digital'
+                                        : shapeInput.shape
+                                    ] as InputStyle ).content
 								}}
 								onInput = {( event: Event ) => shapeInput.contentStyle = ( event.target as HTMLInputElement ).value }
 							/>
@@ -995,14 +1007,17 @@
 								shapeInput = {{
 									id          : uuid(),
 									name        : 'class',
-									label       : 'Estilos del label',
-									placeholder : 'Ingrese los estilos del label',
+									label       : 'Estilos del Item',
+									placeholder : 'Ingrese los estilos del item',
 									rows        : 2,
-									value       : shapeInput.labelStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).label
+									value       : shapeInput.labelStyle ?? ( styles[
+                                        shapeInput.shape === 'timer' 
+                                            ? shapeInput.time?.isAnalogic ? 'analogic' : 'digital'
+                                            : shapeInput.shape
+                                    ] as InputStyle ).item
 								}}
-								onInput = {( event: Event ) => shapeInput.labelStyle = ( event.target as HTMLInputElement ).value }
+								onInput = {( event: Event ) => shapeInput.itemStyle = ( event.target as HTMLInputElement ).value }
 							/>
-							
 						{/if}
                     </Accordion.Content>
                 </Accordion.Item>

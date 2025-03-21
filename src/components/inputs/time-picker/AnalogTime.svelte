@@ -146,7 +146,7 @@
         <button
             type            = "button"
             id              = { `${ shapeInput.id }-input` }
-            class           = { `${( styles.datepicker as InputStyle ).box } flex justify-between items-center` }
+            class           = { `${ shapeInput.boxStyle ?? ( styles.analogic as InputStyle ).box }` }
             on:click        = { togglePicker }
             aria-haspopup   = "true"
             aria-expanded   = { isOpen }
@@ -163,15 +163,19 @@
             >
                 <div class="flex flex-col items-center">
                     <div class="flex space-x-4 mb-4">
-                        <button 
-                            class="px-3 py-1 rounded-md {isSelectingHours ? 'bg-blue-500 dark:bg-blue-500 text-white' : 'text-gray-600'}"
+                        <button
+                            type="button"
+                            data-selected={isSelectingHours}
+                            class="px-3 py-1 rounded-md data-[selected=true]:bg-blue-500 data-[selected=true]:text-white data-[selected=false]:text-gray-600"
                             on:click={() => isSelectingHours = true}
                         >
                             Horas
                         </button>
 
-                        <button 
-                            class="px-3 py-1 rounded-md {!isSelectingHours ? 'bg-blue-500 dark:bg-blue-500 text-white' : 'text-gray-600'}"
+                        <button
+                            type="button"
+                            data-selected={!isSelectingHours}
+                            class="px-3 py-1 rounded-md data-[selected=true]:bg-blue-500 data-[selected=true]:text-white data-[selected=false]:text-gray-600"
                             on:click={() => isSelectingHours = false}
                         >
                             Minutos
@@ -181,8 +185,10 @@
                     <!-- Reloj analógico -->
                     <div class="relative w-64 h-64 rounded-full border-4 border-gray-200 mb-4 p-1">
                         <!-- Botón AM/PM central -->
-                        <button 
-                            class="hover:scale-105 duration-200 absolute top-1/2 left-1/2 w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-white transform -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center text-sm font-medium hover:bg-primary-700 transition-colors"
+                        <button
+                            type="button"
+                            data-selected={isPM}
+                            class="hover:scale-105 duration-200 absolute top-1/2 left-1/2 w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-white transform -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center text-sm font-medium transition-colors data-[selected=true]:bg-blue-500 data-[selected=true]:text-white"
                             on:click={toggleAMPM}
                         >
                             {isPM ? 'PM' : 'AM'}
@@ -205,8 +211,12 @@
                                 <!-- Números de las horas -->
                                 {#each isPM ? hoursArrayPM : hoursArray as hour, i}
                                     {@const pos = getPosition(i, 12, 100)}
+                                    {@const isSelected = isPM ? hours === hour : (hours === hour) || (hours === 0 && hour === 12)}
                                     <button 
-                                        class="transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full text-zinc-700 dark:text-zinc-300 {(hours === hour) || (hours === 0 && hour === 12 && !isPM) ? '!bg-blue-500 !text-white hover:!bg-blue-600' : ''} {isHourDisabled(hour) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-200 dark:hover:bg-zinc-600 hover:scale-105'}"
+                                        type="button"
+                                        data-selected={isSelected}
+                                        data-disabled={isHourDisabled(hour)}
+                                        class = { `${ shapeInput.itemStyle ?? ( styles.analogic as InputStyle ).item }` }
                                         style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                         on:click={() => selectHour(hour)}
                                         disabled={isHourDisabled(hour)}
@@ -232,9 +242,12 @@
                                 <!-- Números de los minutos -->
                                 {#each minutesArray as minute, i}
                                     {@const pos = getPosition(i, 12, 100)}
-
+                                    {@const isSelected = minutes === minute}
                                     <button 
-                                        class="transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full text-zinc-700 dark:text-zinc-300 {minutes === minute ? '!bg-blue-500 !text-white hover:!bg-blue-600' : ''} {isMinuteDisabled(minute) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-200 dark:hover:bg-zinc-600 hover:scale-105'}"
+                                        type="button"
+                                        data-selected={isSelected}
+                                        data-disabled={isMinuteDisabled(minute)}
+                                        class = { `${ shapeInput.itemStyle ?? ( styles.analogic as InputStyle ).item }` }
                                         style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                         on:click={() => selectMinute(minute)}
                                         disabled={isMinuteDisabled(minute)}
