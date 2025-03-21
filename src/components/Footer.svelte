@@ -3,7 +3,14 @@
 </script>
 
 
-<footer class="h-16 bg-black text-white grid items-center justify-center w-full">
+<footer class="bg-black border-t border-gray-900 py-4 px-4 transition-colors duration-300">
+    <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+    <div class="flex items-center mb-4 md:mb-0">
+        <span class="font-bold text-blue-900 dark:text-blue-400 transition-colors duration-300">Universidad Adolfo Ibáñez</span>
+        <span class="mx-2 text-gray-300 dark:text-gray-600">|</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">Formulario Dinámico</span>
+    </div>
+
     <figure>
         <img
             class   = "aspect-auto"
@@ -15,5 +22,8 @@
         />
     </figure>
 
-    <!-- <p class="text-center text-sm">© {date.getFullYear()}</p> -->
+    <div class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
+        &copy; {new Date().getFullYear()} Universidad Adolfo Ibáñez. Todos los derechos reservados.
+    </div>
+    </div>
 </footer>
