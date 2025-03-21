@@ -15,10 +15,8 @@
         VirtualSelect,
         JsonViewer,
         DateRangePicker,
-        Timer,
-
-        AnalogicTimer
-
+        DigitalTime,
+        AnalogicTime
 	} 							            from "$components";
 	import {
 		errorSelect,
@@ -96,9 +94,11 @@
             template.forEach(item => {
                 if (item.shape !== 'button' && item.name?.trim()) {
                     const previousShape = previousShapes[item.name];
+
                     if (previousShape !== undefined && previousShape !== item.shape) {
                         currentValues[item.name] = undefined;
                     }
+
                     previousShapes[item.name] = item.shape as string;
                 }
             });
@@ -111,7 +111,9 @@
     }
 
 
-    function getValuesDate( date: DateValue | undefined ) : { year: number, month: number, day: number } | undefined {
+    function getValuesDate(
+        date: DateValue | undefined
+    ): { year: number, month: number, day: number } | undefined {
         if ( !date ) return undefined;
 
         const { day, month, year } = date;
@@ -186,9 +188,6 @@
 				'none'			: false
 			}[item.shape || 'none'];
 		});
-
-        console.log('🚀 ~ file: Preview.svelte:187 ~ template:', template)
-		console.log('🚀 ~ file: Preview.svelte:174 ~ formValues:', formValues)
 
 		if ( template.some( item => !item.valid )) {
 			toast.error( button!.invalidErrorMsg ?? "Hay un error en el formulario", errorToast() );
@@ -307,9 +306,9 @@
 					setError	= {() => shapeInput.valid = errorTextArea( shapeInput, formValues[ shapeInput.name ])}
 					dynamicMode={ dynamicMode }
 				/>
-            <!-- Time -->
+            <!-- Digital Time -->
             {:else if shapeInput.shape === 'timer' && !shapeInput.time?.isAnalogic }
-                <Timer
+                <DigitalTime
                     { shapeInput }
                     onTimerInput	= {( value: string ) => handleTime( value, shapeInput.name )}
                     value			= { formValues[ shapeInput.name ]}
@@ -317,7 +316,7 @@
                 />
             <!-- Analogic Time -->
             {:else if shapeInput.shape === 'timer' && shapeInput.time?.isAnalogic}
-                <AnalogicTimer
+                <AnalogicTime
                     { shapeInput }
                     onTimerInput    = {( value: string ) => handleTime( value, shapeInput.name )}
                     value			= { formValues[ shapeInput.name ]}

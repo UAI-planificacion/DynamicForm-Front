@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
-    import { ChevronDown, Check, X }    from 'lucide-svelte';
+    import { ChevronDown, Check, X } from 'lucide-svelte';
 
     import type {
         GroupOption,

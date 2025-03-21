@@ -31,10 +31,11 @@
         buttonTemplate,
         errorToast,
         ROUTER,
-        successToast
+        successToast,
     }                                       from "$lib";
 	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
 	import { dynamicMode, dynamicForms } 	from "$stores";
+	import CircleLoader                     from "$components/Placeholder/CircleLoader.svelte";
 
 
 	const flipDurationMs = 100;
@@ -45,6 +46,7 @@
 	let inputActive     = 0;
     let optionSelected  = 'new';
     let isLoading       = true;
+    let initialLoading  = true;
 
     // Esta función se ejecutará cada vez que dynamicForm.details cambie
     $: {
@@ -108,7 +110,7 @@
             console.error( err );
             toast.error( 'Failed to fetch dynamic forms', errorToast() );
         } )
-        .finally(() => isLoading = false );
+        .finally(() => { initialLoading = false; isLoading = false } );
     });
 
 
@@ -158,10 +160,6 @@
             optionSelected = form.name;
 
             handleTemplateChange( form._id );
-            // handleTemplateChange({ 
-            //     label: form.name,
-            //     value: form._id
-            // });
 
             toast.success( 'Formulario creado correctamente', successToast() );
         })
@@ -212,10 +210,6 @@
             dynamicForms.remove( dynamicForm._id );
 
             handleTemplateChange( 'new' );
-            // handleTemplateChange({ 
-            //     label: defaultSelected,
-            //     value: 'new'
-            // });
 
             formName.value = '';
 
@@ -233,7 +227,7 @@
     ): void {
         if ( !selected || selected instanceof Array ) return;
 
-        formName.value = selected === 'new' ? '' : selected;
+        optionSelected = selected;
 
         if ( selected === 'new' ) {
             dynamicForm = {
@@ -245,22 +239,22 @@
             return;
         }
 
-        const selectedForm = $dynamicForms
-            .find( form => form._id === selected );
+        const selectedForm = $dynamicForms.find( form => form._id === selected );
 
         if ( !selectedForm ) {
             dynamicForm.details = [];
             return;
         }
 
-        dynamicForm = { ...selectedForm, name: selected! };
+        formName.value = selectedForm.name;
+        dynamicForm = { ...selectedForm, name: selectedForm.name };
     }
 
 
     const formName: ShapeInput = {
 		id			: uuid(),
 		name		: 'template-name',
-		label		: 'Nombre de la nueva plantilla',
+		label		: 'Nombre de la plantilla',
 		placeholder	: 'Escribe aquí para crear el nombre de la plantilla',
         required	: true,
         shape		: 'input',
@@ -287,7 +281,7 @@
                 label		        : 'Plantillas de formularios',
                 placeholder	        : 'Seleccione una plantilla',
                 searchPlaceholder   : 'Buscar plantilla',
-                disabled            : isLoading,
+                disabled            : initialLoading,
                 selected            : optionSelected,
                 options,
             }}
@@ -297,7 +291,7 @@
 
     {#if dynamicForm.details.length > 0}
         <div
-            class		= "mt-5 z-0 relative"
+            class		= "mt-5 relative"
             in:scale	= {{ duration: 300, start: 0.95 }}
             out:scale	= {{ duration: 300, start: 1 }}
         >
@@ -307,110 +301,115 @@
                     in:fade		= {{ duration: 300, delay: 300 }}
                     class		= "space-y-5"
                 >
-                    <Resizable>
-                        <container slot="left" class="ml-1 h-full flex flex-col space-y-3 overflow-y-auto">
-                            <SubTitle title="Editor" />
 
-                            <div
-                                class		= "flex-1 space-y-3 overflow-y-auto"
-                                on:consider = { handleConsider }
-                                on:finalize = { handleFinalize }
-                                use:dndzone = {{
-                                    flipDurationMs,
-                                    items           : dynamicForm.details,
-                                    dropTargetStyle : {},
-                                    dragDisabled    : inputActive > 0
-                                }}
-                            >
-                                {#each dynamicForm.details ?? [] as item, index ( item.id )}
-                                    <div animate:flip={{ duration: flipDurationMs }}>
-                                        <div class="flex gap-1.5">
-                                            <Enumeration
-                                                number	= { index + 1 }
-                                                active	= { inputActive === index + 1 }
-                                            />
+                    {#if initialLoading}
+                        <CircleLoader />
+                    {:else}
+                        <Resizable>
+                            <container slot="left" class="ml-1 h-full flex flex-col space-y-3">
+                                <SubTitle title="Editor" />
 
-                                            <EditorView
-                                                bind:shapeInput	= { dynamicForm.details[index] }
-                                                onDelete		= { () => deleteItem( item.id )}
-                                                inputActive 	= { () => inputActive = index + 1 }
-                                                inputDesactive	= { () => inputActive = 0 }
-                                            />
+                                <div
+                                    class		= "flex-1 space-y-3"
+                                    on:consider = { handleConsider }
+                                    on:finalize = { handleFinalize }
+                                    use:dndzone = {{
+                                        flipDurationMs,
+                                        items           : dynamicForm.details,
+                                        dropTargetStyle : {},
+                                        dragDisabled    : inputActive > 0
+                                    }}
+                                >
+                                    {#each dynamicForm.details ?? [] as item, index ( item.id )}
+                                        <div animate:flip={{ duration: flipDurationMs }}>
+                                            <div class="flex gap-1.5">
+                                                <Enumeration
+                                                    number	= { index + 1 }
+                                                    active	= { inputActive === index + 1 }
+                                                />
+
+                                                <EditorView
+                                                    bind:shapeInput	= { dynamicForm.details[index] }
+                                                    onDelete		= { () => deleteItem( item.id )}
+                                                    inputActive 	= { () => inputActive = index + 1 }
+                                                    inputDesactive	= { () => inputActive = 0 }
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                {/each}
-                            </div>
+                                    {/each}
+                                </div>
 
-                            <button
-                                class="flex-shrink-0 w-full flex justify-center hover:brightness-105 dark:hover:brightness-110 shadow-md rounded-lg p-5 border-1 border-zinc-300 dark:border-zinc-700 border bg-white dark:bg-zinc-900 active:scale-[0.99] active:brightness-90"
-                                on:click={ addItem }
-                            >
-                                <AddIcon />
-                            </button>
-                        </container>
-
-                        <div slot="right" class="overflow-auto mr-1">
-                            <Preview
-                                { inputActive }
-                                template    = { dynamicForm.details }
-                                dynamicMode = { $dynamicMode }
-                            />
-                        </div>
-                    </Resizable>
-
-                    <div
-                        class   = "flex flex-row items-start w-full gap-2"
-                        in:fade = {{ duration: 1000, delay: 50 }}
-                    >
-                        <Input 
-                            shapeInput  = { formName }
-                            onInput     = {( value : Event ) => dynamicForm.name = ( value.target as HTMLInputElement ).value }
-                            value       = { dynamicForm.name }
-                            setError    = { () => formName.valid = dynamicForm.name.length > 0 }
-                        />
-
-                        <div class="flex items-start gap-2 mt-[1.7rem]">
-                            {#if optionSelected === 'new' }
                                 <button
-                                    class       = "h-10 sm:h-9 w-20 sm:w-40 md:w-36 bg-amber-500 dark:bg-amber-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
-                                    on:click    = { saveTemplate }
-                                    disabled    = { isLoading }
+                                    class="hover:scale-[1.005] transition-all  delay-100 flex-shrink-0 w-full flex justify-center hover:brightness-105 dark:hover:brightness-110 shadow-md rounded-lg p-5 border-1 border-zinc-300 dark:border-zinc-700 border bg-white dark:bg-zinc-900 active:scale-[0.99] active:brightness-90"
+                                    on:click={ addItem }
                                 >
-                                    <SaveIcon />
-
-                                    {#if isLoading }
-                                        <LoadIcon />
-                                    {:else }
-                                        <span class="hidden sm:block">
-                                            Crear
-                                        </span>
-                                    {/if}
+                                    <AddIcon />
                                 </button>
-                            {:else }
-                                <button
-                                    class       = "h-10 sm:h-9 w-20 md:w-36 bg-amber-500 dark:bg-amber-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
-                                    on:click    = { updatedTemplate }
-                                    disabled    = { isLoading }
-                                >
-                                    <SaveIcon />
+                            </container>
 
-                                    {#if isLoading }
-                                        <LoadIcon />
-                                    {:else }
-                                        <span class="hidden sm:block">
-                                            Actualizar
-                                        </span>
-                                    {/if}
-                                </button>
-
-                                <DeleteModel
-                                    onConfirm   = { deletedTemplate }
-                                    formName    = { dynamicForm.name }
-                                    { isLoading }
+                            <div slot="right" class="relative">
+                                <Preview
+                                    { inputActive }
+                                    template    = { dynamicForm.details }
+                                    dynamicMode = { $dynamicMode }
                                 />
-                            {/if}
+                            </div>
+                        </Resizable>
+
+                        <div
+                            class   = "flex flex-row items-start w-full gap-2"
+                            in:fade = {{ duration: 1000, delay: 50 }}
+                        >
+                            <Input 
+                                shapeInput  = { formName }
+                                onInput     = {( value : Event ) => dynamicForm.name = ( value.target as HTMLInputElement ).value }
+                                value       = { dynamicForm.name }
+                                setError    = { () => formName.valid = dynamicForm.name.length > 0 }
+                            />
+
+                            <div class="flex items-start gap-2 mt-[1.7rem]">
+                                {#if optionSelected === 'new' }
+                                    <button
+                                        class       = "h-10 sm:h-9 w-20 sm:w-40 md:w-36 bg-amber-500 dark:bg-amber-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
+                                        on:click    = { saveTemplate }
+                                        disabled    = { isLoading }
+                                    >
+                                        <SaveIcon />
+
+                                        {#if isLoading }
+                                            <LoadIcon />
+                                        {:else }
+                                            <span class="hidden sm:block">
+                                                Crear
+                                            </span>
+                                        {/if}
+                                    </button>
+                                {:else }
+                                    <button
+                                        class       = "h-10 sm:h-9 w-20 md:w-36 bg-amber-500 dark:bg-amber-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
+                                        on:click    = { updatedTemplate }
+                                        disabled    = { isLoading }
+                                    >
+                                        <SaveIcon />
+
+                                        {#if isLoading }
+                                            <LoadIcon />
+                                        {:else }
+                                            <span class="hidden sm:block">
+                                                Actualizar
+                                            </span>
+                                        {/if}
+                                    </button>
+
+                                    <DeleteModel
+                                        onConfirm   = { deletedTemplate }
+                                        formName    = { dynamicForm.name }
+                                        { isLoading }
+                                    />
+                                {/if}
+                            </div>
                         </div>
-                    </div>
+                    {/if}
                 </div>
             {:else}
                 <Separator.Root
@@ -419,7 +418,7 @@
                 />
 
                 <div 
-                    class		= "mt-5"
+                    class		= "mt-5 relative"
                     in:scale	= {{ duration: 300, start: 0.95 }}
                     out:scale	= {{ duration: 300, start: 1 }}
                 >
@@ -433,7 +432,7 @@
         </div>
     {:else}
         <div
-            class		= "w-full h-full flex flex-col items-center justify-center"
+            class		= "w-full h-full flex flex-col items-center justify-center relative"
             in:scale	= {{ duration: 300, start: 0.95 }}
             out:scale	= {{ duration: 300, start: 1 }}
         >
