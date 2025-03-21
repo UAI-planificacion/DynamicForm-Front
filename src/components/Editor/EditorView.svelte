@@ -31,8 +31,9 @@
         ValueEditor,
         GroupEditor,
         GenerateValidDates,
-        AnalogicTimer,
-        TimeGenerator
+        AnalogicTime,
+        TimeGenerator,
+        DigitalTime
     }						from "$components";
     import {
 		options,
@@ -245,15 +246,27 @@
                         />
                     </div>
                 {:else if shapeInput.shape === 'timer'}
-                    <AnalogicTimer
-                        shapeInput = {{
-                            id      : uuid(),
-                            name    : 'time',
-                            label   : 'Tiempo',
-                            time    : shapeInput.time
-                        }}
-                        onTimerInput = { () => {} }
-                    />
+                    {#if shapeInput.time?.isAnalogic}
+                        <AnalogicTime
+                            shapeInput = {{
+                                id          : uuid(),
+                                name        : 'time-default',
+                                label       : 'Tiempo por defecto',
+                                timeValue   : shapeInput.timeValue,
+                            }}
+                            onTimerInput = {( value: string ) => shapeInput.timeValue = value }
+                        />
+                    {:else}
+                        <DigitalTime
+                            shapeInput = {{
+                                id		    : uuid(),
+                                name	    : 'time-default',
+                                label       : 'Tiempo por defecto',
+                                timeValue   : shapeInput.timeValue
+                            }}
+                            onTimerInput = {( value: string ) => shapeInput.timeValue = value }
+                        />
+                    {/if}
                 {:else if shapeInput.shape !== 'button'}
                     <Input
                         shapeInput = {{
@@ -733,8 +746,9 @@
                                 onInvalidDatesChange    = {( dates: string[] ) => shapeInput.invalidDates = dates }
                             />  
 
-                        {:else if shapeInput.shape === 'timer' && !shapeInput.time?.isAnalogic}
-                            <span class="text-sm font-semibold text-zinc-500 dark:text-zinc-300">Generar horas y minutos</span>
+                        {:else if shapeInput.shape === 'timer' }
+                            <span class="text-sm font-semibold text-zinc-500 dark:text-zinc-300">Horas y minutos disponibles</span>
+
                             <TimeGenerator 
                                 onHourListChange={(hours: number[]) => shapeInput.time = {
                                     ...shapeInput.time,

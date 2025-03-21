@@ -27,10 +27,13 @@
             : [undefined, undefined];
     let isSelectingHours    = true;
     let isPM                = hours !== undefined && hours >= 12;
+    let formattedTime       = 'hh : mm';
 
-    $: formattedTime    = hours === undefined || minutes === undefined 
-        ? 'hh : mm' 
-        : `${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')}`;
+    $: allowedHours = shapeInput.time?.hourList || [];
+    $: allowedMinutes = shapeInput.time?.minuteList || [];
+    $: isHourDisabled = (hour: number) => allowedHours.length > 0 && !allowedHours.includes(hour);
+    $: isMinuteDisabled = (minute: number) => allowedMinutes.length > 0 && !allowedMinutes.includes(minute);
+
     $: hourHandAngle    = hours === undefined ? -90 : ((hours % 12) * 30) - 90;
     $: minuteHandAngle  = minutes === undefined ? -90 : (minutes * 6) - 90;
 
@@ -40,12 +43,9 @@
         const h = value.hour;
         const m = value.minute;
 
-        if (h !== undefined && m !== undefined && !Number.isNaN(h) && !Number.isNaN(m)) {
+        if (h !== undefined && h !== null && m !== undefined && m !== null && !Number.isNaN(h) && !Number.isNaN(m)) {
             hours = h;
             minutes = m;
-            if (shapeInput.timeValue) {
-                shapeInput.timeValue = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-            }
         }
     })();
 
@@ -53,66 +53,89 @@
     const hoursArrayPM  = Array.from({ length: 12 }, (_, i) => i === 0 ? 12 : i + 12);
     const minutesArray  = Array.from({ length: 12 }, (_, i) => i * 5);
 
-    function selectMinute(minute: number): void {
-        minutes = minute;
-        if (shapeInput.timeValue && hours !== undefined) {
-            shapeInput.timeValue = `${hours.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-            onTimerInput(shapeInput.timeValue);
-            setError();
-        }
-        isOpen = false;
+
+    function formatTime(): void {
+        const notHours      = hours     === undefined || hours      === null;
+        const notMinutes    = minutes   === undefined || minutes    === null;
+
+        if ( notHours && minutes ) {
+            formattedTime = `hh : ${minutes?.toString().padStart(2, '0')}`;
+        } else if ( hours && notMinutes ) {
+            formattedTime = `${hours?.toString().padStart(2, '0')} : mm`;
+        } else if ( !notHours && !notMinutes )
+            formattedTime = `${hours?.toString().padStart(2, '0')} : ${minutes?.toString().padStart(2, '0')}`;
+        else 
+            formattedTime = 'hh : mm';
     }
 
-    function getPosition(
-        index: number,
-        total: number,
-        radius: number
-    ): { x: number, y: number } {
-        const angle = ((index / total) * 2 * Math.PI) - (Math.PI / 2);
-        const x = radius * Math.cos(angle);
-        const y = radius * Math.sin(angle);
-        return { x, y };
-    }
 
-    function selectHour(hour: number): void {
-        hours = isPM && hour < 12 ? hour + 12 : (hour === 12 && !isPM ? 0 : hour);
-        if (shapeInput.timeValue && minutes !== undefined) {
-            shapeInput.timeValue = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-            onTimerInput(shapeInput.timeValue);
-            setError();
-        }
+    function selectHour( hour: number ): void {
+        if (isHourDisabled(hour)) return;
+
+        const newHour = isPM && hour < 12 ? hour + 12 : (hour === 12 && !isPM ? 0 : hour);
+
+        hours = hours === newHour ? undefined : newHour;
+
+        formatTime();
+        onTimerInput( formattedTime );
+        setError();
+
         isSelectingHours = false;
     }
 
-    function toggleAMPM(): void {
-        if (hours === undefined) return;
-        
-        isPM = !isPM;
-        if (hours < 12 && isPM) {
-            hours += 12;
-        } else if (hours >= 12 && !isPM) {
-            hours -= 12;
-        }
 
-        if (shapeInput.timeValue && minutes !== undefined) {
-            shapeInput.timeValue = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-            onTimerInput(shapeInput.timeValue);
-            setError();
-        }
+    function selectMinute( minute: number ): void {
+        if (isMinuteDisabled(minute)) return;
+
+        minutes = minutes === minute ? undefined : minute;
+
+        formatTime();
+        onTimerInput( formattedTime );
+        setError();
+
+        isOpen = false;
     }
 
+
+    function getPosition(
+        index   : number,
+        total   : number,
+        radius  : number
+    ): { x: number, y: number } {
+        const angle = (( index / total ) * 2 * Math.PI) - ( Math.PI / 2 );
+        const x = radius * Math.cos( angle );
+        const y = radius * Math.sin( angle );
+        return { x, y };
+    }
+
+
+    function toggleAMPM(): void {
+        if ( hours === undefined || hours === null ) return;
+
+        isPM = !isPM;
+
+        if ( hours < 12 && isPM )           hours += 12;
+        else if ( hours >= 12 && !isPM )    hours -= 12;
+
+        formatTime();
+        onTimerInput( formattedTime );
+        setError();
+    }
+
+
     function togglePicker(): void {
-        if (shapeInput.disabled) return;
+        if ( shapeInput.disabled ) return;
+
         isOpen = !isOpen;
         isSelectingHours = true;
     }
 
-    function handleClickOutside(event: MouseEvent): void {
-        const target = event.target as HTMLElement;
-        const picker = document.getElementById(shapeInput.id);
 
-        if (picker && !picker.contains(target))
-            isOpen = false;
+    function handleClickOutside( event: MouseEvent ): void {
+        const target = event.target as HTMLElement;
+        const picker = document.getElementById( shapeInput.id );
+
+        if (picker && !picker.contains( target )) isOpen = false;
     }
 </script>
 
@@ -172,18 +195,21 @@
                                 class="absolute inset-0"
                             >
                                 <!-- Aguja de la hora -->
+                                {#if hours !== undefined}
                                 <div 
                                     class="absolute top-1/2 left-1/2 h-1 bg-blue-500 rounded-full origin-left z-10"
                                     style="width: 30%; transform: translateY(-50%) rotate({hourHandAngle}deg);"
                                 ></div>
+                                {/if}
 
                                 <!-- Números de las horas -->
                                 {#each isPM ? hoursArrayPM : hoursArray as hour, i}
                                     {@const pos = getPosition(i, 12, 100)}
                                     <button 
-                                        class="hover:scale-105 transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 {(hours === hour) || (hours === 0 && hour === 12 && !isPM) ? '!bg-blue-500 !text-white hover:!bg-blue-600' : ''}"
+                                        class="transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full text-zinc-700 dark:text-zinc-300 {(hours === hour) || (hours === 0 && hour === 12 && !isPM) ? '!bg-blue-500 !text-white hover:!bg-blue-600' : ''} {isHourDisabled(hour) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-200 dark:hover:bg-zinc-600 hover:scale-105'}"
                                         style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                         on:click={() => selectHour(hour)}
+                                        disabled={isHourDisabled(hour)}
                                     >
                                         {`${hour < 10 ? '0' : ''}${hour}`}
                                     </button>
@@ -196,19 +222,22 @@
                                 class="absolute inset-0"
                             >
                                 <!-- Aguja de los minutos -->
+                                {#if minutes !== undefined}
                                 <div 
                                     class="absolute top-1/2 left-1/2 h-1 bg-blue-500 rounded-full origin-left "
                                     style="width: 40%; transform: translateY(-50%) rotate({minuteHandAngle}deg);"
                                 ></div>
+                                {/if}
 
                                 <!-- Números de los minutos -->
                                 {#each minutesArray as minute, i}
                                     {@const pos = getPosition(i, 12, 100)}
 
                                     <button 
-                                        class="hover:scale-105 duration-200 absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 {minutes === minute ? '!bg-blue-500 !text-white hover:!bg-blue-600' : ''}"
+                                        class="transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full text-zinc-700 dark:text-zinc-300 {minutes === minute ? '!bg-blue-500 !text-white hover:!bg-blue-600' : ''} {isMinuteDisabled(minute) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-200 dark:hover:bg-zinc-600 hover:scale-105'}"
                                         style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                         on:click={() => selectMinute(minute)}
+                                        disabled={isMinuteDisabled(minute)}
                                     >
                                         {`${minute < 10 ? '0' : ''}${minute}`}
                                     </button>

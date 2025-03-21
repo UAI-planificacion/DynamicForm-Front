@@ -18,8 +18,8 @@ export { default as Radio }         from './inputs/Radio.svelte';
 export { default as TextArea }		from './inputs/TextArea.svelte';
 export { default as Switch }		from './inputs/Switch.svelte';
 export { default as Info }			from './inputs/Info.svelte';
-export { default as Timer }			from './inputs/time-picker/Timer.svelte';
-export { default as AnalogicTimer } from './inputs/time-picker/AnalogTime.svelte';
+export { default as DigitalTime }   from './inputs/time-picker/DigitalTime.svelte';
+export { default as AnalogicTime }  from './inputs/time-picker/AnalogTime.svelte';
 
 // Editors
 export { default as GenerateValidDates } from './Editor/dates/GenerateValidDates.svelte';
