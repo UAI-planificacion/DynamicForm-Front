@@ -18,6 +18,8 @@
 
     export let invalidDates: string[] = [];
     export let onInvalidDatesChange: (dates: string[]) => void;
+    export let minValue: DateValue | undefined;
+    export let maxValue: DateValue | undefined;
 
 
     interface WeekDay {
@@ -48,25 +50,6 @@
         selectedDays = selectedDays;
     }
 
-    let dateRangeInput: ShapeInput = {
-        id              : uuid(),
-        name            : "dateRange",
-        shape           : "datepicker",
-        isRange         : true,
-        label           : "Rango de fechas a invalidar",
-        numberOfMonths  : 1,
-        required        : true,
-        invalidDates
-    };
-
-    let singleDateInput: ShapeInput = {
-        id              : uuid(),
-        name            : "singleDate",
-        shape           : "datepicker",
-        label           : "Fecha individual a invalidar",
-        required        : true,
-        invalidDates
-    };
 
     let dateRange       : DateRange | undefined;
     let singleDate      : DateValue | undefined;
@@ -161,8 +144,16 @@
     <div class="grid @3xl:grid-cols-2 gap-2 items-center">
         <DateRangePicker
             shapeInput={{
-                ...dateRangeInput,
-                invalidDates
+                id              : uuid(),
+                name            : "dateRange",
+                shape           : "datepicker",
+                isRange         : true,
+                label           : "Rango de fechas a invalidar",
+                numberOfMonths  : 1,
+                required        : true,
+                invalidDates,
+                minValue,
+                maxValue
             }}
             onValueChange={(value) => {
                 dateRange = value
@@ -172,8 +163,14 @@
 
         <DatePicker
             shapeInput={{
-                ...singleDateInput,
-                invalidDates
+                id              : uuid(),
+                name            : "singleDate",
+                shape           : "datepicker",
+                label           : "Fecha individual a invalidar",
+                required        : true,
+                invalidDates,
+                minValue,
+                maxValue
             }}
             onValueChange={(value) => {
                 singleDate = value;

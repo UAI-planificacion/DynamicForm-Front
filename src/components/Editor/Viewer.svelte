@@ -120,7 +120,7 @@
     class="my-2 shrink-0 bg-zinc-300 dark:bg-zinc-700 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
 />
 
-<div class="flex flex-wrap items-center gap-2 text-sm">
+<footer class="flex flex-wrap items-center gap-2 text-sm">
     <Tooltip
         value       = { shapeInput.label }
         message     = "Etiqueta" 
@@ -189,7 +189,7 @@
     >
         <AsterikIcon />
     </Tooltip>
-</div>
+</footer>
 
 {#if shapeInput.description}
     <Separator.Root

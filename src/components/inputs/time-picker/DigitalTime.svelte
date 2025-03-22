@@ -127,24 +127,6 @@
             minute.toString().padStart(2, '0').includes(searchMinute)
         )
         : minutesArray;
-
-    const hourSearchInput: ShapeInput = {
-        id          : `${shapeInput.id}-hour-search`,
-        name        : 'hour-search',
-        placeholder : 'Buscar hora...',
-        type        : 'search',
-        shape       : 'input',
-        class_      : (styles.digital as InputStyle ).input
-    };
-
-    const minuteSearchInput: ShapeInput = {
-        id          : `${shapeInput.id}-minute-search`,
-        name        : 'minute-search',
-        placeholder : 'Buscar minuto...',
-        type        : 'search',
-        shape       : 'input',
-        class_      : (styles.digital as InputStyle ).input
-    };
 </script>
 
 <svelte:window on:click={handleClickOutside} />
@@ -172,14 +154,21 @@
 
     {#if open}
         <div 
-            class           = { `${( styles.digital as InputStyle ).content }` }
+            class           = { shapeInput.boxStyle ?? `${( styles.digital as InputStyle ).content }` }
             transition:fade={{ duration: 150 }}
         >
             <div class="flex p-3">
                 <div class="flex items-center gap-2">
                     <div class="w-full flex flex-col gap-3">
                         <Input 
-                            shapeInput  = { hourSearchInput }
+                            shapeInput  = {{
+                                id          : `${shapeInput.id}-hour-search`,
+                                name        : 'hour-search',
+                                placeholder : 'Buscar hora...',
+                                type        : 'search',
+                                shape       : 'input',
+                                class_      : (styles.digital as InputStyle ).input
+                            }}
                             onInput     = {( e ) => searchHour = ( e.target as HTMLInputElement ).value }
                         />
 
@@ -191,7 +180,7 @@
                                 <button
                                     type            = "button"
                                     data-selected   = { selectedHour === hour }
-                                    class           = { `${( styles.digital as InputStyle ).item }` }
+                                    class           = {  shapeInput.itemStyle ?? `${( styles.digital as InputStyle ).item }` }
                                     on:click        = {() => toggleSelection('hour', hour) }
                                 >
                                     {hour.toString().padStart(2, '0')}
@@ -204,7 +193,16 @@
 
                     <div class="w-full flex flex-col gap-2">
                         <Input 
-                            shapeInput={minuteSearchInput}
+                            shapeInput={
+                                {
+                                    id          : `${shapeInput.id}-minute-search`,
+                                    name        : 'minute-search',
+                                    placeholder : 'Buscar minuto...',
+                                    type        : 'search',
+                                    shape       : 'input',
+                                    class_      : (styles.digital as InputStyle ).input
+                                }
+                            }
                             onInput={(e) => searchMinute = (e.target as HTMLInputElement).value}
                         />
                         <div 
@@ -215,7 +213,7 @@
                                 <button
                                     type            = "button"
                                     data-selected   = { selectedMinute === minute }
-                                    class           = { `${( styles.digital as InputStyle ).item }` }
+                                    class           = { shapeInput.itemStyle ?? `${( styles.digital as InputStyle ).item }` }
                                     on:click        = {() => toggleSelection('minute', minute)}
                                 >
                                     {minute.toString().padStart(2, '0')}

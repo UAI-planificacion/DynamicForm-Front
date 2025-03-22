@@ -5,8 +5,10 @@ export type InputStyle = {
     box?     	: string;
     content?	: string;
     item?   	: string;
+    rangeItem?  : string;
 	label?  	: string;
 	input?  	: string;
+    group?  	: string;
 }
 
 
@@ -58,6 +60,8 @@ export type ShapeInput = {
 	contentStyle? 	: string;
 	itemStyle? 		: string;
 	inputStyle? 	: string;
+    groupStyle?     : string;
+    itemRangeStyle? : string;
     min?            : number;
     max?            : number;
     minLength?      : number;

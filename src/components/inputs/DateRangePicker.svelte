@@ -105,7 +105,7 @@
         {/if}
 
         <div
-            class={(styles.datepicker as InputStyle).box}
+            class= { shapeInput.boxStyle ?? `${( styles.datepicker as InputStyle ).box }` }
         >
             {#each ["start", "end"] as const as type}
                 <DateRangePicker.Input {type} >
@@ -151,7 +151,7 @@
             alignOffset = { 0 }
         >
             <DateRangePicker.Calendar
-                class={(styles.datepicker as InputStyle).content}
+                class= { shapeInput.contentStyle ?? `${( styles.datepicker as InputStyle ).content }` }
             >
                 {#snippet children({ months, weekdays })}
                     <DateRangePicker.Header class="flex items-center justify-between">
@@ -195,7 +195,7 @@
                                                     class="p-0! relative m-0 size-10 overflow-visible text-center text-sm focus-within:relative focus-within:z-20"
                                                 >
                                                     <DateRangePicker.Day
-                                                        class="rounded-lg hover:bg-blue-500 focus-visible:ring-foreground! data-selection-end:rounded-lg data-selection-start:rounded-lg data-[highlighted]:bg-zinc-300/50 data-[selected]:bg-blue-400 data-selection-end:bg-blue-500 data-selection-start:bg-blue-500 data-disabled:text-foreground/30 data-selected:text-white data-selection-end:text-white data-selection-start:text-white data-unavailable:text-muted-foreground data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:border-foreground data-disabled:pointer-events-none data-outside-month:pointer-events-none data-[highlighted]:rounded-none data-selected:font-medium data-selection-end:font-medium data-selection-start:font-medium data-unavailable:line-through data-selection-start:focus-visible:ring-2 data-selection-start:focus-visible:ring-offset-2! data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:rounded-none data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:ring-0! data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:ring-offset-0! group relative inline-flex size-10 items-center justify-center overflow-visible whitespace-nowrap border border-transparent bg-transparent p-0 text-sm font-normal transition-all dark:text-zinc-100 dark:hover:bg-zinc-700 dark:data-[disabled]:text-zinc-600 dark:data-[outside-month]:text-zinc-600 dark:data-[unavailable]:text-zinc-600 dark:data-[selected]:bg-blue-700/20 data-[selected]:rounded-none dark:data-[highlighted]:bg-zinc-600/20"
+                                                        class={ shapeInput.itemRangeStyle ?? `${( styles.datepicker as InputStyle ).rangeItem }` }
                                                     >
                                                         <div class="bg-blue-500 group-data-[selected]:bg-white group-data-[today]:block absolute top-[5px] hidden size-1 rounded-full transition-all"></div>
 

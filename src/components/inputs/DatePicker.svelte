@@ -66,7 +66,9 @@
             </DatePicker.Label>
         {/if}
 
-        <DatePicker.Input class={(styles.datepicker as InputStyle).box}>
+        <DatePicker.Input
+            class= { shapeInput.boxStyle ?? `${( styles.datepicker as InputStyle ).box }` }
+        >
             {#snippet children({ segments })}
                 {#each segments as { part, value }}
                     <div class="inline-block select-none">
@@ -98,7 +100,9 @@
             align       = "end"
             alignOffset = { 0 }
         >
-            <DatePicker.Calendar class={(styles.datepicker as InputStyle).content}>
+            <DatePicker.Calendar
+                class= { shapeInput.contentStyle ?? `${( styles.datepicker as InputStyle ).content }` }
+            >
                 {#snippet children({ months, weekdays })}
                     <DatePicker.Header class="flex items-center justify-between">
                         <DatePicker.PrevButton
@@ -135,7 +139,7 @@
                                                     class="p-0! relative size-10 text-center text-sm"
                                                 >
                                                     <DatePicker.Day
-                                                        class="rounded-lg text-zinc-900 hover:bg-zinc-100 data-[selected]:bg-blue-500 data-[selected]:text-white data-[disabled]:text-zinc-500 data-[unavailable]:text-zinc-500 data-[disabled]:pointer-events-none data-[outside-month]:text-zinc-500 data-[outside-month]:pointer-events-none data-[selected]:font-medium data-[unavailable]:line-through group relative inline-flex size-10 items-center justify-center whitespace-nowrap border border-transparent bg-transparent p-0 text-sm font-normal transition-all dark:text-zinc-100 dark:hover:bg-zinc-700 dark:data-[disabled]:text-zinc-600 dark:data-[outside-month]:text-zinc-600 dark:data-[unavailable]:text-zinc-600"
+                                                        class={ shapeInput.itemStyle ?? `${( styles.datepicker as InputStyle ).item }` }
                                                     >
                                                         <div class="bg-blue-500 group-data-[selected]:bg-white group-data-[today]:block absolute top-[5px] hidden size-1 rounded-full transition-all"></div>
                                                         {date.day}

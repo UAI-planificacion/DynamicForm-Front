@@ -42,6 +42,7 @@ export { default as DeleteModel } from './Modal/DeleteModel.svelte';
 
 // Editor
 export { default as EditorView }    from './Editor/EditorView.svelte';
-export { default as ValueEditor }   from './Editor/ValueEditor.svelte';
-export { default as GroupEditor }   from './Editor/GroupEditor.svelte';
+export { default as ValueEditor }   from './Editor/select/ValueEditor.svelte';
+export { default as GroupEditor }   from './Editor/select/GroupEditor.svelte';
 export { default as Viewer } 	    from './Editor/Viewer.svelte';
+export { default as SelectEditor }  from './Editor/select/SelectEditor.svelte';

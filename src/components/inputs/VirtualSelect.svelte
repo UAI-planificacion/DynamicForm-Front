@@ -9,10 +9,12 @@
         ShapeOption,
         SelectInput,
         SelectGroup,
-        Selected
+        Selected,
+        InputStyle
     }                   from '$models';
-    import Info         from './Info.svelte';
     import { Input }    from '$components';
+    import { styles }   from '$lib';
+    import Info         from './Info.svelte';
 
 
     export let shapeInput       : ShapeInput;
@@ -402,10 +404,6 @@
         hoveredIndex = null;
     }
 
-    function handleMouseEnter(index: string): void{
-        hoveredIndex = index;
-    }
-
 
     onMount(() => {
         window.addEventListener('resize', adjustDropdownPosition);
@@ -425,12 +423,12 @@
 <div class="relative w-full" bind:this={comboboxElement} >
     <button
         type="button"
-        class="flex w-full items-center justify-between rounded-lg border-[1.5px] border-zinc-200 bg-white px-3 py-2 text-sm transition-all hover:bg-zinc-100 focus-visible:outline-none focus-visible:border-[2px] focus-visible:border-zinc-400 dark:focus-visible:border-zinc-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        class= { shapeInput.boxStyle ?? `${( styles.select as InputStyle ).box }` }
         on:click={handleOpen}
         id={shapeInput.id}
         disabled={shapeInput.disabled}
     >
-        <span class="truncate text-zinc-500 dark:text-zinc-300">{displayText}</span>
+        <span class="truncate text-zinc-900 dark:text-zinc-300">{displayText}</span>
 
         <div class="flex items-center gap-2">
             {#if shapeInput.multiple && selectedItems.length > 0}
@@ -446,14 +444,14 @@
                 </div>
             {/if}
 
-            <ChevronDown class={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown class={`h-4 w-4 transition-transform duration-200 dark:text-zinc-500 ${isOpen ? 'rotate-180' : ''}`} />
         </div>
     </button>
 
     {#if isOpen}
         <div 
             bind:this={dropdownElement}
-            class="fixed z-40 overflow-hidden rounded-lg border border-zinc-200 bg-white text-zinc-950 shadow-lg dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+            class= { shapeInput.contentStyle ?? `${( styles.select as InputStyle ).content }` }
             style="
                 min-width: {comboboxElement?.offsetWidth}px;
                 max-width: {comboboxElement?.offsetWidth}px;
@@ -470,7 +468,8 @@
                         shapeInput = {{
                             id		    : 'search-items',
                             name	    : 'label',
-                            placeholder : shapeInput.searchPlaceholder
+                            placeholder : shapeInput.searchPlaceholder,
+                            class_      : shapeInput.class_ ?? (styles.select as InputStyle ).input
                         }}
                         onInput = {( event: Event ) => searchTerm = ( event.target as HTMLInputElement ).value }
                         on:blur = { handleBlur }
@@ -510,11 +509,11 @@
                                 {#if isGroupOption(item)}
                                     <div class="group">
                                         <button
-                                            type="button"
-                                            class="dark:text-zinc-400 flex w-full items-center justify-between px-3 py-2 text-sm font-bold bg-transparent dark:bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-700/50 focus:bg-zinc-100 rounded-lg dark:focus:bg-zinc-700 focus:outline-none transition-colors"
-                                            on:click={() => toggleGroup(item)}
+                                            type        = "button"
+                                            class       = { shapeInput.groudStyle ?? `${( styles.select as InputStyle ).group }` }
+                                            on:click    = { () => toggleGroup( item )}
                                         >
-                                            <span>{item.group}</span>
+                                            <span class="truncate text-zinc-900 dark:text-zinc-300">{item.group}</span>
 
                                             {#if shapeInput.multiple}
                                                 <Check class={`h-4 w-4 ${
@@ -530,40 +529,39 @@
                                         {#each item.values as option, optionIndex}
                                             {@const itemKey = `${i}-${optionIndex}`}
                                             <button
-                                                type="button"
-                                                class="flex w-full items-center justify-between px-6 py-2 text-sm transition-colors rounded-lg focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-700 {hoveredIndex === itemKey ? 'bg-zinc-100 dark:bg-zinc-700' : ''} {selectedItems.some(selected => selected.value === option.value) ? 'bg-zinc-200 dark:bg-zinc-600' : ''} hover:bg-zinc-100 dark:hover:bg-zinc-700/50"
-                                                on:click={() => toggleItem(option)}
-                                                on:mouseenter={() => {
-                                                    hoveredIndex = itemKey;
-                                                }}
-                                                on:mouseleave={handleMouseLeave}
-                                                role="option"
-                                                aria-selected={selectedItems.some(selected => selected.value === option.value)}
+                                                type            = "button"
+                                                class           = { `${shapeInput.itemStyle ?? ( styles.select as InputStyle ).item } px-6` }
+                                                data-selected   = {selectedItems.some(selected => selected.value === option.value)}
+                                                on:click        = { () => toggleItem( option )}
+                                                on:mouseenter   = { () => hoveredIndex = itemKey }
+                                                on:mouseleave   = { handleMouseLeave }
+                                                role            = "option"
+                                                aria-selected   = {selectedItems.some( selected => selected.value === option.value )}
                                             >
                                                 <span>{option.label}</span>
 
-                                                {#if selectedItems.some(selected => selected.value === option.value)}
-                                                    <Check class="h-4 w-4 text-green-600" />
+                                                {#if selectedItems.some( selected => selected.value === option.value )}
+                                                    <Check class="h-4 w-4 text-blue-500" />
                                                 {/if}
                                             </button>
                                         {/each}
                                     </div>
                                 {:else}
                                     <button
-                                        type="button"
-                                        class="flex w-full items-center justify-between px-3 py-2 text-sm transition-colors rounded-lg focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-700 {hoveredIndex === `item-${i}` ? 'bg-zinc-100 dark:bg-zinc-700' : ''} {selectedItems.some(selected => selected.value === item.value) ? 'bg-zinc-200 dark:bg-zinc-600' : ''} hover:bg-zinc-100 dark:hover:bg-zinc-700/50"
-                                        on:click={() => toggleItem(item)}
-                                        on:mouseenter={() => {
-                                            hoveredIndex = `item-${i}`;
-                                        }}
-                                        on:mouseleave={handleMouseLeave}
-                                        role="option"
-                                        aria-selected={selectedItems.some(selected => selected.value === item.value)}
+                                        type            = "button"
+                                        class           = { shapeInput.itemStyle ?? `${( styles.select as InputStyle ).item }` }
+                                        data-hovered    = {hoveredIndex === `item-${i}`}
+                                        data-selected   = {selectedItems.some(selected => selected.value === item.value)}
+                                        on:click        = { () => toggleItem( item )}
+                                        on:mouseenter   = { () => hoveredIndex = `item-${i}` }
+                                        on:mouseleave   = { handleMouseLeave }
+                                        role            = "option"
+                                        aria-selected   = { selectedItems.some( selected => selected.value === item.value )}
                                     >
                                         <span>{item.label}</span>
 
-                                        {#if selectedItems.some(selected => selected.value === item.value)}
-                                            <Check class="h-4 w-4 text-green-600" />
+                                        {#if selectedItems.some( selected => selected.value === item.value )}
+                                            <Check class="h-4 w-4 text-blue-500" />
                                         {/if}
                                     </button>
                                 {/if}
@@ -603,4 +601,12 @@
     :global(.dark .virtual-items::-webkit-scrollbar-thumb:hover) {
         background-color: rgb(82 82 91); /* zinc-600 */
     }
+
+    /* [data-hovered="true"] {
+        @apply bg-zinc-100 dark:bg-zinc-700;
+    }
+    
+    [data-selected="true"] {
+        @apply bg-zinc-300/50 dark:bg-zinc-600;
+    } */
 </style>

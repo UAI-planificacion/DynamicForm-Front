@@ -67,7 +67,6 @@
     }
 </script>
 
-
 <div class="space-y-2 max-h-96 overflow-auto">
     {#each groups as group, index}
         <div class="rounded-lg border border-zinc-300 dark:border-zinc-800 p-2 space-y-2">
