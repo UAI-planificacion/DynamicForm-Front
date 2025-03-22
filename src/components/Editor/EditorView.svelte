@@ -787,9 +787,9 @@
 									label       : 'Estilos con tailwind',
 									placeholder : 'Ingrese los estilos',
 									rows        : 4,
-									value       : shapeInput.class_ ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
+									value       : shapeInput.boxStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
 								}}
-								onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
+								onInput = {( event: Event ) => shapeInput.boxStyle = ( event.target as HTMLInputElement ).value }
 							/>
 
 							<TextArea

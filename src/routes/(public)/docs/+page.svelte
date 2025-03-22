@@ -1,22 +1,21 @@
 <script lang="ts">
     import { X } from 'lucide-svelte';
-    import { onMount } from 'svelte';
-    
+    import { fly } from 'svelte/transition';
+
     // Tipos para la documentación
     type DocSection = {
-    id: string;
-    title: string;
-    icon: string;
-    items: DocItem[];
+        id      : string;
+        title   : string;
+        icon    : string;
+        items   : DocItem[];
     };
-    
+
     type DocItem = {
-    id: string;
-    title: string;
-    content: string;
+        id      : string;
+        title   : string;
+        content : string;
     };
-    
-    // Datos de ejemplo para la documentación
+
     const docSections: DocSection[] = [
     {
         id: 'getting-started',
@@ -27,21 +26,35 @@
             id: 'introduction',
             title: 'Introducción',
             content: `
-            <h1 class="text-2xl font-bold mb-4">Bienvenido a Formulario Dinámico</h1>
-            <p class="mb-4">Formulario Dinámico es una aplicación desarrollada por la Universidad Adolfo Ibáñez para facilitar la creación, gestión y análisis de formularios en el entorno académico.</p>
-            <p class="mb-4">Esta documentación te guiará a través de todas las funcionalidades de la plataforma, desde la creación de tu primer formulario hasta el análisis avanzado de datos.</p>
-            <h2 class="text-xl font-semibold mt-6 mb-3">¿Qué puedes hacer con Formulario Dinámico?</h2>
-            <ul class="list-disc pl-6 mb-4 space-y-2">
-                <li>Crear formularios personalizados para diferentes propósitos académicos</li>
-                <li>Compartir formularios con estudiantes, profesores y personal administrativo</li>
-                <li>Recopilar y analizar datos de manera eficiente</li>
-                <li>Generar reportes y visualizaciones de los datos recopilados</li>
-                <li>Integrar con otros sistemas de la universidad</li>
-            </ul>
-            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mt-6">
-                <p class="font-medium">Consejo:</p>
-                <p>Si eres nuevo en la plataforma, te recomendamos comenzar con la sección "Crear tu primer formulario".</p>
-            </div>
+                <div class="space-y-6">
+                    <div>
+                        <h1 class="text-3xl font-bold mb-6">Bienvenido a Formulario Dinámico</h1>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            Formulario Dinámico es una aplicación desarrollada por la Universidad Adolfo Ibáñez para facilitar la creación, 
+                            gestión y análisis de formularios en el entorno académico.
+                        </p>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">
+                            Esta documentación te guiará a través de todas las funcionalidades de la plataforma, desde la creación 
+                            de tu primer formulario hasta el análisis avanzado de datos.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h2 class="text-2xl font-semibold mb-4">¿Qué puedes hacer con Formulario Dinámico?</h2>
+                        <ul class="list-disc pl-6 space-y-2 text-gray-600 dark:text-gray-300">
+                            <li>Crear formularios personalizados para diferentes propósitos académicos</li>
+                            <li>Compartir formularios con estudiantes, profesores y personal administrativo</li>
+                            <li>Recopilar y analizar datos de manera eficiente</li>
+                            <li>Generar reportes y visualizaciones de los datos recopilados</li>
+                            <li>Integrar con otros sistemas de la universidad</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                        <p class="font-medium text-blue-800 dark:text-blue-300">Consejo:</p>
+                        <p class="text-blue-700 dark:text-blue-200">Explora la documentación paso a paso para aprovechar al máximo todas las funcionalidades.</p>
+                    </div>
+                </div>
             `
         },
         {
@@ -67,7 +80,7 @@
                 <li>¡Listo! Ya puedes comenzar a utilizar Formulario Dinámico</li>
             </ol>
             
-            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mt-6">
+            <div class="bg-amber-900 border-l-4 border-amber-500 p-4 mt-6">
                 <p class="font-medium">Nota importante:</p>
                 <p>Si tienes problemas para acceder con tus credenciales, contacta al departamento de TI de la universidad.</p>
             </div>
@@ -101,8 +114,8 @@
                 <li>Hora</li>
                 <li>Archivo</li>
             </ul>
-            
-            <div class="bg-green-50 border-l-4 border-green-500 p-4 mt-6">
+
+            <div class="bg-green-50 border-l-4 border-green-500 p-4 mt-6 text-gray-700 dark:text-gray-300">
                 <p class="font-medium">Consejo:</p>
                 <p>Puedes previsualizar tu formulario en cualquier momento haciendo clic en el botón "Vista previa".</p>
             </div>
@@ -272,44 +285,32 @@ Authorization: Bearer tu_token_de_acceso
         ]
     }
     ];
-    
-    // Estado de la aplicación
-    let activeSection = docSections[0].id;
-    let activeItem = docSections[0].items[0].id;
-    let searchQuery = '';
-    let isDarkMode = false;
-    let isSidebarOpen = false;
-    let isSearchOpen = false;
-    
-    // Función para cambiar el tema
-    function toggleDarkMode() {
-        isDarkMode = !isDarkMode;
 
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }
-    
+    // Estado de la aplicación
+    let activeSection   = docSections[0].id;
+    let activeItem      = docSections[0].items[0].id;
+    let searchQuery     = '';
+    let isSidebarOpen   = false;
+    let isSearchOpen    = false;
+
     // Función para obtener el contenido activo
     function getActiveContent() {
-        const section = docSections.find(s => s.id === activeSection);
+        const section = docSections.find (s => s.id === activeSection );
 
-        if (!section) return '';
+        if ( !section ) return '';
 
-        const item = section.items.find(i => i.id === activeItem);
+        const item = section.items.find( i => i.id === activeItem );
 
         return item ? item.content : '';
     }
 
     // Función para filtrar elementos por búsqueda
     function getFilteredSections() {
-        if (!searchQuery.trim()) return docSections;
+        if ( !searchQuery.trim() ) return docSections;
 
-        return docSections.map(section => {
-            const filteredItems = section.items.filter(item => 
-                item.title.toLowerCase().includes( searchQuery.toLowerCase() )
+        return docSections.map( section => {
+            const filteredItems = section.items
+                .filter( item => item.title.toLowerCase().includes( searchQuery.toLowerCase() )
             );
 
             return {
@@ -318,228 +319,191 @@ Authorization: Bearer tu_token_de_acceso
             };
         }).filter( section => section.items.length > 0 );
     }
-    
-    // Animaciones al montar el componente
-    onMount(() => {
-        // Inicializar animaciones o configuraciones adicionales aquí
-        const observer = new IntersectionObserver(( entries ) => {
-            entries.forEach( entry => {
-                if ( entry.isIntersecting ) {
-                    entry.target.classList.add( 'show' );
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll( '.animate-on-scroll' ).forEach(el => {
-            observer.observe( el );
-        });
-    });
 </script>
 
-<div class="{isDarkMode ? 'dark' : ''} min-h-screen">
-    <div class="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100 transition-colors duration-300">
-        {#if isSearchOpen}
-        <div class="border-t border-gray-200 dark:border-gray-700 py-3 px-4 transition-all duration-300 animate-in slide-in-from-top">
+<div class="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100 transition-colors duration-300">
+    {#if isSearchOpen}
+        <div class="border-t border-gray-200 dark:border-gray-700 py-3 px-4 transition-all duration-300 ">
             <div class="relative">
-            <input 
-                type="text" 
-                bind:value={searchQuery} 
-                placeholder="Buscar en la documentación..." 
-                class="w-full px-4 py-2 pl-10 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
-            />
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+                <input 
+                    type="text" 
+                    bind:value={searchQuery} 
+                    placeholder="Buscar en la documentación..." 
+                    class="w-full px-4 py-2 pl-10 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
             </div>
         </div>
-        {/if}
-    
-        <div class="flex flex-1 overflow-hidden">
+    {/if}
+
+    <div class="flex flex-1 overflow-hidden h-full">
         <!-- Sidebar -->
         <aside 
-        class="w-64 border-r border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 transition-all duration-300 overflow-y-auto
-                {isSidebarOpen ? 'fixed inset-y-0 left-0 z-20 shadow-lg md:shadow-none md:static md:block' : 'hidden md:block'}"
+            class="w-64 border-r border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 transition-all ease-in-out duration-300 overflow-y-auto
+            {isSidebarOpen
+                ? 'fixed inset-y-0 left-0 z-20 shadow-lg md:shadow-none md:static md:block'
+                : 'hidden md:block'}"
         >
-        <!-- Search bar (desktop) -->
-        <div class="p-4 border-b border-gray-200 dark:border-zinc-700">
-            <div class="relative">
-            <input 
-                type="text" 
-                bind:value={searchQuery} 
-                placeholder="Buscar..." 
-                class="w-full px-4 py-2 pl-10 rounded-md border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors duration-300"
-            />
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <!-- Search bar (desktop) -->
+            <div class="p-4 border-b border-gray-200 dark:border-zinc-700">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        bind:value={searchQuery} 
+                        placeholder="Buscar..." 
+                        class="w-full px-4 py-2 pl-10 rounded-md border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors duration-300"
+                    />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
             </div>
-        </div>
-        
-        <!-- Navigation -->
-        <nav class="p-4">
-            {#each getFilteredSections() as section}
-            <div class="mb-6">
-                <h3 
-                class="flex items-center text-sm font-semibold text-gray-500 dark:text-zinc-400 uppercase tracking-wider mb-3"
+
+            <!-- Navigation -->
+            <nav class="p-4">
+                {#each getFilteredSections() as section}
+                <div class="mb-6"
+                    in:fly  = {{ y: -20, duration: 300 }}
+                    out:fly = {{ y: 20, duration: 300 }}
                 >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={section.icon} />
-                </svg>
-                {section.title}
-                </h3>
-                
-                <ul class="space-y-1">
-                {#each section.items as item}
-                    <li>
-                    <button
-                        class="w-full text-left px-3 py-2 rounded-md text-sm transition-colors duration-200
-                            {activeSection === section.id && activeItem === item.id 
-                                ? 'bg-amber-100 dark:bg-amber-900/20 text-amber-900 dark:text-amber-400 font-medium' 
-                                : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-700'}"
-                        on:click={() => {
-                        activeSection = section.id;
-                        activeItem = item.id;
-                        if (window.innerWidth < 768) {
-                            isSidebarOpen = false;
-                        }
-                        }}
-                    >
-                        {item.title}
-                    </button>
-                    </li>
+                    <h3 class="flex items-center text-sm font-semibold text-gray-500 dark:text-zinc-400 uppercase tracking-wider mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={section.icon} />
+                        </svg>
+                        {section.title}
+                    </h3>
+
+                    <ul class="space-y-1">
+                        {#each section.items as item}
+                            <li>
+                                <button
+                                    class="w-full text-left px-3 py-2 rounded-md text-sm transition-colors duration-200
+                                        {activeSection === section.id && activeItem === item.id 
+                                            ? 'bg-amber-100 dark:bg-amber-900/20 text-amber-900 dark:text-amber-400 font-medium' 
+                                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-700'}"
+                                    on:click={() => {
+                                        activeSection = section.id;
+                                        activeItem = item.id;
+                                        if (window.innerWidth < 768) isSidebarOpen = false;
+                                    }}
+                                >
+                                    {item.title}
+                                </button>
+                            </li>
+                        {/each}
+                    </ul>
+                </div>
                 {/each}
-                </ul>
-            </div>
-            {/each}
-        </nav>
+            </nav>
         </aside>
 
         {#if isSidebarOpen}
-        <button
-            class="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
-            on:click={() => isSidebarOpen = false}
-        >
-            <X class="w-6 h-6" />
-        </button>
-    {/if}
+            <button
+                class="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+                on:click={() => isSidebarOpen = false}
+            >
+                <X class="w-6 h-6" />
+            </button>
+        {/if}
         <!-- Main content -->
-        <main class="flex-1 overflow-y-auto bg-white dark:bg-zinc-950 p-4 md:p-8 transition-all duration-300 animate-on-scroll">
-            <div class="max-w-3xl mx-auto">
-                <div class="prose dark:prose-invert prose-amber max-w-none">
+        <main
+            class="flex-1 overflow-y-auto bg-white dark:bg-zinc-900 p-4 md:p-8 transition-all duration-300"
+            in:fly  = {{ y: -20, duration: 300 }}
+            out:fly = {{ y: 20, duration: 300 }}
+        >
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-8">
                     {@html getActiveContent()}
                 </div>
-            </div>
-            
-            <!-- Navegación entre páginas -->
-            <div class="mt-12 border-t border-gray-200 dark:border-zinc-800 pt-6 flex justify-between">
-                <button 
-                class="flex items-center text-sm font-medium text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors duration-200"
-                on:click={() => {
-                    const currentSection = docSections.find(s => s.id === activeSection);
-                    if (!currentSection) return;
-                    
-                    const currentItemIndex = currentSection.items.findIndex(i => i.id === activeItem);
-                    if (currentItemIndex > 0) {
-                    activeItem = currentSection.items[currentItemIndex - 1].id;
-                    } else {
-                    const sectionIndex = docSections.findIndex(s => s.id === activeSection);
-                    if (sectionIndex > 0) {
-                        activeSection = docSections[sectionIndex - 1].id;
-                        activeItem = docSections[sectionIndex - 1].items[docSections[sectionIndex - 1].items.length - 1].id;
-                    }
-                    }
-                }}
-                >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                Anterior
-                </button>
-                
-                <button 
-                class="flex items-center text-sm font-medium text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors duration-200"
-                on:click={() => {
-                    const currentSection = docSections.find(s => s.id === activeSection);
-                    if (!currentSection) return;
-                    
-                    const currentItemIndex = currentSection.items.findIndex(i => i.id === activeItem);
-                    if (currentItemIndex < currentSection.items.length - 1) {
-                    activeItem = currentSection.items[currentItemIndex + 1].id;
-                    } else {
-                    const sectionIndex = docSections.findIndex(s => s.id === activeSection);
-                    if (sectionIndex < docSections.length - 1) {
-                        activeSection = docSections[sectionIndex + 1].id;
-                        activeItem = docSections[sectionIndex + 1].items[0].id;
-                    }
-                    }
-                }}
-                >
-                Siguiente
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-                </button>
+
+                <!-- Navegación entre páginas -->
+                <div class="mt-12 border-t border-gray-200 dark:border-zinc-800 pt-6 flex justify-between">
+                    <button 
+                        class="flex items-center text-sm font-medium text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors duration-200"
+                        on:click={() => {
+                            const currentSection = docSections.find(s => s.id === activeSection);
+
+                            if (!currentSection) return;
+
+                            const currentItemIndex = currentSection.items.findIndex(i => i.id === activeItem);
+                            if (currentItemIndex > 0) {
+                                activeItem = currentSection.items[currentItemIndex - 1].id;
+                            } else {
+                                const sectionIndex = docSections.findIndex(s => s.id === activeSection);
+                                if (sectionIndex > 0) {
+                                    activeSection = docSections[sectionIndex - 1].id;
+                                    activeItem = docSections[sectionIndex - 1].items[docSections[sectionIndex - 1].items.length - 1].id;
+                                }
+                            }
+                        }}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+
+                        Anterior
+                    </button>
+
+                    <button 
+                        class="flex items-center text-sm font-medium text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors duration-200"
+                        on:click={() => {
+                            const currentSection = docSections.find(s => s.id === activeSection);
+
+                            if (!currentSection) return;
+
+                            const currentItemIndex = currentSection.items.findIndex(i => i.id === activeItem);
+
+                            if (currentItemIndex < currentSection.items.length - 1) {
+                                activeItem = currentSection.items[currentItemIndex + 1].id;
+                            } else {
+                                const sectionIndex = docSections.findIndex(s => s.id === activeSection);
+                                if (sectionIndex < docSections.length - 1) {
+                                    activeSection = docSections[sectionIndex + 1].id;
+                                    activeItem = docSections[sectionIndex + 1].items[0].id;
+                                }
+                            }
+                        }}
+                    >
+                        Siguiente
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </main>
-    </div>
     </div>
 </div>
 
 <style>
-    /* Animaciones adicionales */
-    .animate-in {
-    animation-duration: 300ms;
-    animation-fill-mode: both;
-    }
-    
-    .slide-in-from-top {
-    animation-name: slideInFromTop;
-    }
-    
-    @keyframes slideInFromTop {
-    from {
-        transform: translateY(-10px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    }
-    
-    .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s, transform 0.6s;
-    }
-    
-    
     /* Estilos para el contenido HTML renderizado */
     :global(.dark) :global(pre) {
-    background-color: #1e293b !important;
-    color: #e2e8f0 !important;
+        background-color: #1e293b !important;
+        color: #e2e8f0 !important;
     }
     
     :global(.dark) :global(code) {
-    color: #93c5fd !important;
+        color: #93c5fd !important;
     }
     
     :global(pre) {
-    font-family: 'Fira Code', monospace;
-    font-size: 0.9rem;
-    line-height: 1.5;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.9rem;
+        line-height: 1.5;
     }
     
     :global(a) {
-    color: #2563eb;
-    text-decoration: none;
+        color: #2563eb;
+        text-decoration: none;
     }
     
     :global(.dark) :global(a) {
-    color: #60a5fa;
+        color: #60a5fa;
     }
     
     :global(a:hover) {
-    text-decoration: underline;
+        text-decoration: underline;
     }
 </style>
