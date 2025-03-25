@@ -118,13 +118,15 @@ export function showErrorInput(
     shapeInput  : ShapeInput,
     value?      : string | undefined
 ): string | undefined {
-    if ( !shapeInput.required ) return undefined;
+    const isValue = !value || value === '' || value === undefined;
 
-    if ( shapeInput.required && !value )
-        return shapeInput?.msgRequired;
+    if ( shapeInput.required && isValue ) return shapeInput?.msgRequired;
 
     if ( shapeInput.type === 'number' ) {
+        if ( !shapeInput.required && isValue ) return undefined;
+
         const numberValue = Number( value );
+        console.log('🚀 ~ file: valid-shapeinput.ts:149 ~ numberValue:', numberValue)
 
         if ( shapeInput.min && numberValue < shapeInput.min )
             return shapeInput?.msgMin;
@@ -138,7 +140,12 @@ export function showErrorInput(
 
         if ( shapeInput.maxLength && value && value.length > shapeInput.maxLength )
             return shapeInput?.msgMaxLength;
+
+        if ( value && shapeInput.pattern && !shapeInput.pattern?.match( value ))
+            return shapeInput?.msgPattern;
     }
+
+    return undefined;
 }
 
 

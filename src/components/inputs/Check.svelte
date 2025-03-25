@@ -15,16 +15,23 @@
 
     export let shapeInput   : ShapeInput;
     export let onChange     : ( checked: boolean ) => void;
-    export let checked      : "indeterminate" | boolean | undefined = "indeterminate";
+    export let checked      : boolean | undefined = undefined;
     export let setError     : VoidFunction = () => {};
-</script>
 
+
+    let check = checked ?? shapeInput.defaultChecked ?? false;
+
+
+    $: if ( shapeInput.defaultChecked !== undefined ) {
+        check = shapeInput.defaultChecked;
+    }
+</script>
 
 <div class="space-y-1">
     <div class="flex items-center space-x-3">
         <Checkbox.Root
             id              = { shapeInput.id }
-            checked         = { shapeInput.checked }
+            checked         = { check }
             disabled        = { shapeInput.disabled }
             aria-labelledby = { shapeInput.label}
             class           = { shapeInput.boxStyle ?? ( styles.check as InputStyle ).box }

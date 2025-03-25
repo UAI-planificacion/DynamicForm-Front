@@ -65,6 +65,32 @@
     }
 
 
+    function validDateRange(
+        currentValues: Record<string, any>
+    ): Record<string, any> {
+        const value = currentValues;
+
+        Object.keys( currentValues ).forEach(key => {
+            const matchingItem = template.find(item => 
+                item.name === key && item.isRange === false
+            );
+
+            const isDateRangeType = currentValues[key] && 
+                typeof currentValues[key] === 'object' &&
+                'start' in currentValues[key] &&
+                'end' in currentValues[key] &&
+                currentValues[key].start !== null &&
+                currentValues[key].end !== null;
+
+            if ( matchingItem && isDateRangeType ) {
+                value[key] = undefined;
+            }
+        });
+
+        return value;
+    }
+
+
     let previousShapes: Record<string, string> = {};
 
     $: {
@@ -92,7 +118,7 @@
                 }, {} as Record<string, any>);
 
             template.forEach(item => {
-                if (item.shape !== 'button' && item.name?.trim()) {
+                if ( item.shape !== 'button' && item.name?.trim() ) {
                     const previousShape = previousShapes[item.name];
 
                     if (previousShape !== undefined && previousShape !== item.shape) {
@@ -102,6 +128,8 @@
                     previousShapes[item.name] = item.shape as string;
                 }
             });
+
+            currentValues = validDateRange( currentValues );
 
             formValues = {
                 ...initialValues,
@@ -155,6 +183,16 @@
         formValues[name] = {
             hour    :  hour     === '' ? null : Number( hour ),
             minute  :  minute   === '' ? null : Number( minute )
+        };
+    }
+
+
+    const handleAnologTime = ( time: string, name: string ) => {
+        const [ hour, minute ] = time.split( ' : ' );
+
+        formValues[name] = {
+            hour    :  hour     === 'hh' ? null : Number( hour ),
+            minute  :  minute   === 'mm' ? null : Number( minute )
         };
     }
 
@@ -318,7 +356,7 @@
             {:else if shapeInput.shape === 'timer' && shapeInput.time?.isAnalogic}
                 <AnalogicTime
                     { shapeInput }
-                    onTimerInput    = {( value: string ) => handleTime( value, shapeInput.name )}
+                    onTimerInput    = {( value: string ) => handleAnologTime( value, shapeInput.name )}
                     value			= { formValues[ shapeInput.name ]}
                     setError		= {() => shapeInput.valid = errorTimer( shapeInput, formValues[ shapeInput.name ])}
                 />

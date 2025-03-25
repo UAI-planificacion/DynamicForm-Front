@@ -34,11 +34,13 @@ export type ShapeInput = {
     type?           : Types;
     placeholder?    : string;
     value?          : string;
+    defaultValue?   : string;
     timeValue?      : string;
     date?           : DateValue;
     dateRange?      : DateRange;
     isRange?        : boolean;
     invalidDates?   : string[];
+    invalidDatesRange?: InvalidDate;
     minValue?       : DateValue;
     maxValue?       : DateValue;
     numberOfMonths? : number;
@@ -54,6 +56,7 @@ export type ShapeInput = {
     searchPlaceholder? : string;
     heightPanel?    : number;
     pattern?        : string;
+    msgPattern?     : string;
     class_?         : string;
     boxStyle?       : string;
 	labelStyle? 	: string;
@@ -73,6 +76,7 @@ export type ShapeInput = {
     options?        : ShapeOption[] | GroupOption[];
     rows?           : number;
     checked?        : boolean;
+    defaultChecked?   : boolean;
     selected?       : Selected;
     httpList?			: Http[];
 	externalErrorMsg?   : string;
@@ -81,6 +85,16 @@ export type ShapeInput = {
 	method?				: Method;
     time?               : Time;
 	// form? 			: Form;
+}
+
+export type WeekDay = {
+    id      : string;
+    checked : boolean;
+}
+
+export type InvalidDate = {
+    invalidDate: DateRange;
+    weekDays: WeekDay[];
 }
 
 

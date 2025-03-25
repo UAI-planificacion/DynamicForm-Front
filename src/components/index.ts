@@ -22,8 +22,9 @@ export { default as DigitalTime }   from './inputs/time-picker/DigitalTime.svelt
 export { default as AnalogicTime }  from './inputs/time-picker/AnalogTime.svelte';
 
 // Editors
-export { default as GenerateValidDates } from './Editor/dates/GenerateValidDates.svelte';
-export { default as TimeGenerator }      from './Editor/times/TimeGenerator.svelte';
+export { default as GenerateValidDates }    from './Editor/dates/GenerateValidDates.svelte';
+export { default as TimeGenerator }         from './Editor/times/TimeGenerator.svelte';
+export { default as ValidInput }            from './Editor/inputs/ValidInput.svelte';
 
 // Preview
 export { default as Preview }       from './Preview/Preview.svelte';

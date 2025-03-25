@@ -30,7 +30,6 @@
             ? new CalendarDate( shapeInput.date.year, shapeInput.date.month, shapeInput.date.day )
             : value;
 </script>
-<!-- numberOfMonths = {1} -->
 
 <DatePicker.Root
     locale                  = "es-ES"

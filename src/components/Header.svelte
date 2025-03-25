@@ -102,8 +102,8 @@
                             tabindex	= "0"
                         >
                             <span class="text-zinc-900 dark:text-zinc-200">Tema:
-                                <span class="text-sky-500">
-                                    {$theme}
+                                <span class="text-amber-500">
+                                    {$theme ===  'dark' ? 'Oscuro' : 'Claro' }
                                 </span>
                             </span>
                                 <ToggleTheme />
