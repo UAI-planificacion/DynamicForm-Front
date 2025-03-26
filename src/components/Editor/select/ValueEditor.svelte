@@ -2,6 +2,7 @@
     import { v4 as uuid }   from 'uuid';
     import { read, utils }  from 'xlsx';
     import { Accordion }    from 'bits-ui';
+    import toast            from 'svelte-french-toast';
 
     import {
         LoaderIcon,
@@ -10,8 +11,13 @@
         JsonIcon,
         CaretDownIcon
     }                           from "$icons";
-    import type { ShapeOption } from "$models";
+    import type { ShapeInput, ShapeOption } from "$models";
     import { Input, ButtonUI }  from "$components";
+    import {
+		successToast,
+		errorToast,
+    errorInput,
+	}                           from "$lib";
 
 
     export let options          : ShapeOption[] = [];
@@ -19,26 +25,21 @@
 
 
     let isLoading = false;
-    let isAddingOption = false;
+    let open = "values";
 
 
     function addNewOption(): void {
-        isAddingOption = true;
+        const newOptions = [
+            ...options,
+            {
+                id      : uuid(),
+                label   : '',
+                value   : ''
+            }
+        ];
 
-        try {
-            const newOptions = [
-                ...options,
-                {
-                    id      : uuid(),
-                    label   : '',
-                    value   : ''
-                }
-            ];
-
-            onOptionsChange( newOptions );
-        } finally {
-            isAddingOption = false;
-        }
+        if ( open === '' ) open = 'values';
+        onOptionsChange( newOptions );
     }
 
 
@@ -48,20 +49,18 @@
     }
 
 
-    const processJsonData = ( data: any[] ): ShapeOption[] =>
-        data.map(item => ({
-            id      : uuid(),
-            label   : item.label || item.name || '',
-            value   : item.value || item.id || ''
-        }));
+    const processExcelData = (data: any[]): ShapeOption[] =>
+        data.map((row, index) => {
+            if (typeof row !== 'object' || !row.label?.trim().toLowerCase() || !row.value?.trim().toLowerCase() ) {
+                throw new Error(`Error en la fila ${index + 1}: Los objetos deben tener 'label' y 'value'.`);
+            }
 
-
-    const processExcelData = ( data: any[] ): ShapeOption[] =>
-        data.map(row => ({
-            id      : uuid(),
-            value   : row['value'] || '',
-            label   : row['label'] || ''
-        }));
+            return {
+                id      : uuid(),
+                value   : row['value'] || '',
+                label   : row['label'] || '',
+            };
+        });
 
 
     async function handleFileChange( event: Event ): Promise<void> {
@@ -73,7 +72,7 @@
         const fileExt = file.name.split('.').pop()?.toLowerCase();
 
         if (!['json', 'xlsx', 'xls'].includes( fileExt || '' )) {
-            alert( 'Solo se permiten archivos JSON o Excel (.xlsx, .xls)' );
+            toast.error( 'Solo se permiten archivos JSON o Excel (.xlsx, .xls)', errorToast() );
             return;
         }
 
@@ -86,7 +85,7 @@
                 const text = await file.text();
                 const data = JSON.parse( text );
 
-                newOptions = processJsonData( Array.isArray( data ) ? data : [ data ]);
+                newOptions = processExcelData( Array.isArray( data ) ? data : [ data ]);
             } else {
                 const buffer        = await file.arrayBuffer();
                 const workbook      = read( buffer );
@@ -96,10 +95,13 @@
                 newOptions = processExcelData( data );
             }
 
+            if ( newOptions.length === 0 ) throw new Error( 'El archivo no contiene datos.' );
+
             onOptionsChange( newOptions );
+            if ( open === '' ) open = 'values';
+            toast.success( 'Datos cargados correctamente', successToast() );
         } catch ( error ) {
-            console.error( 'Error al procesar el archivo:', error );
-            alert( 'Error al procesar el archivo. Asegúrate de que el formato sea correcto.' );
+            toast.error( ( error as Error ).message || 'Error al cargar los datos', errorToast() );
         } finally {
             isLoading = false;
             if ( target ) target.value = '';
@@ -109,20 +111,52 @@
 
     function triggerFileInput(): void {
         const fileInput = document.getElementById( 'fileInput' ) as HTMLInputElement;
-        if (fileInput) fileInput.click();
+        if ( fileInput ) fileInput.click();
     }
 
 
     function keyAddOption( event: KeyboardEvent ): void {
         if ( event.key === 'Enter' ) addNewOption();
     }
+
+
+    const valueShape = {
+        id          : uuid(),
+        name        : uuid(),
+        placeholder : 'Ingrese el valor',
+        shape       : 'input',
+        type        : 'search',
+        valid       : true,
+        required    : true,
+        msgRequired : 'El campo es requerido.',
+        minLength   : 1,
+        maxLength   : 100,
+        msgMinLength: 'Mínimo 1 caracter permitido.',
+        msgMaxLength: 'Máximo 100 caracteres permitidos.'
+    } as ShapeInput;
+
+
+    const labelShape = {
+        id          : uuid(),
+        name        : uuid(),
+        placeholder : 'Ingrese la etiqueta para mostrar',
+        type        : 'search',
+        shape       : 'input',
+        valid       : true,
+        required    : true,
+        msgRequired : 'El campo es requerido.',
+        minLength   : 1,
+        maxLength   : 100,
+        msgMinLength: 'Mínimo 1 caracter permitido.',
+        msgMaxLength: 'Máximo 100 caracteres permitidos.'
+    } as ShapeInput;
 </script>
 
 
-<Accordion.Root class="w-full" type="single">
+<Accordion.Root class="w-full" type="single" value={open}>
     <Accordion.Item
-        value="values"
-        class="border-b border-b-zinc-400 dark:border-b-zinc-600 transition-colors"
+        value   = "values"
+        class   = "border-b border-b-zinc-400 dark:border-b-zinc-600 transition-colors"
     >
         <Accordion.Header>
             <Accordion.Trigger
@@ -146,6 +180,7 @@
                         </ButtonUI>
 
                         <input
+                            on:click|stopPropagation
                             id          = "fileInput"
                             type        = "file"
                             class       = "hidden"
@@ -155,9 +190,9 @@
 
                         <ButtonUI
                             onClick     = { addNewOption }
-                            disabled    = { isLoading || isAddingOption }
+                            disabled    = { isLoading }
                         >
-                            {#if isAddingOption}
+                            {#if isLoading}
                                 <LoaderIcon />
                             {:else}
                                 <AddIcon />
@@ -178,45 +213,36 @@
             <div class={`h-auto p-1 w-full overflow-auto gap-2 grid grid-cols-1 @lg:grid-cols-2 pr-2`}>
                 {#each options as item}
                     <Input
-                        shapeInput={{
-                            id: uuid(),
-                            name: uuid(),
-                            value: item.value,
-                            placeholder: 'Ingrese el valor',
-                            type: 'search'
-                        }}
-                        onInput={(event: Event) => {
-                            item.value = (event.target as HTMLInputElement).value;
-                            onOptionsChange(options);
+                        shapeInput  = {{ ...valueShape, value : item.value }}
+                        value       = { item.value }
+                        setError    = {() => valueShape.valid = errorInput( valueShape, item.value )}
+                        onInput     = {( event: Event ) => {
+                            item.value = ( event.target as HTMLInputElement ).value;
+                            onOptionsChange( options );
                         }}
                     />
 
                     <div class="flex gap-2 items-start">
                         <Input
-                            shapeInput={{
-                                id          : uuid(),
-                                name        : uuid(),
-                                value       : item.label,
-                                placeholder : 'Ingrese la etiqueta para mostrar',
-                                type        : 'search'
+                            shapeInput  = {{ ...labelShape, value : item.label }}
+                            onKeyup     = { keyAddOption }
+                            setError    = {() => labelShape.valid = errorInput( labelShape, item.label )}
+                            value       = { item.label }
+                            onInput     = {( event: Event ) => {
+                                item.label = ( event.target as HTMLInputElement ).value;
+                                onOptionsChange( options );
                             }}
-                            onInput={( event: Event ) => {
-                                item.label = (event.target as HTMLInputElement).value;
-                                onOptionsChange(options);
-                            }}
-                            onKeyup={ keyAddOption }
                         />
 
                         <ButtonUI
                             onClick     = {() => deleteOption( item )}
-                            disabled    = { options.length === 1 }
                             styles      = "mt-1.5"
                         >
                             <DeleteIcon />
                         </ButtonUI>
                     </div>
                 {:else}
-                    <span class="text-sm text-zinc-900 dark:text-zinc-500">No hay opciones</span>
+                    <span class="text-sm text-zinc-900 dark:text-zinc-400">No hay opciones</span>
                 {/each}
             </div>
         </Accordion.Content>

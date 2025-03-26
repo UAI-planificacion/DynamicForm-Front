@@ -218,7 +218,7 @@
 </script>
 
 
-<card class="hover:bg-zinc-100/50 shadow-md rounded-md p-5 border-1 border-zinc-300 dark:border-zinc-800 border bg-white dark:bg-zinc-900 w-full dark:hover:bg-zinc-800/10">
+<card class="hover:shadow-xl hover:transition-all delay-50 hover:bg-zinc-100/50 shadow-md rounded-md p-5 border-1 border-zinc-300 dark:border-zinc-800 border bg-white dark:bg-zinc-900 w-full dark:hover:bg-zinc-800/10">
     {#if editing === false}
         <Viewer
             { shapeInput }

@@ -7,9 +7,12 @@
 
 
     export let shapeInput: ShapeInput;
-    
 
-    shapeInput.msgPattern = 'Patrón de búsqueda no coincide'
+
+    shapeInput.msgPattern   = 'Patrón de búsqueda no coincide';
+    shapeInput.msgMin       = 'El campo es inferior a 1 caracter permitido.';
+    shapeInput.msgMax       = 'El campo es superior a los 255 caracteres permitidos.';
+
 
     const minLengthShape = {
         id		    : uuid(),
@@ -27,7 +30,7 @@
     } as ShapeInput;
 
 
-    const minLenthMssgShape = {
+    const minLengthMssgShape = {
         id		        : uuid(),
         label           : 'Mensaje largo mínimo',
         name	        : 'msg-min-length',
@@ -35,133 +38,240 @@
         disabled        : ( shapeInput.minLength ?? 0 ) <= 0,
         value           : shapeInput.msgMinLength,
         shape           : 'input',
+        type            : 'text',
+        required        : true,
+        msgRequired     : 'El campo es requerido.',
         valid           : true,
-        minLength       : 1,
-        maxLength       : 255,
-        msgMinLength    : 'El campo inferior a los 0 caracteres permitidos.',
-        msgMaxLength    : 'El campo superior a los 255 caracteres permitidos.'
+        minLength       : 2,
+        maxLength       : 100,
+        msgMinLength    : 'El campo inferior a los 2 caracteres permitidos.',
+        msgMaxLength    : 'El campo superior a los 100 caracteres permitidos.'
+    } as ShapeInput;
+
+
+    const maxLengthShape = {
+        id		    : uuid(),
+        label       : 'Largo máximo',
+        name	    : 'max-length',
+        placeholder : 'Ingresa el largo máximo de caracteres',
+        value       : String( shapeInput.maxLength ),
+        type        : 'number',
+        shape       : 'input',
+        valid       : true,
+        min         : 1,
+        max         : 255,
+        msgMin      : 'El campo es inferior a 1 caracter permitido.',
+        msgMax      : 'El campo es superior a los 255 caracteres permitidos.'
+    } as ShapeInput;
+
+
+    const maxLengthMssgShape = {
+        id				: uuid(),
+        label           : 'Mensaje largo máximo',
+        name			: 'msg-max-length',
+        placeholder     : 'Ingresa el mensaje para largo máximo',
+        disabled        : ( shapeInput.maxLength ?? 0 ) <= 0,
+        value           : shapeInput.msgMaxLength,
+        shape           : 'input',
+        type            : 'text',
+        required        : true,
+        msgRequired     : 'El campo es requerido.',
+        valid           : true,
+        minLength       : 2,
+        maxLength       : 100,
+        msgMinLength    : 'El campo inferior a los 2 caracteres permitidos.',
+        msgMaxLength    : 'El campo superior a los 100 caracteres permitidos.'
+    } as ShapeInput;
+
+
+    const patternShape = {
+        id				: uuid(),
+        label           : 'Patrón',
+        name			: 'pattern',
+        placeholder     : 'Ingresa el patrón',
+        value           : shapeInput.pattern,
+        shape           : 'input',
+        type            : 'text',
+        valid           : true,
+        minLength       : 2,
+        maxLength       : 200,
+        pattern         : '^(?:\\\.|[^\s\\])(?:\\\.|[^\\])*$',
+        msgPattern      : 'El patrón es inválido.',
+        msgMinLength    : 'El campo inferior a los 2 caracteres permitidos.',
+        msgMaxLength    : 'El campo superior a los 200 caracteres permitidos.'
+    } as ShapeInput;
+
+    const patternMssgShape = {
+        id				: uuid(),
+        label           : 'Mensaje patrón',
+        name			: 'msg-pattern',
+        placeholder     : 'Ingresa el mensaje para patrón',
+        disabled        : ( shapeInput.pattern ?? '' ).length <= 0,
+        value           : shapeInput.msgPattern,
+        shape           : 'input',
+        type            : 'text',
+        required        : (shapeInput.pattern?.length ?? 0) > 0,
+        msgRequired     : 'El campo es requerido.',
+        valid           : true,
+        minLength       : 2,
+        maxLength       : 100,
+        msgMinLength    : 'El campo inferior a los 2 caracteres permitidos.',
+        msgMaxLength    : 'El campo superior a los 100 caracteres permitidos.'
+    } as ShapeInput;
+
+
+
+
+    const minShape = {
+        id		    : uuid(),
+        label       : 'Cantidad mínima',
+        name	    : 'min',
+        placeholder : 'Ingresa el mínimo permitido',
+        value       : String( shapeInput.min ),
+        type        : 'number',
+        shape       : 'input',
+        valid       : true,
+        min         : 1,
+        max         : 999,
+        msgMin      : 'El campo es inferior a 1 caracter permitido.',
+        msgMax      : 'El campo es superior a los 999 permitidos.'
+    } as ShapeInput;
+
+
+    const maxShape = {
+        id		    : uuid(),
+        label       : 'Cantidad máxima',
+        name	    : 'max',
+        placeholder : 'Ingresa el máximo permitido',
+        value       : String( shapeInput.max ),
+        type        : 'number',
+        shape       : 'input',
+        valid       : true,
+        min         : 1,
+        max         : 999,
+        msgMin      : 'El campo es inferior a 1 caracter permitido.',
+        msgMax      : 'El campo es superior a los 999 permitidos.'
+    } as ShapeInput;
+
+
+    const minMssgShape = {
+        id		        : uuid(),
+        label           : 'Mensaje mínimo',
+        name	        : 'msg-min',
+        placeholder     : 'Ingresa el mensaje para el mínimo requerido',
+        value           : shapeInput.msgMin,
+        disabled        : (shapeInput.min ?? 0) <= 0,
+        type            : 'text',
+        shape           : 'input',
+        required        : (shapeInput.min ?? 0) > 0,
+        msgRequired     : 'El campo es requerido.',
+        valid           : true,
+        minLength       : 2,
+        maxLength       : 100,
+        msgMinLength    : 'El campo inferior a los 2 caracteres permitidos.',
+        msgMaxLength    : 'El campo superior a los 100 caracteres permitidos.'
+    } as ShapeInput;
+
+
+    const maxMssgShape = {
+        id		        : uuid(),
+        label           : 'Mensaje máximo',
+        name	        : 'msg-max',
+        placeholder     : 'Ingresa el mensaje para máximo requerido',
+        disabled        : (shapeInput.max ?? 0) <= 0,
+        value           : shapeInput.msgMax,
+        type            : 'text',
+        shape           : 'input',
+        required        : (shapeInput.max ?? 0) > 0,
+        msgRequired     : 'El campo es requerido.',
+        valid           : true,
+        minLength       : 2,
+        maxLength       : 100,
+        msgMinLength    : 'El campo inferior a los 2 caracteres permitidos.',
+        msgMaxLength    : 'El campo superior a los 100 caracteres permitidos.'
     } as ShapeInput;
 </script>
 
 {#if shapeInput.type !== 'number' ||  shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' }
     <Input
         shapeInput  = { minLengthShape }
+        onInput     = {( event: Event ) => shapeInput.minLength = Number(( event.target as HTMLInputElement ).value )}
         value       = { String( shapeInput.minLength || '' ) }
         setError    = { () =>  minLengthShape.valid = errorInput( minLengthShape, shapeInput.minLength?.toString()) }
-        onInput     = {( event: Event ) => shapeInput.minLength = Number(( event.target as HTMLInputElement ).value )}
     />
 
     <Input
-        shapeInput  = {{ ...minLenthMssgShape,
-            disabled: ( shapeInput.minLength ?? 0 ) <= 0,
-        }}
-        value       = { shapeInput.msgMinLength }
-        setError    = { () => minLenthMssgShape.valid = (shapeInput.msgMinLength ?? '').length > 0 }
+        shapeInput  = {{ ...minLengthMssgShape, disabled: ( shapeInput.minLength ?? 0 ) <= 0 }}
         onInput     = {( event: Event ) => shapeInput.msgMinLength = ( event.target as HTMLInputElement ).value }
+        value       = { shapeInput.msgMinLength }
+        setError    = { () => minLengthMssgShape.valid = errorInput( minLengthMssgShape, shapeInput.msgMinLength || undefined )}
     />
 
     <Input
-        shapeInput = {{
-            id		    : uuid(),
-            label       : 'Largo máximo',
-            name	    : 'max-length',
-            placeholder : 'Ingresa el largo máximo de caracteres',
-            value       : String( shapeInput.maxLength ),
-            type        : 'number'
-        }}
-        onInput = {( event: Event ) => shapeInput.maxLength = Number(( event.target as HTMLInputElement ).value )}
+        shapeInput  = {{ ...maxLengthShape }}
+        onInput     = {( event: Event ) => shapeInput.maxLength = Number(( event.target as HTMLInputElement ).value )}
+        value       = { String( shapeInput.maxLength || '' )}
+        setError    = { () => maxLengthShape.valid = errorInput( maxLengthShape, shapeInput.maxLength?.toString() )}
     />
 
     <Input
-        shapeInput = {{
-            id		    : uuid(),
-            label       : 'Mensaje largo máximo',
-            name	    : 'msg-max-length',
-            placeholder : 'Ingresa el mensaje para largo máximo',
-            disabled    : (shapeInput.maxLength ?? 0) <= 0,
-            value       : shapeInput.msgMaxLength,
-        }}
-        onInput = {( event: Event ) => shapeInput.msgMaxLength = ( event.target as HTMLInputElement ).value }
+        shapeInput  = {{...maxLengthMssgShape, disabled: ( shapeInput.maxLength ?? 0 ) <= 0 }}
+        onInput     = {( event: Event ) => shapeInput.msgMaxLength = ( event.target as HTMLInputElement ).value }
+        value       = { shapeInput.msgMaxLength }
+        setError    = { () => maxLengthMssgShape.valid = errorInput( maxLengthMssgShape, shapeInput.msgMaxLength || undefined )}
     />
 
     {#if shapeInput.type !== 'number' && shapeInput.shape === 'input' }
         <Input
-            shapeInput = {{
-                id		    : uuid(),
-                label       : 'Patrón de búsqueda',
-                name	    : 'pattern',
-                placeholder : 'Ingresa el patrón permitido',
-                value       : shapeInput.pattern,
-                type        : 'text'
-            }}
-            onInput = {( event: Event ) => shapeInput.pattern = ( event.target as HTMLInputElement ).value }
+            shapeInput  = {{ ...patternShape }}
+            onInput     = {( event: Event ) => shapeInput.pattern = ( event.target as HTMLInputElement ).value }
+            value       = { shapeInput.pattern }
+            setError    = { () => patternShape.valid = errorInput( patternShape, shapeInput.pattern || undefined )}
         />
 
         <Input
-            shapeInput = {{
-                id		    : uuid(),
-                label       : 'Mensaje patrón de búsqueda',
-                name	    : 'msg-pattern',
-                placeholder : 'Ingresa el mensaje para patrón de búsqueda requerido',
-                disabled    : !shapeInput.pattern,
-                value       : shapeInput.msgPattern,
-                valid       : true,
-                minLength   : 1,
-                maxLength   : 100,
-                msgMinLength: 'El campo inferior a los 1 caracteres permitidos.',
-                msgMaxLength: 'El campo superior a los 100 caracteres permitidos.'
-            }}
-            onInput = {( event: Event ) => shapeInput.msgPattern = ( event.target as HTMLInputElement ).value }
+            shapeInput  = {{...patternMssgShape, disabled: !shapeInput.pattern, required: ( shapeInput.pattern?.length ?? 0) > 0 }}
+            onInput     = {( event: Event ) => shapeInput.msgPattern = ( event.target as HTMLInputElement ).value }
+            value       = { shapeInput.msgPattern }
+            setError    = { () => patternMssgShape.valid = errorInput(
+                { ...patternMssgShape, required: ( shapeInput.pattern?.length ?? 0)  > 0 },
+                shapeInput.msgPattern
+            )}
         />
     {/if}
 
 {:else}
     <Input
-        shapeInput = {{
-            id		    : uuid(),
-            label       : 'Cantidad mínima',
-            name	    : 'min',
-            placeholder : 'Ingresa el mínimo permitido',
-            value       : String( shapeInput.min ),
-            type        : 'number'
-        }}
-        onInput = {( event: Event ) => shapeInput.min = Number(( event.target as HTMLInputElement ).value )}
+        shapeInput  = {{ ...minShape }}
+        onInput     = {( event: Event ) => shapeInput.min = Number(( event.target as HTMLInputElement ).value )}
+        setError    = { () => minShape.valid = errorInput( minShape, shapeInput.min?.toString() )}
+        value       = { String( shapeInput.min || '' )}
     />
 
     <Input
-        shapeInput = {{
-            id		    : uuid(),
-            label       : 'Mensaje mínimo',
-            name	    : 'msg-min',
-            placeholder : 'Ingresa el mensaje para el mínimo requerido',
-            disabled    : (shapeInput.min ?? 0) <= 0,
-            value       : shapeInput.msgMin,
-        }}
-        onInput = {( event: Event ) => shapeInput.msgMin = ( event.target as HTMLInputElement ).value }
+        shapeInput  = {{ ...minMssgShape, disabled: ( shapeInput.min ?? 0 ) <= 0, required: ( shapeInput.min ?? 0 ) > 0 }}
+        onInput     = {( event: Event ) => shapeInput.msgMin = ( event.target as HTMLInputElement ).value }
+        value       = { shapeInput.msgMin }
+        setError    = { () => minMssgShape.valid = errorInput({
+            ...minMssgShape, required: ( shapeInput.min ?? 0 ) > 0 },
+            shapeInput.msgMin
+        )}
     />
 
     <Input
-        shapeInput = {{
-            id		    : uuid(),
-            label       : 'Cantidad máxima',
-            name	    : 'max',
-            placeholder : 'Ingresa el máximo permitido',
-            value       : String( shapeInput.max ),
-            type        : 'number'
-        }}
-        onInput = {( event: Event ) => shapeInput.max = Number(( event.target as HTMLInputElement ).value )}
+        shapeInput  = {{...maxShape}}
+        onInput     = {( event: Event ) => shapeInput.max = Number(( event.target as HTMLInputElement ).value )}
+        setError    = { () => maxShape.valid = errorInput( maxShape, shapeInput.max?.toString() )}
+        value       = { String( shapeInput.max || '' )}
     />
 
     <Input
-        shapeInput = {{
-            id		    : uuid(),
-            label       : 'Mensaje máximo',
-            name	    : 'msg-max',
-            placeholder : 'Ingresa el mensaje para máximo requerido',
-            disabled    : (shapeInput.max ?? 0) <= 0,
-            value       : shapeInput.msgMax,
-        }}
-        onInput = {( event: Event ) => shapeInput.msgMax = ( event.target as HTMLInputElement ).value }
+        shapeInput  = {{ ...maxMssgShape, disabled: ( shapeInput.max ?? 0 ) <= 0, required: ( shapeInput.max ?? 0 ) > 0 }}
+        onInput     = {( event: Event ) => shapeInput.msgMax = ( event.target as HTMLInputElement ).value }
+        value       = { shapeInput.msgMax }
+        setError    = { () => maxMssgShape.valid = errorInput(
+            { ...maxMssgShape, required: ( shapeInput.max ?? 0 ) > 0 },
+            shapeInput.msgMax
+        )}
     />
-
 {/if}

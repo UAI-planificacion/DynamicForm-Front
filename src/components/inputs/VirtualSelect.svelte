@@ -86,7 +86,7 @@
 
         visibleItems = filteredData.slice( startIndex, endIndex );
 
-        const topOffset = startIndex > 0 ? itemPositions[startIndex].offset : 0;
+        const topOffset = startIndex > 0 ? ( itemPositions[startIndex]?.offset ?? 0 ) : 0;
 
         if ( listContainer ) {
             const itemsContainer = listContainer.querySelector( '.virtual-items' ) as HTMLElement;
