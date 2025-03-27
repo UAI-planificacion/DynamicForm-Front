@@ -10,25 +10,72 @@
         DeleteIcon,
         JsonIcon,
         CaretDownIcon
-    }                           from "$icons";
-    import type { ShapeInput, ShapeOption } from "$models";
-    import { Input, ButtonUI }  from "$components";
-    import {
-		successToast,
-		errorToast,
-    errorInput,
-	}                           from "$lib";
+    }                                               from "$icons";
+    import type { ShapeInput, ShapeOption }         from "$models";
+    import { Input, ButtonUI }                      from "$components";
+    import { successToast, errorToast, errorInput } from "$lib";
 
 
     export let options          : ShapeOption[] = [];
     export let onOptionsChange  : ( newOptions: ShapeOption[] ) => void;
+    export let isSelectionValid : boolean = true;
 
 
     let isLoading = false;
     let open = "values";
 
 
+    const valueShape = {
+        id          : uuid(),
+        name        : uuid(),
+        placeholder : 'Ingrese el valor',
+        shape       : 'input',
+        type        : 'search',
+        valid       : true,
+        required    : true,
+        msgRequired : 'El campo es requerido.',
+        minLength   : 1,
+        maxLength   : 100,
+        msgMinLength: 'Mínimo 1 caracter permitido.',
+        msgMaxLength: 'Máximo 100 caracteres permitidos.'
+    } as ShapeInput;
+
+
+    const labelShape = {
+        id          : uuid(),
+        name        : uuid(),
+        placeholder : 'Ingrese la etiqueta para mostrar',
+        type        : 'search',
+        shape       : 'input',
+        valid       : true,
+        required    : true,
+        msgRequired : 'El campo es requerido.',
+        minLength   : 1,
+        maxLength   : 100,
+        msgMinLength: 'Mínimo 1 caracter permitido.',
+        msgMaxLength: 'Máximo 100 caracteres permitidos.'
+    } as ShapeInput;
+
+
+    let valueShapeList: ShapeInput[] = [ valueShape ];
+    let labelShapeList: ShapeInput[] = [ labelShape ];
+
+
     function addNewOption(): void {
+        for ( let i = 0; i < labelShapeList.length; i++ ) {
+            labelShapeList[i].valid = errorInput( labelShapeList[i], labelShapeList[i].value );
+            valueShapeList[i].valid = errorInput( valueShapeList[i], valueShapeList[i].value );
+
+            if ( !labelShapeList[i].valid || !valueShapeList[i].valid ) {
+                isSelectionValid = false;
+                return;
+            }
+        }
+
+        isSelectionValid = true;
+        labelShapeList.push( { ...labelShape, value: '' } );
+        valueShapeList.push( { ...valueShape, value: '' } );
+
         const newOptions = [
             ...options,
             {
@@ -43,8 +90,12 @@
     }
 
 
-    function deleteOption( item: ShapeOption ): void {
+    function deleteOption( item: ShapeOption, index: number ): void {
         const newOptions = options.filter( option => option.id !== item.id );
+        if ( newOptions.length === 0 ) isSelectionValid = false;
+
+        labelShapeList.splice( index, 1 );
+        valueShapeList.splice( index, 1 );
         onOptionsChange( newOptions );
     }
 
@@ -98,6 +149,15 @@
             if ( newOptions.length === 0 ) throw new Error( 'El archivo no contiene datos.' );
 
             onOptionsChange( newOptions );
+
+            valueShapeList = [];
+            labelShapeList = [];
+
+            for ( const option of newOptions ) {
+                valueShapeList.push( { ...valueShape, value: option.value } );
+                labelShapeList.push( { ...labelShape, value: option.label } );
+            }
+
             if ( open === '' ) open = 'values';
             toast.success( 'Datos cargados correctamente', successToast() );
         } catch ( error ) {
@@ -116,40 +176,8 @@
 
 
     function keyAddOption( event: KeyboardEvent ): void {
-        if ( event.key === 'Enter' ) addNewOption();
+        if ( event.key === 'Enter' ) addNewOption( );
     }
-
-
-    const valueShape = {
-        id          : uuid(),
-        name        : uuid(),
-        placeholder : 'Ingrese el valor',
-        shape       : 'input',
-        type        : 'search',
-        valid       : true,
-        required    : true,
-        msgRequired : 'El campo es requerido.',
-        minLength   : 1,
-        maxLength   : 100,
-        msgMinLength: 'Mínimo 1 caracter permitido.',
-        msgMaxLength: 'Máximo 100 caracteres permitidos.'
-    } as ShapeInput;
-
-
-    const labelShape = {
-        id          : uuid(),
-        name        : uuid(),
-        placeholder : 'Ingrese la etiqueta para mostrar',
-        type        : 'search',
-        shape       : 'input',
-        valid       : true,
-        required    : true,
-        msgRequired : 'El campo es requerido.',
-        minLength   : 1,
-        maxLength   : 100,
-        msgMinLength: 'Mínimo 1 caracter permitido.',
-        msgMaxLength: 'Máximo 100 caracteres permitidos.'
-    } as ShapeInput;
 </script>
 
 
@@ -189,7 +217,7 @@
                         />
 
                         <ButtonUI
-                            onClick     = { addNewOption }
+                            onClick     = { () => addNewOption( ) }
                             disabled    = { isLoading }
                         >
                             {#if isLoading}
@@ -211,32 +239,34 @@
             class="data-[state=closed]:animate-accordion-up my-2 data-[state=open]:animate-accordion-down max-h-72 overflow-auto tracking-[-0.01em]"
         >
             <div class={`h-auto p-1 w-full overflow-auto gap-2 grid grid-cols-1 @lg:grid-cols-2 pr-2`}>
-                {#each options as item}
+                {#each options as item, index}
                     <Input
-                        shapeInput  = {{ ...valueShape, value : item.value }}
+                        shapeInput  = {{ ...valueShapeList[index], value : item.value }}
                         value       = { item.value }
-                        setError    = {() => valueShape.valid = errorInput( valueShape, item.value )}
+                        onKeyup     = { keyAddOption }
+                        setError    = {() => valueShapeList[index].valid = errorInput( valueShapeList[index], item.value )}
                         onInput     = {( event: Event ) => {
                             item.value = ( event.target as HTMLInputElement ).value;
-                            onOptionsChange( options );
+                            valueShapeList[index].value = item.value;
                         }}
                     />
 
                     <div class="flex gap-2 items-start">
                         <Input
-                            shapeInput  = {{ ...labelShape, value : item.label }}
+                            shapeInput  = {{ ...labelShapeList[index], value : item.label }}
                             onKeyup     = { keyAddOption }
-                            setError    = {() => labelShape.valid = errorInput( labelShape, item.label )}
+                            setError    = {() => labelShapeList[index].valid = errorInput( labelShapeList[index], item.label )}
                             value       = { item.label }
                             onInput     = {( event: Event ) => {
                                 item.label = ( event.target as HTMLInputElement ).value;
+                                labelShapeList[index].value = item.label;
                                 onOptionsChange( options );
                             }}
                         />
 
                         <ButtonUI
-                            onClick     = {() => deleteOption( item )}
-                            styles      = "mt-1.5"
+                            onClick = {() => deleteOption( item, index )}
+                            styles  = "mt-1.5"
                         >
                             <DeleteIcon />
                         </ButtonUI>

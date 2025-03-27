@@ -510,7 +510,7 @@
                                     <div class="group">
                                         <button
                                             type        = "button"
-                                            class       = { shapeInput.groudStyle ?? `${( styles.select as InputStyle ).group }` }
+                                            class       = { `opacity-80 ${shapeInput.groudStyle ?? ( styles.select as InputStyle ).group }` }
                                             on:click    = { () => toggleGroup( item )}
                                         >
                                             <span class="truncate text-zinc-900 dark:text-zinc-300">{item.group}</span>

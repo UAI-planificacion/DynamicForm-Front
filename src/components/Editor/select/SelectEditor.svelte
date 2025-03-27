@@ -1,11 +1,13 @@
 <script lang="ts">
-    import { Tabs } from "bits-ui";
-	import { v4 as uuid }	    from 'uuid';
+    import { Tabs }         from "bits-ui";
+	import { v4 as uuid }	from 'uuid';
 
     import { Check, Input, ValueEditor , GroupEditor, VirtualSelect}    from "$components";
     import type { GroupOption, SelectInput, ShapeInput, ShapeOption }   from "$models";
 
+
     export let shapeInput: ShapeInput;
+
 
     let optionsSelected: ShapeOption[] = [
         {
@@ -14,6 +16,8 @@
             value: ''
         }
     ];
+
+
     let groupsSelected: GroupOption[] = [{
         group: '',
         values: [{
@@ -22,13 +26,6 @@
             value: ''
         }]
     }];
-
-
-    const defaultOption: ShapeOption[] = [{
-        id: uuid(),
-        label: 'Item 1',
-        value: 'Item 1'
-    }]
 </script>
 
 <Tabs.Root value="options">
@@ -84,12 +81,9 @@
             label		: 'Valor por defecto',
             selected	: shapeInput.selected,
             multiple    : shapeInput.multiple,
-            search      : false,
-            options     : [{
-                id      : uuid(),
-                label   : 'Sin valor por defecto',
-                value   : 'none'
-            }, ...( shapeInput.options as ShapeOption[] ) ?? defaultOption ],
+            search      : shapeInput.search,
+            searchPlaceholder : shapeInput.searchPlaceholder,
+            options     : shapeInput.options
         }}
     />
 
