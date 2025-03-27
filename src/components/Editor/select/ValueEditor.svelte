@@ -23,6 +23,7 @@
 
     let isLoading = false;
     let open = "values";
+    let fileInputId = `fileInput-${uuid()}`; 
 
 
     const valueShape = {
@@ -170,7 +171,7 @@
 
 
     function triggerFileInput(): void {
-        const fileInput = document.getElementById( 'fileInput' ) as HTMLInputElement;
+        const fileInput = document.getElementById( fileInputId ) as HTMLInputElement;
         if ( fileInput ) fileInput.click();
     }
 
@@ -207,15 +208,6 @@
                             {/if}
                         </ButtonUI>
 
-                        <input
-                            on:click|stopPropagation
-                            id          = "fileInput"
-                            type        = "file"
-                            class       = "hidden"
-                            accept      = ".json,.xlsx,.xls"
-                            on:change   = { handleFileChange }
-                        />
-
                         <ButtonUI
                             onClick     = { () => addNewOption( ) }
                             disabled    = { isLoading }
@@ -239,6 +231,14 @@
             class="data-[state=closed]:animate-accordion-up my-2 data-[state=open]:animate-accordion-down max-h-72 overflow-auto tracking-[-0.01em]"
         >
             <div class={`h-auto p-1 w-full overflow-auto gap-2 grid grid-cols-1 @lg:grid-cols-2 pr-2`}>
+                <input
+                    type    = "file"
+                    accept  = ".json,.xlsx,.xls"
+                    class   = "hidden"
+                    id      = { fileInputId }
+                    on:change={ handleFileChange }
+                />
+
                 {#each options as item, index}
                     <Input
                         shapeInput  = {{ ...valueShapeList[index], value : item.value }}

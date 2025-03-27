@@ -75,8 +75,6 @@
         groupId   : string,
         newOptions: ShapeOption[]
     ): void {
-        console.log('🚀 ~ file: GroupEditor.svelte:76 ~ groupId:', groupId)
-        console.log('🚀 ~ file: GroupEditor.svelte:77 ~ newOptions:', newOptions)
         const newGroups = groups.map(group => 
             group.id === groupId 
                 ? { ...group, values: newOptions }

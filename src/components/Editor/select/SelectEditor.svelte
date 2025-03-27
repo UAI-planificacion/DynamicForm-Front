@@ -4,6 +4,7 @@
 
     import { Check, Input, ValueEditor , GroupEditor, VirtualSelect}    from "$components";
     import type { GroupOption, SelectInput, ShapeInput, ShapeOption }   from "$models";
+    import { errorInput }                                               from "$lib";
 
 
     export let shapeInput: ShapeInput;
@@ -26,6 +27,22 @@
             value: ''
         }]
     }];
+
+
+    const placeholderSearchShape = {
+        id          : uuid(),
+        name        : 'search-placeholder',
+        placeholder : 'Ingrese el placeholder del buscador',
+        disabled    : !shapeInput.search,
+        value       : shapeInput.searchPlaceholder,
+        shape       : 'input',
+        type        : 'text',
+        valid       : true,
+        required    : false,
+        msgRequired : 'no es requerido',
+        maxLength   : 50,
+        msgMaxLength: 'Máximo 50 caracteres permitidos.'
+    } as ShapeInput;
 </script>
 
 <Tabs.Root value="options">
@@ -113,16 +130,15 @@
             />
 
             <Input
-                shapeInput = {{
-                    id		    : uuid(),
-                    name	    : 'search-placeholder',
-                    value       : shapeInput.searchPlaceholder,
-                    placeholder : 'Ingrese el placeholder del buscador',
-                    type        : 'text',
-                    disabled    : !shapeInput.search
-                }}
-                onInput = {( event: Event ) => shapeInput.searchPlaceholder = ( event.target as HTMLInputElement ).value }
+                shapeInput  = {{ ...placeholderSearchShape, disabled: !shapeInput.search, maxLength: !shapeInput.search ? undefined : 50 }}
+                value       = { shapeInput.searchPlaceholder }
+                onInput     = {( event: Event ) => shapeInput.searchPlaceholder = ( event.target as HTMLInputElement ).value }
+                setError    = {() => { placeholderSearchShape.valid = errorInput(
+                    {...placeholderSearchShape, maxLength: !shapeInput.search ? undefined : 50},
+                    shapeInput.searchPlaceholder
+                )}}
             />
         </div>
     </div>
 </div>
+z

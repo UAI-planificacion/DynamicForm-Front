@@ -32,8 +32,12 @@
     let scrollTop = 0;
     let visibleItems: ShapeOption[] | GroupOption[] = [];
     let totalHeight = 0;
-    let itemPositions: { index: number; offset: number }[] = [];
+    let itemPositions: { index: number; offset: number; height: number }[] = [];
     let hoveredIndex: string | null = null;
+
+    const GROUP_HEADER_HEIGHT = 40;
+    const OPTION_HEIGHT = 36;
+    const SCROLL_BUFFER = 200;
 
     const isGroupOption = (
         item: ShapeOption | GroupOption
@@ -44,14 +48,17 @@
         let currentOffset = 0;
 
         itemPositions = filteredData?.map((item, index) => {
-            const position = { index, offset: currentOffset };
+            const height = isGroupOption(item) 
+                ? GROUP_HEADER_HEIGHT + (item.values.length * OPTION_HEIGHT)
+                : OPTION_HEIGHT;
 
-            if ( isGroupOption( item )) {
-                currentOffset += 40 + ( item.values.length * 36 );
-            } else {
-                currentOffset += 36;
-            }
+            const position = { 
+                index, 
+                offset: currentOffset,
+                height
+            };
 
+            currentOffset += height;
             return position;
         }) ?? [];
 
@@ -62,58 +69,67 @@
     function findVisibleRange(
         scrollTop: number
     ): { startIndex: number; endIndex: number } {
-        const containerHeight   = calculateDropdownHeight();
-        const buffer            = containerHeight;
-        const visibleStart      = Math.max(0, scrollTop - buffer);
-        const visibleEnd        = scrollTop + containerHeight + buffer;
+        const containerHeight = calculateDropdownHeight();
+        const visibleStart = Math.max(0, scrollTop - SCROLL_BUFFER);
+        const visibleEnd = scrollTop + containerHeight + SCROLL_BUFFER;
 
-        let startIndex = itemPositions.findIndex( pos => pos.offset >= visibleStart );
+        let startIndex = 0;
+        let endIndex = itemPositions.length;
 
-        if ( startIndex === -1 ) startIndex = itemPositions.length;
+        // Encuentra el primer elemento visible
+        for (let i = 0; i < itemPositions.length; i++) {
+            const pos = itemPositions[i];
+            if (pos.offset + pos.height >= visibleStart) {
+                startIndex = Math.max(0, i - 1); // Mantener un elemento extra arriba
+                break;
+            }
+        }
 
-        let endIndex = itemPositions.findIndex( pos => pos.offset > visibleEnd );
-
-        if ( endIndex === -1 ) endIndex = itemPositions.length;
+        // Encuentra el último elemento visible
+        for (let i = startIndex; i < itemPositions.length; i++) {
+            const pos = itemPositions[i];
+            if (pos.offset > visibleEnd) {
+                endIndex = Math.min(itemPositions.length, i + 1); // Mantener un elemento extra abajo
+                break;
+            }
+        }
 
         return { startIndex, endIndex };
     }
 
 
     function updateVisibleItems(): void {
-        if ( !filteredData?.length ) return;
+        if (!filteredData?.length) return;
 
-        const { startIndex, endIndex } = findVisibleRange( scrollTop );
+        const { startIndex, endIndex } = findVisibleRange(scrollTop);
+        visibleItems = filteredData.slice(startIndex, endIndex);
 
-        visibleItems = filteredData.slice( startIndex, endIndex );
-
-        const topOffset = startIndex > 0 ? ( itemPositions[startIndex]?.offset ?? 0 ) : 0;
-
-        if ( listContainer ) {
-            const itemsContainer = listContainer.querySelector( '.virtual-items' ) as HTMLElement;
-
-            if ( itemsContainer ) {
+        if (listContainer) {
+            const itemsContainer = listContainer.querySelector('.virtual-items') as HTMLElement;
+            if (itemsContainer) {
+                const topOffset = startIndex > 0 ? itemPositions[startIndex].offset : 0;
                 itemsContainer.style.transform = `translateY(${topOffset}px)`;
             }
         }
     }
 
 
-    function handleScroll( event: Event ): void {
+    function handleScroll(event: Event): void {
         const target = event.target as HTMLDivElement;
-
-        scrollTop       = target.scrollTop;
-        hoveredIndex    = null;
-
-        updateVisibleItems();
+        scrollTop = target.scrollTop;
+        hoveredIndex = null;
+        requestAnimationFrame(() => {
+            updateVisibleItems();
+        });
     }
 
 
-    function clearSelection( event: MouseEvent | KeyboardEvent ): void {
+    function clearSelection(event: MouseEvent | KeyboardEvent): void {
         event?.stopPropagation();
-        searchTerm      = '';
-        isOpen          = false;
-        selectedItems   = [];
-        onSelectedChange( undefined );
+        searchTerm = '';
+        isOpen = false;
+        selectedItems = [];
+        onSelectedChange(undefined);
         setError();
     }
 
@@ -362,35 +378,30 @@
         }
     }
 
-    function calculateDropdownHeight() {
-        const searchHeight = shapeInput.search ? 48 : 0;  // Aumentado para dar más espacio al buscador
-        const padding = 16; // Padding total del contenedor (8px arriba y abajo)
-        
-        let contentHeight = 0;
-        
-        if (!filteredData?.length) {
-            contentHeight = 36; // Altura mínima para "No hay resultados"
-        } else {
-            contentHeight = filteredData.reduce((height, item) => {
-                if (isGroupOption(item)) {
-                    // 40px para el header del grupo + 36px por cada elemento en el grupo
-                    // Asegurar que siempre haya espacio para al menos un elemento en el grupo
-                    return height + 36 + (Math.max(1, item.values.length) * 36);
-                }
-                return height + 36; // 36px por cada elemento individual
-            }, 0);
-        }
+    function calculateDropdownHeight(): number {
+        if (!filteredData?.length) return OPTION_HEIGHT;
 
-        // Usar el heightPanel como multiplicador de elementos, cada elemento es 36px
-        const maxHeight = (shapeInput.heightPanel ?? 5) * 36;
+        // Calcula la altura total necesaria
+        const totalItemsHeight = filteredData.reduce((height, item) => {
+            if (isGroupOption(item)) {
+                return height + GROUP_HEADER_HEIGHT + (item.values.length * OPTION_HEIGHT);
+            }
+            return height + OPTION_HEIGHT;
+        }, 0);
+
+        // Altura máxima del panel (5 items por defecto)
+        const maxPanelHeight = (shapeInput.heightPanel ?? 5) * OPTION_HEIGHT;
         
-        // Asegurar que siempre haya espacio para al menos el grupo y un elemento
-        const minHeight = filteredData?.length && isGroupOption(filteredData[0]) ? 76 : 36;
+        // Si hay búsqueda, agregar altura para el input
+        const searchHeight = shapeInput.search ? 48 : 0;
         
-        return Math.max(
-            minHeight,
-            Math.min(contentHeight + searchHeight + padding, maxHeight)
-        );
+        // Agregar padding
+        const paddingHeight = 16;
+        
+        // Calcular altura máxima total
+        const maxHeight = maxPanelHeight + searchHeight + paddingHeight;
+
+        return Math.min(maxHeight, Math.max(OPTION_HEIGHT, totalItemsHeight));
     }
 
     function handleClickOutside( event: MouseEvent ): void {
@@ -463,7 +474,7 @@
             "
         >
             {#if shapeInput.search}
-                <div class="p-1 sticky top-0 bg-white dark:bg-zinc-800">
+                <div class="p-1 sticky top-0 bg-white dark:bg-zinc-800 z-10">
                     <Input
                         shapeInput = {{
                             id		    : 'search-items',
@@ -488,12 +499,16 @@
             {:else}
                 <div
                     bind:this={listContainer}
-                    class="px-1 mt-1"
-                    class:overflow-auto={filteredData.length > 1 && calculateDropdownHeight() < totalHeight}
-                    style="height: {calculateDropdownHeight()}px;"
+                    class="virtual-select-container"
+                    style="
+                        height: {calculateDropdownHeight()}px;
+                        overflow-y: auto;
+                        position: relative;
+                        padding: 0.25rem;
+                    "
                     role="listbox"
                     aria-label="Lista de opciones"
-                    on:scroll={filteredData.length > 1 ? handleScroll : null}
+                    on:scroll={handleScroll}
                 >
                     <div 
                         style="height: {totalHeight}px; position: relative;" 
@@ -518,9 +533,9 @@
                                             {#if shapeInput.multiple}
                                                 <Check class={`h-4 w-4 ${
                                                     isGroupFullySelected(item)
-                                                    ? 'text-green-600'
+                                                    ? 'text-blue-700'
                                                     : isGroupPartiallySelected(item)
-                                                        ? 'text-gray-400'
+                                                        ? 'text-zinc-400'
                                                         : 'text-transparent'
                                                 }`} />
                                             {/if}
@@ -549,14 +564,13 @@
                                 {:else}
                                     <button
                                         type            = "button"
-                                        class           = { shapeInput.itemStyle ?? `${( styles.select as InputStyle ).item }` }
-                                        data-hovered    = {hoveredIndex === `item-${i}`}
+                                        class           = { shapeInput.itemStyle ?? ( styles.select as InputStyle ).item }
                                         data-selected   = {selectedItems.some(selected => selected.value === item.value)}
                                         on:click        = { () => toggleItem( item )}
-                                        on:mouseenter   = { () => hoveredIndex = `item-${i}` }
+                                        on:mouseenter   = { () => hoveredIndex = i.toString() }
                                         on:mouseleave   = { handleMouseLeave }
                                         role            = "option"
-                                        aria-selected   = { selectedItems.some( selected => selected.value === item.value )}
+                                        aria-selected   = {selectedItems.some( selected => selected.value === item.value )}
                                     >
                                         <span>{item.label}</span>
 
@@ -577,36 +591,25 @@
 
 <style>
     /* Custom scrollbar styles */
-    :global(.virtual-items::-webkit-scrollbar) {
-        width: 8px;
+    :global(.virtual-select-container) {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(89, 93, 100, 0.5) transparent;
     }
 
-    :global(.virtual-items::-webkit-scrollbar-track) {
+    :global(.virtual-select-container::-webkit-scrollbar) {
+        width: 6px;
+    }
+
+    :global(.virtual-select-container::-webkit-scrollbar-track) {
         background: transparent;
     }
 
-    :global(.virtual-items::-webkit-scrollbar-thumb) {
-        background-color: rgb(161 161 170); /* zinc-400 */
-        border-radius: 4px;
+    :global(.virtual-select-container::-webkit-scrollbar-thumb) {
+        background-color: rgba(89, 93, 100, 0.5);
+        border-radius: 3px;
     }
 
-    :global(.dark .virtual-items::-webkit-scrollbar-thumb) {
-        background-color: rgb(63 63 70); /* zinc-700 */
+    :global(.virtual-select-container::-webkit-scrollbar-thumb:hover) {
+        background-color: rgba(189, 93, 100, 0.5);
     }
-
-    :global(.virtual-items::-webkit-scrollbar-thumb:hover) {
-        background-color: rgb(113 113 122); /* zinc-500 */
-    }
-
-    :global(.dark .virtual-items::-webkit-scrollbar-thumb:hover) {
-        background-color: rgb(82 82 91); /* zinc-600 */
-    }
-
-    /* [data-hovered="true"] {
-        @apply bg-zinc-100 dark:bg-zinc-700;
-    }
-    
-    [data-selected="true"] {
-        @apply bg-zinc-300/50 dark:bg-zinc-600;
-    } */
 </style>
