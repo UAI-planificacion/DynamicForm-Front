@@ -1,23 +1,9 @@
 import type { DateValue } from "@internationalized/date";
 
-import type { Selected, ShapeInput, Time } from "$models";
 import type { DateRange } from "bits-ui";
 
+import type { Selected, ShapeInput, Time } from "$models";
 
-// export const errorDateRangePicker = (
-//     shapeInput  : ShapeInput,
-//     date?       : DateRange | undefined
-// ): boolean => showErrorDateRangePicker( shapeInput, date ) === undefined;
-
-// export function showErrorDateRangePicker(
-//     shapeInput  : ShapeInput,
-//     date?       : DateRange | undefined
-// ): string | undefined {
-//     if ( !shapeInput.required ) return undefined;
-
-//     if ( !date )
-//         return shapeInput?.msgRequired;
-// }
 
 
 export const errorDatePicker = (
@@ -126,7 +112,6 @@ export function showErrorInput(
         if ( !shapeInput.required && isValue ) return undefined;
 
         const numberValue = Number( value );
-        console.log('🚀 ~ file: valid-shapeinput.ts:149 ~ numberValue:', numberValue)
 
         if ( shapeInput.min && numberValue < shapeInput.min )
             return shapeInput?.msgMin;
@@ -141,8 +126,14 @@ export function showErrorInput(
         if ( shapeInput.maxLength && value && value.length > shapeInput.maxLength )
             return shapeInput?.msgMaxLength;
 
-        if ( value && shapeInput.pattern && !shapeInput.pattern?.match( value ))
-            return shapeInput?.msgPattern;
+        if ( value && shapeInput.pattern ) {
+            try {
+                const urlPattern: RegExp = new RegExp( shapeInput.pattern );
+                if ( !urlPattern.test( value )) return shapeInput?.msgPattern;
+            } catch (error) {
+                return `Patrón ${ shapeInput.pattern } es inválido`;
+            }
+        }
     }
 
     return undefined;
