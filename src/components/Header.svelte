@@ -29,10 +29,10 @@
 
         <!-- Desktop Navigation -->
         <nav class="hidden md:flex space-x-8 items-center">
-            <a href="/" class="text-zinc-300 hover:text-blue-500 relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-900 dark:after:bg-blue-400 after:transition-all hover:after:w-full">Inicio</a>
-            <a href="/docs" class="text-zinc-300 hover:text-blue-500 relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-900 dark:after:bg-blue-400 after:transition-all hover:after:w-full">Documentación</a>
+            <a href="/" class="text-zinc-300 hover:no-underline dark:text-zinc-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full">Inicio</a>
+            <a href="/docs" class="text-zinc-300 hover:no-underline dark:text-zinc-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full">Documentación</a>
             {#if $session.data}
-                <a href="/form" class="text-zinc-300 hover:text-blue-500 relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-900 dark:after:bg-blue-400 after:transition-all hover:after:w-full">Formulario</a>
+                <a href="/form" class="text-zinc-300 hover:no-underline dark:text-zinc-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full">Formulario</a>
             {/if}
 
             <DropdownMenu.Root>
