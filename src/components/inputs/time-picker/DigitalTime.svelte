@@ -137,7 +137,7 @@
     <button
         disabled        = { shapeInput.disabled }
         type            = "button"
-        id              = { `${ shapeInput.id }-input` }
+        id              = { shapeInput.id }
         class           = { `${( styles.digital as InputStyle ).box }` }
         aria-haspopup   = "true"
         aria-expanded   = { open }

@@ -145,7 +145,7 @@
     <div class="relative w-full" id={ shapeInput.id }>
         <button
             type            = "button"
-            id              = { `${ shapeInput.id }-input` }
+            id              = { shapeInput.id }
             class           = { `${ shapeInput.boxStyle ?? ( styles.analogic as InputStyle ).box }` }
             on:click        = { togglePicker }
             aria-haspopup   = "true"

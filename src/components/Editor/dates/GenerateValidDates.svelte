@@ -183,10 +183,10 @@
         <Tooltip
             value       = { true }
             message     = "Días de la semana que se van a invalidar" 
-            background  = "bg-amber-300"
-            color       = "bg-zinc-200 text-zinc-800 dark:bg-zinc-500 dark:text-zinc-200"
+            background  = "bg-black dark:bg-black"
+            color       = "bg-zinc-200 text-zinc-800 dark:bg-zinc-900 dark:text-zinc-200"
         >
-            <span class="text-zinc-800 font-semibold">
+            <span class="text-zinc-200 font-semibold">
                 ?
             </span>
         </Tooltip>
