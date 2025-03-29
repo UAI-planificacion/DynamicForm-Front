@@ -1,19 +1,16 @@
 <script lang="ts">
-    import { onMount }  from "svelte";
+    import { onMount } from "svelte";
 
     import { Accordion }        from "bits-ui";
 	import { v4 as uuid }	    from 'uuid';
     import { type DateValue }   from "@internationalized/date";
 
     import {
-        DeleteIcon,
         CaretDownIcon,
-        AddIcon,
     }						from "$icons";
     import type {
         InputStyle,
         InputType,
-        Method,
         SelectInput,
         ShapeInput,
         Types
@@ -37,11 +34,11 @@
 		options,
 		styles,
 		types,
-		httpCodes,
-		methods,
         errorInput,
         errorSelect,
 	}						from "$lib";
+    import ButtonRequired       from "./buttons/ButtonRequired.svelte";
+    import ButtonValidations    from "./buttons/ButtonValidations.svelte";
 
     export let shapeInput       : ShapeInput;
     export let onDelete         : VoidFunction;
@@ -63,14 +60,6 @@
 			shapeInput.invalidErrorMsg	??= 'Hay un error en el formulario.'
 		}
     });
-
-
-    const heightOptions = ( length?: number ) => ({
-        [0]: 'h-0',
-        [1]: 'h-auto',
-        [2]: 'h-auto',
-        [3]: 'h-auto',
-    }[length ?? 0] || 'h-36' );
 
 
     let editing: boolean = false;
@@ -125,37 +114,11 @@
     }
 
 
-	const deleteHttpCode = ( index: number ) =>
-        shapeInput.httpList = shapeInput.httpList
-			?.filter((_, i) => i !== index);
-
-
-	const addHttpCode = () =>
-        shapeInput.httpList = [
-            ...shapeInput.httpList ?? [], 
-            { code: 200, message: '' }
-        ];
-
-
     const baseInputShape = {
         shape       : 'input',
         type        : 'text',
-    }
-
-
-    const nameShape = {
-        ...baseInputShape,
-        id		    : uuid(),
-        label       : 'Nombre',
-        name	    : 'name',
-        placeholder: 'Ingrese el nombre',
-        value       : shapeInput.name,
-        required    : true,
-        msgRequired : 'El nombre es requerido.',
-        maxLength   : 50,
-        msgMaxLength: 'Máximo 50 caracteres permitidos.',
         valid       : true
-    } as ShapeInput;
+    }
 
 
     const labelShape = {
@@ -171,6 +134,7 @@
         msgRequired : 'La etiqueta es requerida.',
         valid       : true
     } as ShapeInput;
+
 
     const placeholderShape = {
         ...baseInputShape,
@@ -238,15 +202,29 @@
                     />
 				{/if}
 
+                {#if true} {@const nameShape = {
+                    ...baseInputShape,
+                    id		    : uuid(),
+                    label       : 'Nombre',
+                    name	    : 'name',
+                    placeholder: 'Ingrese el nombre',
+                    value       : shapeInput.name,
+                    required    : true,
+                    msgRequired : 'El nombre es requerido.',
+                    maxLength   : 50,
+                    msgMaxLength: 'Máximo 50 caracteres permitidos.',
+                } as ShapeInput}
+
                 <Input
-                    shapeInput  = { nameShape }
+                    shapeInput  = {{ ...nameShape }}
                     onInput     = {( event: Event ) => shapeInput.name = ( event.target as HTMLInputElement ).value }
                     value       = { shapeInput.name }
                     setError    = { () => nameShape.valid = errorInput(nameShape, shapeInput.name) }
                 />
+                {/if}
 
                 <Input
-                    shapeInput  = {{ ...labelShape, required: shapeInput.shape === 'check' }}
+                    shapeInput  = {{ ...labelShape, required: shapeInput.shape === 'check', value : shapeInput.label }}
                     onInput     = {( event: Event ) => shapeInput.label = ( event.target as HTMLInputElement ).value }
                     value       = { shapeInput.label }
                     setError    = { () => labelShape.valid = errorInput( { ...labelShape, required: shapeInput.shape === 'check' }, shapeInput.label )}
@@ -390,36 +368,7 @@
             {:else if shapeInput.shape === 'select' }
                 <SelectEditor bind:shapeInput={ shapeInput } />
             {:else if shapeInput.shape === 'button'}
-                <div class="grid @lg:grid-cols-[1fr,2fr] grid-cols-1 gap-2 items-center">
-                    <VirtualSelect
-                        shapeInput = {{
-                            id			: uuid(),
-                            label		: 'Método HTTP',
-                            name		: 'method',
-                            placeholder	: 'Selecciona el método',
-                            required 	: true,
-                            selected	: shapeInput.selected,
-                            multiple    : shapeInput.multiple,
-                            search      : false,
-                            options		: methods
-                        }}
-                        onSelectedChange = {( value ) => {
-                            if (value instanceof Array || value === undefined) return;
-                            shapeInput.method = value as Method;
-                        }}
-                    />
-
-                    <Input
-                        shapeInput = {{
-                            id			: uuid(),
-                            label		: 'URL de la API',
-                            name		: 'urlSend',
-                            placeholder	: 'Ingresa la URL de la API',
-                            value		: shapeInput.urlSend
-                        }}
-                        onInput = {( event ) => shapeInput.urlSend = ( event.target as HTMLInputElement ).value }
-                    />
-                </div>
+                <ButtonRequired bind:shapeInput={ shapeInput } />
             {/if}
 
             <Accordion.Root class="w-full" type="single">
@@ -486,73 +435,7 @@
                                 />
                             </div>
 						{:else if shapeInput.shape === 'button' }
-							<div class="grid">
-								<div class="grid grid-cols-[1fr,2fr,auto] gap-2 items-center">
-									<div class="flex flex-col gap-2">
-										<span class="text-sm font-semibold text-zinc-900 dark:text-zinc-200">Código HTTP</span>
-									</div>
-									<div class="flex flex-col gap-2 ml-1">
-										<span class="text-sm font-semibold text-zinc-900 dark:text-zinc-200">Mensaje</span>
-									</div>
-									<div class="flex flex-col gap-2">
-										<button
-											type="button"
-											class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 bg-primary text-primary-foreground shadow hover:bg-primary/90"
-											on:click={addHttpCode}
-										>
-											<AddIcon width={"21px"} height={"21px"} />
-										</button>
-									</div>
-								</div>
-
-								<div class={`${heightOptions( shapeInput.httpList?.length )} grid @lg:grid-cols-[1fr,2fr,auto] grid-cols-1 gap-2 items-center overflow-auto`}>
-									{#each shapeInput.httpList ?? [] as http, index}
-                                            <VirtualSelect
-                                                shapeInput = {{
-                                                    id			: uuid(),
-                                                    shape		: 'select',
-                                                    name		: 'code',
-                                                    placeholder	: 'Código HTTP',
-                                                    required 	: true,
-                                                    selected	: http.code.toString(),
-                                                    multiple    : shapeInput.multiple,
-                                                    search      : false,
-                                                    options		: httpCodes,
-                                                }}
-                                                onSelectedChange = {(value) => {
-													if ( value instanceof Array || value === undefined) return;
-													if (!shapeInput.httpList) return;
-													shapeInput.httpList[index].code = parseInt( value );
-												}}
-                                            />
-
-											<Input
-												shapeInput = {{
-													id			: uuid(),
-													name		: 'message',
-													shape		: 'input',
-													placeholder	: 'Mensaje de respuesta',
-													required	: true,
-													value		: http.message
-												}}
-												onInput = {(event) => {
-													if (!shapeInput.httpList) return;
-													shapeInput.httpList[index].message = (event.target as HTMLInputElement).value;
-												}}
-											/>
-
-											<button
-												aria-label="Eliminar código HTTP"
-												type="button"
-												class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 px-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
-												on:click={() => deleteHttpCode(index)}
-												disabled={shapeInput.httpList?.length === 1}
-											>
-												<DeleteIcon />
-											</button>
-									{/each}
-								</div>
-							</div>
+                            <ButtonValidations bind:shapeInput={ shapeInput } />
                         {/if}
 
                         {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' }
@@ -613,50 +496,6 @@
                         {/if}
                     </Accordion.Content>
                 </Accordion.Item>
-
-				{#if shapeInput.shape === 'button'}
-					<Accordion.Item value="form" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
-						<Accordion.Header>
-							<Accordion.Trigger
-								class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
-							>
-								Formulario
-
-								<span
-									class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10"
-								>
-									<CaretDownIcon />
-								</span>
-							</Accordion.Trigger>
-						</Accordion.Header>
-
-						<Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
-							<div class="grid @lg:grid-cols-2 grid-cols-1 gap-2 items-center">
-								<Input
-									shapeInput = {{
-										id		    : uuid(),
-										label       : 'Mensaje de error externo',
-										name	    : 'external-error',
-										placeholder : 'Ingresa el mensaje para error externo',
-										value       : shapeInput.externalErrorMsg,
-									}}
-									onInput = {( event: Event ) => shapeInput.externalErrorMsg = ( event.target as HTMLInputElement ).value }
-								/>
-
-								<Input
-									shapeInput = {{
-										id		    : uuid(),
-										label       : 'Formulario inválido',
-										name	    : 'invalid-form',
-										placeholder : 'Ingresa el mensaje para formulario inválido',
-										value       : shapeInput.invalidErrorMsg,
-									}}
-									onInput = {( event: Event ) => shapeInput.invalidErrorMsg = ( event.target as HTMLInputElement ).value }
-								/>
-							</div>
-						</Accordion.Content>
-					</Accordion.Item>
-				{/if}
 
 				<Accordion.Item value="accordion" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
                     <Accordion.Header>
