@@ -4,6 +4,8 @@
     import { MicrosoftIcon }                from "$icons";
     import {authClient, signIn, signOut }   from "$lib";
 
+    export let scale = true;
+
 
     const session = authClient.useSession();
 
@@ -20,7 +22,7 @@
 </script>
 
 <button
-	class   = "w-full flex justify-center px-4 h-10 items-center gap-2 hover:brightness-105 shadow-lg active:scale-95 bg-zinc-200 dark:bg-zinc-900 p-3 rounded-lg transition-colors"
+	class   = {`w-full flex justify-center px-4 h-10 items-center gap-2 shadow-lg active:scale-95 bg-black p-3 rounded-lg transition-all duration-300 ${scale ? 'hover:scale-105' : ''}`}
     onclick = { sign }
 >
 	<MicrosoftIcon />

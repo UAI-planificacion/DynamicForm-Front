@@ -110,7 +110,7 @@
                     <DropdownMenu.Separator class="my-2 h-px bg-zinc-200 dark:bg-zinc-700" />
 
                     <DropdownMenu.Item class="flex h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">
-                        <MicrosoftAuth />
+                        <MicrosoftAuth scale={false} />
                     </DropdownMenu.Item>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
