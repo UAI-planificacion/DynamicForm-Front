@@ -11,19 +11,32 @@
     export let isValid      : boolean;
 
     $: if ( countSend ) {
-        minLengthShape.valid        = errorInput( minLengthShape, String( shapeInput.minLength ) );
-        minLengthMssgShape.valid    = errorInput( minLengthMssgShape, shapeInput.msgMinLength );
-        maxLengthShape.valid        = errorInput( maxLengthShape, String( shapeInput.maxLength ) );
-        maxLengthMssgShape.valid    = errorInput( maxLengthMssgShape, shapeInput.msgMaxLength );
-        patternShape.valid          = errorInput( patternShape, shapeInput.pattern );
-        patternMssgShape.valid      = errorInput( patternMssgShape, shapeInput.msgPattern );
+        if ( shapeInput.type === 'number' ) {
+            minShape.valid        = errorInput( minShape, String( shapeInput.min ) );
+            minMssgShape.valid    = errorInput( minMssgShape, shapeInput.msgMin );
+            maxShape.valid        = errorInput( maxShape, String( shapeInput.max ) );
+            maxMssgShape.valid    = errorInput( maxMssgShape, shapeInput.msgMax );
 
-        isValid = minLengthShape.valid
-        && minLengthMssgShape.valid
-        && maxLengthShape.valid
-        && maxLengthMssgShape.valid
-        && patternShape.valid
-        && patternMssgShape.valid;
+            isValid = minShape.valid
+            && minMssgShape.valid
+            && maxShape.valid
+            && maxMssgShape.valid;
+        }
+        else {
+            minLengthShape.valid        = errorInput( minLengthShape, String( shapeInput.minLength ) );
+            minLengthMssgShape.valid    = errorInput( minLengthMssgShape, shapeInput.msgMinLength );
+            maxLengthShape.valid        = errorInput( maxLengthShape, String( shapeInput.maxLength ) );
+            maxLengthMssgShape.valid    = errorInput( maxLengthMssgShape, shapeInput.msgMaxLength );
+            patternShape.valid          = errorInput( patternShape, shapeInput.pattern );
+            patternMssgShape.valid      = errorInput( patternMssgShape, shapeInput.msgPattern );
+
+            isValid = minLengthShape.valid
+            && minLengthMssgShape.valid
+            && maxLengthShape.valid
+            && maxLengthMssgShape.valid
+            && patternShape.valid
+            && patternMssgShape.valid;
+        }
     }
 
 
