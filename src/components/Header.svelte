@@ -1,12 +1,9 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
-
 	import { Avatar, DropdownMenu } from "bits-ui";
 
     import { Switch, ToggleTheme, MicrosoftAuth } 	from "$components";
 	import { dynamicMode, toggleTheme, theme  } 	from "$stores";
-    import { MicrosoftIcon }                        from "$icons";
-    import { authClient, signOut }                  from "$lib";
+    import { authClient }                           from "$lib";
 
     let isMenuOpen      = $state( false );
     let loadingStatus   = $state<Avatar.RootProps["loadingStatus"]>("loading");
@@ -113,20 +110,7 @@
                     <DropdownMenu.Separator class="my-2 h-px bg-zinc-200 dark:bg-zinc-700" />
 
                     <DropdownMenu.Item class="flex h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">
-                        {#if !$session.data}
-                            <MicrosoftAuth />
-                        {:else}
-                            <button
-                                class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-700 hover:brightness-110 text-white rounded-lg transition-colors"
-                                onclick = { async () => {
-                                await signOut();
-                                goto("/");
-                            }}
-                        >
-                            <MicrosoftIcon />
-                            <span>Cerrar sesión</span>
-                        </button>
-                        {/if}
+                        <MicrosoftAuth />
                     </DropdownMenu.Item>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
