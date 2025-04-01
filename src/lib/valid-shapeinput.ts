@@ -59,7 +59,7 @@ export function showErrorSelect(
 ): string | undefined {
     if ( !shapeInput.required ) return undefined;
 
-    if ( shapeInput.required && ( !value || ( Array.isArray( value ) && value.length === 0 )))
+    if ( shapeInput.required && ( !value || value === 'none' || ( Array.isArray( value ) && value.length === 0 )))
         return shapeInput?.msgRequired;
 }
 
