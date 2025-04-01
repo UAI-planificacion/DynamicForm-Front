@@ -94,7 +94,7 @@
             {/if}
 
             <button
-                class="bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 font-semibold py-3 px-6 rounded-md transition-all duration-300 hover:scale-105 hover:shadow-lg dark:hover:shadow-zinc-900/50"
+                class="bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 font-semibold py-1 px-6 rounded-md transition-all duration-300 hover:scale-105 hover:shadow-lg dark:hover:shadow-zinc-900/50"
                 on:click={() => goto('/docs')}
             >
                 Conocer más
