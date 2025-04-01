@@ -1,13 +1,16 @@
 <script lang="ts">
     import { v4 as uuid } from "uuid";
 
+	import type { Http, ShapeInput, ShapeOption, Types }    from '$models';
     import { ButtonUI, Input, VirtualSelect }               from "$components";
-	import type { Http, ShapeInput, ShapeOption }           from '$models';
     import { errorInput, httpCodes }                        from "$lib";
-    import { AddIcon, DeleteIcon, JsonIcon, LoaderIcon }    from "$icons";
+    import { AddIcon, DeleteIcon, LoaderIcon }              from "$icons";
 
 
     export let shapeInput: ShapeInput;
+
+
+    let isLoading = false;
 
 
     function getAvailableHttpCodes( currentIndex: number ): ShapeOption[] {
@@ -25,74 +28,108 @@
         shapeInput.httpList = shapeInput.httpList?.filter((_, i) => i !== index);
 
 
-	const addHttpCode = (): Http[] =>
+    const basicInput = {
+        valid       : true,
+        shape       : 'input' as const,
+        type        : 'text' as Types,
+        required    : true,
+        minLength   : 3,
+        maxLength   : 100
+    }
+
+
+    const createValidationItem = () => ({
+        ...basicInput,
+        id          : uuid(),
+        name        : 'message',
+        placeholder : 'Mensaje de respuesta',
+        value       : '',
+        msgRequired : 'El mensaje es requerido.',
+        msgMinLength: 'El mensaje debe tener al menos 3 caracteres.',
+        msgMaxLength: 'El mensaje debe tener menos de 100 caracteres.',
+    });
+
+
+    let responseMssgList: ShapeInput[] = Array.from(
+        { length: shapeInput.httpList?.length || 0 },
+        () => createValidationItem()
+    );
+
+
+	function addHttpCode(): void {
         shapeInput.httpList = [
             ...shapeInput.httpList ?? [], 
             { code: 0, message: '' }
         ];
 
-
-    let isLoading = false;
+        responseMssgList = [
+            ...responseMssgList,
+            createValidationItem()
+        ];
+    };
 </script>
 
-<div class="grid @lg:grid-cols-2 grid-cols-1 gap-2 items-center">
-    <Input
-        shapeInput = {{
-            id		    : uuid(),
-            label       : 'Mensaje de error externo',
-            name	    : 'external-error',
-            placeholder : 'Ingresa el mensaje para error externo',
-            value       : shapeInput.externalErrorMsg,
-        }}
-        onInput = {( event: Event ) => shapeInput.externalErrorMsg = ( event.target as HTMLInputElement ).value }
-    />
+<div class="grid @lg:grid-cols-2 grid-cols-1 gap-2 items-start">
+    {#if true}
+        {@const errorMssg = {
+            ...basicInput,
+            id		        : uuid(),
+            label           : 'Mensaje de error externo',
+            name	        : 'external-error',
+            placeholder     : 'Ingresa el mensaje para error externo',
+            value           : shapeInput.externalErrorMsg,
+            msgRequired     : 'El mensaje de error externo es requerido.',
+            msgMinLength    : 'El mensaje de error externo debe tener al menos 3 caracteres.',
+            msgMaxLength    : 'El mensaje de error externo debe tener menos de 100 caracteres.',
+        } as ShapeInput}
+        <Input
+            shapeInput  = {{ ...errorMssg }}
+            onInput     = {( event: Event ) => shapeInput.externalErrorMsg = ( event.target as HTMLInputElement ).value }
+            value       = { shapeInput.externalErrorMsg }
+            setError    = {() => errorMssg.valid = errorInput( errorMssg, shapeInput.externalErrorMsg )}
+        />
 
-    <Input
-        shapeInput = {{
-            id		    : uuid(),
-            label       : 'Formulario inválido',
-            name	    : 'invalid-form',
-            placeholder : 'Ingresa el mensaje para formulario inválido',
-            value       : shapeInput.invalidErrorMsg,
-        }}
-        onInput = {( event: Event ) => shapeInput.invalidErrorMsg = ( event.target as HTMLInputElement ).value }
-    />
+        {@const invalidForm = {
+            ...basicInput,
+            id		        : uuid(),
+            label           : 'Formulario inválido',
+            name	        : 'invalid-form',
+            placeholder     : 'Ingresa el mensaje para formulario inválido',
+            value           : shapeInput.invalidErrorMsg,
+            msgRequired     : 'El formulario inválido es requerido.',
+            msgMinLength    : 'El formulario inválido debe tener al menos 3 caracteres.',
+            msgMaxLength    : 'El formulario inválido debe tener menos de 100 caracteres.',
+        } as ShapeInput}
+        <Input
+            shapeInput  = {{ ...invalidForm }}
+            onInput     = {( event: Event ) => shapeInput.invalidErrorMsg = ( event.target as HTMLInputElement ).value }
+            value       = { shapeInput.invalidErrorMsg }
+            setError    = {() => invalidForm.valid = errorInput( invalidForm, shapeInput.invalidErrorMsg )}
+        />
+    {/if}
 </div>
 
-<div class="grid">
-    <div class="flex justify-between">
-        <div class="grid grid-cols-[1.3fr,2fr,auto] gap-2 items-center w-full">
+<div class="grid md:space-y-1">
+    <div class="flex justify-between mr-2">
+        <div class="grid grid-cols-[1.3fr,2fr,auto] items-center w-full">
             <span class="text-sm font-semibold text-zinc-900 dark:text-zinc-200">Código HTTP</span>
-            <span class="ml-1 text-sm font-semibold text-zinc-900 dark:text-zinc-200">Mensaje de la respuesta</span>
+            <span class="text-sm font-semibold text-zinc-900 dark:text-zinc-200">Mensaje de la respuesta</span>
         </div>
 
-        <div class="flex items-center gap-2">
-            <ButtonUI
-                onClick     = { addHttpCode }
-                disabled    = { shapeInput.httpList?.length === httpCodes.length }
-            >
-                {#if isLoading}
-                    <LoaderIcon />
-                {:else}
-                    <JsonIcon />
-                {/if}
-            </ButtonUI>
-
-            <ButtonUI
-                onClick     = { addHttpCode }
-                disabled    = { shapeInput.httpList?.length === httpCodes.length }
-            >
-                {#if isLoading}
-                    <LoaderIcon />
-                {:else}
-                    <AddIcon />
-                {/if}
-            </ButtonUI>
-        </div>
+        <ButtonUI
+            onClick     = { addHttpCode }
+            disabled    = { shapeInput.httpList?.length === httpCodes.length }
+        >
+            {#if isLoading}
+                <LoaderIcon />
+            {:else}
+                <AddIcon />
+            {/if}
+        </ButtonUI>
     </div>
 
-    <div class="max-h-96 grid @lg:grid-cols-[1.3fr,2fr,auto] grid-cols-1 gap-2 items-center overflow-auto">
-        {#each shapeInput.httpList ?? [] as http, index}
+    <div class="grid @lg:grid-cols-[1.3fr,2fr,auto] grid-cols-1 gap-2 items-start overflow-auto py-1 w-full">
+        {#each shapeInput.httpList! as http, index}
             <VirtualSelect
                 shapeInput = {{
                     id			: uuid(),
@@ -113,29 +150,28 @@
             />
 
             <Input
-                shapeInput = {{
-                    id			: uuid(),
-                    name		: 'message',
-                    shape		: 'input',
-                    placeholder	: 'Mensaje de respuesta',
-                    required	: true,
-                    value		: http.message
+                shapeInput  = {{ ...responseMssgList[index], value: shapeInput.httpList?.[index].message }}
+                value       = { shapeInput.httpList?.[index].message }
+                setError    = {() => {
+                    responseMssgList[index].valid = errorInput(
+                        responseMssgList[index],
+                        shapeInput.httpList?.[index].message
+                    );
                 }}
-                onInput = {(event) => {
+                onInput     = {(event) => {
                     if (!shapeInput.httpList) return;
                     shapeInput.httpList[index].message = (event.target as HTMLInputElement).value;
+                    responseMssgList[index].valid = errorInput(responseMssgList[index], (event.target as HTMLInputElement).value);
                 }}
             />
 
-            <button
-                aria-label  = "Eliminar código HTTP"
-                type        = "button"
-                class       = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 px-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
-                on:click    = {() => deleteHttpCode( index )}
+            <ButtonUI
+                onClick     = {() => deleteHttpCode( index )}
                 disabled    = { shapeInput.httpList?.length === 1 }
+                styles      = '@lg:mt-2 @lg:mr-1 mx-auto flex justify-center'
             >
                 <DeleteIcon />
-            </button>
+            </ButtonUI>
         {/each}
     </div>
 </div>
