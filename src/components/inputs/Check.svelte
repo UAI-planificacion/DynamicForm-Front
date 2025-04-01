@@ -19,7 +19,7 @@
     export let setError     : VoidFunction = () => {};
 
 
-    let check = checked ?? shapeInput.defaultChecked ?? false;
+    let check = checked ?? shapeInput.checked ?? shapeInput.defaultChecked ?? false;
 
 
     $: if ( shapeInput.defaultChecked !== undefined ) {
