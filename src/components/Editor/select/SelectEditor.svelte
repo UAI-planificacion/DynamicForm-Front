@@ -7,28 +7,38 @@
     import { errorInput }                                               from "$lib";
 
 
-    export let shapeInput: ShapeInput;
+    export let shapeInput       : ShapeInput;
+    export let isSelectionValid : boolean;
+    export let countSend        : number;
 
-
-    let optionsSelected: ShapeOption[] = [
+    let optionsSelected: ShapeOption[] = shapeInput.options as ShapeOption[] || [
         {
-            id: uuid(),
-            label: '',
-            value: ''
+            id      : uuid(),
+            label   : '',
+            value   : ''
         }
     ];
-
-
-    let groupsSelected: GroupOption[] = [{
+    let groupsSelected: GroupOption[] = shapeInput.options as GroupOption[] || [{
         group: '',
         values: [{
-            id: uuid(),
-            label: '',
-            value: ''
+            id      : uuid(),
+            label   : '',
+            value   : ''
         }]
     }];
 
-
+    // Determine the initial tab value based on options type
+    let value : "options" | "groups" = 
+        (shapeInput.options && 
+            Array.isArray(shapeInput.options) && 
+            shapeInput.options.length > 0 && 
+            shapeInput.options[0] && 
+            'group' in shapeInput.options[0] && 
+            'values' in shapeInput.options[0]
+        )
+            ? "groups" 
+            : "options";
+    
     const placeholderSearchShape = {
         id          : uuid(),
         name        : 'search-placeholder',
@@ -45,7 +55,7 @@
     } as ShapeInput;
 </script>
 
-<Tabs.Root value="options">
+<Tabs.Root {value}>
     <Tabs.List
         class="mt-1 rounded-lg bg-dark-10 shadow-mini-inset dark:bg-background grid w-full grid-cols-2 gap-1 p-1 text-sm font-semibold leading-[0.01em] border border-zinc-300 dark:border-zinc-700"
     >
@@ -70,9 +80,12 @@
         <ValueEditor
             options         = { optionsSelected }
             onOptionsChange = {(newOptions: ShapeOption[]) => {
-                optionsSelected     = [...newOptions];
-                shapeInput.options  = optionsSelected;
+                optionsSelected = [...newOptions];
+                shapeInput.options = optionsSelected;
+                console.log("🚀 ~ file: SelectEditor.svelte:97 ~ shapeInput:", shapeInput)
             }}
+            bind:isSelectionValid = { isSelectionValid }
+            { countSend }
         />
     </Tabs.Content>
 
@@ -80,9 +93,11 @@
         <GroupEditor
             groups          = { groupsSelected }
             onGroupsChange  = {( newGroups: GroupOption[] ) => {
-                groupsSelected      = [...newGroups];
-                shapeInput.options  = groupsSelected
+                groupsSelected = [...newGroups];
+                shapeInput.options = groupsSelected;
             }}
+            { countSend }
+            bind:isGroupValid = { isSelectionValid }
         />
     </Tabs.Content>
 </Tabs.Root>
@@ -91,16 +106,16 @@
     <VirtualSelect
         onSelectedChange    = { ( selected: SelectInput ) => shapeInput.selected = selected }
         shapeInput          = {{
-            id			: uuid(),
-            name 		: 'default-value',
-            placeholder	: 'Ingrese un valor por defecto',
-            required 	: true,
-            label		: 'Valor por defecto',
-            selected	: shapeInput.selected,
-            multiple    : shapeInput.multiple,
-            search      : shapeInput.search,
-            searchPlaceholder : shapeInput.searchPlaceholder,
-            options     : shapeInput.options
+            id			        : uuid(),
+            name 		        : 'default-value',
+            placeholder	        : 'Ingrese un valor por defecto',
+            required 	        : true,
+            label		        : 'Valor por defecto',
+            selected	        : shapeInput.selected,
+            multiple            : shapeInput.multiple,
+            search              : shapeInput.search,
+            searchPlaceholder   : shapeInput.searchPlaceholder,
+            options             : shapeInput.options
         }}
     />
 

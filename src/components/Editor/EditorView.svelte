@@ -36,10 +36,11 @@
 		types,
         errorInput,
         errorSelect,
-	}						from "$lib";
+	}						    from "$lib";
     import ButtonRequired       from "./buttons/ButtonRequired.svelte";
     import ButtonValidations    from "./buttons/ButtonValidations.svelte";
-  import SelectStyles from "./select/SelectStyles.svelte";
+    import SelectStyles         from "./select/SelectStyles.svelte";
+
 
     export let shapeInput       : ShapeInput;
     export let onDelete         : VoidFunction;
@@ -227,13 +228,12 @@
     } as ShapeInput
 
 
-    let isSend  = false;
     let countSend = 0;
     let isValid = false;
     let isInput = true;
+    let isSelectionValid = true;
 
-
-    $: if ( isSend ) {
+    $: if ( countSend ) {
         nameShape.valid         = errorInput( nameShape, shapeInput.name );
         labelShape.valid        = errorInput( { ...labelShape, required: shapeInput.shape === 'check' }, shapeInput.label );
         placeholderShape.valid  = errorInput( placeholderShape, shapeInput.placeholder );
@@ -242,8 +242,6 @@
         virtualShape.valid      = errorSelect( virtualShape, shapeInput.shape );
         typeShape.valid         = errorSelect( {...typeShape,  required: shapeInput.shape ==='input'}, shapeInput.type );
 
-    console.log('🚀 ~ file: EditorView.svelte:234 ~ isInput:', isInput)
-
         isValid = nameShape.valid
         && labelShape.valid
         && placeholderShape.valid
@@ -251,10 +249,8 @@
         && requiredMssg.valid
         && virtualShape.valid
         && typeShape.valid
-        && isInput;
-
-        console.log('🚀 ~ file: EditorView.svelte:248 ~ isValid:', isValid)
-
+        && isInput
+        && isSelectionValid;
     }
 </script>
 
@@ -434,7 +430,11 @@
                     />
                 {/if}
             {:else if shapeInput.shape === 'select' }
-                <SelectEditor bind:shapeInput={ shapeInput } />
+                <SelectEditor
+                    bind:shapeInput         = { shapeInput }
+                    bind:isSelectionValid   = { isSelectionValid }
+                    { countSend }
+                />
             {:else if shapeInput.shape === 'button'}
                 <ButtonRequired bind:shapeInput={ shapeInput } />
             {/if}
@@ -512,7 +512,7 @@
                                 <ValidInput
                                     bind:shapeInput = { shapeInput }
                                     bind:isValid = { isInput }
-                                    countSend = { countSend }
+                                    { countSend }
                                 />
                             </div>
                         {:else if shapeInput.shape === 'datepicker'}
@@ -608,7 +608,7 @@
                                 /> -->
                             </div>
                         {:else}
-                            <div class="grid grid-cols-1 {shapeInput.shape === 'markdown' ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} items-center justify-between py-1">
+                            <div class="grid grid-cols-1 {shapeInput.shape === 'markdown' ? '@sm:grid-cols-3' : '@sm:grid-cols-2'} items-center justify-between py-1">
 								{#if shapeInput.shape === 'markdown'}
 									<Check
 										shapeInput = {{
@@ -764,12 +764,8 @@
                 <button
                     class="w-full hover:shadow-xl active:scale-[0.99] active:brightness-90 bg-black rounded-lg py-2 text-white"
                     on:click={() => {
-                        if ( !isValid ) {
-                            isSend = true;
-                            countSend++;
-                            return;
-                        }
-
+                        countSend++;
+                        if ( !isValid ) return;
                         editing = false;
                         inputDesactive();
                     }}

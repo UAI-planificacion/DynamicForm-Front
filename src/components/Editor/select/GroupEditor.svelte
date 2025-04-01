@@ -10,6 +10,7 @@
     export let groups           : GroupOption[] = [];
     export let onGroupsChange   : ( newGroups: GroupOption[] ) => void;
     export let isGroupValid     : boolean = true;
+    export let countSend        : number;
 
 
     const groupShape = {
@@ -30,17 +31,21 @@
     const groupShapeList: ShapeInput[] = [ groupShape ];
 
 
-    function addNewGroup() {
+    $: if ( countSend > 0 ) validGroupList();
+
+
+    function validGroupList() {
         for ( let i = 0; i < groupShapeList.length; i++ ) {
             groupShapeList[i].valid = errorInput( groupShapeList[i], groupShapeList[i].value );
-
-            if ( !groupShapeList[i].valid ) {
-                isGroupValid = false;
-                return;
-            }
         }
 
-        isGroupValid = true;
+        isGroupValid = groupShapeList.every( shape => shape.valid );
+    }
+
+
+    function addNewGroup() {
+        validGroupList();
+
         groupShapeList.push( { ...groupShape, value: '' } );
 
         const newGroups = [
@@ -122,6 +127,8 @@
             <ValueEditor
                 options         = { group.values }
                 onOptionsChange = {( newOptions: ShapeOption[] ) => updateGroupOptions( group.id!, newOptions )}
+                bind:isSelectionValid = { isGroupValid }
+                { countSend }
             />
         </div>
     {/each}

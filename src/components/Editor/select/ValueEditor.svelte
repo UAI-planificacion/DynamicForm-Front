@@ -19,10 +19,24 @@
     export let options          : ShapeOption[] = [];
     export let onOptionsChange  : ( newOptions: ShapeOption[] ) => void;
     export let isSelectionValid : boolean = true;
+    export let countSend        : number;
 
 
-    let isLoading = false;
-    let open = "values";
+    $: if ( countSend ) validShapeList();
+
+
+    function validShapeList( ) {
+        for ( let i = 0; i < labelShapeList.length; i++ ) {
+            labelShapeList[i].valid = errorInput( labelShapeList[i], labelShapeList[i].value );
+            valueShapeList[i].valid = errorInput( valueShapeList[i], valueShapeList[i].value );
+        }
+
+        isSelectionValid = labelShapeList.every( label => label.valid ) && valueShapeList.every( value => value.valid );
+    }
+
+
+    let isLoading   = false;
+    let open        = "values";
     let fileInputId = `fileInput-${uuid()}`; 
 
 
@@ -58,22 +72,26 @@
     } as ShapeInput;
 
 
-    let valueShapeList: ShapeInput[] = [ valueShape ];
-    let labelShapeList: ShapeInput[] = [ labelShape ];
+    let valueShapeList: ShapeInput[] = [];
+    let labelShapeList: ShapeInput[] = [];
+
+
+    $: {
+        if ( options && options.length > 0 ) {
+            valueShapeList = options.map(option => ({ ...valueShape, value: option.value || '' }));
+            labelShapeList = options.map(option => ({ ...labelShape, value: option.label || '' }));
+        } else {
+            valueShapeList = [ valueShape ];
+            labelShapeList = [ labelShape ];
+        }
+    }
 
 
     function addNewOption(): void {
-        for ( let i = 0; i < labelShapeList.length; i++ ) {
-            labelShapeList[i].valid = errorInput( labelShapeList[i], labelShapeList[i].value );
-            valueShapeList[i].valid = errorInput( valueShapeList[i], valueShapeList[i].value );
+        validShapeList();
 
-            if ( !labelShapeList[i].valid || !valueShapeList[i].valid ) {
-                isSelectionValid = false;
-                return;
-            }
-        }
+        if ( !isSelectionValid ) return;
 
-        isSelectionValid = true;
         labelShapeList.push( { ...labelShape, value: '' } );
         valueShapeList.push( { ...valueShape, value: '' } );
 
