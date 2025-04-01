@@ -106,9 +106,9 @@
 <div bind:this={container} class="flex w-full h-full gap-2">
 	<div 
 		bind:this={leftPanel} 
-		class="relative {isLeftClosing ? 'transition-all duration-300 ease-in-out' : ''}"
+		class="relative @container {isLeftClosing ? 'transition-all duration-300 ease-in-out' : ''}"
 	>
-		<div class="w-full h-full overflow-hidden">
+		<div class="w-full h-full overflow-auto">
 			<slot name="left" />
 		</div>
 	</div>
@@ -142,9 +142,9 @@
 
 	<div 
 		bind:this={rightPanel} 
-		class="relative {isRightClosing ? 'transition-all duration-300 ease-in-out' : ''}"
+		class="relative @container {isRightClosing ? 'transition-all duration-300 ease-in-out' : ''}"
 	>
-		<div class="w-full h-full overflow-hidden">
+		<div class="w-full h-full overflow-auto">
 			<slot name="right" />
 		</div>
 	</div>
