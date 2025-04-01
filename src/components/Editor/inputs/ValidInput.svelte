@@ -6,7 +6,25 @@
     import { errorInput }       from "$lib";
 
 
-    export let shapeInput: ShapeInput;
+    export let shapeInput   : ShapeInput;
+    export let countSend    : number;
+    export let isValid      : boolean;
+
+    $: if ( countSend ) {
+        minLengthShape.valid        = errorInput( minLengthShape, String( shapeInput.minLength ) );
+        minLengthMssgShape.valid    = errorInput( minLengthMssgShape, shapeInput.msgMinLength );
+        maxLengthShape.valid        = errorInput( maxLengthShape, String( shapeInput.maxLength ) );
+        maxLengthMssgShape.valid    = errorInput( maxLengthMssgShape, shapeInput.msgMaxLength );
+        patternShape.valid          = errorInput( patternShape, shapeInput.pattern );
+        patternMssgShape.valid      = errorInput( patternMssgShape, shapeInput.msgPattern );
+
+        isValid = minLengthShape.valid
+        && minLengthMssgShape.valid
+        && maxLengthShape.valid
+        && maxLengthMssgShape.valid
+        && patternShape.valid
+        && patternMssgShape.valid;
+    }
 
 
     shapeInput.msgPattern   = 'Patrón de búsqueda no coincide';
@@ -101,6 +119,7 @@
         msgMaxLength    : 'El campo superior a los 200 caracteres permitidos.'
     } as ShapeInput;
 
+
     const patternMssgShape = {
         id				: uuid(),
         label           : 'Mensaje patrón',
@@ -118,8 +137,6 @@
         msgMinLength    : 'El campo inferior a los 2 caracteres permitidos.',
         msgMaxLength    : 'El campo superior a los 100 caracteres permitidos.'
     } as ShapeInput;
-
-
 
 
     const minShape = {

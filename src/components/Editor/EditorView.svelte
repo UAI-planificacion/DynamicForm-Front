@@ -39,6 +39,7 @@
 	}						from "$lib";
     import ButtonRequired       from "./buttons/ButtonRequired.svelte";
     import ButtonValidations    from "./buttons/ButtonValidations.svelte";
+  import SelectStyles from "./select/SelectStyles.svelte";
 
     export let shapeInput       : ShapeInput;
     export let onDelete         : VoidFunction;
@@ -69,6 +70,8 @@
 		if ( selected === undefined || selected instanceof Array ) return;
 
 		shapeInput.shape = selected as InputType || 'none';
+
+        isInput = !(shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown');
 
         if ( shapeInput.shape === 'textarea' ) {
             shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
@@ -115,40 +118,13 @@
 
 
     const baseInputShape = {
-        shape       : 'input',
-        type        : 'text',
-        valid       : true
+        shape   : 'input',
+        type    : 'text',
+        valid   : true
     }
 
 
-    const labelShape = {
-        ...baseInputShape,
-        maxLength   : 50,
-        msgMaxLength: 'Máximo 50 caracteres permitidos.',
-        id		    : uuid(),
-        label       : 'Etiqueta',
-        name	    : 'label',
-        placeholder : 'Ingrese la etiqueta',
-        value       : shapeInput.label,
-        required    : shapeInput.shape === 'check',
-        msgRequired : 'La etiqueta es requerida.',
-        valid       : true
-    } as ShapeInput;
-
-
-    const placeholderShape = {
-        ...baseInputShape,
-        id			: uuid(),
-        label       : 'Placeholder',
-        name	    : 'placeholder',
-        placeholder : 'Ingrese el placeholder',
-        value       : shapeInput.placeholder,
-        maxLength   : 100,
-        msgMaxLength: 'Máximo 100 caracteres permitidos.',
-    } as ShapeInput;
-
-
-    const virutalShape = {
+    const virtualShape = {
         id			: uuid(),
         name		: 'shape',
         shape       : 'select',
@@ -165,20 +141,121 @@
     } as ShapeInput;
 
 
-    const requiredMssg = {
+    const nameShape = {
         ...baseInputShape,
         id		    : uuid(),
-        label       : 'Mensaje para requerido',
-        name	    : 'msg-required',
-        placeholder : 'Ingresa el mensaje para mostrar como requerido',
-        value       : shapeInput.msgRequired,
-        disabled    : !shapeInput.required,
+        label       : 'Nombre',
+        name	    : 'name',
+        placeholder : 'Ingrese el nombre',
+        value       : shapeInput.name,
         required    : true,
-        msgRequired : 'El mensaje para requerido es requerido.',
-        valid       : true,
-        maxLength   : 100,
-        msgMaxLength: 'Máximo 100 caracteres permitidos.',
+        msgRequired : 'El nombre es requerido.',
+        maxLength   : 50,
+        msgMaxLength: 'Máximo 50 caracteres permitidos.',
     } as ShapeInput;
+
+
+    const labelShape = {
+        ...baseInputShape,
+        id		    : uuid(),
+        label       : 'Etiqueta',
+        name	    : 'label',
+        placeholder : 'Ingrese la etiqueta',
+        value       : shapeInput.label,
+        required    : shapeInput.shape === 'check',
+        msgRequired : 'La etiqueta es requerida.',
+        maxLength   : 50,
+        msgMaxLength: 'Máximo 50 caracteres permitidos.',
+        valid       : true
+    } as ShapeInput;
+
+
+    const placeholderShape = {
+        ...baseInputShape,
+        id			: uuid(),
+        label       : 'Placeholder',
+        name	    : 'placeholder',
+        placeholder : 'Ingrese el placeholder',
+        value       : shapeInput.placeholder,
+        maxLength   : 50,
+        msgMaxLength: 'Máximo 50 caracteres permitidos.',
+    } as ShapeInput;
+
+
+    const rowsShape = {
+        ...baseInputShape,
+        id		    : uuid(),
+        label       : 'Altura de la caja',
+        name	    : 'rows',
+        placeholder : 'Ingrese el alto que tendrá la caja de texto',
+        value       : shapeInput.rows?.toString() ?? "4",
+        type        : 'number' as Types,
+        min         : 1,
+        max         : 50,
+        msgMin      : 'La altura debe ser al menos 1',
+        msgMax      : 'La altura debe ser al menos 50',
+    } as ShapeInput;
+
+
+    const requiredMssg = {
+        id			: uuid(),
+        name		: 'msg-required',
+        label		: 'Mensaje de requerido',
+        placeholder	: 'Ingrese el mensaje de requerido',
+        required	: true,
+        shape		: 'input',
+        type		: 'text',
+        msgRequired	: 'El mensaje es requerido',
+        msgMaxLength	: 'El mensaje debe tener entre 1 y 50 caracteres',
+        maxLength	: 50,
+        valid		: true,
+        value       : shapeInput.msgRequired
+    } as ShapeInput;
+
+
+    const typeShape = {
+        id			: uuid(),
+        name 		: 'type',
+        placeholder	: 'Ingrese el tipo',
+        required 	: true,
+        msgRequired	: 'El tipo es requerido',
+        label		: 'Tipo de entrada',
+        selected	: shapeInput.type,
+        options     : types,
+        valid : true,
+        shape : 'select'
+    } as ShapeInput
+
+
+    let isSend  = false;
+    let countSend = 0;
+    let isValid = false;
+    let isInput = true;
+
+
+    $: if ( isSend ) {
+        nameShape.valid         = errorInput( nameShape, shapeInput.name );
+        labelShape.valid        = errorInput( { ...labelShape, required: shapeInput.shape === 'check' }, shapeInput.label );
+        placeholderShape.valid  = errorInput( placeholderShape, shapeInput.placeholder );
+        rowsShape.valid         = errorInput( rowsShape, shapeInput.rows?.toString() );
+        requiredMssg.valid      = errorInput( {...requiredMssg, required: shapeInput.required }, shapeInput.msgRequired );
+        virtualShape.valid      = errorSelect( virtualShape, shapeInput.shape );
+        typeShape.valid         = errorSelect( {...typeShape,  required: shapeInput.shape ==='input'}, shapeInput.type );
+
+    console.log('🚀 ~ file: EditorView.svelte:234 ~ isInput:', isInput)
+
+        isValid = nameShape.valid
+        && labelShape.valid
+        && placeholderShape.valid
+        && rowsShape.valid
+        && requiredMssg.valid
+        && virtualShape.valid
+        && typeShape.valid
+        && isInput;
+
+        console.log('🚀 ~ file: EditorView.svelte:248 ~ isValid:', isValid)
+
+    }
 </script>
 
 
@@ -195,40 +272,37 @@
             <div class="grid grid-cols-1 @lg:grid-cols-2 items-start gap-2">
 				{#if shapeInput.shape !== 'button'}
                     <VirtualSelect
-                        shapeInput = {{ ...virutalShape }}
+                        shapeInput = {{ ...virtualShape, selected: shapeInput.shape }}
                         { onSelectedChange }
                         value = { shapeInput.shape }
-                        setError = { () => virutalShape.valid = errorSelect( virutalShape, shapeInput.shape )}
+                        setError = { () => {
+                            virtualShape.valid = errorSelect( virtualShape, shapeInput.shape );
+                        }}
                     />
 				{/if}
 
-                {#if true} {@const nameShape = {
-                    ...baseInputShape,
-                    id		    : uuid(),
-                    label       : 'Nombre',
-                    name	    : 'name',
-                    placeholder: 'Ingrese el nombre',
-                    value       : shapeInput.name,
-                    required    : true,
-                    msgRequired : 'El nombre es requerido.',
-                    maxLength   : 50,
-                    msgMaxLength: 'Máximo 50 caracteres permitidos.',
-                } as ShapeInput}
-
                 <Input
-                    shapeInput  = {{ ...nameShape }}
+                    shapeInput  = {{ ...nameShape, value: shapeInput.name }}
                     onInput     = {( event: Event ) => shapeInput.name = ( event.target as HTMLInputElement ).value }
                     value       = { shapeInput.name }
                     setError    = { () => nameShape.valid = errorInput(nameShape, shapeInput.name) }
                 />
-                {/if}
 
                 <Input
-                    shapeInput  = {{ ...labelShape, required: shapeInput.shape === 'check', value : shapeInput.label }}
+                    shapeInput  = {{ ...labelShape, value: shapeInput.label, required: shapeInput.shape === 'check' }}
                     onInput     = {( event: Event ) => shapeInput.label = ( event.target as HTMLInputElement ).value }
                     value       = { shapeInput.label }
                     setError    = { () => labelShape.valid = errorInput( { ...labelShape, required: shapeInput.shape === 'check' }, shapeInput.label )}
                 />
+
+                {#if shapeInput.shape !== 'check' && shapeInput.shape !== 'button'}
+                    <Input
+                        shapeInput  = {{ ...placeholderShape, value: shapeInput.placeholder }}
+                        onInput     = {( event: Event ) => shapeInput.placeholder = ( event.target as HTMLInputElement ).value }
+                        value       = { shapeInput.placeholder }
+                        setError    = { () => placeholderShape.valid = errorInput(placeholderShape, shapeInput.placeholder) }
+                    />
+                {/if}
 
                 {#if shapeInput.shape === 'check' }
                     <div class="flex mt-5">
@@ -289,82 +363,76 @@
                             onTimerInput = {( value: string ) => shapeInput.timeValue = value }
                         />
                     {/if}
-                {:else if shapeInput.shape !== 'button'}
-                    <Input
-                        shapeInput = {{ ...placeholderShape }}
-                        onInput = {( event: Event ) => shapeInput.placeholder = ( event.target as HTMLInputElement ).value }
-                        value = { shapeInput.placeholder }
-                        setError    = { () => placeholderShape.valid = errorInput(placeholderShape, shapeInput.placeholder) }
-                    />
                 {/if}
             </div>
 
             {#if shapeInput.shape === 'input' }
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center">
+                <div class="grid grid-cols-1 @lg:grid-cols-2 gap-2 items-center">
                     <VirtualSelect
-                        shapeInput = {{
-                            id			: uuid(),
-                            name 		: 'type',
-                            placeholder	: 'Ingrese el tipo',
-                            required 	: true,
-                            label		: 'Tipo de entrada',
-                            selected	: shapeInput.type,
-                            options     : types,
-                        }}
-                        onSelectedChange = { onSelectedType }
+                        shapeInput          = {{ ...typeShape, selected: shapeInput.type, required: shapeInput.shape ==='input' }}
+                        onSelectedChange    = { onSelectedType }
+                        setError            = { () => typeShape.valid = errorInput( typeShape, shapeInput.type ) }
+                        value               = { shapeInput.type }
                     />
 
-                    <Input
-                        shapeInput = {{
+                    {#if true}
+                        {@const defaultValueShape = {
+                            ...baseInputShape,
                             id		    : uuid(),
                             label       : 'Valor por defecto',
                             name	    : 'value',
                             placeholder : 'Valor con el que se inicia',
                             value       : shapeInput.value,
-                            type        : shapeInput.type === 'number' ? 'number': 'text'
-                        }}
-                        onInput = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
-                    />
+                            type        : (shapeInput.type === 'number' ? 'number' : 'text') as Types
+                        } as ShapeInput}
+                        <Input
+                            shapeInput = {{ ...defaultValueShape }}
+                            onInput = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
+                        />
+                    {/if}
                 </div>
             {:else if shapeInput.shape === 'textarea' }
                 <div class="grid grid-cols-1 sm:grid-cols-2 space-x-2 items-center">
                     <Input
-                        shapeInput = {{
-                            id		    : uuid(),
-                            label       : 'Altura de la caja',
-                            name	    : 'rows',
-                            placeholder : 'Ingrese el alto que tendrá la caja de texto',
-                            value       : "4",
-                            type        : 'number'
-                        }}
-                        onInput = {( event: Event ) => shapeInput.rows = Number(( event.target as HTMLInputElement ).value )}
+                        shapeInput  = {{ ...rowsShape, value: shapeInput.rows?.toString() }}
+                        onInput     = {( event: Event ) => shapeInput.rows = Number(( event.target as HTMLInputElement ).value )}
+                        setError    = { () => rowsShape.valid = errorInput( rowsShape, shapeInput.rows?.toString() )}
+                        value       = { shapeInput.rows?.toString() }
                     />
 
-                    <TextArea
-                        shapeInput = {{
+                    {#if true}
+                        {@const textareaDefaultShape = {
+                            ...baseInputShape,
                             id          : uuid(),
                             name        : 'default-value',
                             label       : 'Valor por defecto',
                             placeholder : 'Ingrese el valor por defecto',
                             rows        : 1,
                             value       : shapeInput.value
-                        }}
-                        onInput = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
-                    />
+                        } as ShapeInput}
+                        <TextArea
+                            shapeInput = {{ ...textareaDefaultShape }}
+                            onInput = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
+                        />
+                    {/if}
                 </div>
 			{:else if shapeInput.shape === 'markdown' }
-				<MarkdownEditor
-					shapeInput ={{
-						id		    : uuid(),
-						label       : 'Valor por defecto',
-						name	    : 'value',
-						placeholder : 'Ingrese el valor por defecto',
-						value       : shapeInput.value,
-						preview		: false
-					}}
-					dynamicMode	= { true }
-					onInput		= {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
-				/>
+                {#if true}
+                    {@const markdownDefaultShape = {
+                        ...baseInputShape,
+                        id		    : uuid(),
+                        label       : 'Valor por defecto',
+                        name	    : 'value',
+                        placeholder : 'Ingrese el valor por defecto',
+                        value       : shapeInput.value,
+                        preview		: false
+                    } as ShapeInput}
+                    <MarkdownEditor
+                        shapeInput = {{ ...markdownDefaultShape }}
+                        dynamicMode	= { true }
+                        onInput		= {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
+                    />
+                {/if}
             {:else if shapeInput.shape === 'select' }
                 <SelectEditor bind:shapeInput={ shapeInput } />
             {:else if shapeInput.shape === 'button'}
@@ -427,7 +495,8 @@
                                     shapeInput = {{
                                         ... requiredMssg,
                                         disabled: !shapeInput.required,
-                                        required: shapeInput.required
+                                        required: shapeInput.required,
+                                        value: shapeInput.msgRequired
                                     }}
                                     onInput     = {( event: Event ) => shapeInput.msgRequired = ( event.target as HTMLInputElement ).value }
                                     setError    = { () => requiredMssg.valid = errorInput( requiredMssg, shapeInput.msgRequired )}
@@ -442,6 +511,8 @@
                             <div class="grid grid-cols-1 @lg:grid-cols-2 gap-2 items-center">
                                 <ValidInput
                                     bind:shapeInput = { shapeInput }
+                                    bind:isValid = { isInput }
+                                    countSend = { countSend }
                                 />
                             </div>
                         {:else if shapeInput.shape === 'datepicker'}
@@ -609,41 +680,7 @@
 								onInput = {( event: Event ) => shapeInput.labelStyle = ( event.target as HTMLInputElement ).value }
 							/>
 						{:else if shapeInput.shape === 'select' }
-							<TextArea
-								shapeInput = {{
-									id          : uuid(),
-									name        : 'class',
-									label       : 'Componente principal box',
-									placeholder : 'Ingrese los estilos de la caja',
-									rows        : 3,
-									value       : shapeInput.class_ ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
-								}}
-								onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
-							/>
-
-							<TextArea
-								shapeInput = {{
-									id          : uuid(),
-									name        : 'class',
-									label       : 'Estilos del contenido',
-									placeholder : 'Ingrese los estilos del contenido',
-									rows        : 2,
-									value       : shapeInput.contentStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).content
-								}}
-								onInput = {( event: Event ) => shapeInput.contentStyle = ( event.target as HTMLInputElement ).value }
-							/>
-
-							<TextArea
-								shapeInput = {{
-									id          : uuid(),
-									name        : 'class',
-									label       : 'Estilos de cada item',
-									placeholder : 'Ingrese los estilos de cada item',
-									rows        : 2,
-									value       : shapeInput.itemStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).item
-								}}
-								onInput = {( event: Event ) => shapeInput.itemStyle = ( event.target as HTMLInputElement ).value }
-							/>
+							<SelectStyles bind:shapeInput={shapeInput} />
 						{:else if shapeInput.shape === 'datepicker' || shapeInput.shape === 'timer'}
 							<TextArea
 								shapeInput = {{
@@ -713,15 +750,33 @@
                 </Accordion.Item>
             </Accordion.Root>
 
-            <button
-                class="w-full hover:brightness-105 active:scale-[0.99] active:brightness-90 bg-black rounded-lg py-2 text-white"
-                on:click={() => {
-                    editing = false;
-                    inputDesactive();
-                }}
-            >
-                Guardar
-            </button>
+            <div class="grid grid-cols-1 @lg:grid-cols-2 gap-2 items-center">
+                <button
+                    class="w-full hover:shadow-xl active:scale-[0.99] active:brightness-90 bg-zinc-800 rounded-lg py-2 text-white"
+                    on:click={() => {
+                        editing = false;
+                        inputDesactive();
+                    }}
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    class="w-full hover:shadow-xl active:scale-[0.99] active:brightness-90 bg-black rounded-lg py-2 text-white"
+                    on:click={() => {
+                        if ( !isValid ) {
+                            isSend = true;
+                            countSend++;
+                            return;
+                        }
+
+                        editing = false;
+                        inputDesactive();
+                    }}
+                >
+                    Guardar
+                </button>
+            </div>
         </section>
     {/if}
 </card>
