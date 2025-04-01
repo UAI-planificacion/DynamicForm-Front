@@ -73,7 +73,7 @@
 <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-zinc-900">
     <main class="flex-grow">
     <!-- Hero Section -->
-    <section id="hero" class="bg-gradient-to-r from-amber-700 to-amber-600 dark:from-amber-950 dark:to-amber-800 text-white py-20 px-4">
+    <section id="hero" class="bg-gradient-to-r from-zinc-700 to-zinc-600 dark:from-zinc-950 dark:to-zinc-800 text-white py-20 px-4">
         <div class="container mx-auto text-center">
         <div class="transform transition-all duration-1000 {visibleSections.hero ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">Bienvenido a Formulario Dinámico</h1>
@@ -81,19 +81,21 @@
         </div>
         <div class="flex flex-col sm:flex-row justify-center gap-4 transform transition-all duration-1000 delay-300 {visibleSections.hero ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}">
             {#if !$session.data}
-                <MicrosoftAuth />
+                <div class="w-48">
+                    <MicrosoftAuth />
+                </div>
             {:else}
                 <button
-                    class       = "bg-white dark:bg-zinc-800 text-blue-900 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-700 font-semibold py-3 px-6 rounded-md transition-colors duration-300"
-                    on:click    = {() => goto('/form')}
+                    class="bg-amber-600 dark:bg-amber-800 text-zinc-200 dark:text-zinc-300  font-semibold py-3 px-6 rounded-md transition-all duration-300 hover:scale-105 hover:shadow-lg dark:hover:shadow-zinc-900/50"
+                    on:click={() => goto('/form')}
                 >
                     Comenzar ahora
                 </button>
             {/if}
 
             <button
-                class       = "bg-transparent dark:bg-zinc-800 hover:bg-blue-800 dark:hover:bg-zinc-600 text-white dark:text-zinc-300 border border-white dark:border-zinc-300 font-semibold py-3 px-6 rounded-md transition-colors duration-300"
-                on:click    = {() => goto('/docs')}
+                class="bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 font-semibold py-3 px-6 rounded-md transition-all duration-300 hover:scale-105 hover:shadow-lg dark:hover:shadow-zinc-900/50"
+                on:click={() => goto('/docs')}
             >
                 Conocer más
             </button>
@@ -104,12 +106,16 @@
     <!-- Features Section -->
     <section id="features" class="py-16 px-4 bg-white dark:bg-zinc-800">
         <div class="container mx-auto">
-        <h2 class="text-3xl font-bold text-amber-500 text-center mb-12 transform transition-all duration-1000 {visibleSections.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}">Características principales</h2>
+        <h2
+            class="text-3xl font-bold text-amber-500 text-center mb-12 transform transition-all duration-1000 {visibleSections.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}"
+        >
+            Características principales
+        </h2>
         
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {#each features as feature, i}
             <div class="bg-white dark:bg-zinc-700 rounded-lg p-6 shadow-md dark:shadow-zinc-800/50 hover:shadow-lg dark:hover:shadow-zinc-800/50 hover:-translate-y-1 transition-all duration-300 transform {visibleSections.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}" style="transition-delay: {i * 150}ms">
-                <div class="w-12 h-12 bg-blue-100 dark:bg-zinc-600 rounded-full flex items-center justify-center mb-4">
+                <div class="w-12 h-12 bg-zinc-800 dark:bg-zinc-600 rounded-full flex items-center justify-center mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-zinc-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path class="stroke-gray-200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={feature.icon} />
                 </svg>
@@ -168,8 +174,8 @@
                 </div>
             {:else}
                 <button
-                    class="bg-blue-900 dark:bg-zinc-800 hover:bg-blue-800 dark:hover:bg-zinc-700 text-white dark:text-zinc-300 font-semibold py-3 px-6 rounded-md transition-colors duration-300"
-                    on:click    = {() => goto('/form')}
+                    class="bg-zinc-900 dark:bg-zinc-800 hover:bg-blue-800 dark:hover:bg-zinc-700 text-white dark:text-zinc-300 font-semibold py-3 px-6 rounded-md transition-all duration-300 hover:scale-105 hover:shadow-lg dark:hover:shadow-zinc-900/50"
+                    on:click={() => goto('/form')}
                 >
                     Crear mi primer formulario
                 </button>
