@@ -8,37 +8,66 @@
 
 
     export let shapeInput       : ShapeInput;
-    export let isSelectionValid : boolean;
+    export let isSelectionValid : boolean = false;
     export let countSend        : number;
 
-    let optionsSelected: ShapeOption[] = shapeInput.options as ShapeOption[] || [
-        {
-            id      : uuid(),
-            label   : '',
-            value   : ''
-        }
-    ];
-    let groupsSelected: GroupOption[] = shapeInput.options as GroupOption[] || [{
-        group: '',
-        values: [{
-            id      : uuid(),
-            label   : '',
-            value   : ''
-        }]
-    }];
 
-    // Determine the initial tab value based on options type
-    let value : "options" | "groups" = 
-        (shapeInput.options && 
-            Array.isArray(shapeInput.options) && 
-            shapeInput.options.length > 0 && 
-            shapeInput.options[0] && 
-            'group' in shapeInput.options[0] && 
-            'values' in shapeInput.options[0]
-        )
-            ? "groups" 
-            : "options";
-    
+    $: if ( countSend ) {
+        if ( value === 'options' && isSelectionValid )
+            isSelectionValid = true;
+        else if ( value === 'groups' && isGroupValid )
+            isSelectionValid = true;
+        else 
+            isSelectionValid = false;
+    }
+
+
+    const isShapeOptionArray = (arr: any[]): boolean => 
+        arr &&
+        Array.isArray(arr) && 
+        arr.length > 0 && 
+        arr[0] && 
+        !('group' in arr[0]) && 
+        !('values' in arr[0]);
+
+
+    const isGroupOptionArray = (arr: any[]): boolean => 
+        arr && 
+        Array.isArray(arr) && 
+        arr.length > 0 && 
+        arr[0] && 
+        'group' in arr[0] && 
+        'values' in arr[0];
+
+
+    const createDefaultOption = (): ShapeOption => ({
+        id      : uuid(),
+        label   : '',
+        value   : ''
+    });
+
+
+    const createDefaultGroup = (): GroupOption => ({
+        group: '',
+            values: [createDefaultOption()]
+    })
+
+
+    let value: "options" | "groups" = isGroupOptionArray(shapeInput.options as any[]) ? "groups" : "options";
+
+
+    let optionsSelected: ShapeOption[] = isShapeOptionArray(shapeInput.options as any[]) 
+        ? shapeInput.options as ShapeOption[] 
+        : [createDefaultOption()];
+
+
+    let groupsSelected: GroupOption[] = isGroupOptionArray(shapeInput.options as any[]) 
+        ? shapeInput.options as GroupOption[] 
+        : [createDefaultGroup()];
+
+
+    let isGroupValid = value === 'groups' ? false : true;
+
     const placeholderSearchShape = {
         id          : uuid(),
         name        : 'search-placeholder',
@@ -53,6 +82,24 @@
         maxLength   : 50,
         msgMaxLength: 'Máximo 50 caracteres permitidos.'
     } as ShapeInput;
+
+
+    function tabOptionsClick() {
+        shapeInput.options = [...optionsSelected ];
+        value = 'options';
+        if ( optionsSelected.length === 1 && optionsSelected[0].label === '' && optionsSelected[0].value === '' )
+            isSelectionValid = false;
+    }
+
+
+    function tabGroupsClick() {
+        shapeInput.options = [...groupsSelected ];
+        value = 'groups';
+        if ( groupsSelected.length === 1 && groupsSelected[0].values.length === 1 && groupsSelected[0].values[0].label === '' && groupsSelected[0].values[0].value === '' ){
+            isGroupValid = false;
+            isSelectionValid = false;
+        }
+    }
 </script>
 
 <Tabs.Root {value}>
@@ -61,7 +108,7 @@
     >
         <Tabs.Trigger
             value   = "options"
-            onclick = { () => shapeInput.options = [...optionsSelected ]}
+            onclick = { tabOptionsClick }
             class   = "data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-zinc-100 text-black dark:text-zinc-400 h-8 dark:data-[state=active]:text-black rounded-lg bg-transparent py-2"
         >
             Selección
@@ -69,7 +116,7 @@
 
         <Tabs.Trigger
             value   = "groups"
-            onclick = { () => shapeInput.options = [...groupsSelected ]}
+            onclick = { tabGroupsClick }
             class   = "data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-zinc-100 text-black dark:text-zinc-400 h-8 dark:data-[state=active]:text-black rounded-lg bg-transparent py-2"
         >
             Grupos
@@ -82,7 +129,6 @@
             onOptionsChange = {(newOptions: ShapeOption[]) => {
                 optionsSelected = [...newOptions];
                 shapeInput.options = optionsSelected;
-                console.log("🚀 ~ file: SelectEditor.svelte:97 ~ shapeInput:", shapeInput)
             }}
             bind:isSelectionValid = { isSelectionValid }
             { countSend }
@@ -97,7 +143,7 @@
                 shapeInput.options = groupsSelected;
             }}
             { countSend }
-            bind:isGroupValid = { isSelectionValid }
+            bind:isGroupValid = { isGroupValid }
         />
     </Tabs.Content>
 </Tabs.Root>
