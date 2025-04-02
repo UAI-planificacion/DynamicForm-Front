@@ -135,6 +135,13 @@
             return false;
         }
 
+        try {
+            dynamicForm = startClean( dynamicForm );
+        } catch ( error ) {
+            toast.error( 'Algunos datos son inválidos, por favor revise los campos', errorToast() );
+            return false;
+        }
+
         isLoading           = true;
         formName.disabled   = true;
         return true;
@@ -149,13 +156,6 @@
 
     async function saveTemplate() {
         if ( !validateForm() ) return;
-
-        try {
-            dynamicForm = startClean( dynamicForm );
-        } catch ( error ) {
-            toast.error( 'Algunos datos son inválidos, por favor revise los campos', errorToast() );
-            return;
-        }
 
         await fetch(
             ROUTER.DYNAMIC_FORM.CREATE, {
