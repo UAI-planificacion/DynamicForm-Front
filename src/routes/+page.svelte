@@ -81,7 +81,7 @@
         </div>
         <div class="flex flex-col sm:flex-row justify-center gap-4 transform transition-all duration-1000 delay-300 {visibleSections.hero ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}">
             {#if !$session.data}
-                <div class="w-48">
+                <div class="w-auto">
                     <MicrosoftAuth />
                 </div>
             {:else}

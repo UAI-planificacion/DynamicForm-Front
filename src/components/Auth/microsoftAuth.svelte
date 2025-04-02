@@ -27,7 +27,7 @@
 >
 	<MicrosoftIcon />
 
-    <span class="dark:text-zinc-100 font-semibold">
+    <span class="text-zinc-100 font-semibold">
         {#if $session.data}
             Cerrar sesión
         {:else}
