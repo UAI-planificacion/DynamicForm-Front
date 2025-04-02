@@ -9,7 +9,7 @@
 
     export let groups           : GroupOption[] = [];
     export let onGroupsChange   : ( newGroups: GroupOption[] ) => void;
-    export let isGroupValid     : boolean = true;
+    export let isGroupValid     : boolean = false;
     export let countSend        : number;
 
 

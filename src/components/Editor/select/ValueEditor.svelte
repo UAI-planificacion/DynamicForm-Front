@@ -18,7 +18,7 @@
 
     export let options          : ShapeOption[] = [];
     export let onOptionsChange  : ( newOptions: ShapeOption[] ) => void;
-    export let isSelectionValid : boolean = true;
+    export let isSelectionValid : boolean = false;
     export let countSend        : number;
 
 
