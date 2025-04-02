@@ -32,23 +32,32 @@
         errorToast,
         ROUTER,
         successToast,
+        startClean,
+        authClient
     }                                       from "$lib";
 	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
 	import { dynamicMode, dynamicForms } 	from "$stores";
 	import CircleLoader                     from "$components/Placeholder/CircleLoader.svelte";
 
 
-	const flipDurationMs = 100;
-    const defaultSelected = 'Nuevo formulario';
+	const flipDurationMs    = 100;
+    const defaultSelected   = 'Nuevo formulario';
+    const session           = authClient.useSession();
 
-    let dynamicForm     : DynamicForm = { _id: '', name : '' , details: [ buttonTemplate ] , user_id: 'kevincandia'};
+
     let options         : ShapeOption[] = [];
 	let inputActive     = 0;
     let optionSelected  = 'new';
     let isLoading       = true;
     let initialLoading  = true;
+    let dynamicForm     : DynamicForm = {
+        _id     : '',
+        name    : '',
+        details : [ buttonTemplate ] ,
+        user_id : $session?.data?.user?.id || 'invalid-user-id'
+    };
 
-    // Esta función se ejecutará cada vez que dynamicForm.details cambie
+
     $: {
         if ( $dynamicForms ) {
             options = [...$dynamicForms.map( form => ({
@@ -140,6 +149,13 @@
 
     async function saveTemplate() {
         if ( !validateForm() ) return;
+
+        try {
+            dynamicForm = startClean( dynamicForm );
+        } catch ( error ) {
+            toast.error( 'Algunos datos son inválidos, por favor revise los campos', errorToast() );
+            return;
+        }
 
         await fetch(
             ROUTER.DYNAMIC_FORM.CREATE, {

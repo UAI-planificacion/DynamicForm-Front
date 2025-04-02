@@ -8,3 +8,4 @@ export * from './auth';
 export * from './auth-client';
 export * from './apis';
 export * from './button-template';
+export * from './clean-shape-input';
