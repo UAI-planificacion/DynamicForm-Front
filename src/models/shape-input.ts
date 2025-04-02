@@ -76,8 +76,9 @@ export type ShapeInput = {
     options?        : ShapeOption[] | GroupOption[];
     rows?           : number;
     checked?        : boolean;
-    defaultChecked?   : boolean;
+    defaultChecked? : boolean;
     selected?       : Selected;
+    defaultSelected?: Selected;
     httpList?			: Http[];
 	externalErrorMsg?   : string;
 	invalidErrorMsg?	: string;
