@@ -73,6 +73,7 @@
 		shapeInput.shape = selected as InputType || 'none';
 
         isInput = !(shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown');
+        isSelectionValid = !(shapeInput.shape === 'select');
 
         if ( shapeInput.shape === 'textarea' ) {
             shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
@@ -243,14 +244,19 @@
         typeShape.valid         = errorSelect( {...typeShape,  required: shapeInput.shape ==='input'}, shapeInput.type );
 
         isValid = nameShape.valid
-        && labelShape.valid
-        && placeholderShape.valid
-        && rowsShape.valid
-        && requiredMssg.valid
-        && virtualShape.valid
-        && typeShape.valid
-        && isInput
-        && isSelectionValid;
+            && labelShape.valid
+            && placeholderShape.valid
+            && rowsShape.valid
+            && requiredMssg.valid
+            && virtualShape.valid
+            && typeShape.valid
+            && isInput
+            && isSelectionValid;
+        // if ( isInput || isSelectionValid && countSend > 0 ) {
+        //     countSend = 0;
+        //     editing = false;
+        //     inputDesactive();
+        // }
     }
 </script>
 
@@ -291,7 +297,7 @@
                     setError    = { () => labelShape.valid = errorInput( { ...labelShape, required: shapeInput.shape === 'check' }, shapeInput.label )}
                 />
 
-                {#if shapeInput.shape !== 'check' && shapeInput.shape !== 'button'}
+                {#if shapeInput.shape === 'input' || shapeInput.shape === 'select' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' || shapeInput.shape === 'none'}
                     <Input
                         shapeInput  = {{ ...placeholderShape, value: shapeInput.placeholder }}
                         onInput     = {( event: Event ) => shapeInput.placeholder = ( event.target as HTMLInputElement ).value }
@@ -300,7 +306,7 @@
                     />
                 {/if}
 
-                {#if shapeInput.shape === 'check' }
+                {#if shapeInput.shape === 'check'}
                     <div class="flex mt-5">
                         <Check
                             shapeInput = {{
@@ -765,7 +771,9 @@
                     class="w-full hover:shadow-xl active:scale-[0.99] active:brightness-90 bg-black rounded-lg py-2 text-white"
                     on:click={() => {
                         countSend++;
+
                         if ( !isValid ) return;
+
                         editing = false;
                         inputDesactive();
                     }}
