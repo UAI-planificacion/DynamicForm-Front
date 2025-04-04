@@ -93,29 +93,38 @@ const cleanCheckbox = (
 });
 
 
-const cleanSelect = ( shapeInput: ShapeInput ) : ShapeInput => ({
+const cleanSelect = ( shapeInput: ShapeInput ): ShapeInput => ({
     ...basicClean( shapeInput ),
     options: shapeInput.options,
-    ...(shapeInput.multiple             && { multiple           : shapeInput.multiple }),
-    ...(shapeInput.search               && { search             : shapeInput.search }),
-    ...(shapeInput.searchPlaceholder    && { searchPlaceholder  : shapeInput.searchPlaceholder }),
-    ...(shapeInput.selected             && { selected           : shapeInput.selected }),
+    ...( shapeInput.multiple             && { multiple           : shapeInput.multiple }),
+    ...( shapeInput.search               && { search             : shapeInput.search }),
+    ...( shapeInput.searchPlaceholder    && { searchPlaceholder  : shapeInput.searchPlaceholder }),
+    ...( shapeInput.selected             && { selected           : shapeInput.selected }),
 });
 
 
-// TODO: modificar cuando es un dateRange
-const cleanDate = ( shapeInput: ShapeInput ) : ShapeInput => ({
-    ...basicClean( shapeInput ),
-    ...(shapeInput.date                 && { date               : shapeInput.date }),
-    // ...(shapeInput.dateRange            && { dateRange          : shapeInput.dateRange }),
-    ...(shapeInput.isRange != null && { isRange: shapeInput.isRange }),
-    ...(shapeInput.invalidDates         && { invalidDates       : shapeInput.invalidDates }),
-    // ...(shapeInput.invalidDatesRange    && { invalidDatesRange  : shapeInput.invalidDatesRange }),
-    ...(shapeInput.minValue             && { minValue           : shapeInput.minValue }),
-    ...(shapeInput.maxValue             && { maxValue           : shapeInput.maxValue }),
-    ...(shapeInput.numberOfMonths       && { numberOfMonths     : shapeInput.numberOfMonths }),
-    ...(shapeInput.currentDate          && { currentDate        : shapeInput.currentDate }),
-});
+const cleanDate = ( shapeInput: ShapeInput ): ShapeInput => {
+    const isRange = shapeInput.isRange ?? false;
+
+    const dateOrRange = isRange
+        ? shapeInput.dateRange  && { dateRange  : shapeInput.dateRange }
+        : shapeInput.date       && { date       : shapeInput.date };
+
+    const invalidDatesOrRange = isRange
+        ? shapeInput.invalidDatesRange  && { invalidDatesRange  : shapeInput.invalidDatesRange }
+        : shapeInput.invalidDates       && { invalidDates       : shapeInput.invalidDates };
+
+    return {
+        ...basicClean( shapeInput ),
+        isRange,
+        ...dateOrRange,
+        ...invalidDatesOrRange,
+        ...( shapeInput.minValue         && { minValue       : shapeInput.minValue }),
+        ...( shapeInput.maxValue         && { maxValue       : shapeInput.maxValue }),
+        ...( shapeInput.numberOfMonths   && { numberOfMonths : shapeInput.numberOfMonths }),
+        ...( shapeInput.currentDate      && { currentDate    : shapeInput.currentDate }),
+    }
+}
 
 
 const cleanTime =( shapeInput: ShapeInput ): ShapeInput => ({

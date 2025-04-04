@@ -24,11 +24,18 @@
     export let setError         : VoidFunction = () => {};
 
 
+    function createCalendarDate(): DateValue | undefined {
+        if ( !value ) return undefined;
+
+        const date = new Date( value.year, value.month - 1, value.day );
+
+        return new CalendarDate( date.getFullYear(), date.getMonth() + 1, date.getDate() );
+    }
+
+
     let currentDate: DateValue | undefined = shapeInput.currentDate
         ? new CalendarDate( new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() )
-        : shapeInput.date
-            ? new CalendarDate( shapeInput.date.year, shapeInput.date.month, shapeInput.date.day )
-            : value;
+        : createCalendarDate();
 </script>
 
 <DatePicker.Root
