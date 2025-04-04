@@ -21,7 +21,7 @@
         required    = { shapeInput.required }
         disabled    = { shapeInput.disabled }
         readonly    = { shapeInput.readonly }
-        value       = { shapeInput.value }
+        value       = { value }
         on:input    = {( event ) => { onInput( event ); setError(); }}
         on:keyup    = { onKeyup }
         class       = {( shapeInput.class_ ) ?? ( styles.input as string )}
