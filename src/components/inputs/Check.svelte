@@ -17,21 +17,13 @@
     export let onChange     : ( checked: boolean ) => void;
     export let checked      : boolean | undefined = undefined;
     export let setError     : VoidFunction = () => {};
-
-
-    let check = checked ?? shapeInput.checked ?? shapeInput.defaultChecked ?? false;
-
-
-    $: if ( shapeInput.defaultChecked !== undefined ) {
-        check = shapeInput.defaultChecked;
-    }
 </script>
 
 <div class="space-y-1">
     <div class="flex items-center space-x-3">
         <Checkbox.Root
             id              = { shapeInput.id }
-            checked         = { check }
+            checked         = { checked }
             disabled        = { shapeInput.disabled }
             aria-labelledby = { shapeInput.label}
             class           = { shapeInput.boxStyle ?? ( styles.check as InputStyle ).box }
