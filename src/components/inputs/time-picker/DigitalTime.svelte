@@ -18,15 +18,10 @@
     export let setError     : VoidFunction = () => {};
 
 
-    let open            = false;
+    let open = false;
     let [selectedHour, selectedMinute] = value 
         ? [value.hour, value.minute]
-        : shapeInput.timeValue
-            ? [
-                parseInt(shapeInput.timeValue.split(':')[0]),
-                parseInt(shapeInput.timeValue.split(':')[1])
-            ]
-            : [undefined, undefined];
+        : [undefined, undefined]
     let searchHour      = '';
     let searchMinute    = '';
 
@@ -48,7 +43,7 @@
         if (h !== undefined && m !== undefined && !Number.isNaN(h) && !Number.isNaN(m)) {
             selectedHour = h;
             selectedMinute = m;
-            if (shapeInput.timeValue) {
+            if ( shapeInput.timeValue || shapeInput.defaultValueTime ) {
                 shapeInput.timeValue = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
             }
         }
@@ -72,8 +67,9 @@
     }
 
     function applySelection() {
-        if (shapeInput.timeValue && selectedHour !== undefined && selectedMinute !== undefined) {
-            shapeInput.timeValue = `${selectedHour.toString().padStart(2, '0')}:${selectedMinute.toString().padStart(2, '0')}`;
+        if (selectedHour !== undefined && selectedMinute !== undefined) {
+            const formattedTime = `${selectedHour.toString().padStart(2, '0')}:${selectedMinute.toString().padStart(2, '0')}`;
+            onTimerInput(formattedTime);
         }
     }
 
@@ -81,17 +77,10 @@
     const padStart = ( value: number | undefined ) : string => value?.toString().padStart(2, '0') ?? '';
 
 
-    function onTimerInputHandler(
-        isMinute: boolean = false
-    ): string {
-        if ( selectedHour === undefined )   return `:${padStart( selectedMinute )}`;
-        if ( selectedMinute === undefined ) return `${padStart( selectedHour )}:`;
-        if ( isMinute ) open = false;
-
+    function onTimerInputHandler(closeAfterSelection = false) {
+        if (closeAfterSelection) open = false;
         const timeValue = `${padStart( selectedHour )}:${padStart( selectedMinute )}`;
-        if (shapeInput.timeValue) {
-            shapeInput.timeValue = timeValue;
-        }
+        // Don't modify shapeInput.timeValue directly, let the parent handle it
         return timeValue;
     }
 
@@ -102,13 +91,13 @@
     ): void {
         if (type === 'hour') {
             selectedHour = selectedHour === value ? undefined : value;
-            onTimerInput( onTimerInputHandler() );
+            onTimerInput( onTimerInputHandler(false) );
             setError();
             return;
         }
 
         selectedMinute = selectedMinute === value ? undefined : value;
-        onTimerInput( onTimerInputHandler( true ));
+        onTimerInput( onTimerInputHandler(true) );
         setError();
     }
 
