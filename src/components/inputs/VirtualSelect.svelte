@@ -41,7 +41,7 @@
 
     const isGroupOption = (
         item: ShapeOption | GroupOption
-    ): item is GroupOption => 'group' in item && 'values' in item;
+    ): item is GroupOption => 'name' in item && 'options' in item;
 
 
     function calculateItemPositions(): void {
@@ -49,7 +49,7 @@
 
         itemPositions = filteredData?.map((item, index) => {
             const height = isGroupOption(item) 
-                ? GROUP_HEADER_HEIGHT + (item.values.length * OPTION_HEIGHT)
+                ? GROUP_HEADER_HEIGHT + (item.options.length * OPTION_HEIGHT)
                 : OPTION_HEIGHT;
 
             const position = { 
@@ -140,18 +140,19 @@
         filteredData = shapeInput.options || [];
 
         // Usar value como prioridad, luego shapeInput.selected como fallback
-        const selectedValue = value ?? shapeInput.selected;
+        const selectedValue = value;
+        // const selectedValue = value  ?? shapeInput.selected;
 
         if (selectedValue && shapeInput.options) {
             const selectedValues = Array.isArray(selectedValue)
-                ? selectedValue.map(s => typeof s === 'string' ? s : s.values).flat()
+                ? selectedValue.map(s => typeof s === 'string' ? s : s.options).flat()
                 : [selectedValue];
 
             // Buscar los items seleccionados
             shapeInput.options.forEach(item => {
                 if (isGroupOption(item)) {
                     // Si es un grupo, buscar en sus valores
-                    const groupSelected = item.values.filter(v => selectedValues.includes(v.value));
+                    const groupSelected = item.options.filter(v => selectedValues.includes(v.value));
                     if (groupSelected.length > 0) {
                         selectedItems = [...selectedItems, ...groupSelected];
                     }
@@ -184,12 +185,12 @@
                 filteredData = (shapeInput.options as GroupOption[])
                     .map(group => ({
                         ...group,
-                        values: group.values.filter(item =>
+                        options: group.options.filter(item =>
                             item.label.toLowerCase().includes(searchTermLower) ||
                             item.value.toLowerCase().includes(searchTermLower)
                         )
                     }))
-                    .filter(group => group.values.length > 0);
+                    .filter(group => group.options.length > 0);
             } else {
                 filteredData = (shapeInput.options as ShapeOption[] || [])
                     .filter(item => 
@@ -236,28 +237,28 @@
             if (shapeInput.options?.some(isGroupOption)) {
                 // Buscar el grupo al que pertenece el item
                 const parentGroup = (shapeInput.options as GroupOption[])
-                .find(g => g.values.some(v => v.value === item.value));
+                .find(g => g.options.some(v => v.value === item.value));
 
                 if ( parentGroup ) {
                     const selectedValues = selectedItems
-                        .filter(selected => parentGroup.values.some(v => v.value === selected.value))
+                        .filter(selected => parentGroup.options.some(v => v.value === selected.value))
                         .map(selected => selected.value);
 
                     // Si no hay valores seleccionados en este grupo, no lo incluimos
                     const groupedValue = selectedValues.length > 0 
-                        ? [{ group: parentGroup.group, values: selectedValues }]
+                        ? [{ name: parentGroup.name, options: selectedValues }]
                         : [];
 
                     // Mantener las selecciones de otros grupos
                     const otherGroups = (shapeInput.options as GroupOption[])
                         .filter(g => g !== parentGroup)
                         .map(g => ({
-                            group: g.group,
-                            values: selectedItems
-                                .filter(selected => g.values.some(v => v.value === selected.value))
+                            name: g.name,
+                            options: selectedItems
+                                .filter(selected => g.options.some(v => v.value === selected.value))
                                 .map(selected => selected.value)
                         }))
-                        .filter(g => g.values.length > 0);
+                        .filter(g => g.options.length > 0);
 
                     onSelectedChange([...groupedValue, ...otherGroups]);
                     setError();
@@ -284,14 +285,14 @@
     }
 
     const isGroupFullySelected = ( group: GroupOption ): boolean =>
-        group.values
+        group.options
             .every(option => selectedItems
                 .some( selected => selected.value === option.value )
         );
 
 
     const isGroupPartiallySelected = ( group: GroupOption ): boolean => 
-        group.values
+        group.options
             .some(option => selectedItems
                 .some( selected => selected.value === option.value )
             ) && !isGroupFullySelected( group );
@@ -313,14 +314,14 @@
         const groupedItems = items.reduce((acc, item) => {
             // Buscar el grupo al que pertenece el item
             const parentGroup = (shapeInput.options as GroupOption[])
-                .find(g => g.values.some(v => v.value === item.value));
+                .find(g => g.options.some(v => v.value === item.value));
 
             if (parentGroup) {
-                const existingGroup = acc.find(g => g.group === parentGroup.group);
+                const existingGroup = acc.find(g => g.name === parentGroup.name);
                 if (existingGroup) {
-                    existingGroup.values.push(item.value);
+                    existingGroup.options.push(item.value);
                 } else {
-                    acc.push({ group: parentGroup.group, values: [item.value] });
+                    acc.push({ name: parentGroup.name, options: [item.value] });
                 }
             }
             return acc;
@@ -333,16 +334,16 @@
     function toggleGroup( group: GroupOption ): void {
         if ( ! shapeInput.multiple ) return;
 
-        const isFullySelected = group.values.every(option => 
+        const isFullySelected = group.options.every(option => 
             selectedItems.some(selected => selected.value === option.value)
         );
 
         if ( isFullySelected ) {
             selectedItems = selectedItems.filter( item => 
-                !group.values.some( option => option.value === item.value )
+                !group.options.some( option => option.value === item.value )
             );
         } else {
-            const newItems = group.values.filter( option => 
+            const newItems = group.options.filter( option => 
                 !selectedItems.some( selected => selected.value === option.value )
             );
             selectedItems = [...selectedItems, ...newItems];
@@ -384,7 +385,7 @@
         // Calcula la altura total necesaria
         const totalItemsHeight = filteredData.reduce((height, item) => {
             if (isGroupOption(item)) {
-                return height + GROUP_HEADER_HEIGHT + (item.values.length * OPTION_HEIGHT);
+                return height + GROUP_HEADER_HEIGHT + (item.options.length * OPTION_HEIGHT);
             }
             return height + OPTION_HEIGHT;
         }, 0);
@@ -528,7 +529,7 @@
                                             class       = { `opacity-80 ${shapeInput.groudStyle ?? ( styles.select as InputStyle ).group }` }
                                             on:click    = { () => toggleGroup( item )}
                                         >
-                                            <span class="truncate text-zinc-900 dark:text-zinc-300">{item.group}</span>
+                                            <span class="truncate text-zinc-900 dark:text-zinc-300">{item.name}</span>
 
                                             {#if shapeInput.multiple}
                                                 <Check class={`h-4 w-4 ${
@@ -541,7 +542,7 @@
                                             {/if}
                                         </button>
 
-                                        {#each item.values as option, optionIndex}
+                                        {#each item.options as option, optionIndex}
                                             {@const itemKey = `${i}-${optionIndex}`}
                                             <button
                                                 type            = "button"
