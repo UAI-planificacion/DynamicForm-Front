@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
-    import { Accordion }        from "bits-ui";
-	import { v4 as uuid }	    from 'uuid';
-    import { type DateValue }   from "@internationalized/date";
+    import { Accordion, type DateRange }    from "bits-ui";
+	import { v4 as uuid }	                from 'uuid';
+    import { type DateValue }               from "@internationalized/date";
 
     import {
         CaretDownIcon,
@@ -28,7 +28,8 @@
         TimeGenerator,
         DigitalTime,
         SelectEditor,
-        ValidInput
+        ValidInput,
+        DateRangePicker
     }						from "$components";
     import {
 		options,
@@ -313,36 +314,49 @@
                                 id      : uuid(),
                                 name    : 'default-value',
                                 label   : 'Valor por defecto',
-                                checked : shapeInput.defaultChecked
                             }}
-                            onChange = {( e ) => shapeInput.defaultChecked = e }
+                            onChange = {( e ) => shapeInput.checked = e }
+                            checked  = { shapeInput.checked }
                         />
                     </div>
                 {:else if shapeInput.shape === 'datepicker'}
-                    <div class="flex gap-2 items-center">
-                        <div class="w-48">
-                            <Check
+                    {#if !shapeInput.isRange }
+                        <div class="flex gap-2 items-center">
+                            <div class="w-48">
+                                <Check
+                                    shapeInput = {{
+                                        id      : uuid(),
+                                        name    : 'current-date',
+                                        label   : 'Día actual',
+                                    }}
+                                    onChange = {( e ) => shapeInput.currentDate = e}
+                                    checked  = { shapeInput.currentDate }
+                                />
+                            </div>
+
+                            <DatePicker
                                 shapeInput = {{
-                                    id      : uuid(),
-                                    name    : 'current-date',
-                                    label   : 'Día actual',
-                                    checked : shapeInput.currentDate
+                                    id          : uuid(),
+                                    name        : 'default-value',
+                                    date        : shapeInput.date,
+                                    label       : 'Valor por defecto',
                                 }}
-                                onChange = {( e ) => shapeInput.currentDate = e}
+                                onValueChange = {( value: DateValue ) => shapeInput.date = value }
+                                value = { shapeInput.date }
                             />
                         </div>
-
-                        <DatePicker
+                    {:else}
+                        <DateRangePicker
                             shapeInput = {{
                                 id          : uuid(),
                                 name        : 'default-value',
-                                date        : shapeInput.date,
+                                dateRange   : shapeInput.defaultDateRange,
                                 label       : 'Valor por defecto',
                                 disabled    : shapeInput.currentDate
                             }}
-                            onValueChange = {( value: DateValue ) => shapeInput.date = value }
+                            onValueChange = {( value: DateRange | undefined ) => shapeInput.defaultDateRange = value }
                         />
-                    </div>
+                    {/if}
                 {:else if shapeInput.shape === 'timer'}
                     {#if shapeInput.time?.isAnalogic}
                         <AnalogicTime
@@ -350,9 +364,9 @@
                                 id          : uuid(),
                                 name        : 'time-default',
                                 label       : 'Tiempo por defecto',
-                                timeValue   : shapeInput.timeValue,
+                                timeValue   : shapeInput.defaultValueTime,
                             }}
-                            onTimerInput = {( value: string ) => shapeInput.timeValue = value }
+                            onTimerInput = {( value: string ) => shapeInput.defaultValueTime = value }
                         />
                     {:else}
                         <DigitalTime
@@ -360,9 +374,9 @@
                                 id		    : uuid(),
                                 name	    : 'time-default',
                                 label       : 'Tiempo por defecto',
-                                timeValue   : shapeInput.timeValue
+                                timeValue   : shapeInput.defaultValueTime
                             }}
-                            onTimerInput = {( value: string ) => shapeInput.timeValue = value }
+                            onTimerInput = {( value: string ) => shapeInput.defaultValueTime = value }
                         />
                     {/if}
                 {/if}
@@ -384,12 +398,13 @@
                             label       : 'Valor por defecto',
                             name	    : 'value',
                             placeholder : 'Valor con el que se inicia',
-                            value       : shapeInput.value,
+                            // value       : shapeInput.value,
                             type        : (shapeInput.type === 'number' ? 'number' : 'text') as Types
                         } as ShapeInput}
                         <Input
                             shapeInput = {{ ...defaultValueShape }}
                             onInput = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
+                            value = { shapeInput.value }
                         />
                     {/if}
                 </div>
@@ -410,11 +425,11 @@
                             label       : 'Valor por defecto',
                             placeholder : 'Ingrese el valor por defecto',
                             rows        : 1,
-                            value       : shapeInput.value
                         } as ShapeInput}
                         <TextArea
-                            shapeInput = {{ ...textareaDefaultShape }}
-                            onInput = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
+                            shapeInput  = {{ ...textareaDefaultShape }}
+                            onInput     = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
+                            value       = { shapeInput.value }
                         />
                     {/if}
                 </div>
