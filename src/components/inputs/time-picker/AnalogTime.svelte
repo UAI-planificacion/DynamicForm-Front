@@ -18,16 +18,15 @@
 
     let isOpen              = false;
     let [hours, minutes]    = value 
-        ? [value.hour, value.minute]
-        : shapeInput.timeValue
-            ? [
-                parseInt(shapeInput.timeValue.split(':')[0]),
-                parseInt(shapeInput.timeValue.split(':')[1])
-            ]
-            : [undefined, undefined];
+    ? [value.hour, value.minute]
+    : [undefined, undefined];
+
+    let formattedTime = 'hh : mm';
+    $: if (hours !== undefined && minutes !== undefined) {
+        formattedTime = `${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')}`;
+    }
     let isSelectingHours    = true;
     let isPM                = hours !== undefined && hours >= 12;
-    let formattedTime       = 'hh : mm';
 
     $: allowedHours = shapeInput.time?.hourList || [];
     $: allowedMinutes = shapeInput.time?.minuteList || [];
@@ -54,18 +53,36 @@
     const minutesArray  = Array.from({ length: 12 }, (_, i) => i * 5);
 
 
-    function formatTime(): void {
+    function formatTimeForDisplay(): string {
         const notHours      = hours     === undefined || hours      === null;
         const notMinutes    = minutes   === undefined || minutes    === null;
 
         if ( notHours && minutes ) {
-            formattedTime = `hh : ${minutes?.toString().padStart(2, '0')}`;
+            return `hh : ${minutes?.toString().padStart(2, '0')}`;
         } else if ( hours && notMinutes ) {
-            formattedTime = `${hours?.toString().padStart(2, '0')} : mm`;
-        } else if ( !notHours && !notMinutes )
-            formattedTime = `${hours?.toString().padStart(2, '0')} : ${minutes?.toString().padStart(2, '0')}`;
-        else 
-            formattedTime = 'hh : mm';
+            return `${hours?.toString().padStart(2, '0')} : mm`;
+        } else if ( !notHours && !notMinutes ) {
+            return `${hours?.toString().padStart(2, '0')} : ${minutes?.toString().padStart(2, '0')}`;
+        }
+        return 'hh : mm';
+    }
+
+    function formatTime(): string {
+        const notHours      = hours     === undefined || hours      === null;
+        const notMinutes    = minutes   === undefined || minutes    === null;
+
+        let result = 'hh:mm';
+
+        if ( notHours && minutes ) {
+            result = `hh:${minutes?.toString().padStart(2, '0')}`;
+        } else if ( hours && notMinutes ) {
+            result = `${hours?.toString().padStart(2, '0')}:mm`;
+        } else if ( !notHours && !notMinutes ) {
+            result = `${hours?.toString().padStart(2, '0')}:${minutes?.toString().padStart(2, '0')}`;
+        }
+
+        formattedTime = formatTimeForDisplay();
+        return result;
     }
 
 
@@ -76,8 +93,8 @@
 
         hours = hours === newHour ? undefined : newHour;
 
-        formatTime();
-        onTimerInput( formattedTime );
+        const timeString = formatTime();
+        onTimerInput(timeString);
         setError();
 
         isSelectingHours = false;
@@ -89,8 +106,8 @@
 
         minutes = minutes === minute ? undefined : minute;
 
-        formatTime();
-        onTimerInput( formattedTime );
+        const timeString = formatTime();
+        onTimerInput(timeString);
         setError();
 
         isOpen = false;
@@ -117,8 +134,8 @@
         if ( hours < 12 && isPM )           hours += 12;
         else if ( hours >= 12 && !isPM )    hours -= 12;
 
-        formatTime();
-        onTimerInput( formattedTime );
+        const timeString = formatTime();
+        onTimerInput(timeString);
         setError();
     }
 
