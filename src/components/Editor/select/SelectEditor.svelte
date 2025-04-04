@@ -27,8 +27,8 @@
         Array.isArray(arr) && 
         arr.length > 0 && 
         arr[0] && 
-        !('group' in arr[0]) && 
-        !('values' in arr[0]);
+        !('name' in arr[0]) && 
+        !('options' in arr[0]);
 
 
     const isGroupOptionArray = (arr: any[]): boolean => 
@@ -36,8 +36,8 @@
         Array.isArray(arr) && 
         arr.length > 0 && 
         arr[0] && 
-        'group' in arr[0] && 
-        'values' in arr[0];
+        'name' in arr[0] && 
+        'options' in arr[0];
 
 
     const createDefaultOption = (): ShapeOption => ({
@@ -48,25 +48,26 @@
 
 
     const createDefaultGroup = (): GroupOption => ({
-        group: '',
-            values: [createDefaultOption()]
-    })
+        name    : '',
+        options : [createDefaultOption()]
+    });
 
 
-    let value: "options" | "groups" = isGroupOptionArray(shapeInput.options as any[]) ? "groups" : "options";
+    let value: "options" | "groups" = isGroupOptionArray( shapeInput.options as any[] ) ? "groups" : "options";
 
 
-    let optionsSelected: ShapeOption[] = isShapeOptionArray(shapeInput.options as any[]) 
-        ? shapeInput.options as ShapeOption[] 
+    let optionsSelected: ShapeOption[] = isShapeOptionArray( shapeInput.options as any[] )
+        ? shapeInput.options as ShapeOption[]
         : [createDefaultOption()];
 
 
-    let groupsSelected: GroupOption[] = isGroupOptionArray(shapeInput.options as any[]) 
+    let groupsSelected: GroupOption[] = isGroupOptionArray( shapeInput.options as any[] )
         ? shapeInput.options as GroupOption[] 
         : [createDefaultGroup()];
 
 
     let isGroupValid = value === 'groups' ? false : true;
+
 
     const placeholderSearchShape = {
         id          : uuid(),
@@ -95,7 +96,7 @@
     function tabGroupsClick() {
         shapeInput.options = [...groupsSelected ];
         value = 'groups';
-        if ( groupsSelected.length === 1 && groupsSelected[0].values.length === 1 && groupsSelected[0].values[0].label === '' && groupsSelected[0].values[0].value === '' ){
+        if ( groupsSelected.length === 1 && groupsSelected[0].options.length === 1 && groupsSelected[0].options[0].label === '' && groupsSelected[0].options[0].value === '' ){
             isGroupValid = false;
             isSelectionValid = false;
         }
@@ -156,13 +157,14 @@
             name 		        : 'default-value',
             placeholder	        : 'Ingrese un valor por defecto',
             required 	        : true,
+            msgRequired	        : 'Valor por defecto requerido.',
             label		        : 'Valor por defecto',
-            selected	        : shapeInput.selected,
             multiple            : shapeInput.multiple,
             search              : shapeInput.search,
             searchPlaceholder   : shapeInput.searchPlaceholder,
             options             : shapeInput.options
         }}
+        value = { shapeInput.selected }
     />
 
     <div class="grid grid-cols-1 @lg:grid-cols-2 items-center gap-2">

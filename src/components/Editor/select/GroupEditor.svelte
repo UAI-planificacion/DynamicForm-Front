@@ -52,8 +52,8 @@
             ...groups,
             {
                 id      : uuid(),
-                group   : '',
-                values  : [
+                name    : '',
+                options : [
                     {
                         id    : uuid(),
                         label : '',
@@ -82,7 +82,7 @@
     ): void {
         const newGroups = groups.map(group => 
             group.id === groupId 
-                ? { ...group, values: newOptions }
+                ? { ...group, options: newOptions }
                 : group
         );
 
@@ -100,13 +100,13 @@
         <div class="rounded-lg border border-zinc-300 dark:border-zinc-800 p-2 space-y-2">
             <div class="flex items-start gap-2">
                 <Input
-                    shapeInput  = {{...groupShapeList[index], value: group.group }}
-                    value       = { group.group }
+                    shapeInput  = {{...groupShapeList[index], value: group.name }}
+                    value       = { group.name }
                     onKeyup     = { keyAddGroup }
-                    setError    = {() => groupShapeList[index].valid = errorInput( groupShapeList[index], group.group )}
+                    setError    = {() => groupShapeList[index].valid = errorInput( groupShapeList[index], group.name )}
                     onInput     = {( e ) => {
-                        group.group = ( e.target as HTMLInputElement ).value;
-                        groupShapeList[index].value = group.group;
+                        group.name = ( e.target as HTMLInputElement ).value;
+                        groupShapeList[index].value = group.name;
                     }}
                 />
 
@@ -125,7 +125,7 @@
             </div>
 
             <ValueEditor
-                options         = { group.values }
+                options         = { group.options }
                 onOptionsChange = {( newOptions: ShapeOption[] ) => updateGroupOptions( group.id!, newOptions )}
                 bind:isSelectionValid = { isGroupValid }
                 { countSend }

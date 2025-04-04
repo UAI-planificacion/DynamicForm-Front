@@ -34,10 +34,12 @@ export type ShapeInput = {
     type?           : Types;
     placeholder?    : string;
     value?          : string;
-    defaultValue?   : string;
     timeValue?      : string;
+    defaultValueTime? : string;
     date?           : DateValue;
+    defaultDate?    : DateValue;
     dateRange?      : DateRange;
+    defaultDateRange? : DateRange;
     isRange?        : boolean;
     invalidDates?   : string[];
     invalidDatesRange?: InvalidDate;
@@ -78,7 +80,6 @@ export type ShapeInput = {
     checked?        : boolean;
     defaultChecked? : boolean;
     selected?       : Selected;
-    defaultSelected?: Selected;
     httpList?			: Http[];
 	externalErrorMsg?   : string;
 	invalidErrorMsg?	: string;
@@ -125,15 +126,15 @@ export type SelectInput = string | string[] | SelectGroup[] | undefined;
 
 
 export type SelectGroup = {
-    group   : string;
-    values  : string[];
+    name    : string;
+    options : string[];
 }
 
 
 export type GroupOption = {
     id?     : string;
-    group   : string;
-    values  : ShapeOption[];
+    name    : string;
+    options : ShapeOption[];
 };
 
 

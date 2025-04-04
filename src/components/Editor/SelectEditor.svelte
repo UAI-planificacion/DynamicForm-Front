@@ -11,8 +11,8 @@
 
     let optionsSelected: ShapeOption[] = [];
     let groupsSelected: GroupOption[] = [{
-        group: '',
-        values: [{
+        name: '',
+        options: [{
             id: uuid(),
             label: '',
             value: ''
