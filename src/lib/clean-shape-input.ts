@@ -23,14 +23,13 @@ const basicClean = ( shapeInput: ShapeInput ) => ({
     id      : shapeInput.id,
     name    : shapeInput.name,
     shape   : shapeInput.shape,
-    valid   : true,
     ...(shapeInput.label        && { label          : shapeInput.label }),
     ...(shapeInput.description  && { description    : shapeInput.description }),
     ...(shapeInput.placeholder  && { placeholder    : shapeInput.placeholder }),
     ...(shapeInput.disabled     && { disabled       : shapeInput.disabled }),
     ...(shapeInput.readonly     && { readonly       : shapeInput.readonly }),
     ...(shapeInput.required     && { required       : shapeInput.required }),
-    ...(shapeInput.msgRequired  && { msgRequired    : shapeInput.msgRequired }),
+    ...(shapeInput.msgRequired && shapeInput.required && { msgRequired: shapeInput.msgRequired }),
 });
 
 
@@ -69,6 +68,7 @@ export function cleanInput( shapeInput: ShapeInput ) {
 
     return {
         ...basicClean( shapeInput ),
+        ...( shapeInput.value && { value: shapeInput.value }),
         type,
         min,
         max,
@@ -87,7 +87,10 @@ export function cleanInput( shapeInput: ShapeInput ) {
 
 const cleanCheckbox = (
     shapeInput: ShapeInput
-) : ShapeInput => ({ ...basicClean( shapeInput )});
+) : ShapeInput => ({
+    ...basicClean( shapeInput ),
+    ...( shapeInput.checked && { checked: shapeInput.checked }),
+});
 
 
 const cleanSelect = ( shapeInput: ShapeInput ) : ShapeInput => ({
@@ -96,17 +99,18 @@ const cleanSelect = ( shapeInput: ShapeInput ) : ShapeInput => ({
     ...(shapeInput.multiple             && { multiple           : shapeInput.multiple }),
     ...(shapeInput.search               && { search             : shapeInput.search }),
     ...(shapeInput.searchPlaceholder    && { searchPlaceholder  : shapeInput.searchPlaceholder }),
-    ...(shapeInput.defaultSelected      && { defaultSelected    : shapeInput.defaultSelected }),
+    ...(shapeInput.selected             && { selected           : shapeInput.selected }),
 });
 
 
+// TODO: modificar cuando es un dateRange
 const cleanDate = ( shapeInput: ShapeInput ) : ShapeInput => ({
     ...basicClean( shapeInput ),
     ...(shapeInput.date                 && { date               : shapeInput.date }),
-    ...(shapeInput.dateRange            && { dateRange          : shapeInput.dateRange }),
-    ...(shapeInput.isRange              && { isRange            : shapeInput.isRange }),
+    // ...(shapeInput.dateRange            && { dateRange          : shapeInput.dateRange }),
+    ...(shapeInput.isRange != null && { isRange: shapeInput.isRange }),
     ...(shapeInput.invalidDates         && { invalidDates       : shapeInput.invalidDates }),
-    ...(shapeInput.invalidDatesRange    && { invalidDatesRange  : shapeInput.invalidDatesRange }),
+    // ...(shapeInput.invalidDatesRange    && { invalidDatesRange  : shapeInput.invalidDatesRange }),
     ...(shapeInput.minValue             && { minValue           : shapeInput.minValue }),
     ...(shapeInput.maxValue             && { maxValue           : shapeInput.maxValue }),
     ...(shapeInput.numberOfMonths       && { numberOfMonths     : shapeInput.numberOfMonths }),
@@ -116,8 +120,8 @@ const cleanDate = ( shapeInput: ShapeInput ) : ShapeInput => ({
 
 const cleanTime =( shapeInput: ShapeInput ): ShapeInput => ({
     ...basicClean( shapeInput ),
-    ...( shapeInput.time         && { time       : shapeInput.time }),
-    ...( shapeInput.timeValue    && { timeValue  : shapeInput.timeValue }),
-    ...( shapeInput.time         && { time       : shapeInput.time }),
+    ...( shapeInput.time                && { time               : shapeInput.time }),
+    ...( shapeInput.defaultValueTime    && { defaultValueTime   : shapeInput.defaultValueTime }),
+    ...( shapeInput.time                && { time               : shapeInput.time }),
 });
 
