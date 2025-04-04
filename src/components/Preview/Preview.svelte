@@ -36,7 +36,14 @@
 	export let dynamicMode	: boolean = false;
 
 
-    const keys = ["value", "checked", "date", "selected", 'dateRange', 'timeValue'];
+    const keys = [
+        "value",
+        "checked",
+        "date",
+        'defaultDateRange',
+        "selected",
+        'defaultValueTime'
+    ];
 
 
 	let loading = false;
