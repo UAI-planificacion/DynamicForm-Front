@@ -24,5 +24,6 @@
 		placeholder	= { shapeInput.placeholder }
 		on:input    = { ( value ) => { onInput( value ); setError() }}
 		class       = { shapeInput.class_ ?? styles.textarea }
-	>{ shapeInput.value }</textarea>
+        { value }
+    ></textarea>
 </Info>
