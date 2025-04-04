@@ -408,7 +408,7 @@
             <textarea
 				name        = { shapeInput.name }
 				id          = { shapeInput.id }
-				bind:value={ shapeInput.value }
+				bind:value={ value }
                 bind:this={ textarea }
 				required 	= { shapeInput.required }
 				minlength   = { shapeInput.minLength }

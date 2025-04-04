@@ -17,7 +17,7 @@
         DateRangePicker,
         DigitalTime,
         AnalogicTime
-	} 							            from "$components";
+	} 					from "$components";
 	import {
 		errorSelect,
 		errorCheck,
@@ -27,8 +27,14 @@
 		successToast,
 		errorToast,
         errorTimer,
-	}							            from "$lib";
-    import type { SelectInput, ShapeInput } from "$models";
+        stringToTime
+	}					from "$lib";
+    import type {
+        DateDetail,
+        DatesRange,
+        SelectInput,
+        ShapeInput
+    }                   from "$models";
 
 
     export let template		: ShapeInput[] = [];
@@ -40,15 +46,43 @@
         "value",
         "checked",
         "date",
-        'defaultDateRange',
+        'dateRange',
         "selected",
-        'defaultValueTime'
+        'timeValue'
     ];
 
 
 	let loading = false;
     let formValues: Record<string, any> = {};
     let previousTemplate = template;
+
+
+    function getTodayDate(): { year: number; month: number; day: number } {
+        const date = new Date();
+
+        return {
+            year    : date.getFullYear(),
+            month   : date.getMonth(),
+            day     : date.getDate()
+        }
+    }
+
+
+    const getDateDetails = ( dateDetail: DateDetail ): DateDetail  => ({
+        year    : dateDetail.year,
+        month   : dateDetail.month,
+        day     : dateDetail.day,
+    });
+
+
+    function getTodayDateRange( dateRange?: DatesRange ): DatesRange | undefined {
+        if ( !dateRange || !dateRange.start || !dateRange.end ) return undefined;
+
+        const start = getDateDetails( dateRange.start );
+        const end   = getDateDetails( dateRange.end );
+
+        return { start, end };
+    }
 
     // Cargar valores por defecto cuando cambie el template completamente
     $: {
@@ -61,7 +95,16 @@
                     : undefined;
 
                 if ( item.shape !== 'button' && value !== undefined ) {
-                    acc[item.name] = value;
+                    if (item.shape === 'datepicker' ) {
+                        if ( item.currentDate === true && !item.isRange )
+                            acc[item.name] = getTodayDate();
+                        else if ( item.isRange ) 
+                            acc[item.name] = getTodayDateRange( item.dateRange );
+                    } else if (item.shape === 'timer') {
+                        acc[item.name] = stringToTime( item.timeValue );
+                    } else {
+                        acc[item.name] = value;
+                    }
                 }
 
                 return acc;
@@ -99,6 +142,7 @@
 
 
     let previousShapes: Record<string, string> = {};
+
 
     $: {
         if (template) {
@@ -184,22 +228,15 @@
     }
 
 
-    const handleTime = ( time: string, name: string ) => {
+    const handleTime = ( time: string, name: string, isAnalog = false ) => {
         const [ hour, minute ] = time.split( ':' );
 
-        formValues[name] = {
-            hour    :  hour     === '' ? null : Number( hour ),
-            minute  :  minute   === '' ? null : Number( minute )
-        };
-    }
-
-
-    const handleAnologTime = ( time: string, name: string ) => {
-        const [ hour, minute ] = time.split( ' : ' );
+        const compareHour   = isAnalog ? 'hh' : '';
+        const compareMinute = isAnalog ? 'mm' : '';
 
         formValues[name] = {
-            hour    :  hour     === 'hh' ? null : Number( hour ),
-            minute  :  minute   === 'mm' ? null : Number( minute )
+            hour    :  hour     === compareHour ? null : Number( hour ),
+            minute  :  minute   === compareMinute ? null : Number( minute )
         };
     }
 
@@ -356,15 +393,15 @@
                 <DigitalTime
                     { shapeInput }
                     onTimerInput	= {( value: string ) => handleTime( value, shapeInput.name )}
-                    value			= { formValues[ shapeInput.name ]}
+                    value			= { stringToTime( formValues[ shapeInput.name ])}
                     setError	    = {() => shapeInput.valid = errorTimer( shapeInput, formValues[ shapeInput.name ])}
                 />
             <!-- Analogic Time -->
             {:else if shapeInput.shape === 'timer' && shapeInput.time?.isAnalogic}
                 <AnalogicTime
                     { shapeInput }
-                    onTimerInput    = {( value: string ) => handleAnologTime( value, shapeInput.name )}
-                    value			= { formValues[ shapeInput.name ]}
+                    onTimerInput    = {( value: string ) => handleTime( value, shapeInput.name, true )}
+                    value			= { stringToTime( formValues[ shapeInput.name ] )}
                     setError		= {() => shapeInput.valid = errorTimer( shapeInput, formValues[ shapeInput.name ])}
                 />
 			<!-- Default -->

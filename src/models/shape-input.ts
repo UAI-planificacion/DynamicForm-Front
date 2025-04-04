@@ -17,10 +17,10 @@ export type Types      = 'text' | 'number' | 'password' | 'email' | 'url' | 'tel
 
 
 export type DynamicForm = {
-    _id      : string;
-    name    : string;
-    user_id : string;
-    details : ShapeInput[];
+    _id         : string;
+    name        : string;
+    user_email  : string;
+    details     : ShapeInput[];
 }
 
 
@@ -35,11 +35,8 @@ export type ShapeInput = {
     placeholder?    : string;
     value?          : string;
     timeValue?      : string;
-    defaultValueTime? : string;
     date?           : DateValue;
-    defaultDate?    : DateValue;
     dateRange?      : DateRange;
-    defaultDateRange? : DateRange;
     isRange?        : boolean;
     invalidDates?   : string[];
     invalidDatesRange?: InvalidDate;
@@ -78,7 +75,6 @@ export type ShapeInput = {
     options?        : ShapeOption[] | GroupOption[];
     rows?           : number;
     checked?        : boolean;
-    defaultChecked? : boolean;
     selected?       : Selected;
     httpList?			: Http[];
 	externalErrorMsg?   : string;

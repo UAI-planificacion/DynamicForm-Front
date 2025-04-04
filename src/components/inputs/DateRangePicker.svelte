@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-
     import { DateRangePicker, type DateRange }  from "bits-ui";
     import { CalendarDate, type DateValue }     from "@internationalized/date";
 
@@ -19,36 +17,33 @@
     export let onValueChange    : ( value: DateRange | undefined ) => void;
     export let setError         : VoidFunction = () => {};
 
-    let internalValue   : DateRange | undefined;
     let startDate       : DateValue | undefined;
     let endDate         : DateValue | undefined;
 
     const createEmptyDateRange = () => ({
-        start: undefined,
-        end: undefined
+        start : undefined,
+        end   : undefined
     });
 
-    const dateRangeValue = (date : any) : DateRange => {
-        if (!date || !date.start || !date.end) {
-            return createEmptyDateRange();
-        }
+
+    const dateRangeValue = ( date : any ) : DateRange => {
+        if ( !date || !date.start || !date.end ) return createEmptyDateRange();
 
         try {
             return {
-                start: new CalendarDate(date.start.year, date.start.month + 1, date.start.day),
-                end: new CalendarDate(date.end.year, date.end.month + 1, date.end.day)
+                start   : new CalendarDate( date.start.year, date.start.month + 1, date.start.day ),
+                end     : new CalendarDate( date.end.year, date.end.month + 1, date.end.day )
             };
         } catch {
             return createEmptyDateRange();
         }
     };
 
-    onMount(() => {
-        internalValue = dateRangeValue(value);
-    });
+    let internalValue   : DateRange | undefined = dateRangeValue( value );
+
 
     const handleDateChange = () => {
-        if (!startDate && !endDate && shapeInput.required) {
+        if (!startDate && !endDate ) {
             onValueChange(undefined);
             setError();
         }
@@ -56,11 +51,8 @@
 
     const handleValueChange = (newValue: DateRange | undefined) => {
         internalValue = newValue || createEmptyDateRange();
-        if (newValue?.start && newValue?.end) {
-            onValueChange(newValue);
-        } else {
-            onValueChange(undefined);
-        }
+        const value = ( newValue?.start && newValue?.end ) && newValue;
+        onValueChange(value);
         setError();
     };
 </script>

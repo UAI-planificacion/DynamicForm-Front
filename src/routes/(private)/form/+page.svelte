@@ -51,12 +51,19 @@
     let isLoading       = true;
     let initialLoading  = true;
     let dynamicForm     : DynamicForm = {
-        _id     : '',
-        name    : '',
-        details : [ buttonTemplate ] ,
-        user_id : $session?.data?.user?.id || 'invalid-user-id'
+        _id         : '',
+        name        : '',
+        details     : [ buttonTemplate ] ,
+        user_email  : ''
     };
 
+    $: {
+        if ( $session?.data?.user?.email ) {
+            if ( dynamicForm.user_email !== $session.data.user.email ) {
+                dynamicForm.user_email = $session.data.user.email;
+            }
+        }
+    }
 
     $: {
         if ( $dynamicForms ) {

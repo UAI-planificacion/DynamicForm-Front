@@ -1,3 +1,5 @@
+import { CalendarDate } from "@internationalized/date";
+
 import type { DynamicForm, ShapeInput } from "$models";
 
 
@@ -29,7 +31,7 @@ const basicClean = ( shapeInput: ShapeInput ) => ({
     ...(shapeInput.disabled     && { disabled       : shapeInput.disabled }),
     ...(shapeInput.readonly     && { readonly       : shapeInput.readonly }),
     ...(shapeInput.required     && { required       : shapeInput.required }),
-    ...(shapeInput.msgRequired && shapeInput.required && { msgRequired: shapeInput.msgRequired }),
+    ...(shapeInput.msgRequired  && shapeInput.required && { msgRequired: shapeInput.msgRequired }),
 });
 
 
@@ -110,6 +112,20 @@ const cleanDate = ( shapeInput: ShapeInput ): ShapeInput => {
         ? shapeInput.dateRange  && { dateRange  : shapeInput.dateRange }
         : shapeInput.date       && { date       : shapeInput.date };
 
+    if ( isRange && dateOrRange?.dateRange ) {
+        let year    = dateOrRange.dateRange.start!.year;
+        let month   = dateOrRange.dateRange.start!.month;
+        let day     = dateOrRange.dateRange.start!.day;
+
+        dateOrRange.dateRange.start = new CalendarDate( year, month, day );
+
+        year    = dateOrRange.dateRange.end!.year;
+        month   = dateOrRange.dateRange.end!.month;
+        day     = dateOrRange.dateRange.end!.day;
+
+        dateOrRange.dateRange.end = new CalendarDate( year, month, day );
+    }
+
     const invalidDatesOrRange = isRange
         ? shapeInput.invalidDatesRange  && { invalidDatesRange  : shapeInput.invalidDatesRange }
         : shapeInput.invalidDates       && { invalidDates       : shapeInput.invalidDates };
@@ -129,8 +145,8 @@ const cleanDate = ( shapeInput: ShapeInput ): ShapeInput => {
 
 const cleanTime =( shapeInput: ShapeInput ): ShapeInput => ({
     ...basicClean( shapeInput ),
-    ...( shapeInput.time                && { time               : shapeInput.time }),
-    ...( shapeInput.defaultValueTime    && { defaultValueTime   : shapeInput.defaultValueTime }),
-    ...( shapeInput.time                && { time               : shapeInput.time }),
+    ...( shapeInput.time        && { time       : shapeInput.time }),
+    ...( shapeInput.timeValue   && { timeValue  : shapeInput.timeValue }),
+    ...( shapeInput.time        && { time       : shapeInput.time }),
 });
 

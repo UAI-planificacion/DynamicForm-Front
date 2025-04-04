@@ -37,6 +37,7 @@
 		types,
         errorInput,
         errorSelect,
+        stringToTime
 	}						    from "$lib";
     import ButtonRequired       from "./buttons/ButtonRequired.svelte";
     import ButtonValidations    from "./buttons/ButtonValidations.svelte";
@@ -347,14 +348,14 @@
                         </div>
                     {:else}
                         <DateRangePicker
-                            shapeInput = {{
-                                id          : uuid(),
-                                name        : 'default-value',
-                                dateRange   : shapeInput.defaultDateRange,
-                                label       : 'Valor por defecto',
-                                disabled    : shapeInput.currentDate
+                            onValueChange   = {( value: DateRange | undefined ) => shapeInput.dateRange = value }
+                            value           = { shapeInput.dateRange }
+                            shapeInput      = {{
+                                id              : uuid(),
+                                name            : 'default-value',
+                                label           : 'Valor por defecto',
+                                disabled        : shapeInput.currentDate
                             }}
-                            onValueChange = {( value: DateRange | undefined ) => shapeInput.defaultDateRange = value }
                         />
                     {/if}
                 {:else if shapeInput.shape === 'timer'}
@@ -364,9 +365,10 @@
                                 id          : uuid(),
                                 name        : 'time-default',
                                 label       : 'Tiempo por defecto',
-                                timeValue   : shapeInput.defaultValueTime,
+                                timeValue   : shapeInput.timeValue,
                             }}
-                            onTimerInput = {( value: string ) => shapeInput.defaultValueTime = value }
+                            onTimerInput = {( value: string ) => shapeInput.timeValue = value }
+                            value        = { stringToTime( shapeInput.timeValue )}
                         />
                     {:else}
                         <DigitalTime
@@ -374,9 +376,10 @@
                                 id		    : uuid(),
                                 name	    : 'time-default',
                                 label       : 'Tiempo por defecto',
-                                timeValue   : shapeInput.defaultValueTime
+                                timeValue   : shapeInput.timeValue
                             }}
-                            onTimerInput = {( value: string ) => shapeInput.defaultValueTime = value }
+                            onTimerInput    = {( value: string ) => shapeInput.timeValue = value }
+                            value           = { stringToTime( shapeInput.timeValue )}
                         />
                     {/if}
                 {/if}
@@ -441,13 +444,13 @@
                         label       : 'Valor por defecto',
                         name	    : 'value',
                         placeholder : 'Ingrese el valor por defecto',
-                        value       : shapeInput.value,
                         preview		: false
                     } as ShapeInput}
                     <MarkdownEditor
-                        shapeInput = {{ ...markdownDefaultShape }}
+                        shapeInput  = {{ ...markdownDefaultShape }}
                         dynamicMode	= { true }
                         onInput		= {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
+                        value       = { shapeInput.value}
                     />
                 {/if}
             {:else if shapeInput.shape === 'select' }
@@ -505,9 +508,9 @@
                                                 id      : uuid(),
                                                 name    : 'analogic',
                                                 label   : 'Reloj Análogo',
-                                                checked : shapeInput.time?.isAnalogic
                                             }}
                                             onChange = {( e ) => { shapeInput.time = { isAnalogic: e }}}
+                                            checked  = { shapeInput.time?.isAnalogic }
                                         />
                                     {/if}
                                 </div>
