@@ -9,11 +9,11 @@
 
     const shape = styles[shapeInput.shape || 'none'] as InputStyle;
 
-    shapeInput.boxSelectClass       = shapeInput.boxSelectClass     ?? shape.box;
-    shapeInput.contentSelectClass   = shapeInput.contentSelectClass ?? shape.content;
-    shapeInput.itemSelectClass      = shapeInput.itemSelectClass    ?? shape.item;
-    shapeInput.groupSelectClass     = shapeInput.groupSelectClass   ?? shape.group;
-    shapeInput.inputSelectClass     = shapeInput.inputSelectClass   ?? shape.input;
+    shapeInput.boxSelectClass       ??= shape.box;
+    shapeInput.contentSelectClass   ??= shape.content;
+    shapeInput.itemSelectClass      ??= shape.item;
+    shapeInput.groupSelectClass     ??= shape.group;
+    shapeInput.inputSelectClass     ??= shape.input;
 </script>
 
 <TextArea
