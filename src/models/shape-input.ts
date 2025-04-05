@@ -61,7 +61,8 @@ export type ShapeInput = {
 
     // Markdown
     preview?        : boolean;
-    markdownClass?  : string;
+    boxMarkdownClass?  : string;
+    inputMarkdownClass?: string;
 
     // Checkbox
     checked?            : boolean;
@@ -98,8 +99,15 @@ export type ShapeInput = {
     rangeDateClass?     : string;
 
     // Time
-    time?           : Time;
-    timeValue?      : string;
+    time?                   : Time;
+    timeValue?              : string;
+    boxDigitalClass?        : string;
+    contentDigitalClass?    : string;
+    itemDigitalClass?       : string;
+    inputDigitalClass?      : string;
+    boxAnalogicClass?       : string;
+    contentAnalogicClass?   : string;
+    itemAnalogicClass?      : string;
 
     // Styles
     class_?         : string;

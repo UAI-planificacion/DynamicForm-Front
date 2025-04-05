@@ -33,8 +33,12 @@ export const styles: Partial<Record<InputFull, string | InputStyle>> = {
     },
     analogic : {
         box		: 'rounded-lg flex h-10 w-full select-none items-center rounded-input border border-border-input dark:border-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 px-2 py-3 text-sm tracking-[0.01em]-500 dark:data-[disabled]:bg-zinc-700 data-[disabled]:bg-zinc-100 focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover flex justify-between items-center px-3',
-        content : 'absolute float-right right-0 z-40 mt-1 max-w-96 bg-white dark:bg-zinc-800 rounded-md shadow-lg',
+        content : 'absolute right-4 z-40 mt-1 bg-white dark:bg-zinc-900 rounded-lg shadow-xl p-4',
         item    : 'transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full text-zinc-700 dark:text-zinc-300 hover:scale-105 data-[selected=true]:bg-blue-500 dark:data-[selected=true]:bg-blue-500 data-[selected=true]:text-white data-[disabled=true]:opacity-50 data-[disabled=true]:cursor-not-allowed hover:data-[disabled=false]:bg-zinc-200 dark:hover:data-[disabled=false]:bg-zinc-600',
+    },
+    markdown: {
+        box : 'border-b border-gray-200 dark:border-zinc-700 bg-black flex items-center h-14 dark:bg-zinc-800',
+        input : 'm-2 w-full min-h-64 border-none focus:ring-0 resize-none bg-transparent dark:text-zinc-200 overflow-hidden'
     },
     none: ''
 }

@@ -21,8 +21,9 @@
 		HeadingMarkIcon
 	} 								from "$icons/markdown";
 	import { DynamicTable, Info }	from "$components";
-	import type { ShapeInput } 		from "$models";
+	import type { InputStyle, ShapeInput } 		from "$models";
 	import marked 					from './marked.config';
+    import { styles } from "$lib";
 
 	export let shapeInput	: ShapeInput;
 	export let value 		: string | undefined = undefined;
@@ -243,7 +244,7 @@
 <Info { shapeInput } { onInput } { value }>
 <div class="grid {updateGridClass()} bg-white dark:bg-zinc-700 rounded-lg shadow-lg overflow-hidden">
     <div class="relative">
-        <div class="border-b border-gray-200 dark:border-zinc-700 bg-black flex items-center h-14 dark:bg-zinc-800">
+        <div class={ shapeInput.boxMarkdownClass ?? (styles.markdown as InputStyle).box }>
 
             <!-- Desktop view -->
             <div class="hidden flex-wrap {updateGridButtonsDesktop()}">
@@ -404,27 +405,25 @@
             <h3 class="text-zinc-200 font-medium {updateGridButtonsMobile()}">Editor</h3>
         </div>
 
-		<div class="p-2">
-            <textarea
-				name        = { shapeInput.name }
-				id          = { shapeInput.id }
-				bind:value={ value }
-                bind:this={ textarea }
-				required 	= { shapeInput.required }
-				minlength   = { shapeInput.minLength }
-				maxlength   = { shapeInput.maxLength }
-				rows        = { shapeInput.rows }
-                on:select	= { updateSelection }
-                on:keyup	= { updateSelection }
-                on:click	= { updateSelection }
-                on:keydown	= { handleKeydown }
-				on:input    = { ( value ) => {onInput( value ); setError() }}
-				readonly 	= { shapeInput.readonly }
-				disabled 	= { shapeInput.disabled }
-                class		= "w-full min-h-64 border-none focus:ring-0 resize-none bg-transparent dark:text-zinc-200 overflow-hidden"
-                placeholder = { shapeInput.placeholder }
-            ></textarea>
-		</div>
+        <textarea
+            name        = { shapeInput.name }
+            id          = { shapeInput.id }
+            bind:value={ value }
+            bind:this={ textarea }
+            required 	= { shapeInput.required }
+            minlength   = { shapeInput.minLength }
+            maxlength   = { shapeInput.maxLength }
+            rows        = { shapeInput.rows }
+            on:select	= { updateSelection }
+            on:keyup	= { updateSelection }
+            on:click	= { updateSelection }
+            on:keydown	= { handleKeydown }
+            on:input    = { ( value ) => {onInput( value ); setError() }}
+            readonly 	= { shapeInput.readonly }
+            disabled 	= { shapeInput.disabled }
+            class		= { shapeInput.inputMarkdownClass ?? ( styles.markdown as InputStyle).input }
+            placeholder = { shapeInput.placeholder }
+        ></textarea>
 
         {#if shapeInput.preview }
             <div class="absolute right-0 top-14 h-[calc(100%-3.5rem)] sm:block hidden">
