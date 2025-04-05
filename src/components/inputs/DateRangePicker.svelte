@@ -17,8 +17,8 @@
     export let onValueChange    : ( value: DateRange | undefined ) => void;
     export let setError         : VoidFunction = () => {};
 
-    let startDate       : DateValue | undefined;
-    let endDate         : DateValue | undefined;
+    let startDate   : DateValue | undefined;
+    let endDate     : DateValue | undefined;
 
     const createEmptyDateRange = () => ({
         start : undefined,
@@ -43,8 +43,8 @@
 
 
     const handleDateChange = () => {
-        if (!startDate && !endDate ) {
-            onValueChange(undefined);
+        if ( !startDate && !endDate ) {
+            onValueChange( undefined );
             setError();
         }
     };
@@ -52,7 +52,7 @@
     const handleValueChange = (newValue: DateRange | undefined) => {
         internalValue = newValue || createEmptyDateRange();
         const value = ( newValue?.start && newValue?.end ) && newValue;
-        onValueChange(value);
+        onValueChange( value );
         setError();
     };
 </script>
@@ -91,13 +91,13 @@
 >
     <div class="flex w-full flex-col gap-1.5">
         {#if shapeInput.label}
-            <DateRangePicker.Label class={(styles.datepicker as InputStyle).label}>
+            <DateRangePicker.Label class={ shapeInput.labelDateClass ?? ( styles.datepicker as InputStyle ).label}>
                 {shapeInput.label}
             </DateRangePicker.Label>
         {/if}
 
         <div
-            class= { shapeInput.boxStyle ?? `${( styles.datepicker as InputStyle ).box }` }
+            class= { shapeInput.boxDateClass ?? `${( styles.datepicker as InputStyle ).box }` }
         >
             {#each ["start", "end"] as const as type}
                 <DateRangePicker.Input {type} >
@@ -143,7 +143,7 @@
             alignOffset = { 0 }
         >
             <DateRangePicker.Calendar
-                class= { shapeInput.contentStyle ?? `${( styles.datepicker as InputStyle ).content }` }
+                class= { shapeInput.contentDateClass ?? `${( styles.datepicker as InputStyle ).content }` }
             >
                 {#snippet children({ months, weekdays })}
                     <DateRangePicker.Header class="flex items-center justify-between">
@@ -187,7 +187,7 @@
                                                     class="p-0! relative m-0 size-10 overflow-visible text-center text-sm focus-within:relative focus-within:z-20"
                                                 >
                                                     <DateRangePicker.Day
-                                                        class={ shapeInput.itemRangeStyle ?? `${( styles.datepicker as InputStyle ).rangeItem }` }
+                                                        class={ shapeInput.rangeDateClass ?? `${( styles.datepicker as InputStyle ).rangeItem }` }
                                                     >
                                                         <div class="bg-blue-500 group-data-[selected]:bg-white group-data-[today]:block absolute top-[5px] hidden size-1 rounded-full transition-all"></div>
 
