@@ -24,6 +24,6 @@
         value       = { value }
         on:input    = {( event ) => { onInput( event ); setError(); }}
         on:keyup    = { onKeyup }
-        class       = {( shapeInput.class_ ) ?? ( styles.input as string )}
+        class       = {( shapeInput.inputClass ) ?? ( styles.input as string )}
     />
 </Info>
