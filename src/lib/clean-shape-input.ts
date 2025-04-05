@@ -102,6 +102,12 @@ const cleanSelect = ( shapeInput: ShapeInput ): ShapeInput => ({
     ...( shapeInput.search               && { search             : shapeInput.search }),
     ...( shapeInput.searchPlaceholder    && { searchPlaceholder  : shapeInput.searchPlaceholder }),
     ...( shapeInput.selected             && { selected           : shapeInput.selected }),
+    ...( shapeInput.heightPanel          && { heightPanel        : shapeInput.heightPanel }),
+    boxSelectClass      : shapeInput.boxSelectClass     ?? '',
+    contentSelectClass  : shapeInput.contentSelectClass ?? '',
+    itemSelectClass     : shapeInput.itemSelectClass    ?? '',
+    groupSelectClass    : shapeInput.groupSelectClass   ?? '',
+    inputSelectClass    : shapeInput.inputSelectClass   ?? '',
 });
 
 
