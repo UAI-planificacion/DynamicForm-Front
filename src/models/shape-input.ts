@@ -33,29 +33,75 @@ export type ShapeInput = {
     description?    : string;
     type?           : Types;
     placeholder?    : string;
-    value?          : string;
-    timeValue?      : string;
-    date?           : DateValue;
-    dateRange?      : DateRange;
-    isRange?        : boolean;
-    invalidDates?   : string[];
-    invalidDatesRange?: InvalidDate;
-    minValue?       : DateValue;
-    maxValue?       : DateValue;
-    numberOfMonths? : number;
-    currentDate?    : boolean
     required?       : boolean;
-    valid?          : boolean;
     msgRequired?    : string;
+    valid?          : boolean;
     disabled?       : boolean;
     readonly?       : boolean;
-    preview?        : boolean;
-    multiple?       : boolean;
-    search?         : boolean;
-    searchPlaceholder? : string;
-    heightPanel?    : number;
+
+    // Inputs || Textarea || Markdown
+    value?          : string;
     pattern?        : string;
     msgPattern?     : string;
+    minLength?      : number;
+    maxLength?      : number;
+    msgMinLength?   : string;
+    msgMaxLength?   : string;
+
+    // Input type number
+    min?            : number;
+    max?            : number;
+    msgMin?         : string;
+    msgMax?         : string;
+    inputClass?     : string;
+
+    // Textarea
+    rows?           : number;
+    textareaClass?  : string;
+
+    // Markdown
+    preview?        : boolean;
+    markdownClass?  : string;
+
+    // Checkbox
+    checked?            : boolean;
+    checkboxClass?      : string;
+    labelCheckboxClass? : string;
+
+    // Select
+    selected?           : Selected;
+    multiple?           : boolean;
+    search?             : boolean;
+    searchPlaceholder?  : string;
+    options?            : ShapeOption[] | GroupOption[];
+    heightPanel?        : number;
+    boxSelectClass?     : string;
+    contentSelectClass? : string;
+    itemSelectClass?    : string;
+    groupSelectClass?   : string;
+    inputSelectClass?   : string;
+
+    // Date
+    maxValue?           : DateValue;
+    minValue?           : DateValue;
+    date?               : DateValue;
+    dateRange?          : DateRange;
+    isRange?            : boolean;
+    invalidDates?       : string[];
+    invalidDatesRange?  : InvalidDate;
+    numberOfMonths?     : number;
+    currentDate?        : boolean
+    boxDateClass?       : string;
+    contentDateClass?   : string;
+    labelDateClass?     : string;
+    itemDateClass?      : string;
+    rangeDateClass?     : string;
+
+    // Time
+    time?           : Time;
+    timeValue?      : string;
+
+    // Styles
     class_?         : string;
     boxStyle?       : string;
 	labelStyle? 	: string;
@@ -64,31 +110,23 @@ export type ShapeInput = {
 	inputStyle? 	: string;
     groupStyle?     : string;
     itemRangeStyle? : string;
-    min?            : number;
-    max?            : number;
-    minLength?      : number;
-    maxLength?      : number;
-    msgMin?         : string;
-    msgMax?         : string;
-    msgMinLength?   : string;
-    msgMaxLength?   : string;
-    options?        : ShapeOption[] | GroupOption[];
-    rows?           : number;
-    checked?        : boolean;
-    selected?       : Selected;
+    dateClass?          : string;
+
+    // Button
     httpList?			: Http[];
 	externalErrorMsg?   : string;
 	invalidErrorMsg?	: string;
     urlSend?     		: string;
 	method?				: Method;
-    time?               : Time;
 	// form? 			: Form;
 }
+
 
 export type WeekDay = {
     id      : string;
     checked : boolean;
 }
+
 
 export type InvalidDate = {
     invalidDate: DateRange;
