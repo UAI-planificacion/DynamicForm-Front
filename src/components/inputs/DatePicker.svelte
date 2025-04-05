@@ -67,13 +67,13 @@
 >
     <div class="flex w-full flex-col gap-1.5">
         {#if shapeInput.label}
-            <DatePicker.Label class={(styles.datepicker as InputStyle).label}>
-                {shapeInput.label}
+            <DatePicker.Label class={ shapeInput.labelDateClass ?? ( styles.datepicker as InputStyle ).label }>
+                { shapeInput.label }
             </DatePicker.Label>
         {/if}
 
         <DatePicker.Input
-            class= { shapeInput.boxStyle ?? `${( styles.datepicker as InputStyle ).box }` }
+            class= { shapeInput.boxDateClass ?? `${( styles.datepicker as InputStyle ).box }` }
         >
             {#snippet children({ segments })}
                 {#each segments as { part, value }}
@@ -107,7 +107,7 @@
             alignOffset = { 0 }
         >
             <DatePicker.Calendar
-                class= { shapeInput.contentStyle ?? `${( styles.datepicker as InputStyle ).content }` }
+                class= { shapeInput.contentDateClass ?? `${( styles.datepicker as InputStyle ).content }` }
             >
                 {#snippet children({ months, weekdays })}
                     <DatePicker.Header class="flex items-center justify-between">
@@ -145,7 +145,7 @@
                                                     class="p-0! relative size-10 text-center text-sm"
                                                 >
                                                     <DatePicker.Day
-                                                        class={ shapeInput.itemStyle ?? `${( styles.datepicker as InputStyle ).item }` }
+                                                        class={ shapeInput.itemDateClass ?? `${( styles.datepicker as InputStyle ).item }` }
                                                     >
                                                         <div class="bg-blue-500 group-data-[selected]:bg-white group-data-[today]:block absolute top-[5px] hidden size-1 rounded-full transition-all"></div>
                                                         {date.day}
