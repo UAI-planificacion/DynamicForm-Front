@@ -354,28 +354,28 @@
     }
 
     function adjustDropdownPosition() {
-        if (!dropdownElement || !comboboxElement) return;
+        if ( !dropdownElement || !comboboxElement ) return;
 
-        const rect = comboboxElement.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        const spaceBelow = viewportHeight - rect.bottom;
-        const spaceAbove = rect.top;
-        const dropdownHeight = dropdownElement.offsetHeight;
+        const rect              = comboboxElement.getBoundingClientRect();
+        const viewportHeight    = window.innerHeight;
+        const spaceBelow        = viewportHeight - rect.bottom;
+        const spaceAbove        = rect.top;
+        const dropdownHeight    = dropdownElement.offsetHeight;
 
         dropdownElement.style.left = `${rect.left}px`;
 
-        if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+        if ( spaceBelow < dropdownHeight && spaceAbove > spaceBelow ) {
             // Position above if there's more space above
-            dropdownElement.style.bottom = `${viewportHeight - rect.top}px`;
-            dropdownElement.style.top = 'auto';
-            dropdownElement.style.marginBottom = '0.25rem';
-            dropdownElement.style.marginTop = '0';
+            dropdownElement.style.bottom        = `${viewportHeight - rect.top}px`;
+            dropdownElement.style.top           = 'auto';
+            dropdownElement.style.marginBottom  = '0.25rem';
+            dropdownElement.style.marginTop     = '0';
         } else {
             // Position below
-            dropdownElement.style.top = `${rect.bottom}px`;
-            dropdownElement.style.bottom = 'auto';
-            dropdownElement.style.marginTop = '0.25rem';
-            dropdownElement.style.marginBottom = '0';
+            dropdownElement.style.top           = `${rect.bottom}px`;
+            dropdownElement.style.bottom        = 'auto';
+            dropdownElement.style.marginTop     = '0.25rem';
+            dropdownElement.style.marginBottom  = '0';
         }
     }
 
@@ -434,23 +434,25 @@
 <Info { shapeInput } { onSelectedChange } { value }>
 <div class="relative w-full" bind:this={comboboxElement} >
     <button
-        type="button"
-        class= { shapeInput.boxStyle ?? `${( styles.select as InputStyle ).box }` }
-        on:click={handleOpen}
-        id={shapeInput.id}
-        disabled={shapeInput.disabled}
+        type        = "button"
+        class       = { shapeInput.boxSelectClass ?? `${( styles.select as InputStyle ).box }` }
+        on:click    = { handleOpen }
+        id          = { shapeInput.id }
+        disabled    = { shapeInput.disabled }
     >
-        <span class="truncate text-zinc-900 dark:text-zinc-300">{displayText}</span>
+        <span class="truncate text-zinc-900 dark:text-zinc-300">
+            { displayText }
+        </span>
 
         <div class="flex items-center gap-2">
             {#if shapeInput.multiple && selectedItems.length > 0}
                 <div
-                    class="p-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
                     on:click|stopPropagation={clearSelection}
-                    title="Limpiar selección"
-                    role="button"
-                    on:keydown={(event) => { if (event.key === 'Enter' || event.key === ' ') clearSelection(event); }}
-                    tabindex="0" 
+                    class       = "p-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
+                    title       = "Limpiar selección"
+                    role        = "button"
+                    on:keydown  = {( event ) => { if ( event.key === 'Enter' || event.key === ' ') clearSelection( event ); }}
+                    tabindex    = "0" 
                 >
                     <X class="h-3 w-3 text-gray-400"/>
                 </div>
@@ -463,7 +465,7 @@
     {#if isOpen}
         <div 
             bind:this={dropdownElement}
-            class= { shapeInput.contentStyle ?? `${( styles.select as InputStyle ).content }` }
+            class= { shapeInput.contentSelectClass ?? `${( styles.select as InputStyle ).content }` }
             style="
                 min-width: {comboboxElement?.offsetWidth}px;
                 max-width: {comboboxElement?.offsetWidth}px;
@@ -481,7 +483,7 @@
                             id		    : 'search-items',
                             name	    : 'label',
                             placeholder : shapeInput.searchPlaceholder,
-                            class_      : shapeInput.class_ ?? (styles.select as InputStyle ).input
+                            class_      : shapeInput.inputSelectClass ?? (styles.select as InputStyle ).input
                         }}
                         onInput = {( event: Event ) => searchTerm = ( event.target as HTMLInputElement ).value }
                         on:blur = { handleBlur }
@@ -526,7 +528,7 @@
                                     <div class="group">
                                         <button
                                             type        = "button"
-                                            class       = { `opacity-80 ${shapeInput.groudStyle ?? ( styles.select as InputStyle ).group }` }
+                                            class       = { `opacity-80 ${shapeInput.groupSelectClass ?? ( styles.select as InputStyle ).group }` }
                                             on:click    = { () => toggleGroup( item )}
                                         >
                                             <span class="truncate text-zinc-900 dark:text-zinc-300">{item.name}</span>
@@ -546,7 +548,7 @@
                                             {@const itemKey = `${i}-${optionIndex}`}
                                             <button
                                                 type            = "button"
-                                                class           = { `${shapeInput.itemStyle ?? ( styles.select as InputStyle ).item } px-6` }
+                                                class           = { `${shapeInput.itemSelectClass ?? ( styles.select as InputStyle ).item } px-6` }
                                                 data-selected   = {selectedItems.some(selected => selected.value === option.value)}
                                                 on:click        = { () => toggleItem( option )}
                                                 on:mouseenter   = { () => hoveredIndex = itemKey }
@@ -565,7 +567,7 @@
                                 {:else}
                                     <button
                                         type            = "button"
-                                        class           = { shapeInput.itemStyle ?? ( styles.select as InputStyle ).item }
+                                        class           = { shapeInput.itemSelectClass ?? ( styles.select as InputStyle ).item }
                                         data-selected   = {selectedItems.some(selected => selected.value === item.value)}
                                         on:click        = { () => toggleItem( item )}
                                         on:mouseenter   = { () => hoveredIndex = i.toString() }
