@@ -163,7 +163,7 @@
         <button
             type            = "button"
             id              = { shapeInput.id }
-            class           = { `${ shapeInput.boxStyle ?? ( styles.analogic as InputStyle ).box }` }
+            class           = { `${ shapeInput.boxAnalogicClass ?? ( styles.analogic as InputStyle ).box }` }
             on:click        = { togglePicker }
             aria-haspopup   = "true"
             aria-expanded   = { isOpen }
@@ -175,7 +175,7 @@
 
         {#if isOpen}
             <div 
-                class="absolute right-4 z-40 mt-1 bg-white dark:bg-zinc-900 rounded-lg shadow-xl p-4"
+                class={ `${ shapeInput.contentAnalogicClass ?? ( styles.analogic as InputStyle ).content }` }
                 transition:fade={{ duration: 150 }}
             >
                 <div class="flex flex-col items-center">
@@ -233,7 +233,7 @@
                                         type="button"
                                         data-selected={isSelected}
                                         data-disabled={isHourDisabled(hour)}
-                                        class = { `${ shapeInput.itemStyle ?? ( styles.analogic as InputStyle ).item }` }
+                                        class = { `${ shapeInput.itemAnalogicClass ?? ( styles.analogic as InputStyle ).item }` }
                                         style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                         on:click={() => selectHour(hour)}
                                         disabled={isHourDisabled(hour)}
@@ -264,7 +264,7 @@
                                         type="button"
                                         data-selected={isSelected}
                                         data-disabled={isMinuteDisabled(minute)}
-                                        class = { `${ shapeInput.itemStyle ?? ( styles.analogic as InputStyle ).item }` }
+                                        class = { `${ shapeInput.itemAnalogicClass ?? ( styles.analogic as InputStyle ).item }` }
                                         style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                         on:click={() => selectMinute(minute)}
                                         disabled={isMinuteDisabled(minute)}
