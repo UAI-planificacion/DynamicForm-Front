@@ -6,8 +6,8 @@
     import { type DateValue }               from "@internationalized/date";
 
     import {
-        CaretDownIcon,
-    }						from "$icons";
+        CaretDownIcon
+    }                       from "$icons";
     import type {
         InputStyle,
         InputType,
@@ -29,7 +29,12 @@
         DigitalTime,
         SelectEditor,
         ValidInput,
-        DateRangePicker
+        DateRangePicker,
+        DateStyles,
+        TimeStyles,
+        ButtonRequired,
+        ButtonValidations,
+        SelectStyles
     }						from "$components";
     import {
 		options,
@@ -38,10 +43,7 @@
         errorInput,
         errorSelect,
         stringToTime
-	}						    from "$lib";
-    import ButtonRequired       from "./buttons/ButtonRequired.svelte";
-    import ButtonValidations    from "./buttons/ButtonValidations.svelte";
-    import SelectStyles         from "./select/SelectStyles.svelte";
+	}                       from "$lib";
 
 
     export let shapeInput       : ShapeInput;
@@ -705,70 +707,10 @@
 							/>
 						{:else if shapeInput.shape === 'select' }
 							<SelectStyles bind:shapeInput={shapeInput} />
-						{:else if shapeInput.shape === 'datepicker' || shapeInput.shape === 'timer'}
-							<TextArea
-								shapeInput = {{
-									id          : uuid(),
-									name        : 'class',
-									label       : 'Componente principal box',
-									placeholder : 'Ingrese los estilos de la caja',
-									rows        : 3,
-									value       : shapeInput.class_ ?? ( styles[
-                                        shapeInput.shape === 'timer' 
-                                        ? shapeInput.time?.isAnalogic ? 'analogic' : 'digital'
-                                        : shapeInput.shape
-                                    ] as InputStyle ).box
-								}}
-								onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
-							/>
-
-							<TextArea
-								shapeInput = {{
-									id          : uuid(),
-									name        : 'class',
-									label       : 'Estilos del input',
-									placeholder : 'Ingrese los estilos del input',
-									rows        : 5,
-									value       : shapeInput.inputStyle ?? ( styles[
-                                        shapeInput.shape === 'timer' 
-                                            ? shapeInput.time?.isAnalogic ? 'analogic' : 'digital'
-                                            : shapeInput.shape
-                                    ] as InputStyle ).input
-								}}
-								onInput = {( event: Event ) => shapeInput.inputStyle = ( event.target as HTMLInputElement ).value }
-							/>
-
-							<TextArea
-								shapeInput = {{
-									id          : uuid(),
-									name        : 'class',
-									label       : 'Estilos del contenido',
-									placeholder : 'Ingrese los estilos del contenido',
-									rows        : 2,
-									value       : shapeInput.contentStyle ?? ( styles[
-                                        shapeInput.shape === 'timer' 
-                                        ? shapeInput.time?.isAnalogic ? 'analogic' : 'digital'
-                                        : shapeInput.shape
-                                    ] as InputStyle ).content
-								}}
-								onInput = {( event: Event ) => shapeInput.contentStyle = ( event.target as HTMLInputElement ).value }
-							/>
-
-							<TextArea
-								shapeInput = {{
-									id          : uuid(),
-									name        : 'class',
-									label       : 'Estilos del Item',
-									placeholder : 'Ingrese los estilos del item',
-									rows        : 2,
-									value       : shapeInput.labelStyle ?? ( styles[
-                                        shapeInput.shape === 'timer' 
-                                            ? shapeInput.time?.isAnalogic ? 'analogic' : 'digital'
-                                            : shapeInput.shape
-                                    ] as InputStyle ).item
-								}}
-								onInput = {( event: Event ) => shapeInput.itemStyle = ( event.target as HTMLInputElement ).value }
-							/>
+						{:else if shapeInput.shape === 'datepicker'}
+							<DateStyles bind:shapeInput={shapeInput} />
+                        {:else if shapeInput.shape === 'timer'}
+                            <TimeStyles bind:shapeInput={shapeInput} />
 						{/if}
                     </Accordion.Content>
                 </Accordion.Item>

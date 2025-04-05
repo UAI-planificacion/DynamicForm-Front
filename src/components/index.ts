@@ -21,11 +21,6 @@ export { default as Info }			from './inputs/Info.svelte';
 export { default as DigitalTime }   from './inputs/time-picker/DigitalTime.svelte';
 export { default as AnalogicTime }  from './inputs/time-picker/AnalogTime.svelte';
 
-// Editors
-export { default as GenerateValidDates }    from './Editor/dates/GenerateValidDates.svelte';
-export { default as TimeGenerator }         from './Editor/times/TimeGenerator.svelte';
-export { default as ValidInput }            from './Editor/inputs/ValidInput.svelte';
-
 // Preview
 export { default as Preview }       from './Preview/Preview.svelte';
 export { default as Enumeration }   from './Preview/Enumeration.svelte';
@@ -47,3 +42,13 @@ export { default as ValueEditor }   from './Editor/select/ValueEditor.svelte';
 export { default as GroupEditor }   from './Editor/select/GroupEditor.svelte';
 export { default as Viewer } 	    from './Editor/Viewer.svelte';
 export { default as SelectEditor }  from './Editor/select/SelectEditor.svelte';
+
+// Shpae Editors
+export { default as GenerateValidDates }    from './Editor/dates/GenerateValidDates.svelte';
+export { default as TimeGenerator }         from './Editor/times/TimeGenerator.svelte';
+export { default as ValidInput }            from './Editor/inputs/ValidInput.svelte';
+export { default as SelectStyles }          from './Editor/select/SelectStyles.svelte';
+export { default as DateStyles }            from './Editor/dates/DateStyles.svelte';
+export { default as TimeStyles }            from './Editor/times/TimeStyles.svelte';
+export { default as ButtonRequired }        from './Editor/buttons/ButtonRequired.svelte';
+export { default as ButtonValidations }     from './Editor/buttons/ButtonValidations.svelte';
