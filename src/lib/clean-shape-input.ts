@@ -1,6 +1,7 @@
 import { CalendarDate } from "@internationalized/date";
 
-import type { DynamicForm, ShapeInput } from "$models";
+import type { DynamicForm, InputStyle, ShapeInput } from "$models";
+import { styles } from "./styles";
 
 
 export const startClean = ( dynamicForm: DynamicForm ): DynamicForm => ({
@@ -103,11 +104,11 @@ const cleanSelect = ( shapeInput: ShapeInput ): ShapeInput => ({
     ...( shapeInput.searchPlaceholder    && { searchPlaceholder  : shapeInput.searchPlaceholder }),
     ...( shapeInput.selected             && { selected           : shapeInput.selected }),
     ...( shapeInput.heightPanel          && { heightPanel        : shapeInput.heightPanel }),
-    boxSelectClass      : shapeInput.boxSelectClass     ?? '',
-    contentSelectClass  : shapeInput.contentSelectClass ?? '',
-    itemSelectClass     : shapeInput.itemSelectClass    ?? '',
-    groupSelectClass    : shapeInput.groupSelectClass   ?? '',
-    inputSelectClass    : shapeInput.inputSelectClass   ?? '',
+    boxSelectClass      : shapeInput.boxSelectClass     ?? ( styles.select as InputStyle ).box,
+    contentSelectClass  : shapeInput.contentSelectClass ?? ( styles.select as InputStyle ).content,
+    itemSelectClass     : shapeInput.itemSelectClass    ?? ( styles.select as InputStyle ).item,
+    groupSelectClass    : shapeInput.groupSelectClass   ?? ( styles.select as InputStyle ).group,
+    inputSelectClass    : shapeInput.inputSelectClass   ?? ( styles.select as InputStyle ).input,
 });
 
 
@@ -136,6 +137,12 @@ const cleanDate = ( shapeInput: ShapeInput ): ShapeInput => {
         ? shapeInput.invalidDatesRange  && { invalidDatesRange  : shapeInput.invalidDatesRange }
         : shapeInput.invalidDates       && { invalidDates       : shapeInput.invalidDates };
 
+    const defaultStyles = ( styles.datepicker as InputStyle );
+
+    const stylesItemOrRange = isRange
+        ? shapeInput.itemDateClass  && { itemDateClass  : shapeInput.itemDateClass }
+        : shapeInput.rangeDateClass && { rangeDateClass : shapeInput.rangeDateClass };
+
     return {
         ...basicClean( shapeInput ),
         isRange,
@@ -145,6 +152,10 @@ const cleanDate = ( shapeInput: ShapeInput ): ShapeInput => {
         ...( shapeInput.maxValue         && { maxValue       : shapeInput.maxValue }),
         ...( shapeInput.numberOfMonths   && { numberOfMonths : shapeInput.numberOfMonths }),
         ...( shapeInput.currentDate      && { currentDate    : shapeInput.currentDate }),
+        boxDateClass        : shapeInput.boxDateClass       ?? defaultStyles.box,
+        contentDateClass    : shapeInput.contentDateClass   ?? defaultStyles.content,
+        labelDateClass      : shapeInput.labelDateClass     ?? defaultStyles.label,
+        ...stylesItemOrRange,
     }
 }
 
