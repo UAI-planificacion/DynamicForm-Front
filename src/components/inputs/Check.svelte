@@ -26,7 +26,7 @@
             checked         = { checked }
             disabled        = { shapeInput.disabled }
             aria-labelledby = { shapeInput.label}
-            class           = { shapeInput.boxStyle ?? ( styles.check as InputStyle ).box }
+            class           = { shapeInput.checkboxClass ?? ( styles.check as InputStyle ).box }
             onCheckedChange = {( event ) => { shapeInput.readonly ? undefined : onChange( event as boolean ); setError() }}
         >
             {#snippet children({ checked, indeterminate })}
@@ -43,7 +43,7 @@
         <Label.Root
             id      = { shapeInput.label }
             for     = { shapeInput.id }
-            class   = { shapeInput.labelStyle ?? ( styles.check as InputStyle ).label }
+            class   = { shapeInput.labelCheckboxClass ?? ( styles.check as InputStyle ).label }
         >
             { shapeInput.label }
         </Label.Root>
