@@ -160,10 +160,28 @@ const cleanDate = ( shapeInput: ShapeInput ): ShapeInput => {
 }
 
 
-const cleanTime =( shapeInput: ShapeInput ): ShapeInput => ({
-    ...basicClean( shapeInput ),
-    ...( shapeInput.time        && { time       : shapeInput.time }),
-    ...( shapeInput.timeValue   && { timeValue  : shapeInput.timeValue }),
-    ...( shapeInput.time        && { time       : shapeInput.time }),
-});
+const cleanTime =( shapeInput: ShapeInput ): ShapeInput => {
+    const isAnalogic    = shapeInput.time?.isAnalogic ?? false;
+    const defaultStyles = isAnalogic
+        ? ( styles.analogic as InputStyle )
+        : ( styles.digital as InputStyle );
 
+    return {
+        ...basicClean( shapeInput ),
+        ...( shapeInput.time        && { time       : shapeInput.time }),
+        ...( shapeInput.timeValue   && { timeValue  : shapeInput.timeValue }),
+        ...(isAnalogic
+            ? {
+                boxAnalogicClass      : shapeInput.boxAnalogicClass       ?? defaultStyles.box,
+                contentAnalogicClass  : shapeInput.contentAnalogicClass   ?? defaultStyles.content,
+                itemAnalogicClass     : shapeInput.itemAnalogicClass      ?? defaultStyles.item,
+            }
+            : {
+                boxDigitalClass        : shapeInput.boxDigitalClass       ?? defaultStyles.box,
+                contentDigitalClass    : shapeInput.contentDigitalClass   ?? defaultStyles.content,
+                itemDigitalClass       : shapeInput.itemDigitalClass      ?? defaultStyles.item,
+                inputDigitalClass      : shapeInput.inputDigitalClass     ?? defaultStyles.input,
+            }
+        ),
+    };
+};

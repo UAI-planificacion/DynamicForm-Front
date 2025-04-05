@@ -1,58 +1,114 @@
 <script lang="ts">
-    import { TextArea } from "$components";
     import { v4 as uuid } from 'uuid';
+    
+    import type {
+        InputStyle,
+        ShapeInput
+    }                   from "$models";
+    import { styles }   from "$lib";
+    import { TextArea } from "$components";
 
-    import type { InputStyle, ShapeInput } from "$models";
-    import { styles } from "$lib";
 
     export let shapeInput: ShapeInput;
+
+
+    const shapeDigital  = styles.digital as InputStyle;
+    const shapeAnalogic = styles.analogic as InputStyle;
+
+    // Digital
+    shapeInput.boxDigitalClass      ??= shapeDigital.box;
+    shapeInput.contentDigitalClass  ??= shapeDigital.content;
+    shapeInput.itemDigitalClass     ??= shapeDigital.item;
+    shapeInput.inputDigitalClass    ??= shapeDigital.input;
+
+    // Analogic
+    shapeInput.boxAnalogicClass     ??= shapeAnalogic.box;
+    shapeInput.contentAnalogicClass ??= shapeAnalogic.content;
+    shapeInput.itemAnalogicClass    ??= shapeAnalogic.item;
 </script>
 
+{#if !shapeInput.time?.isAnalogic}
+    <TextArea
+        shapeInput = {{
+            id          : uuid(),
+            name        : 'class',
+            label       : 'Estilos de la caja',
+            placeholder : 'Ingrese los estilos de la caja',
+            rows        : 5,
+        }}
+        onInput = {( event: Event ) => shapeInput.boxDigitalClass = ( event.target as HTMLInputElement ).value }
+        value = { shapeInput.boxDigitalClass }
+    />
 
-<TextArea
-    shapeInput = {{
-        id          : uuid(),
-        name        : 'class',
-        label       : 'Componente principal box',
-        placeholder : 'Ingrese los estilos de la caja',
-        rows        : 3,
-        value       : shapeInput.class_ ?? ( styles.datepicker as InputStyle ).box
-    }}
-    onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
-/>
+    <TextArea
+        shapeInput = {{
+            id          : uuid(),
+            name        : 'class',
+            label       : 'Estilos del contenido',
+            placeholder : 'Ingrese los estilos del contenido',
+            rows        : 2,
+        }}
+        onInput = {( event: Event ) => shapeInput.contentDigitalClass = ( event.target as HTMLInputElement ).value }
+        value = { shapeInput.contentDigitalClass }
+    />
 
-<TextArea
-    shapeInput = {{
-        id          : uuid(),
-        name        : 'class',
-        label       : 'Estilos del input',
-        placeholder : 'Ingrese los estilos del input',
-        rows        : 5,
-        value       : shapeInput.inputStyle ?? ( styles.datepicker as InputStyle ).input
-    }}
-    onInput = {( event: Event ) => shapeInput.inputStyle = ( event.target as HTMLInputElement ).value }
-/>
+    <TextArea
+        shapeInput = {{
+            id          : uuid(),
+            name        : 'class',
+            label       : 'Estilos del Item',
+            placeholder : 'Ingrese los estilos del item',
+            rows        : 3,
+        }}
+        onInput = {( event: Event ) => shapeInput.itemDigitalClass = ( event.target as HTMLInputElement ).value }
+        value = { shapeInput.itemDigitalClass }
+    />
 
-<TextArea
-    shapeInput = {{
-        id          : uuid(),
-        name        : 'class',
-        label       : 'Estilos del contenido',
-        placeholder : 'Ingrese los estilos del contenido',
-        rows        : 2,
-        value       : shapeInput.contentStyle ?? ( styles.datepicker as InputStyle ).content
-    }}
-    onInput = {( event: Event ) => shapeInput.contentStyle = ( event.target as HTMLInputElement ).value }
-/>
+    <TextArea
+        shapeInput = {{
+            id          : uuid(),
+            name        : 'class',
+            label       : 'Estilos del input',
+            placeholder : 'Ingrese los estilos del input',
+            rows        : 4,
+        }}
+        onInput = {( event: Event ) => shapeInput.inputDigitalClass = ( event.target as HTMLInputElement ).value }
+        value = { shapeInput.inputDigitalClass }
+    />
+{:else}
+    <TextArea
+        shapeInput = {{
+            id          : uuid(),
+            name        : 'class',
+            label       : 'Estilos de la caja',
+            placeholder : 'Ingrese los estilos de la caja',
+            rows        : 5,
+        }}
+        onInput = {( event: Event ) => shapeInput.boxAnalogicClass = ( event.target as HTMLInputElement ).value }
+        value = { shapeInput.boxAnalogicClass }
+    />
 
-<TextArea
-    shapeInput = {{
-        id          : uuid(),
-        name        : 'class',
-        label       : 'Estilos del Item',
-        placeholder : 'Ingrese los estilos del item',
-        rows        : 2,
-        value       : shapeInput.labelStyle ?? ( styles.datepicker as InputStyle ).item
-    }}
-    onInput = {( event: Event ) => shapeInput.labelStyle = ( event.target as HTMLInputElement ).value }
-/>
+    <TextArea
+        shapeInput = {{
+            id          : uuid(),
+            name        : 'class',
+            label       : 'Estilos del contenido',
+            placeholder : 'Ingrese los estilos del contenido',
+            rows        : 2,
+        }}
+        onInput = {( event: Event ) => shapeInput.contentAnalogicClass = ( event.target as HTMLInputElement ).value }
+        value = { shapeInput.contentAnalogicClass }
+    />
+
+    <TextArea
+        shapeInput = {{
+            id          : uuid(),
+            name        : 'class',
+            label       : 'Estilos del item',
+            placeholder : 'Ingrese los estilos del item',
+            rows        : 5,
+        }}
+        onInput = {( event: Event ) => shapeInput.itemAnalogicClass = ( event.target as HTMLInputElement ).value }
+        value = { shapeInput.itemAnalogicClass }
+    />
+{/if}
