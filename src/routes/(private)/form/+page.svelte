@@ -305,10 +305,10 @@
                 placeholder	        : 'Seleccione una plantilla',
                 searchPlaceholder   : 'Buscar plantilla',
                 disabled            : initialLoading,
-                selected            : optionSelected,
                 options,
             }}
             onSelectedChange = { handleTemplateChange }
+            value = { optionSelected }
         />
     </div>
 
