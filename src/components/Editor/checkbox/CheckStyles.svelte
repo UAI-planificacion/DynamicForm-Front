@@ -13,7 +13,6 @@
     shapeInput.labelCheckboxClass   ??= shapeCheckBox.label;
 </script>
 
-<!-- onInput = {( event: Event ) => shapeInput.boxCheckboxClass = ( event.target as HTMLInputElement ).value } -->
 <TextArea
     shapeInput = {{
         id          : uuid(),
