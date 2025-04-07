@@ -385,7 +385,7 @@
                         >
                             <Input 
                                 shapeInput  = { formName }
-                                onInput     = {( value : Event ) => dynamicForm.name = ( value.target as HTMLInputElement ).value }
+                                onInput     = {( value ) => dynamicForm.name = value }
                                 value       = { dynamicForm.name }
                                 setError    = { () => formName.valid = dynamicForm.name.length > 0 }
                             />
