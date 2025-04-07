@@ -26,6 +26,7 @@ const basicClean = ( shapeInput: ShapeInput ) => ({
     id      : shapeInput.id,
     name    : shapeInput.name,
     shape   : shapeInput.shape,
+    valid   : true,
     ...(shapeInput.label        && { label          : shapeInput.label }),
     ...(shapeInput.description  && { description    : shapeInput.description }),
     ...(shapeInput.placeholder  && { placeholder    : shapeInput.placeholder }),
@@ -69,9 +70,27 @@ export function cleanInput( shapeInput: ShapeInput ) {
 
     if ( shapeInput.shape === 'input' ) type = shapeInput.type || 'text';
 
+    let styleClasses = {};
+
+    if ( shapeInput.shape === 'input' ) {
+        styleClasses = {
+            inputClass: shapeInput.inputClass ?? styles.input as string
+        };
+    } else if ( shapeInput.shape === 'textarea' ) {
+        styleClasses = {
+            textareaClass: shapeInput.textareaClass ?? styles.textarea as string
+        };
+    } else if ( shapeInput.shape === 'markdown' ) {
+        styleClasses = {
+            boxMarkdownClass    : shapeInput.boxMarkdownClass   ?? ( styles.markdown as InputStyle ).box,
+            inputMarkdownClass  : shapeInput.inputMarkdownClass ?? ( styles.markdown as InputStyle ).input
+        };
+    }
+
     return {
         ...basicClean( shapeInput ),
         ...( shapeInput.value && { value: shapeInput.value }),
+        ...styleClasses,
         type,
         min,
         max,
@@ -93,8 +112,9 @@ const cleanCheckbox = (
 ) : ShapeInput => ({
     ...basicClean( shapeInput ),
     ...( shapeInput.checked && { checked: shapeInput.checked }),
+    boxCheckboxClass    : shapeInput.boxCheckboxClass ?? ( styles.check as InputStyle ).box,
+    labelCheckboxClass  : shapeInput.labelCheckboxClass ?? ( styles.check as InputStyle ).label,
 });
-
 
 const cleanSelect = ( shapeInput: ShapeInput ): ShapeInput => ({
     ...basicClean( shapeInput ),
