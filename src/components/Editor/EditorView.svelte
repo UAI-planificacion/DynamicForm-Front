@@ -524,7 +524,6 @@
                                         ... requiredMssg,
                                         disabled: !shapeInput.required,
                                         required: shapeInput.required,
-                                        value   : shapeInput.msgRequired
                                     }}
                                     onInput     = {( value ) => shapeInput.msgRequired = value }
                                     setError    = { () => requiredMssg.valid = errorInput( requiredMssg, shapeInput.msgRequired )}
