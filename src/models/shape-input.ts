@@ -109,16 +109,6 @@ export type ShapeInput = {
     contentAnalogicClass?   : string;
     itemAnalogicClass?      : string;
 
-    // Styles
-    class_?         : string;
-    boxStyle?       : string;
-	labelStyle? 	: string;
-	contentStyle? 	: string;
-	itemStyle? 		: string;
-	inputStyle? 	: string;
-    groupStyle?     : string;
-    itemRangeStyle? : string;
-    dateClass?          : string;
 
     // Button
     httpList?			: Http[];
@@ -126,6 +116,7 @@ export type ShapeInput = {
 	invalidErrorMsg?	: string;
     urlSend?     		: string;
 	method?				: Method;
+    buttonClass?        : string;
 	// form? 			: Form;
 }
 
