@@ -9,7 +9,6 @@
         CaretDownIcon
     }                       from "$icons";
     import type {
-        InputStyle,
         InputType,
         SelectInput,
         ShapeInput,
@@ -34,18 +33,20 @@
         TimeStyles,
         ButtonRequired,
         ButtonValidations,
-        SelectStyles
+        SelectStyles,
+        CheckStyles,
+        InputStyles,
+        ButtonStyles,
+        TextareStyles,
+        MarkdownStyles
     }						from "$components";
     import {
 		options,
-		styles,
 		types,
         errorInput,
         errorSelect,
         stringToTime
 	}                       from "$lib";
-    import CheckStyles from "./checkbox/CheckStyles.svelte";
-
 
     export let shapeInput       : ShapeInput;
     export let onDelete         : VoidFunction;
@@ -490,9 +491,9 @@
                                             id		    : uuid(),
                                             label       : 'Requerido',
                                             name	    : 'required',
-                                            checked     : shapeInput.required
                                         }}
-                                        onChange	= {( e ) => shapeInput.required = e as boolean }
+                                        onChange = {( chech ) => shapeInput.required = chech }
+                                        checked  = { shapeInput.required }
                                     />
 
                                     {#if shapeInput.shape === 'datepicker'}
@@ -501,9 +502,9 @@
                                                 id      : uuid(),
                                                 name    : 'is-range',
                                                 label   : 'Con rango',
-                                                checked : shapeInput.isRange
                                             }}
-                                            onChange = {( e ) => shapeInput.isRange = e}
+                                            onChange = {( check ) => shapeInput.isRange = check }
+                                            checked  = { shapeInput.isRange }
                                         />
                                     {:else if shapeInput.shape === 'timer'}
                                         <Check 
@@ -512,7 +513,7 @@
                                                 name    : 'analogic',
                                                 label   : 'Reloj Análogo',
                                             }}
-                                            onChange = {( e ) => { shapeInput.time = { isAnalogic: e }}}
+                                            onChange = {( check ) =>  shapeInput.time = { isAnalogic: check }}
                                             checked  = { shapeInput.time?.isAnalogic }
                                         />
                                     {/if}
@@ -523,9 +524,9 @@
                                         ... requiredMssg,
                                         disabled: !shapeInput.required,
                                         required: shapeInput.required,
-                                        value: shapeInput.msgRequired
+                                        value   : shapeInput.msgRequired
                                     }}
-                                    onInput     = {( value: string ) => shapeInput.msgRequired = value }
+                                    onInput     = {( value ) => shapeInput.msgRequired = value }
                                     setError    = { () => requiredMssg.valid = errorInput( requiredMssg, shapeInput.msgRequired )}
                                     value       = { shapeInput.msgRequired }
                                 />
@@ -538,7 +539,7 @@
                             <div class="grid grid-cols-1 @lg:grid-cols-2 gap-2 items-center">
                                 <ValidInput
                                     bind:shapeInput = { shapeInput }
-                                    bind:isValid = { isInput }
+                                    bind:isValid    = { isInput }
                                     { countSend }
                                 />
                             </div>
@@ -577,7 +578,6 @@
                                 minValue              = { shapeInput.minValue }
                                 maxValue              = { shapeInput.maxValue }
                             />  
-
                         {:else if shapeInput.shape === 'timer' }
                             <span class="text-sm font-semibold text-zinc-500 dark:text-zinc-300">Horas y minutos disponibles</span>
 
@@ -642,9 +642,9 @@
 											id		: uuid(),
 											label   : 'Previsualización',
 											name	: 'preview',
-											checked : shapeInput.preview
 										}}
 										onChange = {( e ) => shapeInput.preview = e as boolean }
+                                        checked  = { shapeInput.preview }
 									/>
 								{/if}
 
@@ -653,9 +653,9 @@
                                         id		: uuid(),
                                         label   : 'Desactivado',
                                         name	: 'disabled',
-                                        checked : shapeInput.disabled
                                     }}
                                     onChange = {( e ) => shapeInput.disabled = e as boolean }
+                                    checked  = { shapeInput.disabled }
                                 />
 
                                 <Check
@@ -663,25 +663,19 @@
                                         id		: uuid(),
                                         label   : 'Solo lectura',
                                         name	: 'readonly',
-                                        checked : shapeInput.readonly
                                     }}
                                     onChange = {( e ) => shapeInput.readonly = e as boolean }
+                                    checked  = { shapeInput.readonly }
                                 />
                             </div>
                         {/if}
 
-						{#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'button' }
-							<TextArea
-								shapeInput = {{
-									id          : uuid(),
-									name        : 'class',
-									label       : 'Estilos con tailwind',
-									placeholder : 'Ingrese los estilos',
-									rows        : 4,
-									value       : ( shapeInput.class_ ) ?? ( styles[shapeInput.shape || 'none'] as string )
-								}}
-								onInput = {( value: string ) => shapeInput.class_ = value }
-							/>
+						{#if shapeInput.shape === 'input' }
+							<InputStyles bind:shapeInput={shapeInput} />
+                        {:else if shapeInput.shape === 'textarea'}
+                            <TextareStyles bind:shapeInput={shapeInput} />
+                        {:else if shapeInput.shape === 'button'}
+                            <ButtonStyles bind:shapeInput={shapeInput} />
 						{:else if shapeInput.shape === 'check'}
 							<CheckStyles bind:shapeInput={shapeInput} />
 						{:else if shapeInput.shape === 'select' }
@@ -690,6 +684,8 @@
 							<DateStyles bind:shapeInput={shapeInput} />
                         {:else if shapeInput.shape === 'timer'}
                             <TimeStyles bind:shapeInput={shapeInput} />
+                        {:else if shapeInput.shape === 'markdown'}
+                            <MarkdownStyles bind:shapeInput={shapeInput} />
 						{/if}
                     </Accordion.Content>
                 </Accordion.Item>

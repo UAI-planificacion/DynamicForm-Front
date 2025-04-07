@@ -52,3 +52,8 @@ export { default as DateStyles }            from './Editor/dates/DateStyles.svel
 export { default as TimeStyles }            from './Editor/times/TimeStyles.svelte';
 export { default as ButtonRequired }        from './Editor/buttons/ButtonRequired.svelte';
 export { default as ButtonValidations }     from './Editor/buttons/ButtonValidations.svelte';
+export { default as ButtonStyles }          from './Editor/buttons/ButtonStyles.svelte';
+export { default as MarkdownStyles }        from './Editor/markdown/MarkdownStyles.svelte';
+export { default as InputStyles }           from './Editor/inputs/InputStyles.svelte';
+export { default as CheckStyles }           from './Editor/checkbox/CheckStyles.svelte';
+export { default as TextareStyles }         from './Editor/textarea/TextareStyles.svelte';
