@@ -10,7 +10,6 @@
     export let setError     : VoidFunction = () => {};
 </script>
 
-
 <Info { shapeInput } { onInput } { value }>
 	<textarea
 		name        = { shapeInput.name }
@@ -22,8 +21,8 @@
 		readonly 	= { shapeInput.readonly }
 		disabled 	= { shapeInput.disabled }
 		placeholder	= { shapeInput.placeholder }
+        bind:value= { value }
 		on:input    = { ( event: Event ) => { onInput(( event.target as HTMLTextAreaElement ).value ); setError() }}
 		class       = { shapeInput.textareaClass ?? styles.textarea }
-        { value }
     ></textarea>
 </Info>

@@ -21,7 +21,7 @@
         required    = { shapeInput.required }
         disabled    = { shapeInput.disabled }
         readonly    = { shapeInput.readonly }
-        value       = { value }
+        value       = { value ?? '' }
         on:input    = {( event: Event ) => { onInput(( event.target as HTMLTextAreaElement ).value ); setError(); }}
         on:keyup    = { onKeyup }
         class       = {( shapeInput.inputClass ) ?? ( styles.input as string )}
