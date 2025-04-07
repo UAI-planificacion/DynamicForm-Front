@@ -27,7 +27,7 @@
 
 	export let shapeInput	: ShapeInput;
 	export let value 		: string | undefined = undefined;
-    export let onInput		: ( event: Event ) => void;
+    export let onInput		: ( value: string ) => void;
     export let setError     : VoidFunction = () => {};
     export let dynamicMode  : boolean = false;
 
@@ -418,10 +418,10 @@
             on:keyup	= { updateSelection }
             on:click	= { updateSelection }
             on:keydown	= { handleKeydown }
-            on:input    = { ( value ) => {onInput( value ); setError() }}
+            on:input    = { ( value: Event ) => {onInput( ( value.target as HTMLTextAreaElement ).value ); setError() }}
             readonly 	= { shapeInput.readonly }
             disabled 	= { shapeInput.disabled }
-            class		= { shapeInput.inputMarkdownClass ?? ( styles.markdown as InputStyle).input }
+            class		= { shapeInput.inputMarkdownClass ?? ( styles.markdown as InputStyle ).input }
             placeholder = { shapeInput.placeholder }
         ></textarea>
 

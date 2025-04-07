@@ -44,6 +44,7 @@
         errorSelect,
         stringToTime
 	}                       from "$lib";
+    import CheckStyles from "./checkbox/CheckStyles.svelte";
 
 
     export let shapeInput       : ShapeInput;
@@ -289,14 +290,14 @@
 
                 <Input
                     shapeInput  = {{ ...nameShape, value: shapeInput.name }}
-                    onInput     = {( event: Event ) => shapeInput.name = ( event.target as HTMLInputElement ).value }
+                    onInput     = {( value: string ) => shapeInput.name = value }
                     value       = { shapeInput.name }
                     setError    = { () => nameShape.valid = errorInput(nameShape, shapeInput.name) }
                 />
 
                 <Input
                     shapeInput  = {{ ...labelShape, value: shapeInput.label, required: shapeInput.shape === 'check' }}
-                    onInput     = {( event: Event ) => shapeInput.label = ( event.target as HTMLInputElement ).value }
+                    onInput     = {( value: string ) => shapeInput.label = value }
                     value       = { shapeInput.label }
                     setError    = { () => labelShape.valid = errorInput( { ...labelShape, required: shapeInput.shape === 'check' }, shapeInput.label )}
                 />
@@ -304,7 +305,7 @@
                 {#if shapeInput.shape === 'input' || shapeInput.shape === 'select' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' || shapeInput.shape === 'none'}
                     <Input
                         shapeInput  = {{ ...placeholderShape, value: shapeInput.placeholder }}
-                        onInput     = {( event: Event ) => shapeInput.placeholder = ( event.target as HTMLInputElement ).value }
+                        onInput     = {( value: string ) => shapeInput.placeholder = value }
                         value       = { shapeInput.placeholder }
                         setError    = { () => placeholderShape.valid = errorInput(placeholderShape, shapeInput.placeholder) }
                     />
@@ -408,7 +409,7 @@
                         } as ShapeInput}
                         <Input
                             shapeInput = {{ ...defaultValueShape }}
-                            onInput = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
+                            onInput = {( value: string ) => shapeInput.value = value }
                             value = { shapeInput.value }
                         />
                     {/if}
@@ -417,7 +418,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 space-x-2 items-center">
                     <Input
                         shapeInput  = {{ ...rowsShape, value: shapeInput.rows?.toString() }}
-                        onInput     = {( event: Event ) => shapeInput.rows = Number(( event.target as HTMLInputElement ).value )}
+                        onInput     = {( value: string ) => shapeInput.rows = Number(value) }
                         setError    = { () => rowsShape.valid = errorInput( rowsShape, shapeInput.rows?.toString() )}
                         value       = { shapeInput.rows?.toString() }
                     />
@@ -433,7 +434,7 @@
                         } as ShapeInput}
                         <TextArea
                             shapeInput  = {{ ...textareaDefaultShape }}
-                            onInput     = {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
+                            onInput     = {( value: string ) => shapeInput.value = value }
                             value       = { shapeInput.value }
                         />
                     {/if}
@@ -451,8 +452,8 @@
                     <MarkdownEditor
                         shapeInput  = {{ ...markdownDefaultShape }}
                         dynamicMode	= { true }
-                        onInput		= {( event: Event ) => shapeInput.value = ( event.target as HTMLInputElement ).value }
-                        value       = { shapeInput.value}
+                        onInput		= {( value: string ) => shapeInput.value = value }
+                        value       = { shapeInput.value }
                     />
                 {/if}
             {:else if shapeInput.shape === 'select' }
@@ -524,7 +525,7 @@
                                         required: shapeInput.required,
                                         value: shapeInput.msgRequired
                                     }}
-                                    onInput     = {( event: Event ) => shapeInput.msgRequired = ( event.target as HTMLInputElement ).value }
+                                    onInput     = {( value: string ) => shapeInput.msgRequired = value }
                                     setError    = { () => requiredMssg.valid = errorInput( requiredMssg, shapeInput.msgRequired )}
                                     value       = { shapeInput.msgRequired }
                                 />
@@ -618,7 +619,7 @@
                                 placeholder : 'Ingrese la descripción',
                                 value       : shapeInput.description
                             }}
-                            onInput = {( event: Event ) => shapeInput.description = ( event.target as HTMLInputElement ).value }
+                            onInput = {( value: string ) => shapeInput.description = value }
                         />
 
                         {#if shapeInput.shape === 'button'}
@@ -679,32 +680,10 @@
 									rows        : 4,
 									value       : ( shapeInput.class_ ) ?? ( styles[shapeInput.shape || 'none'] as string )
 								}}
-								onInput = {( event: Event ) => shapeInput.class_ = ( event.target as HTMLInputElement ).value }
+								onInput = {( value: string ) => shapeInput.class_ = value }
 							/>
 						{:else if shapeInput.shape === 'check'}
-							<TextArea
-								shapeInput = {{
-									id          : uuid(),
-									name        : 'class',
-									label       : 'Estilos con tailwind',
-									placeholder : 'Ingrese los estilos',
-									rows        : 4,
-									value       : shapeInput.boxStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).box
-								}}
-								onInput = {( event: Event ) => shapeInput.boxStyle = ( event.target as HTMLInputElement ).value }
-							/>
-
-							<TextArea
-								shapeInput = {{
-									id          : uuid(),
-									name        : 'class',
-									label       : 'Estilos con tailwind',
-									placeholder : 'Ingrese los estilos',
-									rows        : 4,
-									value       : shapeInput.labelStyle ?? ( styles[shapeInput.shape || 'none'] as InputStyle ).label
-								}}
-								onInput = {( event: Event ) => shapeInput.labelStyle = ( event.target as HTMLInputElement ).value }
-							/>
+							<CheckStyles bind:shapeInput={shapeInput} />
 						{:else if shapeInput.shape === 'select' }
 							<SelectStyles bind:shapeInput={shapeInput} />
 						{:else if shapeInput.shape === 'datepicker'}

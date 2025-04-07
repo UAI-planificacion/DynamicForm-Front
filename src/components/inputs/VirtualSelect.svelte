@@ -485,7 +485,7 @@
                             placeholder : shapeInput.searchPlaceholder,
                             class_      : shapeInput.inputSelectClass ?? (styles.select as InputStyle ).input
                         }}
-                        onInput = {( event: Event ) => searchTerm = ( event.target as HTMLInputElement ).value }
+                        onInput = {( value: string ) => searchTerm = value }
                         on:blur = { handleBlur }
                     />
                 </div>

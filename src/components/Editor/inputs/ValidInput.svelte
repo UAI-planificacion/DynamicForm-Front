@@ -225,28 +225,28 @@
 {#if shapeInput.type !== 'number' ||  shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' }
     <Input
         shapeInput  = { minLengthShape }
-        onInput     = {( event: Event ) => shapeInput.minLength = Number(( event.target as HTMLInputElement ).value )}
+        onInput     = {( value: string ) => shapeInput.minLength = Number(value) }
         value       = { String( shapeInput.minLength || '' ) }
         setError    = { () =>  minLengthShape.valid = errorInput( minLengthShape, shapeInput.minLength?.toString()) }
     />
 
     <Input
         shapeInput  = {{ ...minLengthMssgShape, disabled: ( shapeInput.minLength ?? 0 ) <= 0 }}
-        onInput     = {( event: Event ) => shapeInput.msgMinLength = ( event.target as HTMLInputElement ).value }
+        onInput     = {( value: string ) => shapeInput.msgMinLength = value }
         value       = { shapeInput.msgMinLength }
         setError    = { () => minLengthMssgShape.valid = errorInput( minLengthMssgShape, shapeInput.msgMinLength || undefined )}
     />
 
     <Input
         shapeInput  = {{ ...maxLengthShape }}
-        onInput     = {( event: Event ) => shapeInput.maxLength = Number(( event.target as HTMLInputElement ).value )}
+        onInput     = {( value: string ) => shapeInput.maxLength = Number(value) }
         value       = { String( shapeInput.maxLength || '' )}
         setError    = { () => maxLengthShape.valid = errorInput( maxLengthShape, shapeInput.maxLength?.toString() )}
     />
 
     <Input
         shapeInput  = {{...maxLengthMssgShape, disabled: ( shapeInput.maxLength ?? 0 ) <= 0 }}
-        onInput     = {( event: Event ) => shapeInput.msgMaxLength = ( event.target as HTMLInputElement ).value }
+        onInput     = {( value: string ) => shapeInput.msgMaxLength = value }
         value       = { shapeInput.msgMaxLength }
         setError    = { () => maxLengthMssgShape.valid = errorInput( maxLengthMssgShape, shapeInput.msgMaxLength || undefined )}
     />
@@ -254,14 +254,14 @@
     {#if shapeInput.type !== 'number' && shapeInput.shape === 'input' }
         <Input
             shapeInput  = {{ ...patternShape }}
-            onInput     = {( event: Event ) => shapeInput.pattern = ( event.target as HTMLInputElement ).value }
+            onInput     = {( value: string ) => shapeInput.pattern = value }
             value       = { shapeInput.pattern }
             setError    = { () => patternShape.valid = errorInput( patternShape, shapeInput.pattern || undefined )}
         />
 
         <Input
             shapeInput  = {{...patternMssgShape, disabled: !shapeInput.pattern, required: ( shapeInput.pattern?.length ?? 0) > 0 }}
-            onInput     = {( event: Event ) => shapeInput.msgPattern = ( event.target as HTMLInputElement ).value }
+            onInput     = {( value: string ) => shapeInput.msgPattern = value }
             value       = { shapeInput.msgPattern }
             setError    = { () => patternMssgShape.valid = errorInput(
                 { ...patternMssgShape, required: ( shapeInput.pattern?.length ?? 0)  > 0 },
@@ -273,14 +273,14 @@
 {:else}
     <Input
         shapeInput  = {{ ...minShape }}
-        onInput     = {( event: Event ) => shapeInput.min = Number(( event.target as HTMLInputElement ).value )}
+        onInput     = {( value: string ) => shapeInput.min = Number(value) }
         setError    = { () => minShape.valid = errorInput( minShape, shapeInput.min?.toString() )}
         value       = { String( shapeInput.min || '' )}
     />
 
     <Input
         shapeInput  = {{ ...minMssgShape, disabled: ( shapeInput.min ?? 0 ) <= 0, required: ( shapeInput.min ?? 0 ) > 0 }}
-        onInput     = {( event: Event ) => shapeInput.msgMin = ( event.target as HTMLInputElement ).value }
+        onInput     = {( value: string ) => shapeInput.msgMin = value }
         value       = { shapeInput.msgMin }
         setError    = { () => minMssgShape.valid = errorInput({
             ...minMssgShape, required: ( shapeInput.min ?? 0 ) > 0 },
@@ -290,14 +290,14 @@
 
     <Input
         shapeInput  = {{...maxShape}}
-        onInput     = {( event: Event ) => shapeInput.max = Number(( event.target as HTMLInputElement ).value )}
+        onInput     = {( value: string ) => shapeInput.max = Number(value) }
         setError    = { () => maxShape.valid = errorInput( maxShape, shapeInput.max?.toString() )}
         value       = { String( shapeInput.max || '' )}
     />
 
     <Input
         shapeInput  = {{ ...maxMssgShape, disabled: ( shapeInput.max ?? 0 ) <= 0, required: ( shapeInput.max ?? 0 ) > 0 }}
-        onInput     = {( event: Event ) => shapeInput.msgMax = ( event.target as HTMLInputElement ).value }
+        onInput     = {( value: string ) => shapeInput.msgMax = value }
         value       = { shapeInput.msgMax }
         setError    = { () => maxMssgShape.valid = errorInput(
             { ...maxMssgShape, required: ( shapeInput.max ?? 0 ) > 0 },

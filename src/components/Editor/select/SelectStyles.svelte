@@ -24,7 +24,7 @@
         placeholder : 'Ingrese los estilos de la caja',
         rows        : 4,
     }}
-    onInput = {( event: Event ) => shapeInput.boxSelectClass = ( event.target as HTMLInputElement ).value }
+    onInput = {( value: string ) => shapeInput.boxSelectClass = value }
     value = { shapeInput.boxSelectClass }
 />
 
@@ -36,7 +36,7 @@
         placeholder : 'Ingrese los estilos del contenido',
         rows        : 2,
     }}
-    onInput = {( event: Event ) => shapeInput.contentSelectClass = ( event.target as HTMLInputElement ).value }
+    onInput = {( value: string ) => shapeInput.contentSelectClass = value }
     value = { shapeInput.contentSelectClass }
 />
 
@@ -48,7 +48,7 @@
         placeholder : 'Ingrese los estilos de cada item',
         rows        : 4,
     }}
-    onInput = {( event: Event ) => shapeInput.itemSelectClass = ( event.target as HTMLInputElement ).value }
+    onInput = {( value: string ) => shapeInput.itemSelectClass = value }
     value = { shapeInput.itemSelectClass }
 />
 
@@ -60,7 +60,7 @@
         placeholder : 'Ingrese los estilos del grupo',
         rows        : 3,
     }}
-    onInput = {( event: Event ) => shapeInput.groupSelectClass = ( event.target as HTMLInputElement ).value }
+    onInput = {( value: string ) => shapeInput.groupSelectClass = value }
     value = { shapeInput.groupSelectClass }
 />
 
@@ -72,6 +72,6 @@
         placeholder : 'Ingrese los estilos del input',
         rows        : 4,
     }}
-    onInput = {( event: Event ) => shapeInput.inputSelectClass = ( event.target as HTMLInputElement ).value }
+    onInput = {( value: string ) => shapeInput.inputSelectClass = value }
     value = { shapeInput.inputSelectClass }
 />

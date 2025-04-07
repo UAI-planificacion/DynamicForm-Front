@@ -241,8 +241,9 @@
     }
 
 
-    const handleInput = ( event: Event, name: string ): string =>
-		formValues[name] = (event.target as HTMLInputElement).value;
+    const handleInput = ( value: string, name: string ): string =>
+		formValues[name] = value;
+		// formValues[name] = (event.target as HTMLInputElement).value;
 
 
     const handleCheck = ( isChecked: boolean, name: string ): boolean =>
@@ -324,7 +325,7 @@
 			{#if shapeInput.shape === 'input'}
 				<Input
 					{ shapeInput }
-					onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
+					onInput		= {( value: string ) => handleInput( value, shapeInput.name )}
 					value 		= { formValues[ shapeInput.name ]}
 					setError 	= {() => shapeInput.valid = errorInput( shapeInput, formValues[ shapeInput.name ])}
 				/>
@@ -376,14 +377,14 @@
 			{:else if shapeInput.shape === 'textarea'}
 				<TextArea
 					{ shapeInput }
-					onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
+					onInput		= {( value: string ) => handleInput( value, shapeInput.name )}
 					value		= { formValues[ shapeInput.name ]}
 					setError	= {() => shapeInput.valid = errorTextArea( shapeInput, formValues[ shapeInput.name ])}
 				/>
 			{:else if shapeInput.shape === 'markdown'}
 				<MarkdownEditor
 					{ shapeInput }
-					onInput		= {( event: Event ) => handleInput( event, shapeInput.name )}
+					onInput		= {( value: string ) => handleInput( value, shapeInput.name )}
 					value		= { formValues[ shapeInput.name ]}
 					setError	= {() => shapeInput.valid = errorTextArea( shapeInput, formValues[ shapeInput.name ])}
 					dynamicMode={ dynamicMode }

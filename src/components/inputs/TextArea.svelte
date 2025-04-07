@@ -6,7 +6,7 @@
 
     export let shapeInput	: ShapeInput;
 	export let value 		: string | undefined = undefined;
-    export let onInput		: ( event: Event ) => void;
+    export let onInput		: ( value: string ) => void;
     export let setError     : VoidFunction = () => {};
 </script>
 
@@ -22,7 +22,7 @@
 		readonly 	= { shapeInput.readonly }
 		disabled 	= { shapeInput.disabled }
 		placeholder	= { shapeInput.placeholder }
-		on:input    = { ( value ) => { onInput( value ); setError() }}
+		on:input    = { ( event: Event ) => { onInput(( event.target as HTMLTextAreaElement ).value ); setError() }}
 		class       = { shapeInput.textareaClass ?? styles.textarea }
         { value }
     ></textarea>

@@ -66,7 +66,7 @@ export type ShapeInput = {
 
     // Checkbox
     checked?            : boolean;
-    checkboxClass?      : string;
+    boxCheckboxClass?      : string;
     labelCheckboxClass? : string;
 
     // Select

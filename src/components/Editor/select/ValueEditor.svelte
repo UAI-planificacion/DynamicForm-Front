@@ -263,8 +263,8 @@
                         value       = { item.value }
                         onKeyup     = { keyAddOption }
                         setError    = {() => valueShapeList[index].valid = errorInput( valueShapeList[index], item.value )}
-                        onInput     = {( event: Event ) => {
-                            item.value = ( event.target as HTMLInputElement ).value;
+                        onInput     = {( value: string ) => {
+                            item.value = value;
                             valueShapeList[index].value = item.value;
                         }}
                     />
@@ -275,8 +275,8 @@
                             onKeyup     = { keyAddOption }
                             setError    = {() => labelShapeList[index].valid = errorInput( labelShapeList[index], item.label )}
                             value       = { item.label }
-                            onInput     = {( event: Event ) => {
-                                item.label = ( event.target as HTMLInputElement ).value;
+                            onInput     = {( value: string ) => {
+                                item.label = value;
                                 labelShapeList[index].value = item.label;
                                 onOptionsChange( options );
                             }}

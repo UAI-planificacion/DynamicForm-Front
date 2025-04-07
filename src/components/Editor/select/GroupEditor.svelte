@@ -104,8 +104,8 @@
                     value       = { group.name }
                     onKeyup     = { keyAddGroup }
                     setError    = {() => groupShapeList[index].valid = errorInput( groupShapeList[index], group.name )}
-                    onInput     = {( e ) => {
-                        group.name = ( e.target as HTMLInputElement ).value;
+                    onInput     = {( value ) => {
+                        group.name = value;
                         groupShapeList[index].value = group.name;
                     }}
                 />

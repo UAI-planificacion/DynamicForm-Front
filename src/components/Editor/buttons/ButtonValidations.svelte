@@ -84,7 +84,7 @@
         } as ShapeInput}
         <Input
             shapeInput  = {{ ...errorMssg }}
-            onInput     = {( event: Event ) => shapeInput.externalErrorMsg = ( event.target as HTMLInputElement ).value }
+            onInput     = {( value: string ) => shapeInput.externalErrorMsg = value }
             value       = { shapeInput.externalErrorMsg }
             setError    = {() => errorMssg.valid = errorInput( errorMssg, shapeInput.externalErrorMsg )}
         />
@@ -102,7 +102,7 @@
         } as ShapeInput}
         <Input
             shapeInput  = {{ ...invalidForm }}
-            onInput     = {( event: Event ) => shapeInput.invalidErrorMsg = ( event.target as HTMLInputElement ).value }
+            onInput     = {( value: string ) => shapeInput.invalidErrorMsg = value }
             value       = { shapeInput.invalidErrorMsg }
             setError    = {() => invalidForm.valid = errorInput( invalidForm, shapeInput.invalidErrorMsg )}
         />
@@ -158,10 +158,10 @@
                         shapeInput.httpList?.[index].message
                     );
                 }}
-                onInput     = {(event) => {
+                onInput     = {(value: string) => {
                     if (!shapeInput.httpList) return;
-                    shapeInput.httpList[index].message = (event.target as HTMLInputElement).value;
-                    responseMssgList[index].valid = errorInput(responseMssgList[index], (event.target as HTMLInputElement).value);
+                    shapeInput.httpList[index].message = value;
+                    responseMssgList[index].valid = errorInput(responseMssgList[index], value);
                 }}
             />
 

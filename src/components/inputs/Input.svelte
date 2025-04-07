@@ -5,7 +5,7 @@
 
 
     export let shapeInput   : ShapeInput;
-    export let onInput      : ( event: Event ) => void;
+    export let onInput      : ( value: string ) => void;
     export let value        : string | undefined = undefined;
     export let setError     : VoidFunction = () => {};
     export let onKeyup      : ( event: KeyboardEvent ) => void = () => {};
@@ -22,7 +22,7 @@
         disabled    = { shapeInput.disabled }
         readonly    = { shapeInput.readonly }
         value       = { value }
-        on:input    = {( event ) => { onInput( event ); setError(); }}
+        on:input    = {( event: Event ) => { onInput(( event.target as HTMLTextAreaElement ).value ); setError(); }}
         on:keyup    = { onKeyup }
         class       = {( shapeInput.inputClass ) ?? ( styles.input as string )}
     />

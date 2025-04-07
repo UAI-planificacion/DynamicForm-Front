@@ -195,7 +195,7 @@
             <Input
                 shapeInput  = {{ ...placeholderSearchShape, disabled: !shapeInput.search, maxLength: !shapeInput.search ? undefined : 50 }}
                 value       = { shapeInput.searchPlaceholder }
-                onInput     = {( event: Event ) => shapeInput.searchPlaceholder = ( event.target as HTMLInputElement ).value }
+                onInput     = {( value ) => shapeInput.searchPlaceholder = value }
                 setError    = {() => { placeholderSearchShape.valid = errorInput(
                     {...placeholderSearchShape, maxLength: !shapeInput.search ? undefined : 50},
                     shapeInput.searchPlaceholder

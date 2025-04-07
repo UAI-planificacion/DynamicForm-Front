@@ -36,7 +36,7 @@
             placeholder : 'Ingrese los estilos de la caja',
             rows        : 5,
         }}
-        onInput = {( event: Event ) => shapeInput.boxDigitalClass = ( event.target as HTMLInputElement ).value }
+        onInput = {( value: string ) => shapeInput.boxDigitalClass = value }
         value = { shapeInput.boxDigitalClass }
     />
 
@@ -48,7 +48,7 @@
             placeholder : 'Ingrese los estilos del contenido',
             rows        : 2,
         }}
-        onInput = {( event: Event ) => shapeInput.contentDigitalClass = ( event.target as HTMLInputElement ).value }
+        onInput = {( value ) => shapeInput.contentDigitalClass = value }
         value = { shapeInput.contentDigitalClass }
     />
 
@@ -60,7 +60,7 @@
             placeholder : 'Ingrese los estilos del item',
             rows        : 3,
         }}
-        onInput = {( event: Event ) => shapeInput.itemDigitalClass = ( event.target as HTMLInputElement ).value }
+        onInput = {( value ) => shapeInput.itemDigitalClass = value }
         value = { shapeInput.itemDigitalClass }
     />
 
@@ -72,7 +72,7 @@
             placeholder : 'Ingrese los estilos del input',
             rows        : 4,
         }}
-        onInput = {( event: Event ) => shapeInput.inputDigitalClass = ( event.target as HTMLInputElement ).value }
+        onInput = {( value ) => shapeInput.inputDigitalClass = value }
         value = { shapeInput.inputDigitalClass }
     />
 {:else}
@@ -84,7 +84,7 @@
             placeholder : 'Ingrese los estilos de la caja',
             rows        : 5,
         }}
-        onInput = {( event: Event ) => shapeInput.boxAnalogicClass = ( event.target as HTMLInputElement ).value }
+        onInput = {( value ) => shapeInput.boxAnalogicClass = value }
         value = { shapeInput.boxAnalogicClass }
     />
 
@@ -96,7 +96,7 @@
             placeholder : 'Ingrese los estilos del contenido',
             rows        : 2,
         }}
-        onInput = {( event: Event ) => shapeInput.contentAnalogicClass = ( event.target as HTMLInputElement ).value }
+        onInput = {( value ) => shapeInput.contentAnalogicClass = value }
         value = { shapeInput.contentAnalogicClass }
     />
 
@@ -108,7 +108,7 @@
             placeholder : 'Ingrese los estilos del item',
             rows        : 5,
         }}
-        onInput = {( event: Event ) => shapeInput.itemAnalogicClass = ( event.target as HTMLInputElement ).value }
+        onInput = {( value ) => shapeInput.itemAnalogicClass = value }
         value = { shapeInput.itemAnalogicClass }
     />
 {/if}

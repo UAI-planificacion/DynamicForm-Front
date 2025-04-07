@@ -24,7 +24,7 @@
         placeholder : 'Ingrese los estilos de la caja',
         rows        : 4,
     }}
-    onInput = {( event: Event ) => shapeInput.boxDateClass = ( event.target as HTMLInputElement ).value }
+    onInput = {( value ) => shapeInput.boxDateClass = value }
     value = { shapeInput.boxDateClass }
 />
 
@@ -36,7 +36,7 @@
         placeholder : 'Ingrese los estilos del panel',
         rows        : 2,
     }}
-    onInput = {( event: Event ) => shapeInput.contentDateClass = ( event.target as HTMLInputElement ).value }
+    onInput = {( value ) => shapeInput.contentDateClass = value }
     value = { shapeInput.contentDateClass }
 />
 
@@ -48,7 +48,7 @@
         placeholder : 'Ingrese los estilos de la etiqueta',
         rows        : 2,
     }}
-    onInput = {( event: Event ) => shapeInput.labelDateClass = ( event.target as HTMLInputElement ).value }
+    onInput = {( value ) => shapeInput.labelDateClass = value }
     value = { shapeInput.labelDateClass }
 />
 
@@ -61,7 +61,7 @@
             placeholder : 'Ingrese los estilos del rango',
             rows        : 10,
         }}
-        onInput = {( event: Event ) => shapeInput.rangeDateClass = ( event.target as HTMLInputElement ).value }
+        onInput = {( value ) => shapeInput.rangeDateClass = value }
         value = { shapeInput.rangeDateClass }
     />
 {:else}
@@ -73,7 +73,7 @@
             placeholder : 'Ingrese los estilos del item',
             rows        : 7,
         }}
-        onInput = {( event: Event ) => shapeInput.itemDateClass = ( event.target as HTMLInputElement ).value }
+        onInput = {( value ) => shapeInput.itemDateClass = value }
         value = { shapeInput.itemDateClass }
     />
 {/if}

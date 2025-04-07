@@ -3,7 +3,7 @@
     import Description          from "./Description.svelte";
 
     export let shapeInput       : ShapeInput;
-    export let onInput          : ( event: Event ) => void = () => {};
+    export let onInput          : ( value: string ) => void = () => {};
     export let onTimerInput     : ( value: string ) => void = () => {};
     export let onSelectedChange : ( value: Selected ) => void = () => {};
     export let value            : Time | Selected | string = undefined;

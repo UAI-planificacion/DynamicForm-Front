@@ -7,6 +7,7 @@
 
 
     export let shapeInput: ShapeInput;
+    export let countSend: number;
 
 
     let optionsSelected: ShapeOption[] = [];
@@ -55,6 +56,7 @@
                 optionsSelected     = [...newOptions];
                 shapeInput.options  = optionsSelected;
             }}
+            countSend = { countSend }
         />
     </Tabs.Content>
 
@@ -65,6 +67,7 @@
                 groupsSelected      = [...newGroups];
                 shapeInput.options  = groupsSelected
             }}
+            countSend = { countSend }
         />
     </Tabs.Content>
 </Tabs.Root>
@@ -123,7 +126,7 @@
                     type        : 'text',
                     disabled    : !shapeInput.search
                 }}
-                onInput = {( event: Event ) => shapeInput.searchPlaceholder = ( event.target as HTMLInputElement ).value }
+                onInput = {( value: string ) => shapeInput.searchPlaceholder = value }
             />
         </div>
     </div>
