@@ -18,24 +18,30 @@
             maxMssgShape.valid    = errorInput( maxMssgShape, shapeInput.msgMax );
 
             isValid = minShape.valid
-            && minMssgShape.valid
-            && maxShape.valid
-            && maxMssgShape.valid;
+                && minMssgShape.valid
+                && maxShape.valid
+                && maxMssgShape.valid;
         }
         else {
             minLengthShape.valid        = errorInput( minLengthShape, String( shapeInput.minLength ) );
             minLengthMssgShape.valid    = errorInput( minLengthMssgShape, shapeInput.msgMinLength );
             maxLengthShape.valid        = errorInput( maxLengthShape, String( shapeInput.maxLength ) );
             maxLengthMssgShape.valid    = errorInput( maxLengthMssgShape, shapeInput.msgMaxLength );
-            patternShape.valid          = errorInput( patternShape, shapeInput.pattern );
-            patternMssgShape.valid      = errorInput( patternMssgShape, shapeInput.msgPattern );
+
+            if ( shapeInput.shape === 'input' ) {
+                patternShape.valid      = errorInput( patternShape, shapeInput.pattern );
+                patternMssgShape.valid  = errorInput( patternMssgShape, shapeInput.msgPattern );
+            } else {
+                patternShape.valid      = true;
+                patternMssgShape.valid  = true;
+            }
 
             isValid = minLengthShape.valid
-            && minLengthMssgShape.valid
-            && maxLengthShape.valid
-            && maxLengthMssgShape.valid
-            && patternShape.valid
-            && patternMssgShape.valid;
+                && minLengthMssgShape.valid
+                && maxLengthShape.valid
+                && maxLengthMssgShape.valid
+                && patternShape.valid
+                && patternMssgShape.valid;
         }
     }
 
@@ -70,7 +76,7 @@
         value           : shapeInput.msgMinLength,
         shape           : 'input',
         type            : 'text',
-        required        : true,
+        required        : ( shapeInput.minLength ?? 0 ) > 0,
         msgRequired     : 'El campo es requerido.',
         valid           : true,
         minLength       : 2,
@@ -105,7 +111,7 @@
         value           : shapeInput.msgMaxLength,
         shape           : 'input',
         type            : 'text',
-        required        : true,
+        required        : ( shapeInput.maxLength ?? 0 ) > 0,
         msgRequired     : 'El campo es requerido.',
         valid           : true,
         minLength       : 2,
