@@ -132,7 +132,7 @@
         valid           : true,
         minLength       : 2,
         maxLength       : 200,
-        pattern         : '^(?:\\\.|[^\s\\])(?:\\\.|[^\\])*$',
+        pattern         : '^(?!.*\s)(?:\\[\\/]|[^\\\s/])(?:\\[\\/]|[^\\\s/])*$',
         msgPattern      : 'El patrón es inválido.',
         msgMinLength    : 'El campo inferior a los 2 caracteres permitidos.',
         msgMaxLength    : 'El campo superior a los 200 caracteres permitidos.'
@@ -274,11 +274,16 @@
         />
 
         <Input
-            shapeInput  = {{...patternMssgShape, disabled: !shapeInput.pattern, required: ( shapeInput.pattern?.length ?? 0) > 0 }}
+            shapeInput  = {{...patternMssgShape,
+                disabled: !shapeInput.pattern,
+                required: ( shapeInput.pattern?.length ?? 0 ) > 0
+            }}
             onInput     = {( value ) => shapeInput.msgPattern = value }
             value       = { shapeInput.msgPattern }
             setError    = { () => patternMssgShape.valid = errorInput(
-                { ...patternMssgShape, required: ( shapeInput.pattern?.length ?? 0)  > 0 },
+                { ...patternMssgShape,
+                    required: ( shapeInput.pattern?.length ?? 0 ) > 0
+                },
                 shapeInput.msgPattern
             )}
         />
@@ -299,8 +304,10 @@
         }}
         onInput     = {( value ) => shapeInput.msgMin = value }
         value       = { shapeInput.msgMin }
-        setError    = { () => minMssgShape.valid = errorInput({
-            ...minMssgShape, required: ( shapeInput.min ?? 0 ) > 0 },
+        setError    = { () => minMssgShape.valid = errorInput(
+            { ...minMssgShape,
+                required: ( shapeInput.min ?? 0 ) > 0
+            },
             shapeInput.msgMin
         )}
     />
@@ -320,7 +327,9 @@
         onInput     = {( value ) => shapeInput.msgMax = value }
         value       = { shapeInput.msgMax }
         setError    = { () => maxMssgShape.valid = errorInput(
-            { ...maxMssgShape, required: ( shapeInput.max ?? 0 ) > 0 },
+            { ...maxMssgShape,
+                required: ( shapeInput.max ?? 0 ) > 0
+            },
             shapeInput.msgMax
         )}
     />
