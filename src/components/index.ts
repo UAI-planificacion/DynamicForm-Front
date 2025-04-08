@@ -29,6 +29,7 @@ export { default as JsonViewer }    from './Preview/JsonViewer.svelte';
 // MarkdownEditor
 export { default as DynamicTable } 		from './markdown/DynamicTable.svelte';
 export { default as MarkdownEditor }	from './markdown/MarkdownEditor.svelte';
+export { default as marked }            from './markdown/marked.config';
 
 // MicrosoftAuth
 export { default as MicrosoftAuth } from './Auth/microsoftAuth.svelte';

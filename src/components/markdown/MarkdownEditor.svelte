@@ -19,10 +19,10 @@
 		Heading3MarkIcon,
 		Heading4MarkIcon,
 		HeadingMarkIcon
-	} 								from "$icons/markdown";
-	import { DynamicTable, Info }	from "$components";
-	import type { InputStyle, ShapeInput } 		from "$models";
-	import marked 					from './marked.config';
+	} 								        from "$icons/markdown";
+	import { DynamicTable, Info } 		    from "$components";
+	import type { InputStyle, ShapeInput } 	from "$models";
+	import marked 						    from './marked.config';
     import { styles } from "$lib";
 
 	export let shapeInput	: ShapeInput;
@@ -441,7 +441,7 @@
                 Previsualización
             </div>
             <div class="p-4">
-                {@html marked( shapeInput!.value! )}
+                {@html marked( value ?? '' )}
             </div>
         </div>
     {/if}
