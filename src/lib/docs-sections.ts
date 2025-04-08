@@ -1,7 +1,5 @@
-import type { DocSection } from "$models/docs";
-
-import { FLUJOS } from "$lib";
-
+import type { DocSection }  from "$models/docs";
+import { FLUJOS }           from "$lib/docs/flujos";
 
 export const docSections: DocSection[] = [
     {
@@ -59,4 +57,5 @@ export const docSections: DocSection[] = [
                 component: FLUJOS
             }
         ]
-    }];
+    }
+];

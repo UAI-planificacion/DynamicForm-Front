@@ -11,6 +11,3 @@ export * from './button-template';
 export * from './clean-shape-input';
 export * from './string-to-time';
 export * from './docs-sections';
-
-// Docs
-export * from './docs/flujos';
