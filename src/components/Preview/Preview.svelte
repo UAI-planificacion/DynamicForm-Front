@@ -387,7 +387,7 @@
 					onInput		= {( value: string ) => handleInput( value, shapeInput.name )}
 					value		= { formValues[ shapeInput.name ]}
 					setError	= {() => shapeInput.valid = errorTextArea( shapeInput, formValues[ shapeInput.name ])}
-					dynamicMode={ dynamicMode }
+					dynamicMode = { dynamicMode }
 				/>
             <!-- Digital Time -->
             {:else if shapeInput.shape === 'timer' && !shapeInput.time?.isAnalogic }
