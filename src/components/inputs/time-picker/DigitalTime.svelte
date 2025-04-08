@@ -17,7 +17,7 @@
     export let onTimerInput : ( value: string ) => void;
     export let setError     : VoidFunction = () => {};
 
-
+    let firstRender = true;
     let open = false;
     let [selectedHour, selectedMinute] = value 
         ? [value.hour, value.minute]
@@ -26,7 +26,7 @@
     let searchMinute    = '';
 
     $: if (selectedHour === undefined || selectedMinute === undefined) {
-        setError();
+        if ( !firstRender ) setError();
     }
 
     function clearSearch() {
@@ -80,7 +80,6 @@
     function onTimerInputHandler(closeAfterSelection = false) {
         if (closeAfterSelection) open = false;
         const timeValue = `${padStart( selectedHour )}:${padStart( selectedMinute )}`;
-        // Don't modify shapeInput.timeValue directly, let the parent handle it
         return timeValue;
     }
 
@@ -89,6 +88,8 @@
         type: 'hour' | 'minute', 
         value: number
     ): void {
+        firstRender = false;
+
         if (type === 'hour') {
             selectedHour = selectedHour === value ? undefined : value;
             onTimerInput( onTimerInputHandler(false) );
@@ -158,7 +159,7 @@
                                 shape       : 'input',
                                 class_      : (styles.digital as InputStyle ).input
                             }}
-                            onInput     = {( e ) => searchHour = ( e.target as HTMLInputElement ).value }
+                            onInput     = {( value ) => searchHour = value }
                         />
 
                         <div 
@@ -192,7 +193,7 @@
                                     class_      : (styles.digital as InputStyle ).input
                                 }
                             }
-                            onInput={(e) => searchMinute = (e.target as HTMLInputElement).value}
+                            onInput={( value ) => searchMinute = value }
                         />
                         <div 
                             class="mt-1 h-52 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
