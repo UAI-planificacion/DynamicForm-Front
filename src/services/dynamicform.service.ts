@@ -1,7 +1,8 @@
 import
     connectRequest,
-    { isApiError, type ApiError }  from './fetch';
-import { METHOD }   from '$lib';
+    { isApiError, type ApiError }   from './fetch';
+import { METHOD }                   from '$lib';
+import type { DynamicForm }         from '$models';
 
 
 export class DynamicFormService {
@@ -15,11 +16,9 @@ export class DynamicFormService {
         return connectRequest({ id, method: METHOD.GET });
     }
 
-
-    async create( body: object ) {
-        return connectRequest({ method: METHOD.POST, body });
+    async create( body: object ): Promise<DynamicForm | ApiError> {
+        return await connectRequest<DynamicForm | ApiError>({ method: METHOD.POST, body });
     }
-
 
     async update( id: string, body: object ) {
         return connectRequest({ id, method: METHOD.PUT, body });
