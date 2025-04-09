@@ -236,9 +236,10 @@
 
 
     let countSend = 0;
-    let isValid = false;
+    export let isValid = false;
     let isInput = true;
     let isSelectionValid = true;
+    let isButtonValid = true;
 
     $: if ( countSend ) {
         nameShape.valid         = errorInput( nameShape, shapeInput.name );
@@ -257,7 +258,8 @@
             && virtualShape.valid
             && typeShape.valid
             && isInput
-            && isSelectionValid;
+            && isSelectionValid
+            && isButtonValid;
         // if ( isInput || isSelectionValid && countSend > 0 ) {
         //     countSend = 0;
         //     editing = false;
@@ -464,7 +466,11 @@
                     { countSend }
                 />
             {:else if shapeInput.shape === 'button'}
-                <ButtonRequired bind:shapeInput={ shapeInput } />
+                <ButtonRequired
+                    bind:shapeInput={ shapeInput }
+                    bind:isButtonValid={ isButtonValid }
+                    { countSend }
+                />
             {/if}
 
             <Accordion.Root class="w-full" type="single">
@@ -531,7 +537,11 @@
                                 />
                             </div>
 						{:else if shapeInput.shape === 'button' }
-                            <ButtonValidations bind:shapeInput={ shapeInput } />
+                            <ButtonValidations
+                                bind:shapeInput     = { shapeInput }
+                                bind:isButtonValid  = { isButtonValid }
+                                { countSend }
+                            />
                         {/if}
 
                         {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' }
