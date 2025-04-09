@@ -10,4 +10,4 @@ export * from './apis';
 export * from './button-template';
 export * from './clean-shape-input';
 export * from './string-to-time';
-export * from './docs-sections';
+export * from './docs/docs-sections';
