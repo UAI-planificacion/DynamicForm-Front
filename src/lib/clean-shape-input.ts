@@ -15,7 +15,7 @@ export const startClean = ( dynamicForm: DynamicForm ): DynamicForm => ({
             case 'select'       : return cleanSelect( shapeInput );
             case 'datepicker'   : return cleanDate( shapeInput );
             case 'timer'        : return cleanTime( shapeInput );
-            case 'button'       : return shapeInput;
+            case 'button'       : return clearButton( shapeInput );
             default             : throw new Error( `Shape ${shapeInput.shape} not found` );
         }
     })
@@ -37,7 +37,23 @@ const basicClean = ( shapeInput: ShapeInput ) => ({
 });
 
 
-export function cleanInput( shapeInput: ShapeInput ) {
+const clearButton = ( shapeInput: ShapeInput ) => ({
+    id                  : shapeInput.id,
+    name                : shapeInput.name,
+    shape               : shapeInput.shape,
+    valid               : true,
+    label               : shapeInput.label,
+    httpList            : shapeInput.httpList,
+    externalErrorMsg    : shapeInput.externalErrorMsg,
+    invalidErrorMsg     : shapeInput.invalidErrorMsg,
+    urlSend             : shapeInput.urlSend,
+    method              : shapeInput.method,
+    buttonClass         : shapeInput.buttonClass ?? styles.button as string,
+    ...( shapeInput.description  && { description: shapeInput.description }),
+});
+
+
+function cleanInput( shapeInput: ShapeInput ) {
     let min             : number | undefined;
     let max             : number | undefined;
     let minLength       : number | undefined;
