@@ -144,14 +144,14 @@
 
 
     function validateForm(): boolean {
-        const allValid = isValidList.every(valid => valid === true);
+        const allValid = isValidList.every( valid => valid === true );
 
         if ( !allValid ) {
-            toast.error("Algunos datos son inválidos, por favor revise los campos", errorToast());
+            toast.error( "El formulario es inválido, por favor revise el editor", errorToast() );
             return false;
         }
 
-        if ( dynamicForm.name === '' || dynamicForm.name === undefined || dynamicForm.name === null ) {
+        if ( !dynamicForm.name ) {
             toast.error( "El nombre del formulario es requerido.", errorToast() )
             formName.valid = false;
             return false;
@@ -171,6 +171,8 @@
 
         isLoading           = true;
         formName.disabled   = true;
+        dynamicForm.name    = dynamicForm.name.trim();
+
         return true;
     }
 
