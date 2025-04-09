@@ -86,18 +86,31 @@
 		dynamicForm.details = [ ...env.detail.items ];
 
 
-	const addItem = () => dynamicForm.details = [
+	const addItem = () => {
+        isValidList.push( false );
+
+        return dynamicForm.details = [
 		{
 			id		: uuid(),
 			name 	: '',
 			shape	: 'none',
 		}, ...dynamicForm.details,
 	];
+}
 
 
-	const deleteItem = ( id: string ) => dynamicForm.details = [
-		...dynamicForm.details.filter( temp => temp.id !== id ) ?? []
-	];
+	const deleteItem = ( id: string ) => {
+		const indexToDelete = dynamicForm.details.findIndex(temp => temp.id === id);
+
+		dynamicForm.details = [
+			...dynamicForm.details.filter(temp => temp.id !== id) ?? []
+		];
+
+		if (indexToDelete !== -1) {
+			isValidList.splice(indexToDelete, 1);
+			isValidList = [...isValidList];
+		}
+	};
 
 
 	$: if ( !$dynamicMode ) inputActive = 0;
@@ -131,6 +144,13 @@
 
 
     function validateForm(): boolean {
+        const allValid = isValidList.every(valid => valid === true);
+
+        if ( !allValid ) {
+            toast.error("Algunos datos son inválidos, por favor revise los campos", errorToast());
+            return false;
+        }
+
         if ( dynamicForm.name === '' || dynamicForm.name === undefined || dynamicForm.name === null ) {
             toast.error( "El nombre del formulario es requerido.", errorToast() )
             formName.valid = false;
@@ -171,7 +191,7 @@
             }
         ).then( async res => {
             if ( !res.ok ) {
-                toast.error( 'Failed to create dynamic form', errorToast() );
+                toast.error( 'Ocurrió un error al crear el formulario', errorToast() );
                 return null;
             }
 
@@ -188,7 +208,7 @@
         })
         .catch( err => {
             console.error( err );
-            toast.error( 'Failed to create dynamic form', errorToast() );
+            toast.error( '', errorToast() );
         })
         .finally( enableAll );
     }
@@ -239,7 +259,7 @@
             toast.success( "Formulario eliminado correctamente", successToast() );
         }).catch( err => {
             console.error( err );
-            toast.error( 'Failed to delete dynamic form', errorToast() );
+            toast.error( 'Ocurrió un error al eliminar el formulario', errorToast() );
         })
         .finally( enableAll );
     }
@@ -284,6 +304,11 @@
         msgRequired : 'El campo es requerido.',
         valid       : true,
     }
+
+    let isValidList: boolean[] = [];
+
+    $: if ( dynamicForm.details )
+        isValidList = Array( dynamicForm.details.length ).fill( !( optionSelected === 'new' ));
 </script>
 
 
@@ -356,6 +381,7 @@
                                                     onDelete		= { () => deleteItem( item.id )}
                                                     inputActive 	= { () => inputActive = index + 1 }
                                                     inputDesactive	= { () => inputActive = 0 }
+                                                    bind:isValid	= { isValidList[index] }
                                                 />
                                             </div>
                                         </div>
