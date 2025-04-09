@@ -170,7 +170,7 @@
         name	    : 'label',
         placeholder : 'Ingrese la etiqueta',
         value       : shapeInput.label,
-        required    : shapeInput.shape === 'check',
+        required    : shapeInput.shape === 'check' || shapeInput.shape === 'button',
         msgRequired : 'La etiqueta es requerida.',
         maxLength   : 50,
         msgMaxLength: 'Máximo 50 caracteres permitidos.',
@@ -243,7 +243,7 @@
 
     $: if ( countSend ) {
         nameShape.valid         = errorInput( nameShape, shapeInput.name );
-        labelShape.valid        = errorInput( { ...labelShape, required: shapeInput.shape === 'check' }, shapeInput.label );
+        labelShape.valid        = errorInput( { ...labelShape, required: shapeInput.shape === 'check' || shapeInput.shape === 'button' }, shapeInput.label );
         placeholderShape.valid  = errorInput( placeholderShape, shapeInput.placeholder );
         rowsShape.valid         = errorInput( rowsShape, shapeInput.rows?.toString() );
         requiredMssg.valid      = errorInput( {...requiredMssg, required: shapeInput.required }, shapeInput.msgRequired );
@@ -279,7 +279,7 @@
         />
     {:else}
         <section class="space-y-2">
-            <div class="grid grid-cols-1 @lg:grid-cols-2 items-start gap-2">
+            <div class={`grid grid-cols-1 ${ shapeInput.shape !== 'button' ? '@lg:grid-cols-2' : '' } items-start gap-2`}>
 				{#if shapeInput.shape !== 'button'}
                     <VirtualSelect
                         shapeInput = {{ ...virtualShape, selected: shapeInput.shape }}
@@ -289,20 +289,20 @@
                             virtualShape.valid = errorSelect( virtualShape, shapeInput.shape );
                         }}
                     />
+
+                    <Input
+                        shapeInput  = {{ ...nameShape, value: shapeInput.name }}
+                        onInput     = {( value: string ) => shapeInput.name = value }
+                        value       = { shapeInput.name }
+                        setError    = { () => nameShape.valid = errorInput(nameShape, shapeInput.name) }
+                    />
 				{/if}
 
                 <Input
-                    shapeInput  = {{ ...nameShape, value: shapeInput.name }}
-                    onInput     = {( value: string ) => shapeInput.name = value }
-                    value       = { shapeInput.name }
-                    setError    = { () => nameShape.valid = errorInput(nameShape, shapeInput.name) }
-                />
-
-                <Input
-                    shapeInput  = {{ ...labelShape, value: shapeInput.label, required: shapeInput.shape === 'check' }}
+                    shapeInput  = {{ ...labelShape, value: shapeInput.label, required: shapeInput.shape === 'check' || shapeInput.shape === 'button' }}
                     onInput     = {( value: string ) => shapeInput.label = value }
                     value       = { shapeInput.label }
-                    setError    = { () => labelShape.valid = errorInput( { ...labelShape, required: shapeInput.shape === 'check' }, shapeInput.label )}
+                    setError    = { () => labelShape.valid = errorInput( { ...labelShape, required: shapeInput.shape === 'check' || shapeInput.shape === 'button' }, shapeInput.label )}
                 />
 
                 {#if shapeInput.shape === 'input' || shapeInput.shape === 'select' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' || shapeInput.shape === 'none'}
@@ -467,8 +467,8 @@
                 />
             {:else if shapeInput.shape === 'button'}
                 <ButtonRequired
-                    bind:shapeInput={ shapeInput }
-                    bind:isButtonValid={ isButtonValid }
+                    bind:shapeInput     = { shapeInput }
+                    bind:isButtonValid  = { isButtonValid }
                     { countSend }
                 />
             {/if}
