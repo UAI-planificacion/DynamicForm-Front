@@ -167,7 +167,7 @@
             in:fly  = {{ y: -20, duration: 300 }}
             out:fly = {{ y: 20, duration: 300 }}
         >
-            <div class="max-w-4xl mx-auto">
+            <div class="max-w-[75rem] mx-auto">
                 <div class="mb-8">
                     {#if getActiveComponent()}
                         <!-- <svelte:component this={getActiveComponent()} /> -->
