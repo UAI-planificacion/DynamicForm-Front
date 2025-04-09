@@ -1,7 +1,6 @@
 import { v4 as uuid }	from 'uuid';
 
 import type { ShapeInput }  from "$models";
-import { METHOD }           from "./http-codes";
 
 
 export const buttonTemplate: ShapeInput = {
@@ -9,7 +8,7 @@ export const buttonTemplate: ShapeInput = {
     shape     		    : "button",
     name      		    : "Send",
     label     		    : "Enviar formulario",
-    method    		    : METHOD.GET,
+    method    		    : undefined,
     externalErrorMsg	: "Error de conexión",
     invalidErrorMsg	    : "Formulario inválido",
     httpList 			: [
