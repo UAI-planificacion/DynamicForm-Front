@@ -6,7 +6,7 @@ import type { ShapeInput }  from "$models";
 export const buttonTemplate: ShapeInput = {
     id        		    : uuid(),
     shape     		    : "button",
-    name      		    : "Send",
+    name      		    : "send",
     label     		    : "Enviar formulario",
     method    		    : undefined,
     externalErrorMsg	: "Error de conexión",
