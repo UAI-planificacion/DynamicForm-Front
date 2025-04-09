@@ -1,5 +1,9 @@
 import type { DocSection }  from "$models/docs";
 import { FLUJOS }           from "$lib/docs/flujos";
+import { INTRODUCCION }     from "$lib/docs/first-step/introduction";
+import { FIRST_FORM }       from "$lib/docs/first-step/first-form";
+import { INPUT_SHAPE }      from "$lib/docs/shape-inputs/input";
+
 
 export const docSections: DocSection[] = [
     {
@@ -10,7 +14,7 @@ export const docSections: DocSection[] = [
             {
                 id: 'introduction',
                 title: 'Introducción',
-                component: FLUJOS
+                component: INTRODUCCION
             },
             {
                 id: 'installation',
@@ -20,19 +24,19 @@ export const docSections: DocSection[] = [
             {
                 id: 'first-form',
                 title: 'Tu primer formulario',
-                component: FLUJOS
+                component: FIRST_FORM
             }
         ]
     },
     {
-        id: 'features',
-        title: 'Características',
+        id: 'shapes',
+        title: 'Formulario',
         icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
         items: [
             {
-                id: 'form-builder',
-                title: 'Constructor de formularios',
-                component: FLUJOS
+                id: 'input',
+                title: 'Input',
+                component: INPUT_SHAPE
             },
             {
                 id: 'data-analysis',
