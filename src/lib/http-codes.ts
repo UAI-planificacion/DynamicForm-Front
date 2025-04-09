@@ -27,10 +27,10 @@ export const httpCodes: ShapeOption[] = [
 
 
 export const methods: ShapeOption[] = [
-	{ id: '1', value: 'get', 	label: 'GET' },
-	{ id: '2', value: 'post', 	label: 'POST' },
-	{ id: '3', value: 'put', 	label: 'PUT' },
-	{ id: '5', value: 'patch', 	label: 'PATCH' }
+	{ id: '1', value: 'GET', 	label: 'GET' },
+	{ id: '2', value: 'POST', 	label: 'POST' },
+	{ id: '3', value: 'PUT', 	label: 'PUT' },
+	{ id: '5', value: 'PATCH', 	label: 'PATCH' }
 ];
 
 
