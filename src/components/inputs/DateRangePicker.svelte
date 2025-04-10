@@ -138,9 +138,9 @@
 
         <DateRangePicker.Content
             sideOffset  = { 6 }
-            class       ="z-50"
-            align       = "end"
-            alignOffset = { 0 }
+            class       = "z-50 daterangepicker-popup"
+            align       = "start"
+            side        = "bottom"
         >
             <DateRangePicker.Calendar
                 class= { shapeInput.contentDateClass ?? `${( styles.datepicker as InputStyle ).content }` }
@@ -208,3 +208,13 @@
         <Description {shapeInput} date={value} />
     </div>
 </DateRangePicker.Root>
+
+<style>
+    :global(.daterangepicker-popup) {
+        position: fixed !important;
+        transform-origin: var(--radix-popper-transform-origin) !important;
+        margin-left: -265px !important;
+        margin-right: 0 !important;
+        transform: translateY(0) !important;
+    }
+</style>
