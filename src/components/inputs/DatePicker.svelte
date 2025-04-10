@@ -102,9 +102,9 @@
 
         <DatePicker.Content
             sideOffset  = { 6 }
-            class       = "z-50"
-            align       = "end"
-            alignOffset = { 0 }
+            class       = "z-50 datepicker-popup"
+            align       = "start"
+            side        = "bottom"
         >
             <DatePicker.Calendar
                 class= { shapeInput.contentDateClass ?? `${( styles.datepicker as InputStyle ).content }` }
@@ -165,3 +165,13 @@
         <Description {shapeInput} date={value} />
     </div>
 </DatePicker.Root>
+
+<style>
+    :global(.datepicker-popup) {
+        position: fixed !important;
+        transform-origin: var(--radix-popper-transform-origin) !important;
+        margin-left: -265px !important;
+        margin-right: 0 !important;
+        transform: translateY(0) !important;
+    }
+</style>
