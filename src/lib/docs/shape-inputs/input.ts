@@ -13,66 +13,40 @@ El componente Input en DynamicForm proporciona las siguientes funcionalidades:
 - **Estados especiales**: deshabilitado, solo lectura.
 - **Valores por defecto**: configurables para inicializar el campo.
 
+![Input form](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744236399/UAI/dynamic-form/input_form_ln7iji.gif)
+
 ## Configuración básica
 
 Para crear un campo de entrada básico, necesitas configurar al menos estas propiedades:
 
-- **name**: Identificador único del campo (requerido)
-- **shape**: Debe ser 'input' para este tipo de componente
-- **type**: El tipo de entrada (text, number, email, etc.)
-- **label**: Texto descriptivo que se mostrará junto al campo
-
-## Ejemplo de configuración básica
-
-\`\`\`javascript
-const inputBasico = {
-  id: "email-field-id",
-  name: "email",
-  shape: "input",
-  label: "Correo electrónico",
-  type: "email",
-  placeholder: "Ingresa tu correo electrónico"
-};
-\`\`\`
-
-## Propiedades disponibles
-
-### Propiedades generales
 
 | Propiedad | Tipo | Descripción |
 |-----------|------|-------------|
-| id | string | Identificador único del campo |
-| name | string | Nombre del campo (usado para identificar el valor en el formulario) |
-| shape | 'input' | Tipo de componente |
-| label | string | Etiqueta descriptiva del campo |
-| description | string | Texto adicional para describir el propósito del campo |
-| placeholder | string | Texto de ejemplo que aparece cuando el campo está vacío |
-| value | string | Valor inicial del campo |
-| disabled | boolean | Si está habilitado, el campo no puede ser modificado |
-| readonly | boolean | Si está habilitado, el campo puede ser seleccionado pero no modificado |
-
-### Propiedades de tipo
-
-| Propiedad | Tipo | Descripción |
-|-----------|------|-------------|
-| type | 'text' \| 'number' \| 'password' \| 'email' \| 'url' \| 'tel' \| 'search' | Tipo de entrada |
+| Nombre | texto | Nombre del campo (usado para identificar el valor en el formulario) |
+| Input | seleccionable | Tipo de componente |
+| Etiqueta | texto | Etiqueta descriptiva del campo |
+| Descripción | texto | Texto adicional para describir el propósito del campo |
+| Placeholder | texto | Texto de ejemplo que aparece cuando el campo está vacío |
+| Valor por defecto | texto | Valor inicial del campo |
+| Deshabilitado | ticket | Si está habilitado, el campo no puede ser modificado |
+| Solo lectura | ticket | Si está habilitado, el campo puede ser seleccionado pero no modificado |
 
 ### Propiedades de validación
 
 | Propiedad | Tipo | Descripción |
 |-----------|------|-------------|
-| required | boolean | Si el campo es obligatorio |
-| msgRequired | string | Mensaje de error cuando el campo es requerido pero está vacío |
-| pattern | string | Expresión regular para validar el formato del valor |
-| msgPattern | string | Mensaje de error cuando el valor no cumple con el patrón |
-| minLength | number | Longitud mínima del texto (para tipos text, email, etc.) |
-| maxLength | number | Longitud máxima del texto |
-| msgMinLength | string | Mensaje de error cuando el texto es demasiado corto |
-| msgMaxLength | string | Mensaje de error cuando el texto es demasiado largo |
-| min | number | Valor mínimo (para tipo number) |
-| max | number | Valor máximo (para tipo number) |
-| msgMin | string | Mensaje de error cuando el valor es menor que el mínimo |
-| msgMax | string | Mensaje de error cuando el valor es mayor que el máximo |
+| Requerido | ticket | Si el campo es obligatorio |
+| Mensaje Requerido | texto | Mensaje de error cuando el campo es requerido pero está vacío |
+| Patrón | string | Expresión regular para validar el formato del valor |
+| Mensaje Patrón | texto | Mensaje de error cuando el valor no cumple con el patrón |
+| Longitud Mínima | número | Longitud mínima del texto (para tipos text, email, etc.) |
+| Longitud Máxima | número | Longitud máxima del texto |
+| Mensaje Longitud Mínima | texto | Mensaje de error cuando el texto es demasiado corto |
+| Mensaje Longitud Máxima | texto | Mensaje de error cuando el texto es demasiado largo |
+| Valor Mínimo | número | Valor mínimo (Solo para el tipo número) |
+| Valor Máximo | número | Valor máximo (Solo para el tipo número) |
+| Mensaje Valor Mínimo | texto | Mensaje de error cuando el valor es menor que el mínimo |
+| Mensaje Valor Máximo | texto | Mensaje de error cuando el valor es mayor que el máximo |
 
 ### Propiedades de estilo
 
@@ -109,6 +83,14 @@ En la vista previa del formulario, el componente Input:
 2. Aplica validaciones en tiempo real mientras el usuario interactúa con el campo.
 3. Muestra mensajes de error cuando no se cumplen las validaciones.
 4. Recopila y almacena el valor ingresado para ser enviado con el formulario.
+
+
+## Estilos con Tailwind
+
+![Input form styles](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744238908/UAI/dynamic-form/ab0077b8-42e3-448c-9ab3-f7a6196a5e1a.png)
+Para poder personalizar el estilo del componente Input, puedes usar las propiedades de tailwind para personalizar el campo de entrada.
+
+
 
 ## Ejemplo de uso completo
 
