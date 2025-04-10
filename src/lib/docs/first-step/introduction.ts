@@ -45,6 +45,8 @@ DynamicForm está construido con tecnologías modernas que permiten una experien
 
 Tailwind CSS es un framework de CSS basado en utilidades que permite construir diseños personalizados sin salir del HTML. En DynamicForm, se utiliza Tailwind para estilizar los componentes y ofrecer opciones de personalización.
 
+Más información de [Tailwind CSS](https://tailwindcss.com/)
+
 #### Cómo funciona en DynamicForm
 
 Cada componente de formulario ('ShapeInput') incluye propiedades específicas para personalizar su apariencia mediante clases de Tailwind. Por ejemplo:
