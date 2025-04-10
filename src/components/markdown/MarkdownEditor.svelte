@@ -26,7 +26,7 @@
     import { styles } from "$lib";
 
 	export let shapeInput	: ShapeInput;
-	export let value 		: string | undefined = undefined;
+	export let value 		: string | undefined = '';
     export let onInput		: ( value: string ) => void;
     export let setError     : VoidFunction = () => {};
     export let dynamicMode  : boolean = false;
@@ -47,7 +47,7 @@
 		textarea.style.height = textarea.scrollHeight + 'px';
 	}
 
-	$: if ( shapeInput!.value !== undefined ) {
+	$: if ( value !== undefined ) {
 		setTimeout( adjustTextareaHeight, 0 );
 	}
 
@@ -60,11 +60,11 @@
 
 
 	function insertText( before: string, after: string = '', selectedText: string | null = null ): void {
-		if ( textarea && shapeInput!.value !== undefined ) {
+		if ( textarea && value !== undefined ) {
 			const newStart 		= selectionStart + before.length;
-			const textToInsert 	= selectedText !== null ? selectedText : shapeInput!.value?.substring( selectionStart, selectionEnd );
+			const textToInsert 	= selectedText !== null ? selectedText : value?.substring( selectionStart, selectionEnd );
 
-			shapeInput!.value = shapeInput!.value?.substring( 0, selectionStart ) + before + textToInsert + after + shapeInput!.value?.substring( selectionEnd );
+			value = value?.substring( 0, selectionStart ) + before + textToInsert + after + value?.substring( selectionEnd );
 
 			setTimeout(() => {
 				textarea?.focus();
@@ -89,8 +89,9 @@
 			const [, indent, marker, , content] = checkboxMatch;
 
 			if ( !content.trim() ) {
-				const lineStart = shapeInput!.value!.lastIndexOf( '\n', selectionStart - 1 ) + 1;
-				shapeInput!.value = shapeInput!.value!.substring( 0, lineStart ) + shapeInput!.value?.substring( selectionStart );
+                if ( !value ) return;
+				const lineStart = value!.lastIndexOf( '\n', selectionStart - 1 ) + 1;
+				value = value?.substring( 0, lineStart ) + value?.substring( selectionStart );
 
 				return;
 			}
@@ -104,8 +105,9 @@
 			const [, indent, marker, , content] = listMatch;
 
 			if ( !content.trim() ) {
-				const lineStart = shapeInput!.value!.lastIndexOf( '\n', selectionStart - 1 ) + 1;
-				shapeInput!.value = shapeInput!.value!.substring( 0, lineStart ) + shapeInput!.value?.substring( selectionStart );
+                if ( !value ) return;
+				const lineStart = value!.lastIndexOf( '\n', selectionStart - 1 ) + 1;
+				value = value?.substring( 0, lineStart ) + value?.substring( selectionStart );
 				return;
 			}
 
@@ -124,9 +126,10 @@
 
 
 	function getCurrentLine(): string {
-		const lineStart = shapeInput!.value!.lastIndexOf( '\n', selectionStart - 1 ) + 1;
-		const lineEnd 	= shapeInput!.value!.indexOf( '\n', selectionStart );
-		return shapeInput!.value!.substring( lineStart, lineEnd === -1 ? shapeInput!.value!.length : lineEnd );
+		if ( !value ) return '';
+		const lineStart = value.lastIndexOf( '\n', selectionStart - 1 ) + 1;
+		const lineEnd 	= value.indexOf( '\n', selectionStart );
+		return value.substring( lineStart, lineEnd === -1 ? value.length : lineEnd );
 	}
 
 
@@ -248,10 +251,7 @@
 
             <!-- Desktop view -->
             <div class="hidden flex-wrap {updateGridButtonsDesktop()}">
-                <!-- closeOnItemClick={true} -->
-                <!-- closeFocus={textarea} -->
-                <DropdownMenu.Root
-                >
+                <DropdownMenu.Root>
                     <DropdownMenu.Trigger
                         class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
                     >
@@ -260,11 +260,23 @@
                     <DropdownMenu.Content
                         class="w-12 rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
                         sideOffset={8}
+                        trapFocus={true}
+                        onCloseAutoFocus={(e) => {
+                            e.preventDefault();
+                            setTimeout(() => {
+                                if (textarea) textarea.focus();
+                            }, 50);
+                        }}
                     >
                         {#each headingTools as tool}
                             <DropdownMenu.Item
                                 class="flex h-10 hover:rounded-lg select-none items-center rounded-button py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700"
-                                onclick={tool.action}
+                                onSelect={() => {
+                                    tool.action();
+                                    setTimeout(() => {
+                                        textarea?.focus();
+                                    }, 50);
+                                }}
                             >
                                 <div class="flex items-center gap-2">
                                     <tool.icon />
@@ -286,8 +298,6 @@
                     </button>
                 {/each}
 
-                <!-- closeOnItemClick    = { true } -->
-                <!-- closeFocus          = { textarea } -->
                 <DropdownMenu.Root 
                     bind:open           = { desktopTableOpen }
                 >
@@ -300,11 +310,21 @@
                     <DropdownMenu.Content
                         class       = "rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
                         sideOffset  = { 8 }
+                        trapFocus   = { true }
+                        onCloseAutoFocus={(e) => {
+                            e.preventDefault();
+                            setTimeout(() => {
+                                if (textarea) textarea.focus();
+                            }, 50);
+                        }}
                     >
                         <DynamicTable
                             onTableGenerated={( table ) => {
                                 insertText( table );
                                 desktopTableOpen = false;
+                                setTimeout(() => {
+                                    if (textarea) textarea.focus();
+                                }, 50);
                             }}
                         />
                     </DropdownMenu.Content>
@@ -312,8 +332,6 @@
             </div>
 
             <!-- Mobile menu -->
-            <!-- closeOnItemClick={true} -->
-            <!-- closeFocus={textarea} -->
             <DropdownMenu.Root 
                 bind:open={mobileMenuOpen}
             >
@@ -327,6 +345,13 @@
                 <DropdownMenu.Content
                     class="w-full max-w-[229px] rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
                     sideOffset={8}
+                    trapFocus   = { true }
+                    onCloseAutoFocus={(e) => {
+                        e.preventDefault();
+                        setTimeout(() => {
+                            if (textarea) textarea.focus();
+                        }, 50);
+                    }}
                 >
                     <DropdownMenu.Sub>
                         <DropdownMenu.SubTrigger
@@ -413,7 +438,7 @@
             required 	= { shapeInput.required }
             minlength   = { shapeInput.minLength }
             maxlength   = { shapeInput.maxLength }
-            rows        = { shapeInput.rows }
+            rows        = { value?.split('\n').length || 3 }
             on:select	= { updateSelection }
             on:keyup	= { updateSelection }
             on:click	= { updateSelection }
