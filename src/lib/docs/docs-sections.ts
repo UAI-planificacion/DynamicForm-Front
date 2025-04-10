@@ -3,6 +3,9 @@ import { FLUJOS }           from "$lib/docs/flujos";
 import { INTRODUCCION }     from "$lib/docs/first-step/introduction";
 import { FIRST_FORM }       from "$lib/docs/first-step/first-form";
 import { INPUT_SHAPE }      from "$lib/docs/shape-inputs/input";
+import { CHECKBOX_SHAPE }   from "$lib/docs/shape-inputs/checkbox";
+import { SELECT_SHAPE }     from "$lib/docs/shape-inputs/select";
+import { TEXTAREA_SHAPE }   from "$lib/docs/shape-inputs/textarea";
 
 
 export const docSections: DocSection[] = [
@@ -15,11 +18,6 @@ export const docSections: DocSection[] = [
                 id: 'introduction',
                 title: 'Introducción',
                 component: INTRODUCCION
-            },
-            {
-                id: 'installation',
-                title: 'Instalación',
-                component: FLUJOS
             },
             {
                 id: 'first-form',
@@ -39,9 +37,19 @@ export const docSections: DocSection[] = [
                 component: INPUT_SHAPE
             },
             {
-                id: 'data-analysis',
-                title: 'Análisis de datos',
-                component: FLUJOS
+                id: 'checkbox',
+                title: 'Checkbox',
+                component: CHECKBOX_SHAPE
+            },
+            {
+                id: 'select',
+                title: 'Selector',
+                component: SELECT_SHAPE
+            },
+            {
+                id: 'textarea',
+                title: 'Área de Texto',
+                component: TEXTAREA_SHAPE
             }
         ]
     },
