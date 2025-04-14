@@ -6,6 +6,7 @@ export { default as Footer }        from './Footer.svelte';
 export { default as Header }        from './Header.svelte';
 export { default as ToggleTheme }   from './ToggleTheme.svelte';
 export { default as ButtonUI }      from './ButtonUI.svelte';
+export { default as DropdownMenu }  from './ui/DropdownMenu.svelte';
 
 //Inputs
 export { default as Button }        from './inputs/Button.svelte';

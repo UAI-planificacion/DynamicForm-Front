@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Separator, DropdownMenu } from "bits-ui";
+	import { Separator } from "bits-ui";
 
 	import {
 		BoldMarkIcon,
@@ -18,12 +18,12 @@
 		Heading2MarkIcon,
 		Heading3MarkIcon,
 		Heading4MarkIcon,
-		HeadingMarkIcon
-	} 								        from "$icons/markdown";
-	import { DynamicTable, Info } 		    from "$components";
-	import type { InputStyle, ShapeInput } 	from "$models";
-	import marked 						    from './marked.config';
-    import { styles } from "$lib";
+		HeadingMarkIcon,
+	} 								            from "$icons/markdown";
+    import { DynamicTable, Info, DropdownMenu } from "$components";
+	import type { InputStyle, ShapeInput }      from "$models";
+	import marked 						        from './marked.config';
+    import { styles }                           from "$lib";
 
 	export let shapeInput	: ShapeInput;
 	export let value 		: string | undefined = '';
@@ -38,7 +38,9 @@
 	// Menus
 	let mobileMenuOpen 		= false;
 	let desktopTableOpen 	= false;
-
+	let desktopHeadingOpen  = false;
+	let mobileHeadingOpen   = false;
+	let mobileTableOpen     = false;
 
 	function adjustTextareaHeight() {
 		if ( !textarea ) return;
@@ -51,13 +53,11 @@
 		setTimeout( adjustTextareaHeight, 0 );
 	}
 
-
 	function updateSelection(): void {
 		if ( !textarea ) return;
 		selectionStart 	= textarea.selectionStart;
 		selectionEnd 	= textarea.selectionEnd;
 	}
-
 
 	function insertText( before: string, after: string = '', selectedText: string | null = null ): void {
 		if ( textarea && value !== undefined ) {
@@ -75,7 +75,6 @@
 			}, 0 );
 		}
 	}
-
 
 	function handleKeydown( event: KeyboardEvent ): void {
 		if ( event.key !== 'Enter' ) return;
@@ -124,14 +123,12 @@
 		}
 	}
 
-
 	function getCurrentLine(): string {
 		if ( !value ) return '';
 		const lineStart = value.lastIndexOf( '\n', selectionStart - 1 ) + 1;
 		const lineEnd 	= value.indexOf( '\n', selectionStart );
 		return value.substring( lineStart, lineEnd === -1 ? value.length : lineEnd );
 	}
-
 
 	const headingTools = [
 		{
@@ -214,14 +211,12 @@
         }
 	];
 
-
 	const updateGridClass = () =>
 		shapeInput.preview
 			? dynamicMode
 				? '@xl:grid-cols-2'
 				: 'sm:grid-cols-2'
 			: 'grid-cols-1';
-
 
 	const updateGridButtonsDesktop = () =>
 		shapeInput.preview
@@ -232,7 +227,6 @@
 				? 'hidden @xl:flex @xl:gap-0.5 @xl:ml-0.5 @2xl:ml-2 @2xl:gap-1'
 				: 'hidden xl:hidden ml-2';
 
-
 	const updateGridButtonsMobile = () =>
 		shapeInput.preview
 			? dynamicMode
@@ -241,8 +235,13 @@
 			: dynamicMode
 				? 'flex @xl:hidden ml-2'
 				: 'flex xl:hidden ml-2';
-</script>
 
+    function focusTextarea() {
+        setTimeout(() => {
+            if (textarea) textarea.focus();
+        }, 50);
+    }
+</script>
 
 <Info { shapeInput } { onInput } { value }>
 <div class="grid {updateGridClass()} bg-white dark:bg-zinc-700 rounded-lg shadow-lg overflow-hidden">
@@ -251,46 +250,51 @@
 
             <!-- Desktop view -->
             <div class="hidden flex-wrap {updateGridButtonsDesktop()}">
-                <DropdownMenu.Root>
-                    <DropdownMenu.Trigger
-                        class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
-                    >
-                        <HeadingMarkIcon />
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Content
-                        class="w-12 rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
-                        sideOffset={8}
-                        trapFocus={true}
-                        onCloseAutoFocus={(e) => {
-                            e.preventDefault();
-                            setTimeout(() => {
-                                if (textarea) textarea.focus();
-                            }, 50);
-                        }}
-                    >
+                <!-- Menú de títulos personalizado -->
+                <DropdownMenu 
+                    bind:open={desktopHeadingOpen}
+                    position="bottom"
+                    offset={8}
+                    contentClass="w-12 rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
+                    on:close={focusTextarea}
+                >
+                    <svelte:fragment slot="trigger">
+                        <button 
+                            type="button"
+                            class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
+                            aria-label="Menú de títulos"
+                        >
+                            <HeadingMarkIcon />
+                        </button>
+                    </svelte:fragment>
+                    
+                    <svelte:fragment slot="content">
                         {#each headingTools as tool}
-                            <DropdownMenu.Item
-                                class="flex h-10 hover:rounded-lg select-none items-center rounded-button py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700"
-                                onSelect={() => {
+                            <button
+                                type="button"
+                                class="flex h-10 w-full hover:rounded-lg select-none items-center rounded-button py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                                on:click={() => {
                                     tool.action();
-                                    setTimeout(() => {
-                                        textarea?.focus();
-                                    }, 50);
+                                    desktopHeadingOpen = false;
+                                    focusTextarea();
                                 }}
+                                aria-label={tool.title}
                             >
                                 <div class="flex items-center gap-2">
                                     <tool.icon />
                                 </div>
-                            </DropdownMenu.Item>
+                            </button>
                         {/each}
-                    </DropdownMenu.Content>
-                </DropdownMenu.Root>
+                    </svelte:fragment>
+                </DropdownMenu>
 
                 {#each tools as tool}
                     <button
+                        type="button"
                         on:click={tool.action}
                         class="p-2 hover:bg-zinc-700 rounded-lg transition-colors duration-200 text-gray-200 hover:text-gray-200 flex items-center justify-center min-w-[2.5rem] dark:hover:bg-zinc-600 dark:active:bg-zinc-700 active:scale-95"
                         title={tool.title}
+                        aria-label={tool.title}
                     >
                         <span class="text-sm font-medium dark:text-white">
                             <tool.icon />
@@ -298,134 +302,163 @@
                     </button>
                 {/each}
 
-                <DropdownMenu.Root 
-                    bind:open           = { desktopTableOpen }
+                <!-- Menú de tabla personalizado -->
+                <DropdownMenu 
+                    bind:open={desktopTableOpen}
+                    position="bottom"
+                    offset={8}
+                    contentClass="rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
+                    on:close={focusTextarea}
                 >
-                    <DropdownMenu.Trigger
-                        class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-700 dark:text-zinc-200"
-                    >
-                        <TableMarkIcon />
-                    </DropdownMenu.Trigger>
-
-                    <DropdownMenu.Content
-                        class       = "rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
-                        sideOffset  = { 8 }
-                        trapFocus   = { true }
-                        onCloseAutoFocus={(e) => {
-                            e.preventDefault();
-                            setTimeout(() => {
-                                if (textarea) textarea.focus();
-                            }, 50);
-                        }}
-                    >
+                    <svelte:fragment slot="trigger">
+                        <button 
+                            type="button"
+                            class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-700 dark:text-zinc-200"
+                            aria-label="Insertar tabla"
+                        >
+                            <TableMarkIcon />
+                        </button>
+                    </svelte:fragment>
+                    
+                    <svelte:fragment slot="content">
                         <DynamicTable
                             onTableGenerated={( table ) => {
                                 insertText( table );
                                 desktopTableOpen = false;
-                                setTimeout(() => {
-                                    if (textarea) textarea.focus();
-                                }, 50);
+                                focusTextarea();
                             }}
                         />
-                    </DropdownMenu.Content>
-                </DropdownMenu.Root>
+                    </svelte:fragment>
+                </DropdownMenu>
             </div>
 
-            <!-- Mobile menu -->
-            <DropdownMenu.Root 
+            <!-- Mobile menu personalizado -->
+            <DropdownMenu 
                 bind:open={mobileMenuOpen}
+                position="bottom"
+                offset={8}
+                contentClass="w-full max-w-[229px] rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
+                on:close={focusTextarea}
             >
-                <DropdownMenu.Trigger
-                    class="{updateGridButtonsMobile()} hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                    </svg>
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Content
-                    class="w-full max-w-[229px] rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
-                    sideOffset={8}
-                    trapFocus   = { true }
-                    onCloseAutoFocus={(e) => {
-                        e.preventDefault();
-                        setTimeout(() => {
-                            if (textarea) textarea.focus();
-                        }, 50);
-                    }}
-                >
-                    <DropdownMenu.Sub>
-                        <DropdownMenu.SubTrigger
-                            class="flex h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700 data-[state=open]:bg-zinc-700"
-                        >
-                            <div class="flex items-center gap-2">
-                                <HeadingMarkIcon />
-                                <span>Títulos</span>
-                            </div>
-                            <div class="ml-auto flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </div>
-                        </DropdownMenu.SubTrigger>
-
-                        <DropdownMenu.SubContent
-                            class=" rounded-lg w-28 bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-lg"
-                            sideOffset={10}
-                        >
+                <svelte:fragment slot="trigger">
+                    <button 
+                        type="button"
+                        class="{updateGridButtonsMobile()} hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
+                        aria-label="Abrir menú de herramientas"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </svelte:fragment>
+                
+                <svelte:fragment slot="content">
+                    <!-- Submenú de títulos -->
+                    <DropdownMenu 
+                        bind:open={mobileHeadingOpen}
+                        position="right"
+                        offset={10}
+                        contentClass="rounded-lg w-28 bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-lg"
+                        on:close={() => {}}
+                    >
+                        <svelte:fragment slot="trigger">
+                            <button
+                                type="button"
+                                class="flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                                aria-label="Menú de títulos"
+                            >
+                                <div class="flex items-center gap-2">
+                                    <HeadingMarkIcon />
+                                    <span>Títulos</span>
+                                </div>
+                                <div class="ml-auto flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </svelte:fragment>
+                        
+                        <svelte:fragment slot="content">
                             {#each headingTools as tool}
-                                <DropdownMenu.Item
-                                    class="flex h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700"
-                                    onclick={tool.action}
+                                <button
+                                    type="button"
+                                    class="flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                                    on:click={() => {
+                                        tool.action();
+                                        mobileHeadingOpen = false;
+                                        mobileMenuOpen = false;
+                                        focusTextarea();
+                                    }}
+                                    aria-label={tool.title}
                                 >
                                     <div class="flex items-center gap-2">
                                         <tool.icon />
                                         <span>{tool.title}</span>
                                     </div>
-                                </DropdownMenu.Item>
+                                </button>
                             {/each}
-                        </DropdownMenu.SubContent>
-                    </DropdownMenu.Sub>
+                        </svelte:fragment>
+                    </DropdownMenu>
 
+                    <!-- Herramientas normales -->
                     {#each tools as tool}
-                        <DropdownMenu.Item
-                            class="flex h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700"
-                            onclick={tool.action}
+                        <button
+                            type="button"
+                            class="flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                            on:click={() => {
+                                tool.action();
+                                mobileMenuOpen = false;
+                                focusTextarea();
+                            }}
+                            aria-label={tool.title}
                         >
                             <div class="flex items-center gap-2">
                                 <tool.icon />
                                 <span>{tool.title}</span>
                             </div>
-                        </DropdownMenu.Item>
+                        </button>
                     {/each}
 
-                    <DropdownMenu.Sub>
-                        <DropdownMenu.SubTrigger
-                            class="flex h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent data-[highlighted]:bg-zinc-700 data-[state=open]:bg-zinc-700"
-                        >
-                            <div class="flex items-center gap-2">
-                                <TableMarkIcon />
-                                <span>Insertar Tabla</span>
-                            </div>
-                            <div class="ml-auto flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </div>
-                        </DropdownMenu.SubTrigger>
-                        <DropdownMenu.SubContent
-                            class="rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
-                            sideOffset={10}
-                        >
+                    <!-- Submenú de tabla -->
+                    <DropdownMenu 
+                        bind:open={mobileTableOpen}
+                        position="right"
+                        offset={10}
+                        contentClass="rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
+                        on:close={() => {}}
+                    >
+                        <svelte:fragment slot="trigger">
+                            <button
+                                type="button"
+                                class="flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                                aria-label="Insertar tabla"
+                            >
+                                <div class="flex items-center gap-2">
+                                    <TableMarkIcon />
+                                    <span>Insertar Tabla</span>
+                                </div>
+                                <div class="ml-auto flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </svelte:fragment>
+                        
+                        <svelte:fragment slot="content">
                             <DynamicTable
                                 onTableGenerated={( table ) => {
                                     insertText( table );
+                                    mobileTableOpen = false;
                                     mobileMenuOpen = false;
+                                    focusTextarea();
                                 }}
                             />
-                        </DropdownMenu.SubContent>
-                    </DropdownMenu.Sub>
-                </DropdownMenu.Content>
-            </DropdownMenu.Root>
+                        </svelte:fragment>
+                    </DropdownMenu>
+                </svelte:fragment>
+            </DropdownMenu>
 
             <h3 class="text-zinc-200 font-medium {updateGridButtonsMobile()}">Editor</h3>
         </div>
