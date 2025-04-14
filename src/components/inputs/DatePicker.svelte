@@ -1,21 +1,20 @@
 <script lang="ts">
-    import {
-        CalendarDate,
-        type DateValue
-    }                       from "@internationalized/date";
-    import { DatePicker }   from "bits-ui";
+    import { onMount } from "svelte";
+
+    import { CalendarDate, type DateValue } from "@internationalized/date";
+    import { DatePicker }                   from "bits-ui";
 
     import {
         CalendarBlankIcon,
         CaretLeftIcon,
         CaretRightIcon,
-    }                       from "$icons";
+    }                   from "$icons";
     import type {
-		InputStyle,
-		ShapeInput
-	}						from "$models";
-    import Description		from "./Description.svelte";
-	import { styles } 		from "$lib";
+        InputStyle,
+        ShapeInput
+    }                   from "$models";
+    import Description  from "./Description.svelte";
+    import { styles }   from "$lib";
 
 
     export let shapeInput       : ShapeInput;
@@ -24,18 +23,67 @@
     export let setError         : VoidFunction = () => {};
 
 
+    let showPopup = false;
+    let inputContainer: HTMLElement;
+    let popupStyles = {};
+
+
     function createCalendarDate(): DateValue | undefined {
-        if ( !value ) return undefined;
+        if (!value) return undefined;
 
-        const date = new Date( value.year, value.month - 1, value.day );
+        const date = new Date(value.year, value.month - 1, value.day);
 
-        return new CalendarDate( date.getFullYear(), date.getMonth() + 1, date.getDate() );
+        return new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
     }
 
 
-    let currentDate: DateValue | undefined = shapeInput.currentDate
-        ? new CalendarDate( new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate() )
-        : createCalendarDate();
+    function getDefaultDate(): DateValue {
+        return new CalendarDate(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate());
+    }
+
+
+    let selectedDate: DateValue | undefined = createCalendarDate();
+    let currentDate: DateValue = createCalendarDate() || getDefaultDate();
+
+
+    if ( !currentDate || !currentDate.year ) {
+        currentDate = getDefaultDate();
+    }
+
+
+    function togglePopup() {
+        if (shapeInput.disabled || shapeInput.readonly) return;
+        showPopup = !showPopup;
+
+        if ( showPopup ) {
+            if (!currentDate || !currentDate.year) {
+                currentDate = getDefaultDate();
+            }
+
+            const rect = inputContainer.getBoundingClientRect();
+            popupStyles = {
+                top: `${rect.bottom + window.scrollY}px`,
+                left: `${rect.left + window.scrollX}px`,
+                width: `${rect.width}px`
+            };
+        }
+    }
+
+
+    function handleClickOutside(event: MouseEvent) {
+        if (showPopup && inputContainer && !inputContainer.contains(event.target as Node)) {
+            showPopup = false;
+        }
+    }
+
+
+    onMount(() => {
+        document.addEventListener('click', handleClickOutside);
+        
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    });
 </script>
 
 <DatePicker.Root
@@ -51,10 +99,12 @@
     disableDaysOutsideMonth = { true }
     numberOfMonths          = { shapeInput.numberOfMonths }
     value                   = { currentDate }
-    onValueChange           = {( value ) => { 
-        onValueChange( value ); 
-        setError(); 
-        currentDate = value;
+    onValueChange           = {( value ) => {
+        onValueChange( value );
+        setError();
+
+        currentDate = value || getDefaultDate();
+        showPopup   = false;
     }}
     isDateDisabled={( value: DateValue ) => {
         if (
@@ -67,111 +117,167 @@
 >
     <div class="flex w-full flex-col gap-1.5">
         {#if shapeInput.label}
-            <DatePicker.Label class={ shapeInput.labelDateClass ?? ( styles.datepicker as InputStyle ).label }>
-                { shapeInput.label }
+            <DatePicker.Label class={shapeInput.labelDateClass ?? (styles.datepicker as InputStyle).label}>
+                {shapeInput.label}
             </DatePicker.Label>
         {/if}
 
-        <DatePicker.Input
-            class= { shapeInput.boxDateClass ?? `${( styles.datepicker as InputStyle ).box }` }
-        >
-            {#snippet children({ segments })}
-                {#each segments as { part, value }}
-                    <div class="inline-block select-none">
-                        {#if part === "literal"}
-                            <DatePicker.Segment {part} class="text-muted-foreground p-1">
-                                {value}
-                            </DatePicker.Segment>
+        <div bind:this={inputContainer} class="relative">
+            <div
+                class={shapeInput.boxDateClass ?? `${(styles.datepicker as InputStyle).box}`}
+                on:click={togglePopup}
+                role="button"
+                tabindex="0"
+                on:keydown={(e) => e.key === 'Enter' && togglePopup()}
+            >
+                <div class="flex items-center justify-between w-full">
+                    <div class="flex-1">
+                        {#if selectedDate}
+                            <span>{selectedDate.day} / {selectedDate.month} / {selectedDate.year}</span>
                         {:else}
-                            <DatePicker.Segment
-                                {part}
-                                class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:text-muted-foreground focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
-                            >
-                                {value}
-                            </DatePicker.Segment>
+                            <span class="text-muted-foreground">dd / mm / aaaa</span>
                         {/if}
                     </div>
-                {/each}
-                <DatePicker.Trigger
-                    class="text-foreground/60 hover:bg-muted active:bg-dark-10 ml-auto inline-flex size-8 items-center justify-center rounded-[5px] transition-all"
-                >
-                    <CalendarBlankIcon />
-                </DatePicker.Trigger>
-            {/snippet}
-        </DatePicker.Input>
+                    <button
+                        type="button"
+                        class="text-foreground/60 rounded-lg active:bg-dark-10 ml-auto inline-flex size-8 items-center justify-center transition-all"
+                    >
+                        <CalendarBlankIcon />
+                    </button>
+                </div>
+            </div>
 
-        <DatePicker.Content
-            sideOffset  = { 6 }
-            class       = "z-50 datepicker-popup"
-            align       = "start"
-            side        = "bottom"
-        >
-            <DatePicker.Calendar
-                class= { shapeInput.contentDateClass ?? `${( styles.datepicker as InputStyle ).content }` }
-            >
-                {#snippet children({ months, weekdays })}
-                    <DatePicker.Header class="flex items-center justify-between">
-                        <DatePicker.PrevButton
-                            class="rounded-9px bg-background-alt hover:bg-muted inline-flex size-10 items-center justify-center transition-all active:scale-[0.98]"
-                        >
-                            <CaretLeftIcon />
-                        </DatePicker.PrevButton>
-                        <DatePicker.Heading class="text-[15px] font-medium capitalize" />
-                        <DatePicker.NextButton
-                            class="rounded-9px bg-background-alt hover:bg-muted inline-flex size-10 items-center justify-center transition-all active:scale-[0.98]"
-                        >
-                            <CaretRightIcon />
-                        </DatePicker.NextButton>
-                    </DatePicker.Header>
-                    <div class="flex flex-col space-y-4 pt-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-                        {#each months as month}
-                            <DatePicker.Grid class="w-full border-collapse select-none space-y-1">
-                                <DatePicker.GridHead>
-                                    <DatePicker.GridRow class="mb-1 flex w-full justify-between">
-                                        {#each weekdays as day}
-                                            <DatePicker.HeadCell class="text-muted-foreground font-normal! w-10 rounded-md text-xs">
-                                                <div>{day.slice(0, 2)}</div>
-                                            </DatePicker.HeadCell>
-                                        {/each}
-                                    </DatePicker.GridRow>
-                                </DatePicker.GridHead>
-                                <DatePicker.GridBody>
-                                    {#each month.weeks as weekDates}
-                                        <DatePicker.GridRow class="flex w-full">
-                                            {#each weekDates as date}
-                                                <DatePicker.Cell
-                                                    {date}
-                                                    month={month.value}
-                                                    class="p-0! relative size-10 text-center text-sm"
-                                                >
-                                                    <DatePicker.Day
-                                                        class={ shapeInput.itemDateClass ?? `${( styles.datepicker as InputStyle ).item }` }
-                                                    >
-                                                        <div class="bg-blue-500 group-data-[selected]:bg-white group-data-[today]:block absolute top-[5px] hidden size-1 rounded-full transition-all"></div>
-                                                        {date.day}
-                                                    </DatePicker.Day>
-                                                </DatePicker.Cell>
-                                            {/each}
-                                        </DatePicker.GridRow>
-                                    {/each}
-                                </DatePicker.GridBody>
-                            </DatePicker.Grid>
-                        {/each}
+            {#if showPopup}
+                <div 
+                    class="custom-datepicker-popup absolute top-full right-0 mt-2 z-[9999] bg-background rounded-lg shadow-lg w-72"
+                >
+                    <div class={shapeInput.contentDateClass ?? `${(styles.datepicker as InputStyle).content}`}>
+                        <div class="flex items-center justify-between p-0">
+                            <button 
+                                type="button"
+                                class="rounded-lg bg-background-alt hover:bg-muted inline-flex size-10 items-center justify-center transition-all active:scale-[0.98]"
+                                on:click={() => {
+                                    const prevMonth = new Date(currentDate?.year || new Date().getFullYear(), (currentDate?.month || new Date().getMonth() + 1) - 2, 1);
+                                    currentDate = new CalendarDate(prevMonth.getFullYear(), prevMonth.getMonth() + 1, 1);
+                                }}
+                            >
+                                <CaretLeftIcon />
+                            </button>
+
+                            <div class="text-[15px] font-medium capitalize">
+                                {new Date(currentDate?.year || new Date().getFullYear(), (currentDate?.month || new Date().getMonth() + 1) - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+                            </div>
+
+                            <button 
+                                type="button"
+                                class="rounded-lg bg-background-alt hover:bg-muted inline-flex size-10 items-center justify-center transition-all active:scale-[0.98]"
+                                on:click={() => {
+                                    const nextMonth = new Date(currentDate?.year || new Date().getFullYear(), (currentDate?.month || new Date().getMonth() + 1), 1);
+                                    currentDate = new CalendarDate(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 1);
+                                }}
+                            >
+                                <CaretRightIcon />
+                            </button>
+                        </div>
+
+                        <div class="p-3">
+                            <div class="grid grid-cols-7 gap-1">
+                                {#each ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'] as day}
+                                    <div class="text-foreground/60 text-xs text-center font-medium">{day}</div>
+                                {/each}
+
+                                {#if true}
+                                {@const year = currentDate.year}
+                                {@const month = currentDate.month}
+                                {@const firstDay = new Date(year, month - 1, 1)}
+                                {@const lastDay = new Date(year, month, 0)}
+                                {@const daysInMonth = lastDay.getDate()}
+                                {@const startOffset = (firstDay.getDay() + 6) % 7}
+                                {@const today = new Date()}
+                                {@const todayDate = new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate())}
+
+                                {#each Array(6 * 7) as _, i}
+                                    {@const dayIndex = i - startOffset + 1}
+                                    {@const isCurrentMonth = dayIndex > 0 && dayIndex <= daysInMonth}
+                                    {@const day = isCurrentMonth ? dayIndex : (dayIndex <= 0 ? dayIndex + new Date(year, month - 2, 0).getDate() : dayIndex - daysInMonth)}
+                                    {@const dateValue = isCurrentMonth ? new CalendarDate(year, month, day) : null}
+                                    {@const isOutOfRange = isCurrentMonth && dateValue && (
+                                        (shapeInput.minValue && dateValue < shapeInput.minValue) || 
+                                        (shapeInput.maxValue && dateValue > shapeInput.maxValue)
+                                    )}
+                                    {@const isInvalidDate = isCurrentMonth && dateValue && shapeInput.invalidDates && shapeInput.invalidDates.includes(dateValue.toString())}
+                                    {@const isInvalid = isOutOfRange || isInvalidDate}
+                                    {@const isSelected = isCurrentMonth && selectedDate && day === selectedDate.day && month === selectedDate.month && year === selectedDate.year && !isInvalid}
+                                    {@const isToday = isCurrentMonth && todayDate.year === year && todayDate.month === month && todayDate.day === day}
+
+                                    <button 
+                                        type="button"
+                                        class="size-8 flex items-center justify-center rounded-md text-sm relative
+                                            {!isCurrentMonth ? 'text-gray-300 cursor-not-allowed opacity-50' : 
+                                                isOutOfRange ? 'text-gray-400 cursor-not-allowed opacity-60' : 
+                                                isInvalidDate ? 'text-gray-500 cursor-not-allowed' : 
+                                                'hover:bg-muted/80 hover:text-foreground'}
+                                            {isSelected ? 'bg-blue-500 text-white font-bold' : ''}
+                                            {isToday && !isSelected && !isInvalid ? 'font-bold text-primary' : ''}"
+                                        disabled={!isCurrentMonth || isInvalid}
+                                        on:click={() => {
+                                            if (isCurrentMonth && !isInvalid) {
+                                                const newDate = new CalendarDate(year, month, day);
+                                                if ( isSelected ) {
+                                                    onValueChange( undefined );
+                                                    setError();
+                                                    selectedDate = undefined;
+                                                    currentDate = new CalendarDate(year, month, 1);
+                                                } else {
+                                                    onValueChange(newDate);
+                                                    setError();
+                                                    selectedDate = newDate;
+                                                    currentDate = newDate;
+                                                    showPopup = false;
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        {#if isToday && !isSelected}
+                                            <div class="absolute top-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"></div>
+                                        {/if}
+
+                                        {isCurrentMonth ? day : day}
+                                    </button>
+                                {/each}
+                                {/if}
+                            </div>
+                        </div>
                     </div>
-                {/snippet}
-            </DatePicker.Calendar>
-        </DatePicker.Content>
+                </div>
+            {/if}
+        </div>
 
         <Description {shapeInput} date={value} />
     </div>
 </DatePicker.Root>
 
 <style>
-    :global(.datepicker-popup) {
-        position: fixed !important;
-        transform-origin: var(--radix-popper-transform-origin) !important;
-        margin-left: -265px !important;
-        margin-right: 0 !important;
-        transform: translateY(0) !important;
+    /* Estilos adicionales */
+    :global(.custom-datepicker-popup) {
+        max-height: fit-content !important;
+        overflow: hidden !important;
+    }
+    
+    /* Mejorar el hover para modo light y dark */
+    button:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    :global(.dark) button:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Día seleccionado más visible */
+    button[class*="bg-primary"] {
+        position: relative;
+        z-index: 1;
+        transform: scale(1.1);
+        transition: transform 0.2s ease;
     }
 </style>
