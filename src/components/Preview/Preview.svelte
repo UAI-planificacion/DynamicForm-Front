@@ -172,7 +172,7 @@
                 if ( item.shape !== 'button' && item.name?.trim() ) {
                     const previousShape = previousShapes[item.name];
 
-                    if (previousShape !== undefined && previousShape !== item.shape) {
+                    if ( previousShape !== undefined && previousShape !== item.shape ) {
                         currentValues[item.name] = undefined;
                     }
 
@@ -243,8 +243,6 @@
 
     const handleInput = ( value: string, name: string ): string =>
 		formValues[name] = value;
-		// formValues[name] = (event.target as HTMLInputElement).value;
-
 
     const handleCheck = ( isChecked: boolean, name: string ): boolean =>
 		formValues[name] = isChecked;
