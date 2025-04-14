@@ -8,13 +8,10 @@
         CalendarBlankIcon,
         CaretLeftIcon,
         CaretRightIcon,
-    }                   from "$icons";
-    import type {
-        InputStyle,
-        ShapeInput
-    }                   from "$models";
-    import Description  from "./Description.svelte";
-    import { styles }   from "$lib";
+    }                                       from "$icons";
+    import type { InputStyle, ShapeInput }  from "$models";
+    import Description                      from "./Description.svelte";
+    import { numberWithZero, styles }       from "$lib";
 
 
     export let shapeInput       : ShapeInput;
@@ -133,7 +130,7 @@
                 <div class="flex items-center justify-between w-full">
                     <div class="flex-1">
                         {#if selectedDate}
-                            <span>{selectedDate.day} / {selectedDate.month} / {selectedDate.year}</span>
+                            <span>{numberWithZero(selectedDate.day)} / {numberWithZero(selectedDate.month)} / {selectedDate.year}</span>
                         {:else}
                             <span class="text-muted-foreground">dd / mm / aaaa</span>
                         {/if}

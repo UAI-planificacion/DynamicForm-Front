@@ -10,7 +10,7 @@
         CaretRightIcon
     }                                       from "$icons";
     import type { InputStyle, ShapeInput }  from "$models";
-    import { styles }                       from "$lib";
+    import { numberWithZero, styles }       from "$lib";
     import Description                      from "./Description.svelte";
 
     export let shapeInput: ShapeInput;
@@ -163,11 +163,11 @@
                 <div class="flex items-center justify-between w-full">
                     <div class="flex-1 flex items-center">
                         <span class={!selectedRange?.start ? "text-muted-foreground" : ""}>
-                            {selectedRange?.start ? `${selectedRange.start.day} / ${selectedRange.start.month} / ${selectedRange.start.year}` : "dd / mm / aaaa"}
+                            {selectedRange?.start ? `${numberWithZero(selectedRange.start.day)} / ${numberWithZero(selectedRange.start.month)} / ${selectedRange.start.year}` : "dd / mm / aaaa"}
                         </span>
                         <div aria-hidden="true" class="text-muted-foreground px-1">–⁠⁠⁠⁠⁠</div>
                         <span class={!selectedRange?.end ? "text-muted-foreground" : ""}>
-                            {selectedRange?.end ? `${selectedRange.end.day} / ${selectedRange.end.month} / ${selectedRange.end.year}` : "dd / mm / aaaa"}
+                            {selectedRange?.end ? `${numberWithZero(selectedRange.end.day)} / ${numberWithZero(selectedRange.end.month)} / ${selectedRange.end.year}` : "dd / mm / aaaa"}
                         </span>
                     </div>
                     <button 
