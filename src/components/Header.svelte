@@ -1,16 +1,15 @@
 <script lang="ts">
-	import { Avatar, DropdownMenu } from "bits-ui";
+	import { Avatar, DropdownMenu }         from "bits-ui";
     import { BookCopy, BookOpen, HomeIcon } from "lucide-svelte";
 
     import { Switch, ToggleTheme, MicrosoftAuth } 	from "$components";
 	import { dynamicMode, toggleTheme, theme  } 	from "$stores";
     import { authClient }                           from "$lib";
 
-    let isMenuOpen      = $state( false );
-    let loadingStatus   = $state<Avatar.RootProps["loadingStatus"]>("loading");
 
-    const toggleMenu    = () => isMenuOpen = !isMenuOpen;
-    const session       = authClient.useSession();
+    let loadingStatus = $state<Avatar.RootProps["loadingStatus"]>("loading");
+
+    const session = authClient.useSession();
 </script>
 
 <header class="bg-black shadow-sm sticky top-0 z-10 px-4">
@@ -107,28 +106,30 @@
                         <DropdownMenu.Separator class="flex md:hidden my-2 h-px bg-zinc-200 dark:bg-zinc-700" />
                     {/if}
 
-                    <DropdownMenu.Item class="flex h-10 md:h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">
-                        <div 
-                            class		= "flex items-center justify-between w-full rounded-lg px-2 py-1 "
-                            onclick	= {(event) => {
-                                const target = event.target as HTMLElement;
+                    {#if $session.data}
+                        <DropdownMenu.Item class="flex h-10 md:h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">
+                            <div 
+                                class		= "flex items-center justify-between w-full rounded-lg px-2 py-1 "
+                                onclick	= {(event) => {
+                                    const target = event.target as HTMLElement;
 
-                                if ( !target.closest( '.switch-component' )) {
-                                    $dynamicMode = !$dynamicMode;
-                                }
-                            }}
-                            onkeydown	= {( event ) => event.key === 'Enter' && ( $dynamicMode = !$dynamicMode )}
-                            role		= "button"
-                            tabindex	= "0"
-                        >
-                            <span class="text-zinc-900 dark:text-zinc-200">Modo Dinámico</span>
-                            <div class="switch-component">
-                                <Switch bind:checked={$dynamicMode} />
+                                    if ( !target.closest( '.switch-component' )) {
+                                        $dynamicMode = !$dynamicMode;
+                                    }
+                                }}
+                                onkeydown	= {( event ) => event.key === 'Enter' && ( $dynamicMode = !$dynamicMode )}
+                                role		= "button"
+                                tabindex	= "0"
+                            >
+                                <span class="text-zinc-900 dark:text-zinc-200">Modo Dinámico</span>
+                                <div class="switch-component">
+                                    <Switch bind:checked={$dynamicMode} />
+                                </div>
                             </div>
-                        </div>
-                    </DropdownMenu.Item>
+                        </DropdownMenu.Item>
 
-                    <DropdownMenu.Separator class="my-2 h-px bg-zinc-200 dark:bg-zinc-700" />
+                        <DropdownMenu.Separator class="my-2 h-px bg-zinc-200 dark:bg-zinc-700" />
+                    {/if}
 
                     <DropdownMenu.Item class="flex h-10 md:h-12 select-none items-center rounded-lg py-3 text-sm font-medium data-[highlighted]:bg-muted">
                         <div 
