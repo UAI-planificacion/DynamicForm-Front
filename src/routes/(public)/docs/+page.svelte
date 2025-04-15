@@ -107,7 +107,7 @@
                         type="text" 
                         bind:value={searchQuery} 
                         placeholder="Buscar..." 
-                        class="w-full px-4 py-2 pl-10 rounded-md border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors duration-300"
+                        class="w-full px-4 py-2 pl-10 rounded-md border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
                     />
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -135,7 +135,7 @@
                                 <button
                                     class="w-full text-left px-3 py-2 rounded-md text-sm transition-colors duration-200
                                         {activeSection === section.id && activeItem === item.id 
-                                            ? 'bg-amber-100 dark:bg-amber-900/20 text-amber-900 dark:text-amber-400 font-medium' 
+                                            ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-900 dark:text-blue-400 font-medium' 
                                             : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-700'}"
                                     on:click={() => {
                                         activeSection = section.id;
@@ -178,7 +178,7 @@
                 <!-- Navegación entre páginas -->
                 <div class="mt-12 border-t border-gray-200 dark:border-zinc-800 pt-6 flex justify-between">
                     <button 
-                        class="flex items-center text-sm font-medium text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors duration-200"
+                        class="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
                         on:click={() => {
                             const currentSection = docSections.find(s => s.id === activeSection);
 
@@ -204,7 +204,7 @@
                     </button>
 
                     <button 
-                        class="flex items-center text-sm font-medium text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors duration-200"
+                        class="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
                         on:click={() => {
                             const currentSection = docSections.find( s => s.id === activeSection );
 

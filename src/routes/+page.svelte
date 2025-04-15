@@ -107,7 +107,7 @@
     <section id="features" class="py-16 px-4 bg-white dark:bg-zinc-800">
         <div class="container mx-auto">
         <h2
-            class="text-3xl font-bold text-amber-500 text-center mb-12 transform transition-all duration-1000 {visibleSections.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}"
+            class="text-3xl font-bold text-blue-500 text-center mb-12 transform transition-all duration-1000 {visibleSections.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}"
         >
             Características principales
         </h2>
@@ -116,11 +116,11 @@
             {#each features as feature, i}
             <div class="bg-white dark:bg-zinc-700 rounded-lg p-6 shadow-md dark:shadow-zinc-800/50 hover:shadow-lg dark:hover:shadow-zinc-800/50 hover:-translate-y-1 transition-all duration-300 transform {visibleSections.features ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}" style="transition-delay: {i * 150}ms">
                 <div class="w-12 h-12 bg-zinc-800 dark:bg-zinc-600 rounded-full flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-zinc-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500 dark:text-zinc-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path class="stroke-gray-200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={feature.icon} />
                 </svg>
                 </div>
-                <h3 class="text-xl font-semibold mb-2 text-amber-500">{feature.title}</h3>
+                <h3 class="text-xl font-semibold mb-2 text-cyan-500">{feature.title}</h3>
                 <p class="text-gray-600 dark:text-zinc-300">{feature.description}</p>
             </div>
             {/each}
@@ -169,7 +169,7 @@
             </p>
 
             {#if !$session.data}
-                <div class="flex justify-center">
+                <div class="flex justify-center w-44 mx-auto">
                     <MicrosoftAuth />
                 </div>
             {:else}
@@ -186,35 +186,41 @@
 
     <!-- Footer -->
     <footer id="contact" class="bg-zinc-950 text-white py-12 px-4">
-    <div class="container mx-auto">
-        <div class="grid md:grid-cols-3 gap-8">
-        <div>
-            <h3 class="text-xl font-semibold mb-4">Formulario Dinámico</h3>
-            <p class="text-gray-300 dark:text-zinc-400">
-            Una aplicación de la Universidad Adolfo Ibáñez para la gestión eficiente de formularios académicos.
-            </p>
+        <div class="container mx-auto">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Formulario Dinámico</h3>
+
+                    <p class="text-gray-300 dark:text-zinc-400">
+                        Una aplicación de la Universidad Adolfo Ibáñez para la gestión eficiente de formularios académicos.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Enlaces rápidos</h3>
+
+                    <ul class="space-y-2 text-gray-300 dark:text-zinc-400">
+                        <li><a href="#hero" class="hover:text-white dark:hover:text-zinc-300 transition-colors duration-200">Inicio</a></li>
+                        <li><a href="#features" class="hover:text-white dark:hover:text-zinc-300 transition-colors duration-200">Características</a></li>
+                        <li><a href="/docs" class="hover:text-white dark:hover:text-zinc-300 transition-colors duration-200">Documentación</a></li>
+                        <li><a href="https://www.uai.cl" target="_blank" rel="noopener noreferrer" class="hover:text-white dark:hover:text-zinc-300 transition-colors duration-200">Sitio web UAI</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Contacto</h3>
+
+                    <ul class="space-y-2 text-gray-300 dark:text-zinc-400">
+                        <li>Email: formulario.dinamico@uai.cl</li>
+                        <li>Teléfono: +56 2 2331 1000</li>
+                        <li>Dirección: Diagonal las Torres 2640, Peñalolén, Santiago</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 dark:border-zinc-600 mt-8 pt-8 text-center text-gray-400 dark:text-zinc-500">
+                <p>&copy; {new Date().getFullYear()} Universidad Adolfo Ibáñez. Todos los derechos reservados.</p>
+            </div>
         </div>
-        <div>
-            <h3 class="text-xl font-semibold mb-4">Enlaces rápidos</h3>
-            <ul class="space-y-2 text-gray-300 dark:text-zinc-400">
-            <li><a href="#hero" class="hover:text-white dark:hover:text-zinc-300 transition-colors duration-200">Inicio</a></li>
-            <li><a href="#features" class="hover:text-white dark:hover:text-zinc-300 transition-colors duration-200">Características</a></li>
-            <li><a href="#about" class="hover:text-white dark:hover:text-zinc-300 transition-colors duration-200">Acerca de</a></li>
-            <li><a href="https://www.uai.cl" target="_blank" rel="noopener noreferrer" class="hover:text-white dark:hover:text-zinc-300 transition-colors duration-200">Sitio web UAI</a></li>
-            </ul>
-        </div>
-        <div>
-            <h3 class="text-xl font-semibold mb-4">Contacto</h3>
-            <ul class="space-y-2 text-gray-300 dark:text-zinc-400">
-            <li>Email: formulario.dinamico@uai.cl</li>
-            <li>Teléfono: +56 2 2331 1000</li>
-            <li>Dirección: Diagonal las Torres 2640, Peñalolén, Santiago</li>
-            </ul>
-        </div>
-        </div>
-        <div class="border-t border-gray-700 dark:border-zinc-600 mt-8 pt-8 text-center text-gray-400 dark:text-zinc-500">
-        <p>&copy; {new Date().getFullYear()} Universidad Adolfo Ibáñez. Todos los derechos reservados.</p>
-        </div>
-    </div>
     </footer>
 </div>
