@@ -217,10 +217,6 @@
                     </ul>
                 </div>
             </div>
-
-            <div class="border-t border-gray-700 dark:border-zinc-600 mt-8 pt-8 text-center text-gray-400 dark:text-zinc-500">
-                <p>&copy; {new Date().getFullYear()} Universidad Adolfo Ibáñez. Todos los derechos reservados.</p>
-            </div>
         </div>
     </footer>
 </div>
