@@ -6,6 +6,9 @@ import { INPUT_SHAPE }      from "$lib/docs/shape-inputs/input";
 import { CHECKBOX_SHAPE }   from "$lib/docs/shape-inputs/checkbox";
 import { SELECT_SHAPE }     from "$lib/docs/shape-inputs/select";
 import { TEXTAREA_SHAPE }   from "$lib/docs/shape-inputs/textarea";
+import { DATE_SHAPE }       from "./shape-inputs/date";
+import { MARKDOWN_SHAPE }   from "./shape-inputs/markdown";
+import { TIME_SHAPE }       from "./shape-inputs/time";
 
 
 export const docSections: DocSection[] = [
@@ -50,6 +53,21 @@ export const docSections: DocSection[] = [
                 id: 'textarea',
                 title: 'Área de Texto',
                 component: TEXTAREA_SHAPE
+            },
+            {
+                id: 'date',
+                title: 'Fecha',
+                component: DATE_SHAPE
+            },
+            {
+                id: 'markdown',
+                title: 'Markdown',
+                component: MARKDOWN_SHAPE
+            },
+            {
+                id: 'time',
+                title: 'Tiempo',
+                component: TIME_SHAPE
             }
         ]
     },
