@@ -137,6 +137,75 @@ const vacationPicker = {
 };
 \`\`\`
 
+## Sistema de deshabilitación de fechas
+
+El componente Date ofrece un sistema flexible para deshabilitar fechas específicas, lo que permite controlar qué días están disponibles para selección. Esta funcionalidad es útil para casos como:
+
+- Bloquear fines de semana o días festivos
+- Deshabilitar fechas ya reservadas
+- Limitar selecciones a días laborables
+- Establecer períodos de disponibilidad específicos
+
+### Formas de deshabilitar fechas
+
+Existen tres métodos principales para deshabilitar fechas:
+
+1. **Fechas individuales**: Permite seleccionar días específicos para deshabilitar
+2. **Rangos de fechas**: Permite deshabilitar todos los días dentro de un rango seleccionado
+3. **Días de la semana**: Permite deshabilitar días específicos de la semana (ej: todos los lunes)
+
+### Funcionamiento interno
+
+El sistema de deshabilitación funciona mediante la propiedad \`invalidDates\`, que acepta un array de strings con fechas en formato ISO (YYYY-MM-DD). Estas fechas se marcan como no seleccionables en el calendario.
+
+\`\`\`typescript
+// Ejemplo de configuración con fechas deshabilitadas
+const appointmentPicker = {
+    id: 'appointment-picker',
+    name: 'appointmentDate',
+    shape: 'datepicker',
+    label: 'Fecha de cita',
+    required: true,
+    // Deshabilitar fechas específicas
+    invalidDates: [
+        '2025-04-20',  // Domingo de Pascua
+        '2025-05-01',  // Día del Trabajo
+        '2025-12-25'   // Navidad
+    ]
+};
+\`\`\`
+
+### Interfaz de generación de fechas inválidas
+
+El componente \`GenerateValidDates.svelte\` proporciona una interfaz visual para configurar fechas deshabilitadas:
+
+![Generador de fechas inválidas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744674645/UAI/dynamic-form/date/disable_dates_Forms.gif)
+
+Esta interfaz ofrece las siguientes opciones:
+
+1. **Selector de rango**: Permite seleccionar un rango completo de fechas para deshabilitar
+2. **Selector individual**: Permite añadir fechas específicas a la lista de fechas deshabilitadas
+3. **Filtro por día de semana**: Permite especificar qué días de la semana se incluirán al generar fechas inválidas
+4. **Lista de fechas deshabilitadas**: Muestra todas las fechas actualmente deshabilitadas con opción de eliminarlas individualmente
+5. **Botón de limpieza**: Permite eliminar todas las fechas deshabilitadas de una vez
+
+### Proceso de generación de fechas inválidas
+
+1. Al seleccionar un rango de fechas, el sistema genera automáticamente una lista de todas las fechas dentro de ese rango
+2. El sistema filtra estas fechas según los días de la semana seleccionados (por defecto, todos los días están seleccionados)
+3. Las fechas resultantes se añaden al array \`invalidDates\`
+4. También es posible añadir fechas individuales específicas mediante el selector de fecha individual
+5. Todas las fechas deshabilitadas se muestran en una lista donde pueden ser eliminadas individualmente
+
+### Limitaciones adicionales
+
+Además de las fechas deshabilitadas, el componente también admite:
+
+- **Fecha mínima** (\`minValue\`): Establece la fecha más temprana que puede seleccionarse
+- **Fecha máxima** (\`maxValue\`): Establece la fecha más tardía que puede seleccionarse
+
+Estas propiedades complementan el sistema de fechas deshabilitadas para ofrecer un control preciso sobre el rango de selección disponible.
+
 ## Consideraciones adicionales
 
 - El componente muestra los días de la semana en formato abreviado: Lu, Ma, Mi, Ju, Vi, Sa, Do
