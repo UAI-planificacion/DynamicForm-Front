@@ -18,7 +18,7 @@
         </figure>
 
         <div class="text-sm text-gray-400 transition-colors duration-300">
-            &copy; {new Date().getFullYear()} Universidad Adolfo Ibáñez. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} Universidad Adolfo Ibáñez.
         </div>
     </div>
 </footer>
