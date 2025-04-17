@@ -337,6 +337,11 @@
             onSelectedChange = { handleTemplateChange }
             value = { optionSelected }
         />
+
+        <Separator.Root
+            orientation = "horizontal"
+            class       = "w-full h-[1px] rounded-lg bg-primary my-4"
+        />
     </div>
 
     {#if dynamicForm.details.length > 0}
@@ -407,6 +412,11 @@
                             </div>
                         </Resizable>
 
+                        <Separator.Root
+                            orientation = "horizontal"
+                            class       = "w-full h-[1px] rounded-lg bg-primary my-4"
+                        />
+
                         <div
                             class   = "flex flex-row items-start w-full gap-2"
                             in:fade = {{ duration: 1000, delay: 50 }}
@@ -463,11 +473,6 @@
                     {/if}
                 </div>
             {:else}
-                <Separator.Root
-                    orientation = "horizontal"
-                    class       = "w-full h-[1px] rounded-lg bg-zinc-300 dark:bg-zinc-600"
-                />
-
                 <div 
                     class		= "mt-5 relative"
                     in:scale	= {{ duration: 300, start: 0.95 }}
