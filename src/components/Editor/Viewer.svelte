@@ -131,16 +131,18 @@
         { shapeInput.label }
     </Tooltip>
 
-    <Tooltip
-        value       = { shapeInput.placeholder }
-        message     = "Placeholder" 
-        background  = "bg-cyan-300"
-        color       = "bg-zinc-200 text-zinc-800 dark:bg-zinc-500 dark:text-zinc-200"
+    {#if shapeInput.shape !== 'button'}
+        <Tooltip
+            value       = { shapeInput.placeholder }
+            message     = "Placeholder" 
+            background  = "bg-cyan-300"
+            color       = "bg-zinc-200 text-zinc-800 dark:bg-zinc-500 dark:text-zinc-200"
+        >
+            <PlaceholderIcon />
+            { shapeInput.placeholder }
+        </Tooltip>
+	{/if}
 
-    >
-        <PlaceholderIcon />
-        { shapeInput.placeholder }
-    </Tooltip>
 
     <Tooltip
         value       = { shapeInput.shape === 'input' }
@@ -196,7 +198,7 @@
         class="my-2 shrink-0 bg-zinc-300 dark:bg-zinc-700 data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-[1px]"
     />
 
-    <footer class="text-gray-500 ">
+    <footer class="text-zinc-500 dark:text-zinc-400 ">
         {shapeInput.description}
     </footer>
 {/if}
