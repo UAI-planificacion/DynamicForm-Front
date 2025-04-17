@@ -382,27 +382,47 @@
     function calculateDropdownHeight(): number {
         if (!filteredData?.length) return OPTION_HEIGHT;
 
-        // Calcula la altura total necesaria
-        const totalItemsHeight = filteredData.reduce((height, item) => {
-            if (isGroupOption(item)) {
-                return height + GROUP_HEADER_HEIGHT + (item.options.length * OPTION_HEIGHT);
-            }
-            return height + OPTION_HEIGHT;
-        }, 0);
+        let requestedHeightPanel = shapeInput.heightPanel ?? 5;
 
-        // Altura máxima del panel (5 items por defecto)
-        const maxPanelHeight = (shapeInput.heightPanel ?? 5) * OPTION_HEIGHT;
-        
-        // Si hay búsqueda, agregar altura para el input
-        const searchHeight = shapeInput.search ? 48 : 0;
-        
-        // Agregar padding
-        const paddingHeight = 16;
-        
-        // Calcular altura máxima total
-        const maxHeight = maxPanelHeight + searchHeight + paddingHeight;
+        const maxAllowedHeightPanel = 15;
+        const effectiveHeightPanel = Math.min(requestedHeightPanel, maxAllowedHeightPanel);
+        const hasGroups = filteredData.some(item => isGroupOption(item)); // Verificar si estamos trabajando con grupos
 
-        return Math.min(maxHeight, Math.max(OPTION_HEIGHT, totalItemsHeight));
+        // Calcular las opciones totales y visibles
+        let totalOptions = 0;
+        let visibleOptions = 0;
+
+        if ( hasGroups ) {
+            // Para GroupOption, calculamos correctamente el espacio
+            filteredData.forEach(item => {
+                if ( isGroupOption( item )) {
+                    // Para cada grupo, contar el header + sus opciones
+                    const groupHeaderHeight = GROUP_HEADER_HEIGHT / OPTION_HEIGHT; // Convertir a unidades de opciones
+                    const groupOptionsCount = item.options.length;
+
+                    totalOptions += groupHeaderHeight + groupOptionsCount; // Aumentar el total de opciones
+                    visibleOptions = Math.min(totalOptions, effectiveHeightPanel); // Para las visibles, limitar al heightPanel efectivo
+                } else {
+                    // Opción normal
+                    totalOptions += 1;
+                    visibleOptions = Math.min(totalOptions, effectiveHeightPanel);
+                }
+            });
+
+            // Asegurar que siempre mostramos al menos el mínimo predeterminado si hay opciones suficientes
+            const minVisibleItems = Math.min(totalOptions, 5); // Mínimo predeterminado
+            visibleOptions = Math.max(visibleOptions, minVisibleItems);
+        } else {
+            // Caso simple sin grupos, como antes
+            totalOptions = filteredData.length;
+            visibleOptions = Math.min(totalOptions, effectiveHeightPanel);
+        }
+
+        const itemHeight = OPTION_HEIGHT; // Altura por ítem
+        const itemsHeight = visibleOptions * itemHeight; // Espacio para elementos visibles
+        const paddingHeight = 16; // Padding del panel
+
+        return itemsHeight + paddingHeight;
     }
 
     function handleClickOutside( event: MouseEvent ): void {
