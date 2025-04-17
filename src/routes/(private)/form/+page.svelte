@@ -327,7 +327,7 @@
                 shape               : 'select',
                 multiple            : false,
                 search              : true,
-                heightPanel         : 6,
+                heightPanel         : 8,
                 label		        : 'Plantillas de formularios',
                 placeholder	        : 'Seleccione una plantilla',
                 searchPlaceholder   : 'Buscar plantilla',
