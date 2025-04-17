@@ -24,7 +24,7 @@ El componente Tiempo en DynamicForm proporciona las siguientes funcionalidades:
 
 El modo digital presenta dos listas desplegables: una para horas y otra para minutos. Este modo es ideal para la selección rápida y precisa de horarios.
 
-![Modo Digital](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744676386/UAI/dynamic-form/time/59be487e-9782-4aeb-a7e4-1dff91ae243c.png)
+![Modo Digital](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744923665/UAI/dynamic-form/time/59be487e-9782-4aeb-a7e4-1dff91ae243c.png)
 
 ### Modo Analógico
 
