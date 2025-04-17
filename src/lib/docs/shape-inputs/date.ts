@@ -177,9 +177,9 @@ const appointmentPicker = {
 
 ### Interfaz de generación de fechas inválidas
 
-El componente \`GenerateValidDates.svelte\` proporciona una interfaz visual para configurar fechas deshabilitadas:
+El generador de fechas inválidas proporciona una interfaz visual para configurar fechas deshabilitadas:
 
-![Generador de fechas inválidas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744920862/UAI/dynamic-form/date/c453afa0-04b9-4673-8e6f-a1117bf445bd.png)
+![Generador de fechas inválidas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744928519/UAI/dynamic-form/date/invalid_dates_imujxo.gif)
 
 Esta interfaz ofrece las siguientes opciones:
 
