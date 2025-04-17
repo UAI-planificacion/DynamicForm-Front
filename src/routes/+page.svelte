@@ -120,7 +120,7 @@
                     <path class="stroke-gray-200" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={feature.icon} />
                 </svg>
                 </div>
-                <h3 class="text-xl font-semibold mb-2 text-cyan-500">{feature.title}</h3>
+                <h3 class="text-xl font-semibold mb-2 text-blue-500">{feature.title}</h3>
                 <p class="text-gray-600 dark:text-zinc-300">{feature.description}</p>
             </div>
             {/each}
