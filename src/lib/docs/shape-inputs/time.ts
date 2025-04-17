@@ -91,7 +91,11 @@ Esto generaría las siguientes opciones:
 - El botón con el ícono de 24 es para generar las horas.
 - El botón con el ícno de 15 es para generar los minutos.
 
-![Generador de rangos](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744921504/UAI/dynamic-form/time/2cbbf497-b496-46f2-86b9-af4836763da9.png)
+![Generador de rangos](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744927951/UAI/dynamic-form/time/generate_times_pcwumt.gif)
+
+- Puedes ir generando un rango de cada 2, 3 o 5 horas.
+- Puedes ir generando un rango de cada 15 minutos.
+
 
 ## Estilos personalizables
 
