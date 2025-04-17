@@ -15,7 +15,7 @@
 <header class="bg-black shadow-sm sticky top-0 z-10 px-4">
     <div class="container mx-auto py-4 flex justify-between items-center">
         <div class="flex items-center space-x-2">
-            <h1 class="text-lg sm:text-lg md:text-2xl bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent font-bold">
+            <h1 class="text-lg sm:text-lg md:text-2xl bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent font-bold">
                 Formulario Dinámico
             </h1>
 
@@ -25,12 +25,12 @@
         </div>
 
         <nav class="flex space-x-8 items-center">
-            <a href="/" class="hidden md:block text-zinc-300 hover:no-underline dark:text-zinc-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full">Inicio</a>
+            <a href="/" class="hidden md:block text-zinc-300 hover:no-underline dark:text-zinc-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full">Inicio</a>
 
-            <a href="/docs" class="hidden md:block text-zinc-300 hover:no-underline dark:text-zinc-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full">Documentación</a>
+            <a href="/docs" class="hidden md:block text-zinc-300 hover:no-underline dark:text-zinc-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full">Documentación</a>
 
             {#if $session.data}
-                <a href="/form" class="hidden md:block text-zinc-300 hover:no-underline dark:text-zinc-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full">Formulario</a>
+                <a href="/form" class="hidden md:block text-zinc-300 hover:no-underline dark:text-zinc-300 hover:text-primary dark:hover:text-blue-400 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full">Formulario</a>
             {/if}
 
             <DropdownMenu.Root>
@@ -39,7 +39,7 @@
                 >
                     <Avatar.Root
                         bind:loadingStatus
-                        class="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-2 hover:brightness-110 hover:border-blue-500/80 cursor-pointer border-blue-500 {loadingStatus === 'loaded'
+                        class="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-2 hover:brightness-110 hover:border-primary/80 cursor-pointer border-primary {loadingStatus === 'loaded'
                             ? 'border-foreground'
                             : 'border-transparent'} bg-muted text-[17px] font-medium uppercase text-muted-foreground"
                     >
@@ -140,7 +140,7 @@
                             tabindex	= "0"
                         >
                             <span class="text-zinc-900 dark:text-zinc-200">Tema:
-                                <span class="text-blue-500">
+                                <span class="text-primary">
                                     {$theme ===  'dark' ? 'Oscuro' : 'Claro' }
                                 </span>
                             </span>
