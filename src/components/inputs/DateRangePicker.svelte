@@ -263,9 +263,9 @@
                                         <button 
                                             type="button"
                                             class="size-8 flex items-center justify-center rounded-md text-sm relative
-                                                {!isCurrentMonth ? 'text-gray-300 cursor-not-allowed opacity-50' : 
-                                                    isOutOfRange ? 'text-gray-400 cursor-not-allowed opacity-60' : 
-                                                    isInvalidDate ? 'text-gray-500 cursor-not-allowed' : 
+                                                {!isCurrentMonth ? 'text-zinc-300 cursor-not-allowed opacity-50' : 
+                                                    isOutOfRange ? 'text-zinc-300 dark:text-zinc-500 cursor-not-allowed opacity-60' : 
+                                                    isInvalidDate ? 'text-zinc-300 dark:text-zinc-500 cursor-not-allowed' : 
                                                     'hover:bg-blue-100 dark:hover:bg-blue-900/30'}
                                                 {isStart ? 'bg-blue-500 text-white font-bold rounded-l-md' : ''}
                                                 {isEnd ? 'bg-blue-500 text-white font-bold rounded-r-md' : ''}
