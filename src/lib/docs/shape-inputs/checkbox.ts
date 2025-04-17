@@ -1,4 +1,4 @@
-export const CHECKBOX_SHAPE = `# Componente Checkbox
+export const CHECKBOX_SHAPE = `# Componente Verificador
 
 ## Descripción
 
