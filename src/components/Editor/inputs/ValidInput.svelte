@@ -12,10 +12,10 @@
 
     $: if ( countSend ) {
         if ( shapeInput.type === 'number' ) {
-            minShape.valid        = errorInput( minShape, String( shapeInput.min ) );
-            minMssgShape.valid    = errorInput( minMssgShape, shapeInput.msgMin );
-            maxShape.valid        = errorInput( maxShape, String( shapeInput.max ) );
-            maxMssgShape.valid    = errorInput( maxMssgShape, shapeInput.msgMax );
+            minShape.valid      = errorInput( minShape, String( shapeInput.min ) );
+            minMssgShape.valid  = errorInput( minMssgShape, shapeInput.msgMin );
+            maxShape.valid      = errorInput( maxShape, String( shapeInput.max ) );
+            maxMssgShape.valid  = errorInput( maxMssgShape, shapeInput.msgMax );
 
             isValid = minShape.valid
                 && minMssgShape.valid
@@ -46,9 +46,11 @@
     }
 
 
-    shapeInput.msgPattern   = 'Patrón de búsqueda no coincide';
-    shapeInput.msgMin       = 'El campo es inferior a 1 caracter permitido.';
-    shapeInput.msgMax       = 'El campo es superior a los 255 caracteres permitidos.';
+    shapeInput.msgPattern   ??= 'Patrón de búsqueda no coincide';
+    shapeInput.msgMin       ??= 'El campo es inferior a 1 caracter permitido.';
+    shapeInput.msgMax       ??= 'El campo es superior a los 255 caracteres permitidos.';
+    shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
+    shapeInput.msgMaxLength ??= `El campo superior a los ${shapeInput.maxLength ?? 0} caracteres permitidos.`
 
 
     const minLengthShape = {
@@ -60,7 +62,7 @@
         type        : 'number',
         shape       : 'input',
         valid       : true,
-        min         : 1,
+        min         : 0,
         max         : 255,
         msgMin      : 'El campo es inferior a 1 caracter permitido.',
         msgMax      : 'El campo es superior a los 255 caracteres permitidos.'
@@ -95,7 +97,7 @@
         type        : 'number',
         shape       : 'input',
         valid       : true,
-        min         : 1,
+        min         : 0,
         max         : 255,
         msgMin      : 'El campo es inferior a 1 caracter permitido.',
         msgMax      : 'El campo es superior a los 255 caracteres permitidos.'
@@ -233,7 +235,10 @@
         shapeInput  = { minLengthShape }
         onInput     = {( value ) => shapeInput.minLength = Number( value )}
         value       = { String( shapeInput.minLength || '' ) }
-        setError    = { () =>  minLengthShape.valid = errorInput( minLengthShape, shapeInput.minLength?.toString()) }
+        setError    = { () => minLengthShape.valid = errorInput(
+            {...minLengthShape},
+            shapeInput.minLength?.toString()
+        )}
     />
 
     <Input
@@ -244,14 +249,24 @@
         }}
         onInput     = {( value ) => shapeInput.msgMinLength = value }
         value       = { shapeInput.msgMinLength }
-        setError    = { () => minLengthMssgShape.valid = errorInput( minLengthMssgShape, shapeInput.msgMinLength || undefined )}
+        setError    = { () => minLengthMssgShape.valid = errorInput(
+            {...minLengthMssgShape,
+                required: ( shapeInput.minLength ?? 0 ) > 0
+            },
+            shapeInput.msgMinLength
+        )}
     />
 
     <Input
         shapeInput  = {{ ...maxLengthShape }}
         onInput     = {( value ) => shapeInput.maxLength = Number( value )}
         value       = { String( shapeInput.maxLength || '' )}
-        setError    = { () => maxLengthShape.valid = errorInput( maxLengthShape, shapeInput.maxLength?.toString() )}
+        setError    = { () => maxLengthShape.valid = errorInput(
+            {...maxLengthShape,
+                required: ( shapeInput.maxLength ?? 0 ) > 0
+            },
+            shapeInput.maxLength?.toString()
+        )}
     />
 
     <Input
@@ -262,7 +277,12 @@
         }}
         onInput     = {( value ) => shapeInput.msgMaxLength = value }
         value       = { shapeInput.msgMaxLength }
-        setError    = { () => maxLengthMssgShape.valid = errorInput( maxLengthMssgShape, shapeInput.msgMaxLength || undefined )}
+        setError    = { () => maxLengthMssgShape.valid = errorInput(
+            {...maxLengthMssgShape,
+                required: ( shapeInput.maxLength ?? 0 ) > 0
+            },
+            shapeInput.msgMaxLength
+        )}
     />
 
     {#if shapeInput.type !== 'number' && shapeInput.shape === 'input' }
@@ -281,7 +301,7 @@
             onInput     = {( value ) => shapeInput.msgPattern = value }
             value       = { shapeInput.msgPattern }
             setError    = { () => patternMssgShape.valid = errorInput(
-                { ...patternMssgShape,
+                {...patternMssgShape,
                     required: ( shapeInput.pattern?.length ?? 0 ) > 0
                 },
                 shapeInput.msgPattern
@@ -305,7 +325,7 @@
         onInput     = {( value ) => shapeInput.msgMin = value }
         value       = { shapeInput.msgMin }
         setError    = { () => minMssgShape.valid = errorInput(
-            { ...minMssgShape,
+            {...minMssgShape,
                 required: ( shapeInput.min ?? 0 ) > 0
             },
             shapeInput.msgMin
@@ -327,7 +347,7 @@
         onInput     = {( value ) => shapeInput.msgMax = value }
         value       = { shapeInput.msgMax }
         setError    = { () => maxMssgShape.valid = errorInput(
-            { ...maxMssgShape,
+            {...maxMssgShape,
                 required: ( shapeInput.max ?? 0 ) > 0
             },
             shapeInput.msgMax
