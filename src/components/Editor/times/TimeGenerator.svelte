@@ -75,14 +75,14 @@
                 type        : 'number',
                 shape       : 'input',
                 placeholder : 'Mínimo',
-                value       : min.toString(),
                 min         : 0,
                 max         : 59
             }}
-            onInput={(e) => {
-                const value = parseInt(( e.target as HTMLInputElement ).value );
+            onInput={( val) => {
+                const value = parseInt( val );
                 min = isNaN( value ) ? 0 : value;
             }}
+            value={min.toString()}
         />
 
         <Input
@@ -93,14 +93,14 @@
                 type        : 'number',
                 shape       : 'input',
                 placeholder : 'Máximo',
-                value       : max.toString(),
                 min         : 0,
                 max         : 59
             }}
-            onInput={(e) => {
-                const value = parseInt(( e.target as HTMLInputElement ).value );
+            onInput={( val) => {
+                const value = parseInt( val );
                 max = isNaN( value ) ? 59 : value;
             }}
+            value={max.toString()}
         />
 
         <Input
@@ -111,14 +111,14 @@
                 type        : 'number',
                 shape       : 'input',
                 placeholder : 'Salto',
-                value       : step.toString(),
                 min         : 1,
                 max         : 30
             }}
-            onInput={(e) => {
-                const value = parseInt(( e.target as HTMLInputElement).value );
+            onInput={( val) => {
+                const value = parseInt( val );
                 step = isNaN( value ) ? 5 : value;
             }}
+            value = {step.toString()}
         />
 
         <div class="flex gap-2 items-start justify-start w-full">
@@ -153,13 +153,13 @@
                 placeholder : 'Seleccione las horas',
                 multiple    : true,
                 shape       : 'select',
-                options     : hourOptions,
-                selected    : selectedHours
+                options     : hourOptions
             }}
             onSelectedChange={( value: SelectInput ) => {
                 selectedHours = ( value as string[] ) || [];
                 onHourListChange( selectedHours.map( h => parseInt( h )));
             }}
+            value={selectedHours}
         />
 
         <VirtualSelect
@@ -171,12 +171,12 @@
                 multiple    : true,
                 shape       : 'select',
                 options     : minuteOptions,
-                selected    : selectedMinutes
             }}
             onSelectedChange={( value: SelectInput ) => {
                 selectedMinutes = ( value as string[] ) || [];
                 onMinuteListChange( selectedMinutes.map( m => parseInt( m )));
             }}
+            value = { selectedMinutes }
         />
     </div>
 </div>
