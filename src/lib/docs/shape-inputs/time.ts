@@ -88,8 +88,10 @@ Por ejemplo, para generar horas laborales con intervalos de 30 minutos:
 Esto generaría las siguientes opciones:
 - Horas: 9, 10, 11, 12, 13, 14, 15, 16, 17
 - Minutos: 0, 30
+- El botón con el ícono de 24 es para generar las horas.
+- El botón con el ícno de 15 es para generar los minutos.
 
-![Generador de rangos](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744676300/UAI/dynamic-form/time/time_range_generator.png)
+![Generador de rangos](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744921504/UAI/dynamic-form/time/2cbbf497-b496-46f2-86b9-af4836763da9.png)
 
 ## Estilos personalizables
 
