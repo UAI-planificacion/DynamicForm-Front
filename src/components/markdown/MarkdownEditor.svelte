@@ -225,7 +225,7 @@
 				: 'hidden xl:flex md:gap-1 2xl:gap-1.5 p-2'
 			: dynamicMode
 				? 'hidden @xl:flex @xl:gap-0.5 @xl:ml-0.5 @2xl:ml-2 @2xl:gap-1'
-				: 'hidden xl:hidden ml-2';
+				: 'hidden xl:flex ml-2';
 
 	const updateGridButtonsMobile = () =>
 		shapeInput.preview
@@ -247,7 +247,6 @@
 <div class="grid {updateGridClass()} bg-white dark:bg-zinc-700 rounded-lg shadow-lg overflow-hidden">
     <div class="relative">
         <div class={ shapeInput.boxMarkdownClass ?? (styles.markdown as InputStyle).box }>
-
             <!-- Desktop view -->
             <div class="hidden flex-wrap {updateGridButtonsDesktop()}">
                 <!-- Menú de títulos personalizado -->
@@ -267,7 +266,7 @@
                             <HeadingMarkIcon />
                         </button>
                     </svelte:fragment>
-                    
+
                     <svelte:fragment slot="content">
                         {#each headingTools as tool}
                             <button
@@ -351,7 +350,7 @@
                         </svg>
                     </button>
                 </svelte:fragment>
-                
+
                 <svelte:fragment slot="content">
                     <!-- Submenú de títulos -->
                     <DropdownMenu 
@@ -378,7 +377,7 @@
                                 </div>
                             </button>
                         </svelte:fragment>
-                        
+
                         <svelte:fragment slot="content">
                             {#each headingTools as tool}
                                 <button
@@ -476,7 +475,7 @@
             on:keyup	= { updateSelection }
             on:click	= { updateSelection }
             on:keydown	= { handleKeydown }
-            on:input    = { ( value: Event ) => {onInput( ( value.target as HTMLTextAreaElement ).value ); setError() }}
+            on:input    = {( value: Event ) => {onInput( ( value.target as HTMLTextAreaElement ).value ); setError() }}
             readonly 	= { shapeInput.readonly }
             disabled 	= { shapeInput.disabled }
             class		= { shapeInput.inputMarkdownClass ?? ( styles.markdown as InputStyle ).input }
