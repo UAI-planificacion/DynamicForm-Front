@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    // import { onMount } from "svelte";
 
     import { Accordion, type DateRange }    from "bits-ui";
 	import { v4 as uuid }	                from 'uuid';
@@ -57,17 +57,17 @@
     shapeInput.msgRequired  = 'El campo es requerido.'
 
 
-    onMount(() => {
-        if ( shapeInput.shape === 'textarea' || shapeInput.shape === 'input' ) {
-            shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
-            shapeInput.msgMaxLength ??= `El campo superior a los ${shapeInput.maxLength ?? 0} caracteres permitidos.`
-        }
+    // onMount(() => {
+    //     if ( shapeInput.shape === 'textarea' || shapeInput.shape === 'input' ) {
+    //         shapeInput.msgMinLength ??= `El campo inferior a los ${shapeInput.minLength ?? 0} caracteres permitidos.`
+    //         shapeInput.msgMaxLength ??= `El campo superior a los ${shapeInput.maxLength ?? 0} caracteres permitidos.`
+    //     }
 
-		if ( shapeInput.shape === 'button' ) {
-			shapeInput.externalErrorMsg ??= 'Ocurrió un error en la conexión.'
-			shapeInput.invalidErrorMsg	??= 'Hay un error en el formulario.'
-		}
-    });
+	// 	if ( shapeInput.shape === 'button' ) {
+	// 		shapeInput.externalErrorMsg ??= 'Ocurrió un error en la conexión.'
+	// 		shapeInput.invalidErrorMsg	??= 'Hay un error en el formulario.'
+	// 	}
+    // });
 
 
     let editing: boolean = false;
