@@ -12,17 +12,18 @@
     export let countSend        : number;
 
 
-    $: if ( countSend > 0 && shapeInput.httpList && shapeInput.httpList.length > 0 ) {
-        shapeInput.httpList.forEach((http, index) => {
+    $: if ( countSend ) {
+        shapeInput.httpList?.forEach((http, index) => {
             responseMssgList[index].valid   = errorInput( responseMssgList[index], http.message );
-            const selected = http.code.toString() === '0' ? undefined : http.code.toString()
-            codeSelectList[index].selected = selected;
-            codeSelectList[index].valid = errorSelect( codeSelectList[index], selected );
+            const selected = http.code.toString() === '0' ? undefined : http.code.toString();
+            codeSelectList[index] = { ...codeSelectList[index], required: true, selected };
+            codeSelectList[index].valid = errorSelect(codeSelectList[index], selected);
         });
-        
 
-        const allMessagesValid  = responseMssgList.slice(0, shapeInput.httpList.length).every(item => item.valid);
-        const allCodesValid     = codeSelectList.slice(0, shapeInput.httpList.length).every(item => item.valid);
+        codeSelectList = [...codeSelectList];
+
+        const allMessagesValid  = responseMssgList.every( item => item.valid );
+        const allCodesValid     = codeSelectList.every( item => item.valid );
 
         isButtonValid = allMessagesValid && allCodesValid;
     }
@@ -53,19 +54,19 @@
     }
 
 
-    const createValidationItem = () => ({
+    const createValidationItem = {
         ...basicInput,
         id          : uuid(),
         name        : 'message',
         placeholder : 'Mensaje de respuesta',
         value       : '',
-        msgRequired : 'El mensaje es requerido.',
         msgMinLength: 'El mensaje debe tener al menos 3 caracteres.',
         msgMaxLength: 'El mensaje debe tener menos de 100 caracteres.',
-    });
+        msgRequired : 'El mensaje es requerido.',
+    } as ShapeInput;
 
 
-    const createCodeSelectItem = () => ({
+    const createCodeSelectItem = {
         id			: uuid(),
         name		: 'code',
         shape		: 'select' as const,
@@ -77,17 +78,17 @@
         searchPlaceholder: 'Buscar código',
         heightPanel : 7,
         valid       : true,
-    });
+    } as ShapeInput;
 
 
     let responseMssgList: ShapeInput[] = Array.from(
         { length: shapeInput.httpList?.length || 0 },
-        () => createValidationItem()
+        () => ({ ...createValidationItem, id: uuid() })
     );
 
     let codeSelectList: ShapeInput[] = Array.from(
         { length: shapeInput.httpList?.length || 0 },
-        () => createCodeSelectItem()
+        () => ({ ...createCodeSelectItem, id: uuid() })
     );
 
 
@@ -99,12 +100,12 @@
 
         responseMssgList = [
             ...responseMssgList,
-            createValidationItem()
+            createValidationItem
         ];
 
         codeSelectList = [
             ...codeSelectList,
-            createCodeSelectItem()
+            createCodeSelectItem
         ];
     };
 </script>
@@ -164,25 +165,33 @@
 
     <div class="grid @lg:grid-cols-[1.3fr,2fr,auto] grid-cols-1 gap-2 items-start overflow-auto py-1 w-full">
         {#each shapeInput.httpList! as http, index}
-            <VirtualSelect
-                shapeInput = {{ ...codeSelectList[index],
-                    options: getAvailableHttpCodes(index),
-                    selected: http.code.toString()
-                }}
-                onSelectedChange = {(value) => {
-                    if ( value instanceof Array || value === undefined ) return;
-                    if ( !shapeInput.httpList ) return;
-                    shapeInput.httpList[index].code = parseInt( value );
-                    codeSelectList[index].selected = value;
-                }}
-                value = { http.code.toString() ?? undefined }
-                setError = {() => {
-                    codeSelectList[index].valid = errorSelect(
-                        codeSelectList[index], 
-                        http.code ? http.code.toString() : undefined
-                    );
-                }}
-            />
+            <div>
+                <VirtualSelect
+                    shapeInput = {{ ...codeSelectList[index],
+                        options: getAvailableHttpCodes(index),
+                        selected: http.code.toString()
+                    }}
+                    onSelectedChange = {(value) => {
+                        if ( value instanceof Array || value === undefined ) return;
+                        if ( !shapeInput.httpList ) return;
+                        shapeInput.httpList[index].code = parseInt( value );
+                        codeSelectList[index].selected = value;
+                        codeSelectList[index].required = true;
+                    }}
+                    value = { String( http.code )}
+                    setError = {() => {
+                        codeSelectList[index].valid = errorSelect(
+                            {...codeSelectList[index], required:true }, 
+                            http.code ? http.code.toString() : undefined
+                        );
+                    }}
+                />
+                {#if !codeSelectList[index].valid && codeSelectList[index].msgRequired}
+                    <span class="text-sm text-red-500 font-semibold">
+                        {codeSelectList[index].msgRequired}
+                    </span>
+                {/if}
+            </div>
 
             <Input
                 shapeInput  = {{ ...responseMssgList[index] }}
@@ -196,7 +205,7 @@
                 onInput     = {(value: string) => {
                     if (!shapeInput.httpList) return;
                     shapeInput.httpList[index].message = value;
-                    responseMssgList[index].valid = errorInput(responseMssgList[index], value);
+                    responseMssgList[index].valid = errorInput( responseMssgList[index],value );
                 }}
             />
 
