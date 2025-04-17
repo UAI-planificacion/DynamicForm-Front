@@ -41,7 +41,7 @@
 .circle {
   width: 20px;
   height: 20px;
-  background-color: rgb(245 158 11);
+  background-color: rgb(11, 140, 245);
   border-radius: 50%;
   margin: 2px;
   animation: bounce 1.2s infinite ease-in-out;
