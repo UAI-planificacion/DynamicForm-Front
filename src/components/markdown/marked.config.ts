@@ -108,14 +108,16 @@ marked.use({
                 .join("");
 
             return `
-                <table class="table-auto border-collapse border border-zinc-300 dark:border-zinc-600 w-full text-left mb-6">
-                    <thead">
-                        <tr>${headerHtml}</tr>
-                    </thead>
-                    <tbody>
-                        ${bodyHtml}
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="table-auto border-collapse border border-zinc-300 dark:border-zinc-600 w-full text-left mb-6">
+                        <thead>
+                            <tr>${headerHtml}</tr>
+                        </thead>
+                        <tbody>
+                            ${bodyHtml}
+                        </tbody>
+                    </table>
+                </div>
             `;
         },
 
