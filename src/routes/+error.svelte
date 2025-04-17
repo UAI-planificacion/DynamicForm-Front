@@ -20,7 +20,7 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="md:w-1/2 p-8 flex items-center justify-center">
                     <div class="text-center">
                         <svg class="w-32 h-32 mx-auto text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
