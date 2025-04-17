@@ -24,9 +24,6 @@
 </main>
 
 <style>
-	:global(*) {
-		user-select: none;
-	}
 
     :global(*::-webkit-scrollbar) {
         width: 8px;

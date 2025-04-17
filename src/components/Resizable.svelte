@@ -22,6 +22,8 @@
 		isLeftClosing = false;
 		isRightClosing = false;
 
+		document.body.classList.add('resizing-in-progress');
+
 		const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
 		initialX = clientX;
 		initialLeftWidth = leftPanel.offsetWidth;
@@ -82,6 +84,8 @@
 
 	function stopDragging() {
 		isDragging = false;
+
+		document.body.classList.remove('resizing-in-progress');
 
         document.removeEventListener("mousemove", onDrag);
 		document.removeEventListener("mouseup", stopDragging);
@@ -149,3 +153,13 @@
 		</div>
 	</div>
 </div>
+
+<style>
+    :global(.resizing-in-progress) {
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        cursor: col-resize !important;
+    }
+</style>
