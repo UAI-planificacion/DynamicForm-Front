@@ -46,7 +46,7 @@
     $: if ( countSend > 0 ) {
         shapeVirtual.valid  = errorSelect( shapeVirtual, shapeInput.method );
         shapeURL.valid      = errorInput( shapeURL, shapeInput.urlSend );
-        
+
         isButtonValid = shapeVirtual.valid && shapeURL.valid;
         console.log('🚀 send:', isButtonValid)
     }
