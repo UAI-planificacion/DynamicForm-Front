@@ -19,7 +19,12 @@
             isSelectionValid = true;
         else 
             isSelectionValid = false;
+
+        isSelectionValid = heightPanelShape.valid ?? false;
     }
+
+
+    shapeInput.heightPanel = 5;
 
 
     const isShapeOptionArray = (arr: any[]): boolean => 
@@ -67,6 +72,23 @@
 
 
     let isGroupValid = value === 'groups' ? false : true;
+
+
+    const heightPanelShape = {
+        id          : uuid(),
+        name        : 'height-panel',
+        placeholder : 'Ingrese la altura del panel',
+        value       : shapeInput.heightPanel?.toString() ?? '5',
+        shape       : 'input',
+        type        : 'number',
+        valid       : true,
+        required    : true,
+        msgRequired : 'La altura del panel es requerida',
+        min         : 1,
+        max         : 15,
+        msgMin      : 'Mínimo 1 unidad permitida',
+        msgMax      : 'Máximo 15 unidades permitidas'
+    } as ShapeInput;
 
 
     const placeholderSearchShape = {
@@ -168,39 +190,53 @@
     />
 
     <div class="grid grid-cols-1 @lg:grid-cols-2 items-center gap-2">
-        <Check
-            shapeInput = {{
-                id      : uuid(),
-                name    : 'multiple',
-                label   : 'Selección múltiple',
-                checked : shapeInput.multiple
-            }}
-            onChange = {( e ) => {
-                shapeInput.multiple = e;
-                shapeInput.selected = undefined;
-            }}
-        />
-
-        <div class="grid grid-cols-1 @xl:grid-cols-2 items-center gap-2">
+        <div class="space-y-2">
             <Check
-                onChange    = {( e ) => shapeInput.search = e }
-                shapeInput  = {{
+                shapeInput = {{
                     id      : uuid(),
-                    name    : 'search',
-                    label   : 'Con buscador',
-                    checked : shapeInput.search
+                    name    : 'multiple',
+                    label   : 'Selección múltiple',
+                    checked : shapeInput.multiple
+                }}
+                onChange = {( e ) => {
+                    shapeInput.multiple = e;
+                    shapeInput.selected = undefined;
                 }}
             />
 
             <Input
-                shapeInput  = {{ ...placeholderSearchShape, disabled: !shapeInput.search, maxLength: !shapeInput.search ? undefined : 50 }}
-                value       = { shapeInput.searchPlaceholder }
-                onInput     = {( value ) => shapeInput.searchPlaceholder = value }
-                setError    = {() => { placeholderSearchShape.valid = errorInput(
-                    {...placeholderSearchShape, maxLength: !shapeInput.search ? undefined : 50},
-                    shapeInput.searchPlaceholder
+                shapeInput  = {{ ...heightPanelShape }}
+                value       = { shapeInput.heightPanel?.toString() }
+                onInput     = {( value ) => shapeInput.heightPanel = Number(value) }
+                setError    = {() => { heightPanelShape.valid = errorInput(
+                    heightPanelShape,
+                    shapeInput.heightPanel?.toString()
                 )}}
             />
+        </div>
+
+        <div class="grid grid-cols-1 @xl:grid-cols-1 items-center gap-2">
+            <div class="space-y-2">
+                <Check
+                    onChange    = {( e ) => shapeInput.search = e }
+                    shapeInput  = {{
+                        id      : uuid(),
+                        name    : 'search',
+                        label   : 'Con buscador',
+                        checked : shapeInput.search
+                    }}
+                />
+
+                <Input
+                    shapeInput  = {{ ...placeholderSearchShape, disabled: !shapeInput.search, maxLength: !shapeInput.search ? undefined : 50 }}
+                    value       = { shapeInput.searchPlaceholder }
+                    onInput     = {( value ) => shapeInput.searchPlaceholder = value }
+                    setError    = {() => { placeholderSearchShape.valid = errorInput(
+                        {...placeholderSearchShape, maxLength: !shapeInput.search ? undefined : 50},
+                        shapeInput.searchPlaceholder
+                    )}}
+                />
+            </div>
         </div>
     </div>
 </div>
