@@ -1,4 +1,4 @@
-export const SELECT_SHAPE = `# Componente Selector
+export const SELECT_SHAPE = `# Componente Seleccionable
 
 ## Descripción
 
