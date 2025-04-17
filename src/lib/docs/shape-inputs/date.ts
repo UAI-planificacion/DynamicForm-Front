@@ -179,7 +179,7 @@ const appointmentPicker = {
 
 El componente \`GenerateValidDates.svelte\` proporciona una interfaz visual para configurar fechas deshabilitadas:
 
-![Generador de fechas inválidas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744674645/UAI/dynamic-form/date/disable_dates_Forms.gif)
+![Generador de fechas inválidas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744920862/UAI/dynamic-form/date/c453afa0-04b9-4673-8e6f-a1117bf445bd.png)
 
 Esta interfaz ofrece las siguientes opciones:
 
@@ -196,6 +196,12 @@ Esta interfaz ofrece las siguientes opciones:
 3. Las fechas resultantes se añaden al array \`invalidDates\`
 4. También es posible añadir fechas individuales específicas mediante el selector de fecha individual
 5. Todas las fechas deshabilitadas se muestran en una lista donde pueden ser eliminadas individualmente
+
+#### ¿Cómo funcionan los checkboxes de los días de la semana?
+
+Cuando se utiliza el selector de rango, se muestran checkboxes para cada día de la semana (lunes, martes, etc.). Estos checkboxes permiten elegir exactamente qué días serán considerados inválidos dentro del rango seleccionado. Por ejemplo, si solo seleccionas "sábado" y "domingo", únicamente los sábados y domingos dentro del rango serán agregados a la lista de fechas inválidas. Los demás días de la semana permanecerán válidos.
+
+> **Importante:** Esta funcionalidad solo aplica al seleccionar un rango de fechas. Los días seleccionados en los checkboxes determinan qué fechas del rango serán invalidadas. Si no se selecciona ningún día, no se invalidará ninguna fecha del rango.
 
 ### Limitaciones adicionales
 
