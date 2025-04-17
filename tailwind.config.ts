@@ -8,6 +8,11 @@ export default {
     content		: ['./src/**/*.{html,js,svelte,ts}'],
     plugins		: [typography, forms, containerQueries],
     theme		: {
-        extend: {}
+        extend: {
+            colors: {
+                'primary': '#0083bb',
+                'background': '#181a1b'
+            }
+        }
     },
 } satisfies Config;
