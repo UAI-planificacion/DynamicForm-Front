@@ -122,7 +122,7 @@ El componente Tiempo incluye validación integrada:
 
 ## Estilos con Tailwind
 
-![Tailwind time picker](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744676400/UAI/dynamic-form/time/time_styles.png)
+![Tailwind time picker](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744926211/UAI/dynamic-form/time/d3c498db-403a-47de-828c-9584ff562f29.png)
 
 ## Ejemplo de uso
 
