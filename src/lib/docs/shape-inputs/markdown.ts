@@ -74,9 +74,11 @@ El editor proporciona un menú desplegable para insertar encabezados de diferent
 
 | Herramienta | Descripción | Sintaxis |
 |-------------|-------------|----------|
-| Código | Inserta un bloque de código | \`\`\`\nCódigo\n\`\`\` |
+| Código | Inserta un bloque de código | \`\`\` console.log('hola'); \`\`\` |
 | Fórmula | Inserta una fórmula matemática | \`$fórmula$\` |
-| Tabla | Abre un generador de tablas interactivo | \`| Encabezado | Encabezado |\`<br>\`| --- | --- |\`<br>\`| Celda | Celda |\` |
+| Tabla | Abre un generador de tablas interactivo | Ver ejemplo abajo |
+
+\`| Encabezado | Encabezado |\`<br>\`| --- | --- |\`<br>\`| Celda | Celda |\`
 
 ## Generador de tablas
 
@@ -85,8 +87,9 @@ El componente incluye un generador de tablas visual que permite:
 1. Seleccionar el número de filas y columnas arrastrando el cursor
 2. Previsualizar la estructura de la tabla antes de insertarla
 3. Generar automáticamente el código Markdown para la tabla
+4. Solo con desplazar el mouse, se puede previsualizar la tabla hasta un máximo de 10x10 filas y columnas
 
-![Generador de tablas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744675100/UAI/dynamic-form/markdown/table_generator.gif)
+![Generador de tablas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744927321/UAI/dynamic-form/markdown/table_iyl05f.gif)
 
 ## Funcionalidades especiales
 
@@ -127,7 +130,7 @@ El componente Markdown incluye validación integrada:
 
 ## Estilos con Tailwind
 
-![Tailwind markdown](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744675200/UAI/dynamic-form/markdown/markdown_styles.png)
+![Tailwind markdown](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744926911/UAI/dynamic-form/markdown/d39eaa9b-2904-4720-820a-8379a94ddbf1.png)
 
 ## Ejemplo de uso
 
