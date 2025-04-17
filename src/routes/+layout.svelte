@@ -56,6 +56,6 @@
     }
 
     :global(.dark *::-webkit-scrollbar-thumb:hover) {
-        background-color: rgb(63 63 70); /* bg-zinc-700 for dark mode */
+        background-color: rgb(86, 86, 97); /* bg-zinc-700 for dark mode */
     }
 </style>
