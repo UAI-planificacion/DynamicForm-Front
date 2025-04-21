@@ -271,7 +271,7 @@
                         {#each headingTools as tool}
                             <button
                                 type="button"
-                                class="flex h-10 w-full hover:rounded-lg select-none items-center rounded-button py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                                class="flex h-10 w-full hover:rounded-lg select-none items-center rounded-button py-3 pl-3 pr-2.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
                                 on:click={() => {
                                     tool.action();
                                     desktopHeadingOpen = false;
@@ -279,7 +279,7 @@
                                 }}
                                 aria-label={tool.title}
                             >
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center">
                                     <tool.icon />
                                 </div>
                             </button>
