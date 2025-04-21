@@ -24,78 +24,82 @@
         const windowHeight = window.innerHeight;
         const windowWidth = window.innerWidth;
         
+        // Posición inicial del contenido basada en la posición del trigger
+        let top: number = 0;
+        let left: number = 0;
+        
         // Calcular posición basada en la opción seleccionada
         switch(position) {
             case 'bottom':
-                menuStyles = {
-                    top: `${rect.height + offset}px`,
-                    left: '0px',
-                    maxHeight: `${windowHeight - rect.bottom - offset - 20}px`
-                };
+                top = rect.bottom + offset;
+                left = rect.left;
                 break;
             case 'top':
-                menuStyles = {
-                    top: `${-contentElement.offsetHeight - offset}px`,
-                    left: '0px'
-                };
+                top = rect.top - contentElement.offsetHeight - offset;
+                left = rect.left;
                 break;
             case 'right':
-                menuStyles = {
-                    top: '0px',
-                    left: `${rect.width + offset}px`
-                };
+                top = rect.top;
+                left = rect.right + offset;
                 break;
             case 'left':
-                menuStyles = {
-                    top: '0px',
-                    left: `${-contentElement.offsetWidth - offset}px`
-                };
+                top = rect.top;
+                left = rect.left - contentElement.offsetWidth - offset;
                 break;
         }
         
-        // Asegurar que el dropdown esté visible en la ventana
-        setTimeout(() => {
+        // Asegurar que el menú no se salga de la pantalla
+        requestAnimationFrame(() => {
             if (!contentElement) return;
             
             const contentRect = contentElement.getBoundingClientRect();
+            const contentWidth = contentRect.width;
+            const contentHeight = contentRect.height;
             
-            // Verificar si el dropdown está fuera de la pantalla y ajustar si es necesario
-            if (contentRect.right > windowWidth) {
-                const overflow = contentRect.right - windowWidth;
-                menuStyles.left = `${parseInt(menuStyles.left || '0') - overflow - 20}px`;
-                updateStyles();
+            // Ajustar posición horizontal si se sale de la pantalla
+            if (left + contentWidth > windowWidth - 20) {
+                left = windowWidth - contentWidth - 20;
+            }
+            if (left < 20) {
+                left = 20;
             }
             
-            if (contentRect.bottom > windowHeight) {
+            // Ajustar posición vertical si se sale de la pantalla
+            if (top + contentHeight > windowHeight - 20) {
                 // Si no cabe abajo, intentar colocarlo arriba
-                if (position === 'bottom') {
-                    menuStyles = {
-                        top: `${-contentElement.offsetHeight - offset}px`,
-                        left: menuStyles.left || '0px'
-                    };
-                    updateStyles();
+                if (position === 'bottom' && rect.top > contentHeight + offset) {
+                    top = rect.top - contentHeight - offset;
+                } else {
+                    // Si no cabe arriba, ajustar la altura máxima
+                    top = Math.max(20, windowHeight - contentHeight - 20);
                 }
             }
-        }, 0);
+            if (top < 20) {
+                top = 20;
+            }
+            
+            // Aplicar estilos
+            contentElement.style.top = `${top}px`;
+            contentElement.style.left = `${left}px`;
+            
+            // Establecer altura máxima para evitar que se salga de la pantalla
+            const maxHeight = windowHeight - top - 20;
+            if (contentHeight > maxHeight) {
+                contentElement.style.maxHeight = `${maxHeight}px`;
+                contentElement.style.overflowY = 'auto';
+            }
+        });
     }
     
-    function updateStyles() {
-        if (contentElement) {
-            Object.entries(menuStyles).forEach(([key, value]) => {
-                // Usar tipado seguro para acceder a style
-                if (key === 'top') contentElement.style.top = value;
-                else if (key === 'left') contentElement.style.left = value;
-                else if (key === 'maxHeight') contentElement.style.maxHeight = value;
-            });
-        }
-    }
+    // Esta función ya no es necesaria ya que aplicamos los estilos directamente
 
     function toggleMenu() {
         open = !open;
         if (open) {
             // Usar requestAnimationFrame para asegurar que el DOM está actualizado
             requestAnimationFrame(() => {
-                setTimeout(positionMenu, 10); // Pequeño retraso para asegurar que el contenido esté renderizado
+                // Usar un retraso mayor para asegurar que el contenido esté completamente renderizado
+                setTimeout(positionMenu, 50);
             });
         }
         // Disparar evento personalizado
@@ -126,14 +130,18 @@
     // Reposicionar el menú cuando cambia el estado
     $: if (open) {
         requestAnimationFrame(() => {
-            setTimeout(positionMenu, 10);
+            // Usar un retraso mayor para asegurar que el contenido esté completamente renderizado
+            setTimeout(positionMenu, 50);
+            // Añadir un segundo intento para casos donde el primer posicionamiento no fue suficiente
+            setTimeout(positionMenu, 150);
         });
     }
 
     // Reposicionar cuando cambia el tamaño de la ventana
     function handleResize() {
         if (open) {
-            positionMenu();
+            // Reposicionar con un pequeño retraso para asegurar que los cálculos sean correctos
+            setTimeout(positionMenu, 50);
         }
     }
 
@@ -176,8 +184,8 @@
     {#if open}
         <div 
             bind:this={contentElement}
-            class="dropdown-menu-content mt-2 z-[1000] {contentClass}"
-            style="position: absolute; {width ? `width: ${width};` : 'width: max-content;'}"
+            class="dropdown-menu-content mt-2 z-[9999] {contentClass}"
+            style="position: fixed; {width ? `width: ${width};` : 'width: max-content;'}"
             role="menu"
             tabindex={trapFocus ? 0 : -1}
             aria-label="Menú desplegable"
@@ -212,7 +220,7 @@
     
     /* Estilos para asegurar que el dropdown se muestre correctamente en todos los navegadores */
     .dropdown-menu-content {
-        position: absolute;
+        position: fixed;
         display: block;
         overflow: visible;
         /* Eliminar min-width para mantener el ancho original */
@@ -220,6 +228,8 @@
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         transform-origin: top left;
         animation: dropdown-appear 0.1s ease-out;
+        max-height: 80vh; /* Limitar altura máxima */
+        overflow-y: auto; /* Permitir scroll si el contenido es muy largo */
     }
     
     @keyframes dropdown-appear {
