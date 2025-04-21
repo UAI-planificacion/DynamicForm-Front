@@ -197,11 +197,11 @@
                             >
                                 <CaretLeftIcon />
                             </button>
-                            
+
                             <div class="text-[15px] font-medium capitalize">
                                 {new Date(currentDate?.year || new Date().getFullYear(), (currentDate?.month || new Date().getMonth() + 1) - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
                             </div>
-                            
+
                             <button 
                                 type="button"
                                 class="rounded-9px bg-background-alt hover:bg-muted inline-flex size-10 items-center justify-center transition-all active:scale-[0.98]"
@@ -214,14 +214,14 @@
                                 <CaretRightIcon />
                             </button>
                         </div>
-                        
+
                         <!-- Calendario simplificado -->
                         <div class="p-3">
                             <div class="grid grid-cols-7 gap-1">
                                 {#each ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'] as day}
                                     <div class="text-muted-foreground text-xs text-center font-medium">{day}</div>
                                 {/each}
-                                
+
                                 {#if true}
                                 <!-- Siempre renderizar el calendario, currentDate ahora siempre tiene un valor -->
                                 {@const year = currentDate.year}
@@ -232,122 +232,117 @@
                                 {@const startOffset = (firstDay.getDay() + 6) % 7} <!-- Ajuste para que la semana comience en lunes -->
                                 {@const today = new Date()}
                                 {@const todayDate = new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate())}
-                                
                                 {#each Array(6 * 7) as _, i}
-                                        {@const dayIndex = i - startOffset + 1}
-                                        {@const isCurrentMonth = dayIndex > 0 && dayIndex <= daysInMonth}
-                                        {@const day = isCurrentMonth ? dayIndex : (dayIndex <= 0 ? dayIndex + new Date(year, month - 2, 0).getDate() : dayIndex - daysInMonth)}
-                                        {@const dateValue = isCurrentMonth ? new CalendarDate(year, month, day) : null}
-                                        {@const isOutOfRange = isCurrentMonth && dateValue && (
-                                            (shapeInput.minValue && dateValue < shapeInput.minValue) || 
-                                            (shapeInput.maxValue && dateValue > shapeInput.maxValue)
-                                        )}
-                                        {@const isInvalidDate = isCurrentMonth && dateValue && shapeInput.invalidDates && shapeInput.invalidDates.includes(dateValue.toString())}
-                                        {@const isInvalid = isOutOfRange || isInvalidDate}
-                                        
-                                        <!-- Determinar si es parte del rango seleccionado -->
-                                        {@const isStart = isCurrentMonth && selectedRange?.start && day === selectedRange.start.day && month === selectedRange.start.month && year === selectedRange.start.year && !isInvalid}
-                                        {@const isEnd = isCurrentMonth && selectedRange?.end && day === selectedRange.end.day && month === selectedRange.end.month && year === selectedRange.end.year && !isInvalid}
-                                        {@const isInRange = isCurrentMonth && !isInvalid && selectedRange?.start && selectedRange?.end && dateValue && 
-                                            (dateValue.compare(selectedRange.start) >= 0 && dateValue.compare(selectedRange.end) <= 0)}
-                                        
-                                        <!-- Determinar si está en el rango de hover durante la selección -->
-                                        {@const isHoverDate = isCurrentMonth && dateValue && hoverDate && 
-                                            day === hoverDate.day && month === hoverDate.month && year === hoverDate.year && !isInvalid}
-                                        {@const isInHoverRange = isCurrentMonth && !isInvalid && selectedRange?.start && !selectedRange?.end && dateValue && hoverDate && 
-                                            ((dateValue.compare(selectedRange.start) >= 0 && dateValue.compare(hoverDate) <= 0) || 
-                                            (dateValue.compare(hoverDate) >= 0 && dateValue.compare(selectedRange.start) <= 0))}
-                                        
-                                        {@const isToday = isCurrentMonth && todayDate.year === year && todayDate.month === month && todayDate.day === day}
-                                        
-                                        <button 
-                                            type="button"
-                                            class="size-8 flex items-center justify-center rounded-md text-sm relative
-                                                {!isCurrentMonth ? 'text-zinc-300 cursor-not-allowed opacity-50' : 
-                                                    isOutOfRange ? 'text-zinc-300 dark:text-zinc-500 cursor-not-allowed opacity-60' : 
-                                                    isInvalidDate ? 'text-zinc-300 dark:text-zinc-500 cursor-not-allowed' : 
-                                                    'hover:bg-blue-100 dark:hover:bg-blue-900/30'}
-                                                {isStart ? 'bg-blue-500 text-white font-bold rounded-l-md' : ''}
-                                                {isEnd ? 'bg-blue-500 text-white font-bold rounded-r-md' : ''}
-                                                {isInRange && !isStart && !isEnd ? 'bg-blue-100 dark:bg-blue-900/30 text-foreground hover:bg-blue-200 dark:hover:bg-blue-800/30' : ''}
-                                                {isInHoverRange && !isStart && !isEnd && !isInRange ? 'bg-blue-50 dark:bg-blue-900/20 text-foreground' : ''}
-                                                {isToday && !isStart && !isEnd && !isInRange && !isInHoverRange ? 'font-bold text-blue-500' : ''}"
-                                            disabled={!isCurrentMonth || isInvalid}
-                                            on:mouseenter={() => {
-                                                if (isCurrentMonth && !isInvalid) {
-                                                    hoverDate = new CalendarDate(year, month, day);
+                                    {@const dayIndex = i - startOffset + 1}
+                                    {@const isCurrentMonth = dayIndex > 0 && dayIndex <= daysInMonth}
+                                    {@const day = isCurrentMonth ? dayIndex : (dayIndex <= 0 ? dayIndex + new Date(year, month - 2, 0).getDate() : dayIndex - daysInMonth)}
+                                    {@const dateValue = isCurrentMonth ? new CalendarDate(year, month, day) : null}
+                                    {@const isOutOfRange = isCurrentMonth && dateValue && (
+                                        (shapeInput.minValue && dateValue < shapeInput.minValue) || 
+                                        (shapeInput.maxValue && dateValue > shapeInput.maxValue)
+                                    )}
+                                    {@const isInvalidDate = isCurrentMonth && dateValue && shapeInput.invalidDates && shapeInput.invalidDates.includes(dateValue.toString())}
+                                    {@const isInvalid = isOutOfRange || isInvalidDate}
+
+                                    <!-- Determinar si es parte del rango seleccionado -->
+                                    {@const isStart = isCurrentMonth && selectedRange?.start && day === selectedRange.start.day && month === selectedRange.start.month && year === selectedRange.start.year && !isInvalid}
+                                    {@const isEnd = isCurrentMonth && selectedRange?.end && day === selectedRange.end.day && month === selectedRange.end.month && year === selectedRange.end.year && !isInvalid}
+                                    {@const isInRange = isCurrentMonth && !isInvalid && selectedRange?.start && selectedRange?.end && dateValue && 
+                                        (dateValue.compare(selectedRange.start) >= 0 && dateValue.compare(selectedRange.end) <= 0)}
+
+                                    <!-- Determinar si está en el rango de hover durante la selección -->
+                                    {@const isInHoverRange = isCurrentMonth && !isInvalid && selectedRange?.start && !selectedRange?.end && dateValue && hoverDate && 
+                                        ((dateValue.compare(selectedRange.start) >= 0 && dateValue.compare(hoverDate) <= 0) || 
+                                        (dateValue.compare(hoverDate) >= 0 && dateValue.compare(selectedRange.start) <= 0))}
+                                    {@const isToday = isCurrentMonth && todayDate.year === year && todayDate.month === month && todayDate.day === day}
+
+                                    <button 
+                                        type="button"
+                                        class={shapeInput.rangeDateClass ?? `${(styles.datepicker as InputStyle).rangeItem}`}
+                                        class:current-month={isCurrentMonth}
+                                        class:out-of-range={isOutOfRange}
+                                        class:invalid-date={isInvalidDate}
+                                        class:start-date={isStart}
+                                        class:end-date={isEnd}
+                                        class:in-range={isInRange}
+                                        class:in-hover-range={isInHoverRange}
+                                        class:today={isToday}
+                                        disabled={!isCurrentMonth || isInvalid}
+                                        on:mouseenter={() => {
+                                            if (isCurrentMonth && !isInvalid) {
+                                                hoverDate = new CalendarDate(year, month, day);
+                                            }
+                                        }}
+                                        on:mouseleave={() => {
+                                            if (isCurrentMonth && !isInvalid && hoverDate?.day === day && hoverDate?.month === month && hoverDate?.year === year) {
+                                                hoverDate = null;
+                                            }
+                                        }}
+                                        on:click={() => {
+                                            if (isCurrentMonth && !isInvalid) {
+                                                const newDate = new CalendarDate(year, month, day);
+
+                                                // Verificar si se está haciendo clic en una fecha ya seleccionada
+                                                if (isStart && selectedRange?.end === undefined) {
+                                                    // Si se hace clic en la fecha de inicio y no hay fecha final, deseleccionar todo
+                                                    handleValueChange(undefined);
+                                                    setError();
+                                                    // Mantener el mes actual visible
+                                                    currentDate = new CalendarDate(year, month, 1);
+                                                    return;
+                                                } else if (isStart && selectedRange?.end) {
+                                                    // Si se hace clic en la fecha de inicio y hay fecha final, mantener solo la fecha final
+                                                    handleValueChange({
+                                                        start: selectedRange.end,
+                                                        end: undefined
+                                                    });
+                                                    setError();
+                                                    return;
+                                                } else if (isEnd) {
+                                                    // Si se hace clic en la fecha final, mantener solo la fecha de inicio
+                                                    handleValueChange({
+                                                        start: selectedRange?.start,
+                                                        end: undefined
+                                                    });
+                                                    setError();
+                                                    return;
                                                 }
-                                            }}
-                                            on:mouseleave={() => {
-                                                if (isCurrentMonth && !isInvalid && hoverDate?.day === day && hoverDate?.month === month && hoverDate?.year === year) {
-                                                    hoverDate = null;
-                                                }
-                                            }}
-                                            on:click={() => {
-                                                if (isCurrentMonth && !isInvalid) {
-                                                    const newDate = new CalendarDate(year, month, day);
-                                                    
-                                                    // Verificar si se está haciendo clic en una fecha ya seleccionada
-                                                    if (isStart && selectedRange?.end === undefined) {
-                                                        // Si se hace clic en la fecha de inicio y no hay fecha final, deseleccionar todo
-                                                        handleValueChange(undefined);
-                                                        setError();
-                                                        // Mantener el mes actual visible
-                                                        currentDate = new CalendarDate(year, month, 1);
-                                                        return;
-                                                    } else if (isStart && selectedRange?.end) {
-                                                        // Si se hace clic en la fecha de inicio y hay fecha final, mantener solo la fecha final
-                                                        handleValueChange({
-                                                            start: selectedRange.end,
-                                                            end: undefined
-                                                        });
-                                                        setError();
-                                                        return;
-                                                    } else if (isEnd) {
-                                                        // Si se hace clic en la fecha final, mantener solo la fecha de inicio
-                                                        handleValueChange({
-                                                            start: selectedRange?.start,
-                                                            end: undefined
-                                                        });
-                                                        setError();
-                                                        return;
-                                                    }
-                                                    
-                                                    // Lógica para seleccionar rango (original)
-                                                    if (!selectedRange?.start || (selectedRange?.start && selectedRange?.end)) {
-                                                        // Si no hay inicio o ya hay un rango completo, establecer nuevo inicio
+
+                                                // Lógica para seleccionar rango (original)
+                                                if (!selectedRange?.start || (selectedRange?.start && selectedRange?.end)) {
+                                                    // Si no hay inicio o ya hay un rango completo, establecer nuevo inicio
+                                                    handleValueChange({
+                                                        start: newDate,
+                                                        end: undefined
+                                                    });
+                                                } else if (selectedRange?.start && !selectedRange?.end) {
+                                                    // Si hay inicio pero no fin
+                                                    if (newDate.compare(selectedRange.start) < 0) {
+                                                        // Si la nueva fecha es anterior al inicio, intercambiar
                                                         handleValueChange({
                                                             start: newDate,
-                                                            end: undefined
+                                                            end: selectedRange.start
                                                         });
-                                                    } else if (selectedRange?.start && !selectedRange?.end) {
-                                                        // Si hay inicio pero no fin
-                                                        if (newDate.compare(selectedRange.start) < 0) {
-                                                            // Si la nueva fecha es anterior al inicio, intercambiar
-                                                            handleValueChange({
-                                                                start: newDate,
-                                                                end: selectedRange.start
-                                                            });
-                                                        } else {
-                                                            // Si la nueva fecha es posterior al inicio, establecer como fin
-                                                            handleValueChange({
-                                                                start: selectedRange.start,
-                                                                end: newDate
-                                                            });
-                                                        }
-                                                        
-                                                        // Cerrar popup cuando se completa el rango
-                                                        showPopup = false;
+                                                    } else {
+                                                        // Si la nueva fecha es posterior al inicio, establecer como fin
+                                                        handleValueChange({
+                                                            start: selectedRange.start,
+                                                            end: newDate
+                                                        });
                                                     }
+                                                    
+                                                    // Cerrar popup cuando se completa el rango
+                                                    showPopup = false;
                                                 }
-                                            }}
-                                        >
-                                            {#if isToday && !isStart && !isEnd && !isInRange}
-                                                <div class="absolute top-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"></div>
-                                            {/if}
-                                            {day}
-                                        </button>
-                                    {/each}
+                                            }
+                                        }}
+                                    >
+                                        {#if isToday && !isStart && !isEnd && !isInRange}
+                                            <div class="absolute top-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"></div>
+                                        {/if}
+                                        {day}
+                                    </button>
+                                {/each}
                                 {/if}
                             </div>
                         </div>
@@ -359,35 +354,3 @@
         <Description {shapeInput} date={value} />
     </div>
 </DateRangePicker.Root>
-
-<style>
-    /* Estilos adicionales */
-    :global(.custom-daterangepicker-popup) {
-        max-height: fit-content !important;
-        overflow: hidden !important;
-    }
-    
-    /* Mejorar el hover para modo light y dark */
-    button:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-    
-    :global(.dark) button:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Día seleccionado más visible */
-    button[class*="bg-primary"]:not([class*="bg-primary/20"]):not([class*="bg-primary/30"]) {
-        position: relative;
-        z-index: 1;
-        transform: scale(1.1);
-        transition: transform 0.2s ease;
-    }
-    
-    /* Estilo para días dentro del rango */
-    button[class*="bg-primary/20"] {
-        position: relative;
-        z-index: 0;
-        transition: background-color 0.2s ease;
-    }
-</style>
