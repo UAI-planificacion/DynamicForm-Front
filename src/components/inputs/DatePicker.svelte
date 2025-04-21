@@ -209,13 +209,13 @@
 
                                     <button 
                                         type="button"
-                                        class="size-8 flex items-center justify-center rounded-md text-sm relative
-                                            {!isCurrentMonth ? 'text-zinc-300 cursor-not-allowed opacity-50' : 
-                                                isOutOfRange ? 'text-zinc-300 dark:text-zinc-500 cursor-not-allowed opacity-60' : 
-                                                isInvalidDate ? 'text-zinc-300 dark:text-zinc-500 cursor-not-allowed' : 
-                                                'hover:bg-muted/80 hover:text-foreground'}
-                                            {isSelected ? 'bg-blue-500 text-white font-bold' : ''}
-                                            {isToday && !isSelected && !isInvalid ? 'font-bold text-primary' : ''}"
+                                        class={shapeInput.itemDateClass ?? (styles.datepicker as InputStyle).item}
+                                        class:current-month={isCurrentMonth}
+                                        class:out-of-range={isOutOfRange}
+                                        class:invalid-date={isInvalidDate}
+                                        class:selected={isSelected}
+                                        class:today={isToday}
+                                        class:invalid={isInvalid}
                                         disabled={!isCurrentMonth || isInvalid}
                                         on:click={() => {
                                             if (isCurrentMonth && !isInvalid) {
@@ -253,28 +253,3 @@
         <Description {shapeInput} date={value} />
     </div>
 </DatePicker.Root>
-
-<style>
-    /* Estilos adicionales */
-    :global(.custom-datepicker-popup) {
-        max-height: fit-content !important;
-        overflow: hidden !important;
-    }
-    
-    /* Mejorar el hover para modo light y dark */
-    button:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-    
-    :global(.dark) button:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Día seleccionado más visible */
-    button[class*="bg-primary"] {
-        position: relative;
-        z-index: 1;
-        transform: scale(1.1);
-        transition: transform 0.2s ease;
-    }
-</style>
