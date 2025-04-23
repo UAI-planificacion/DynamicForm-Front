@@ -12,21 +12,20 @@
 	export let loading 		: boolean = false;
 </script>
 
-
 <div class="space-y-1.5 w-full">
 	<Button.Root
         onclick		= { onClick }
 		disabled	= { shapeInput.disabled || loading }
 		name 		= { shapeInput.name }
-		class		= { shapeInput.class_ ?? styles.button }
-		>
-			{#if loading}
-				<span class="mr-2">
-					<LoadIcon />
-				</span>
-			{/if}
+		class		= { shapeInput.buttonClass ?? styles.button }
+	>
+        {#if loading}
+            <span class="mr-2">
+                <LoadIcon />
+            </span>
+        {/if}
 
-			{shapeInput.label}
+        {shapeInput.label}
 	</Button.Root>
 
 	<Description { shapeInput } />
