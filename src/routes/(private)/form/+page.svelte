@@ -340,7 +340,7 @@
 
         <Separator.Root
             orientation = "horizontal"
-            class       = "w-full h-[1px] rounded-lg bg-primary my-4"
+            class       = "w-full h-[1px] rounded-lg bg-primary dark:bg-primary/70 my-4"
         />
     </div>
 
@@ -414,7 +414,7 @@
 
                         <Separator.Root
                             orientation = "horizontal"
-                            class       = "w-full h-[1px] rounded-lg bg-primary my-4"
+                            class       = "w-full h-[1px] rounded-lg bg-primary dark:bg-zinc-700 my-4"
                         />
 
                         <div
@@ -431,7 +431,7 @@
                             <div class="flex items-start gap-2 mt-[1.7rem]">
                                 {#if optionSelected === 'new' }
                                     <button
-                                        class       = "h-10 sm:h-9 w-20 sm:w-40 md:w-36 bg-primary transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
+                                        class       = "h-10 sm:h-9 w-20 sm:w-40 md:w-36 bg-primary transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-blue-600 dark:active:bg-blue-800"
                                         on:click    = { saveTemplate }
                                         disabled    = { isLoading }
                                     >
@@ -447,7 +447,7 @@
                                     </button>
                                 {:else }
                                     <button
-                                        class       = "h-10 sm:h-9 w-20 md:w-36 bg-primary transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
+                                        class       = "h-10 sm:h-9 w-20 md:w-36 bg-primary transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-blue-600 dark:active:bg-blue-800"
                                         on:click    = { updatedTemplate }
                                         disabled    = { isLoading }
                                     >
