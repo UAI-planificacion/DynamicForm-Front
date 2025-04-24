@@ -612,9 +612,9 @@
                                 label       : 'Descripción',
                                 name	    : 'description',
                                 placeholder : 'Ingrese la descripción',
-                                value       : shapeInput.description
                             }}
                             onInput = {( value: string ) => shapeInput.description = value }
+                            value = { shapeInput.description}
                         />
 
                         {#if shapeInput.shape === 'button'}
