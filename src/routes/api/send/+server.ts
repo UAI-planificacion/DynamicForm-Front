@@ -1,17 +1,17 @@
 import { json } from '@sveltejs/kit';
 
-import type { RequestHandler } 	from './$types';
-import type { ShapeInput } 		from '$models';
+import type { RequestHandler }          from './$types';
+import { type ShapeInput, HTTPMethod }  from '$models';
 
 
 export const POST: RequestHandler = async ({ request }) => {
 	const { formValues, button } = await request.json();
 
 	try {
-        const url		= ( button.urlSend ?? '' ) + ( button.method === 'get' ? `?${new URLSearchParams( formValues ).toString()}` : '');
+        const url		= ( button.urlSend ?? '' ) + ( button.method === HTTPMethod.GET ? `?${new URLSearchParams( formValues ).toString()}` : '');
         const response	= await fetch( url, {
-            method	: button.method ?? 'POST',
-            body	: button.method !== 'get' ? JSON.stringify( formValues ) : undefined,
+            method	: button.method ?? HTTPMethod.POST,
+            body	: button.method !== HTTPMethod.GET ? JSON.stringify( formValues ) : undefined,
             headers	: {
                 'Content-Type': 'application/json'
             },
