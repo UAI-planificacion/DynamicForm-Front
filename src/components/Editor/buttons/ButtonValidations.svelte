@@ -163,7 +163,7 @@
         </ButtonUI>
     </div>
 
-    <div class="grid @lg:grid-cols-[1.3fr,2fr,auto] grid-cols-1 gap-2 items-start overflow-auto py-1 w-full">
+    <div class="grid @lg:grid-cols-[1.3fr,2fr,auto] grid-cols-1 gap-2 items-start py-1 w-full">
         {#each shapeInput.httpList! as http, index}
             <div>
                 <VirtualSelect
