@@ -9,7 +9,7 @@ export const styles: Partial<Record<InputFull, string | InputStyle>> = {
 	button      : 'w-full inline-flex h-12 text-white items-center justify-center rounded-md bg-black px-[21px] text-[15px] font-semibold text-background shadow-minitransition-all duration-200 hover:bg-dark/95 active:scale-[0.98] active:bg-zinc-700 disabled:scale-100 disabled:bg-zinc-600 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-zinc-800 dark:text-zinc-200 dark:disabled:bg-zinc-700 dark:disabled:text-zinc-400',
     check       : {
 		label		: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-zinc-300',
-		box			: 'read read-only:cursor-help peer inline-flex size-[25px] items-center justify-center rounded-md border border-zinc-400 dark:border-zinc-600 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-background data-[state=unchecked]:hover:border-dark-40',
+		box			: 'read read-only:cursor-help peer inline-flex size-[25px] items-center justify-center rounded-md border border-zinc-400 dark:border-zinc-600 bg-foreground transition-all duration-150 ease-in-out active:scale-98 data-[state=unchecked]:border-border-input data-[state=unchecked]:bg-transparent data-[state=unchecked]:hover:border-dark-40',
 	},
     select      : {
         box         : 'flex w-full items-center justify-between rounded-md border-[1.5px] border-zinc-300 bg-white px-3 py-2 text-sm transition-all focus-visible:outline-none focus-visible:border-[2px] focus-visible:border-zinc-400 dark:focus-visible:border-zinc-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900',
