@@ -4,14 +4,20 @@
     import { CalendarDate, type DateValue } from "@internationalized/date";
     import { DatePicker }                   from "bits-ui";
 
+    import type {
+        InputStyle,
+        ShapeInput,
+        ShapeOption
+    }                                   from "$models";
     import {
         CalendarBlankIcon,
         CaretLeftIcon,
         CaretRightIcon,
-    }                                       from "$icons";
-    import type { InputStyle, ShapeInput }  from "$models";
-    import Description                      from "./Description.svelte";
-    import { numberWithZero, styles }       from "$lib";
+    }                                   from "$icons";
+    import Description                  from "./Description.svelte";
+    import { numberWithZero, styles }   from "$lib";
+    import VirtualSelect                from "./VirtualSelect.svelte";
+    import Input                        from "./Input.svelte";
 
 
     export let shapeInput       : ShapeInput;
@@ -22,7 +28,22 @@
 
     let showPopup = false;
     let inputContainer: HTMLElement;
-    let popupStyles = {};
+
+
+    const monthOptions: ShapeOption[] = [
+        { value: "1", label: "Enero" },
+        { value: "2", label: "Febrero" },
+        { value: "3", label: "Marzo" },
+        { value: "4", label: "Abril" },
+        { value: "5", label: "Mayo" },
+        { value: "6", label: "Junio" },
+        { value: "7", label: "Julio" },
+        { value: "8", label: "Agosto" },
+        { value: "9", label: "Septiembre" },
+        { value: "10", label: "Octubre" },
+        { value: "11", label: "Noviembre" },
+        { value: "12", label: "Diciembre" }
+    ];
 
 
     function createCalendarDate(): DateValue | undefined {
@@ -47,28 +68,36 @@
         currentDate = getDefaultDate();
     }
 
+    let selectedMonth = currentDate.month.toString();
+    let selectedYear = currentDate.year.toString();
+
 
     function togglePopup() {
-        if (shapeInput.disabled || shapeInput.readonly) return;
+        if ( shapeInput.disabled || shapeInput.readonly ) return;
         showPopup = !showPopup;
 
         if ( showPopup ) {
-            if (!currentDate || !currentDate.year) {
+            if ( !currentDate || !currentDate.year ) {
                 currentDate = getDefaultDate();
             }
-
-            const rect = inputContainer.getBoundingClientRect();
-            popupStyles = {
-                top: `${rect.bottom + window.scrollY}px`,
-                left: `${rect.left + window.scrollX}px`,
-                width: `${rect.width}px`
-            };
         }
     }
 
 
     function handleClickOutside(event: MouseEvent) {
-        if (showPopup && inputContainer && !inputContainer.contains(event.target as Node)) {
+        // Verificar si el clic fue dentro del calendario o sus controles
+        const popupElement = document.querySelector('.custom-datepicker-popup');
+        const monthSelectElement = document.querySelector('.month-select-container');
+        const yearInputElement = document.querySelector('.year-input-container');
+        
+        // Comprobar si el clic fue en alguno de los elementos que queremos mantener abiertos
+        const isClickInPopup = popupElement && popupElement.contains(event.target as Node);
+        const isClickInInput = inputContainer && inputContainer.contains(event.target as Node);
+        const isClickInMonthSelect = monthSelectElement && monthSelectElement.contains(event.target as Node);
+        const isClickInYearInput = yearInputElement && yearInputElement.contains(event.target as Node);
+        
+        // No cerrar el popup si el clic fue en alguno de estos elementos
+        if (showPopup && !isClickInPopup && !isClickInInput && !isClickInMonthSelect && !isClickInYearInput) {
             showPopup = false;
         }
     }
@@ -76,11 +105,23 @@
 
     onMount(() => {
         document.addEventListener('click', handleClickOutside);
-        
+
+        // Initialize selectedMonth and selectedYear with currentDate values
+        if ( currentDate ) {
+            selectedMonth = currentDate.month.toString();
+            selectedYear = currentDate.year.toString();
+        }
+
         return () => {
             document.removeEventListener('click', handleClickOutside);
         };
     });
+
+    // Update selectedMonth and selectedYear when currentDate changes
+    $: if ( currentDate ) {
+        selectedMonth = currentDate.month.toString();
+        selectedYear = currentDate.year.toString();
+    }
 </script>
 
 <DatePicker.Root
@@ -146,7 +187,11 @@
 
             {#if showPopup}
                 <div 
-                    class="custom-datepicker-popup absolute top-full right-0 mt-2 z-[9999] bg-background rounded-lg shadow-lg w-72"
+                    class="custom-datepicker-popup absolute top-full right-0 mt-2 z-[9999] rounded-md shadow-lg w-[20rem]"
+                    on:click|stopPropagation
+                    on:keydown|stopPropagation={e => e.key === 'Enter' && togglePopup()}
+                    tabindex="0"
+                    role="button"
                 >
                     <div class={shapeInput.contentDateClass ?? `${(styles.datepicker as InputStyle).content}`}>
                         <div class="flex items-center justify-between p-0">
@@ -156,13 +201,48 @@
                                 on:click={() => {
                                     const prevMonth = new Date(currentDate?.year || new Date().getFullYear(), (currentDate?.month || new Date().getMonth() + 1) - 2, 1);
                                     currentDate = new CalendarDate(prevMonth.getFullYear(), prevMonth.getMonth() + 1, 1);
+                                    selectedMonth = (prevMonth.getMonth() + 1).toString();
+                                    selectedYear = prevMonth.getFullYear().toString();
                                 }}
                             >
                                 <CaretLeftIcon />
                             </button>
 
-                            <div class="text-[15px] font-medium capitalize">
-                                {new Date(currentDate?.year || new Date().getFullYear(), (currentDate?.month || new Date().getMonth() + 1) - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+                            <div class="flex items-center gap-1">
+                                <div class="w-36 month-select-container">
+                                    <VirtualSelect
+                                        shapeInput={{
+                                            id: "month-select",
+                                            name: "month-select",
+                                            options: monthOptions,
+                                            selected: selectedMonth,
+                                        }}
+                                        value={selectedMonth}
+                                        onSelectedChange={(value) => {
+                                            if (value && typeof value === 'string') {
+                                                selectedMonth = value;
+                                                const newMonth = parseInt(value);
+                                                currentDate = new CalendarDate(parseInt(selectedYear), newMonth, 1);
+                                            }
+                                        }}
+                                    />
+                                </div>
+                                <div class="w-20 year-input-container">
+                                    <Input
+                                        shapeInput={{
+                                            id: "year-input",
+                                            name: "year-input",
+                                            type: "number",
+                                        }}
+                                        value={selectedYear}
+                                        onInput={(value) => {
+                                            selectedYear = value;
+                                            if (value && parseInt(value) > 0) {
+                                                currentDate = new CalendarDate(parseInt(value), parseInt(selectedMonth), 1);
+                                            }
+                                        }}
+                                    />
+                                </div>
                             </div>
 
                             <button 
@@ -171,6 +251,8 @@
                                 on:click={() => {
                                     const nextMonth = new Date(currentDate?.year || new Date().getFullYear(), (currentDate?.month || new Date().getMonth() + 1), 1);
                                     currentDate = new CalendarDate(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 1);
+                                    selectedMonth = (nextMonth.getMonth() + 1).toString();
+                                    selectedYear = nextMonth.getFullYear().toString();
                                 }}
                             >
                                 <CaretRightIcon />
@@ -189,14 +271,15 @@
                                 {@const firstDay = new Date(year, month - 1, 1)}
                                 {@const lastDay = new Date(year, month, 0)}
                                 {@const daysInMonth = lastDay.getDate()}
-                                {@const startOffset = (firstDay.getDay() + 6) % 7}
+                                {@const startOffset = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1}
                                 {@const today = new Date()}
                                 {@const todayDate = new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate())}
 
                                 {#each Array(6 * 7) as _, i}
                                     {@const dayIndex = i - startOffset + 1}
                                     {@const isCurrentMonth = dayIndex > 0 && dayIndex <= daysInMonth}
-                                    {@const day = isCurrentMonth ? dayIndex : (dayIndex <= 0 ? dayIndex + new Date(year, month - 2, 0).getDate() : dayIndex - daysInMonth)}
+                                    {@const prevMonthLastDay = new Date(year, month - 1, 0).getDate()}
+                                    {@const day = isCurrentMonth ? dayIndex : (dayIndex <= 0 ? prevMonthLastDay + dayIndex : dayIndex - daysInMonth)}
                                     {@const dateValue = isCurrentMonth ? new CalendarDate(year, month, day) : null}
                                     {@const isOutOfRange = isCurrentMonth && dateValue && (
                                         (shapeInput.minValue && dateValue < shapeInput.minValue) || 
