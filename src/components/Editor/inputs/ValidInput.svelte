@@ -134,7 +134,7 @@
         valid           : true,
         minLength       : 2,
         maxLength       : 200,
-        pattern         : '^(?!.*\s)(?:\\[\\/]|[^\\\s/])(?:\\[\\/]|[^\\\s/])*$',
+        pattern         : '^\^.*\$$',
         msgPattern      : 'El patrón es inválido.',
         msgMinLength    : 'El campo inferior a los 2 caracteres permitidos.',
         msgMaxLength    : 'El campo superior a los 200 caracteres permitidos.'
