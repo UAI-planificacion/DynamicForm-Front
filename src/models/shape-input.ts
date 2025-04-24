@@ -145,6 +145,14 @@ export type Selected = string | string[] | SelectGroup[] | undefined;
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
+export enum HTTPMethod {
+    GET     = 'GET',
+    POST    = 'POST',
+    DELETE  = 'DELETE',
+    PUT     = 'PUT',
+    PATCH   = 'PATCH',
+}
+
 export type Form = {
 	httpList?			: Http[];
 	externalErrorMsg?   : string;
