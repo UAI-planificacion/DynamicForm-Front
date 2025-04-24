@@ -8,6 +8,7 @@ import { TEXTAREA_SHAPE }   from "$lib/docs/shape-inputs/textarea";
 import { DATE_SHAPE }       from "$lib/docs/shape-inputs/date";
 import { MARKDOWN_SHAPE }   from "$lib/docs/shape-inputs/markdown";
 import { TIME_SHAPE }       from "$lib/docs/shape-inputs/time";
+import { BUTTON_SHAPE }     from "$lib/docs/shape-inputs/button";
 
 
 export const docSections: DocSection[] = [
@@ -45,7 +46,7 @@ export const docSections: DocSection[] = [
             },
             {
                 id: 'select',
-                title: 'Selector',
+                title: 'Seleccionable',
                 component: SELECT_SHAPE
             },
             {
@@ -67,6 +68,11 @@ export const docSections: DocSection[] = [
                 id: 'time',
                 title: 'Tiempo',
                 component: TIME_SHAPE
+            },
+            {
+                id: 'button',
+                title: 'Botón',
+                component: BUTTON_SHAPE
             }
         ]
     }
