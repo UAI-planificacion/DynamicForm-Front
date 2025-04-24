@@ -6,6 +6,8 @@ El componente Botón permite agregar botones a tus formularios para realizar acc
 
 ![Botón en formulario](https://res.cloudinary.com/dbgzsikcs/image/upload/v1745528364/UAI/dynamic-form/button/button_preview_fiawsj.gif)
 
+> **Importante**: El envío solo se realizará cuando los datos del formulario sean válidos o cuando ingreses al menos un componente aparte del botón.
+
 ## Propiedades principales
 
 | Propiedad | Tipo | Descripción |
