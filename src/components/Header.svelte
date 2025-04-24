@@ -12,7 +12,7 @@
     const session = authClient.useSession();
 </script>
 
-<header class="bg-black shadow-sm sticky top-0 z-10 px-4">
+<header class="bg-black shadow-sm sticky top-0 z-[99999] px-4">
     <div class="container mx-auto py-4 flex justify-between items-center">
         <div class="flex items-center space-x-2">
             <h1 class="text-lg sm:text-lg md:text-2xl bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-transparent font-bold">
