@@ -8,16 +8,16 @@
         InputStyle,
         ShapeInput,
         ShapeOption
-    }                                       from "$models";
+    }                                   from "$models";
     import {
         CalendarBlankIcon,
         CaretLeftIcon,
         CaretRightIcon
-    }                                       from "$icons";
-    import { numberWithZero, styles }       from "$lib";
-    import Description                      from "./Description.svelte";
-    import VirtualSelect                    from "./VirtualSelect.svelte";
-    import Input                            from "./Input.svelte";
+    }                                   from "$icons";
+    import { numberWithZero, styles }   from "$lib";
+    import Description                  from "./Description.svelte";
+    import VirtualSelect                from "./VirtualSelect.svelte";
+    import Input                        from "./Input.svelte";
 
     export let shapeInput: ShapeInput;
     export let value: DateRange | any | undefined = undefined;
