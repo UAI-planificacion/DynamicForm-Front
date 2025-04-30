@@ -24,6 +24,57 @@ export type DynamicForm = {
 }
 
 
+export type ShapeStyleItems = {
+    [key: string]           : unknown;
+    background?             : string;
+    backgroundColor?        : string;
+    backgroundTonality?     : string;
+    backgroundTransparency? : string;
+
+    color?                  : string;
+    colorColor?             : string;
+    colorTonality?          : string;
+    colorTransparency?      : string;
+
+    border?                 : string;
+    borderColor?            : string;
+    borderTonality?         : string;
+    borderTransparency?     : string;
+
+    ring?                   : string;
+    ringColor?              : string;
+    ringTonality?           : string;
+    ringTransparency?       : string;
+    ringSize?               : string;
+
+    event?                  : ShapeStyleEvent
+}
+
+
+export type ShapeStyleEvent = {
+    [key: string]   : unknown;
+    hover?          : ShapeStyleItems;
+    active?         : ShapeStyleItems;
+    disabled?       : ShapeStyleItems;
+    placeholder?    : ShapeStyleItems;
+    focus?          : ShapeStyleItems;
+}
+
+
+export type ShapeInputStyle = {
+    // width?          : string;
+    fontSize?       : string;
+    height?         : string;
+    borderRadius?   : string;
+    boxShadow?      : string;
+    fontWeight?     : string;
+    borderSize?     : string;
+    ringSize?       : string;
+    light?          : ShapeStyleItems;
+    dark?           : ShapeStyleItems;
+}
+
+
 export type ShapeInput = {
     [key: string]   : unknown;
     id              : string;
@@ -54,19 +105,20 @@ export type ShapeInput = {
     msgMin?         : string;
     msgMax?         : string;
     inputClass?     : string;
+    inputStyle?     : ShapeInputStyle;
 
     // Textarea
     rows?           : number;
     textareaClass?  : string;
 
     // Markdown
-    preview?        : boolean;
-    boxMarkdownClass?  : string;
-    inputMarkdownClass?: string;
+    preview?            : boolean;
+    boxMarkdownClass?   : string;
+    inputMarkdownClass? : string;
 
     // Checkbox
     checked?            : boolean;
-    boxCheckboxClass?      : string;
+    boxCheckboxClass?   : string;
     labelCheckboxClass? : string;
 
     // Select
