@@ -311,9 +311,11 @@
 		<SubTitle title="Vista Previa" />
 	{/if}
 
+    <div class=" grid grid-cols-1 xl:grid-cols-1 gap-2">
+
     {#each template as shapeInput, index }
 		<div class={`flex ${dynamicMode ? "gap-1.5" : "" } ${inputActive === index + 1 ? ' pr-2 py-2 rounded-lg bg-zinc-200 dark:bg-zinc-800' : ''}`}>
-			{#if dynamicMode}
+			{#if dynamicMode && shapeInput.shape !== 'button'}
 				<Enumeration
 					number	= { index + 1 }
 					active	= { inputActive === index + 1 }
@@ -341,13 +343,7 @@
                         shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ]);
                     }}
                 />
-			<!-- Button -->
-			{:else if shapeInput.shape === 'button'}
-				<Button
-					{ shapeInput }
-					{ onClick }
-					{ loading }
-				/>
+			
 			<!-- Check -->
 			{:else if shapeInput.shape === 'check'}
 				<Check
@@ -404,11 +400,20 @@
                     setError		= {() => shapeInput.valid = errorTimer( shapeInput, formValues[ shapeInput.name ])}
                 />
 			<!-- Default -->
-			{:else}
+			{:else if shapeInput.shape !== 'button'}
 				<p class="text-red-500">La entrada es inválida.</p>
 			{/if}
 		</div>
 	{ /each }
+</div>
+
+    <!-- Button -->
+    <Button
+        shapeInput={ template.find( item => item.shape === 'button' ) as ShapeInput}
+        onClick={ onClick }
+        loading={ loading }
+    />
+
 
 	{ #if dynamicMode }
         <SubTitle title="Información obtenida" />
