@@ -264,7 +264,25 @@
             onEdit = { () => editing = !editing }
         />
     {:else}
-        <section class="space-y-2">
+
+    <section class="space-y-2">
+        <Accordion.Root class="w-full" type="single" value="basic">
+            <Accordion.Item value="basic" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
+                <Accordion.Header>
+                    <Accordion.Trigger
+                        class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
+                    >
+                        Campos básicos
+                        <span
+                            class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10"
+                        >
+                            <CaretDownIcon />
+                        </span>
+                    </Accordion.Trigger>
+                </Accordion.Header>
+
+                <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
+
             <div class={`grid grid-cols-1 ${ shapeInput.shape !== 'button' ? '@lg:grid-cols-2' : '' } items-start gap-2`}>
 				{#if shapeInput.shape !== 'button'}
                     <VirtualSelect
@@ -377,6 +395,51 @@
                 {/if}
             </div>
 
+            <div class="flex gap-2 justify-between items-center">
+                {#if shapeInput.shape === 'markdown'}
+                    <Check
+                        shapeInput = {{
+                            id		: uuid(),
+                            label   : 'Previsualización',
+                            name	: 'preview',
+                        }}
+                        onChange = {( e ) => shapeInput.preview = e as boolean }
+                        checked  = { shapeInput.preview }
+                    />
+                {/if}
+
+                <Check
+                    shapeInput = {{
+                        id		: uuid(),
+                        label   : 'Desactivado',
+                        name	: 'disabled',
+                    }}
+                    onChange = {( e ) => shapeInput.disabled = e as boolean }
+                    checked  = { shapeInput.disabled }
+                />
+
+                <Check
+                    shapeInput = {{
+                        id		: uuid(),
+                        label   : 'Solo lectura',
+                        name	: 'readonly',
+                    }}
+                    onChange = {( e ) => shapeInput.readonly = e as boolean }
+                    checked  = { shapeInput.readonly }
+                />
+            </div>
+
+            <Input
+                shapeInput = {{
+                    id		    : uuid(),
+                    label       : 'Descripción',
+                    name	    : 'description',
+                    placeholder : 'Ingrese la descripción',
+                }}
+                onInput = {( value: string ) => shapeInput.description = value }
+                value = { shapeInput.description}
+            />
+
             {#if shapeInput.shape === 'input' }
                 <div class="grid grid-cols-1 @lg:grid-cols-2 gap-2 items-center">
                     <VirtualSelect
@@ -458,8 +521,9 @@
                     { countSend }
                 />
             {/if}
+        </Accordion.Content>
+    </Accordion.Item>
 
-            <Accordion.Root class="w-full" type="single">
                 <Accordion.Item value="validations" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
                     <Accordion.Header>
                         <Accordion.Trigger
@@ -595,7 +659,7 @@
                         <Accordion.Trigger
                             class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
                         >
-                            Atributos opcionales
+                            Estilos
 
                             <span
                                 class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10"
@@ -606,65 +670,6 @@
                     </Accordion.Header>
 
                     <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
-                        <Input
-                            shapeInput = {{
-                                id		    : uuid(),
-                                label       : 'Descripción',
-                                name	    : 'description',
-                                placeholder : 'Ingrese la descripción',
-                            }}
-                            onInput = {( value: string ) => shapeInput.description = value }
-                            value = { shapeInput.description}
-                        />
-
-                        {#if shapeInput.shape === 'button'}
-                            <div class="grid grid-cols-1 sm:grid-cols-2 items-center justify-between">
-                                <!-- <Check
-                                    shapeInput = {{
-                                        id		    : uuid(),
-                                        label       : 'Mantener desactivado mientras el formulario sea inválido.',
-                                        name	    : 'keep-disabled',
-                                        checked     : shapeInput.checked
-                                    }}
-                                    onChange	= {( e ) => shapeInput.readonly = e as boolean }
-                                /> -->
-                            </div>
-                        {:else}
-                            <div class="grid grid-cols-1 {shapeInput.shape === 'markdown' ? '@sm:grid-cols-3' : '@sm:grid-cols-2'} items-center justify-between py-1">
-								{#if shapeInput.shape === 'markdown'}
-									<Check
-										shapeInput = {{
-											id		: uuid(),
-											label   : 'Previsualización',
-											name	: 'preview',
-										}}
-										onChange = {( e ) => shapeInput.preview = e as boolean }
-                                        checked  = { shapeInput.preview }
-									/>
-								{/if}
-
-                                <Check
-                                    shapeInput = {{
-                                        id		: uuid(),
-                                        label   : 'Desactivado',
-                                        name	: 'disabled',
-                                    }}
-                                    onChange = {( e ) => shapeInput.disabled = e as boolean }
-                                    checked  = { shapeInput.disabled }
-                                />
-
-                                <Check
-                                    shapeInput = {{
-                                        id		: uuid(),
-                                        label   : 'Solo lectura',
-                                        name	: 'readonly',
-                                    }}
-                                    onChange = {( e ) => shapeInput.readonly = e as boolean }
-                                    checked  = { shapeInput.readonly }
-                                />
-                            </div>
-                        {/if}
-
 						{#if shapeInput.shape === 'input' }
 							<InputStyles bind:shapeInput={shapeInput} />
                         {:else if shapeInput.shape === 'textarea'}
