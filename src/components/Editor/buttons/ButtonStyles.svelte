@@ -1,7 +1,7 @@
 <script lang="ts">
     import { v4 as uuid } from 'uuid';
 
-    import { TextArea } from "$components";
+    import { InputStyles, TextArea } from "$components";
     import type { ShapeInput } from "$models";
     import { styles } from "$lib";
 
@@ -19,3 +19,6 @@
         rows        : 4,
     }}
 />
+
+
+<InputStyles bind:shapeInput={shapeInput} />
