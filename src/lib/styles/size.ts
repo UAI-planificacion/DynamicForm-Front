@@ -1,18 +1,18 @@
 import type { ShapeOption } from "$models";
 
-export const BASIC_SIZE: ShapeOption[] = [
-    { label: "Pequeño", value: "sm" },
-    { label: "Mediano", value: "md" },
-    { label: "Grande", value: "lg" },
-    { label: "Extra Grande", value: "xl" },
+export const BASIC_SIZE = ( prefix: string ) : ShapeOption[] => [
+    { label: "Pequeño",     value: `${prefix}-sm` },
+    { label: "Mediano",     value: `${prefix}-md` },
+    { label: "Grande",      value: `${prefix}-lg` },
+    { label: "Extra Grande", value: `${prefix}-xl` },
 ];
 
 
-export const SIZE: ShapeOption[] = [
+export const SIZE = ( prefix: string ) : ShapeOption[] => [
     { label: "Ninguno", value: "none" },
-    ...BASIC_SIZE,
-    { label: "Al Máximo", value: "full" },
+    ...BASIC_SIZE(prefix),
+    { label: "Al Máximo", value: `${prefix}-full` },
 ];
 
 
-export const SHADOW: ShapeOption[] = [ ...BASIC_SIZE ];
+export const SHADOW: ShapeOption[] = [ ...BASIC_SIZE('shadow') ];
