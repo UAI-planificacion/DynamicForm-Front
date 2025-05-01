@@ -64,10 +64,6 @@
                 isDarkMode
                     ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46'  // zinc-700
                     : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-300
-            }; border-color: ${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.border ?? '#3f3f46' // zinc-700
-                    : shapeInput.inputStyle?.light?.border ?? '#d4d4d8' // zinc-300
             };`
         }
         on:focus={(e) => {
@@ -83,19 +79,6 @@
                     ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46' // zinc-500
                     : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-400
             }`;
-        }}
-        on:focus={(e) => {
-            e.currentTarget.style.borderColor = `${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.event?.focus?.border ?? '#71717a' // zinc-500
-                    : shapeInput.inputStyle?.light?.event?.focus?.border ?? '#a1a1aa' // zinc-400
-        }`;
-        }}
-        on:blur={(e) => {
-            e.currentTarget.style.borderColor = `${
-                isDarkMode ?
-            shapeInput.inputStyle?.dark?.border
-            : shapeInput.inputStyle?.light?.border}`;
         }}
     />
 </Info>
