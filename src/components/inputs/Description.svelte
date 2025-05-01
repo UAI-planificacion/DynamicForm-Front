@@ -38,11 +38,11 @@
             {/if}
         </span>
 
-        {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown'}
+        <!-- {#if shapeInput.shape === 'input' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown'}
             <span class="text-sm text-gray-500">
                 { (value as string)?.length }/{ shapeInput?.maxLength }
             </span>
-        {/if}
+        {/if} -->
     </div>
 {/if}
 
