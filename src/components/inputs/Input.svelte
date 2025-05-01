@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { inputUAITheme } from "$lib/styles/themes/uai-theme";
     import type { ShapeInput }  from "$models";
     import { theme }            from "$stores";
     import Info                 from "./Info.svelte";
@@ -19,6 +20,9 @@
     export let value        : string | undefined = undefined;
     export let setError     : VoidFunction = () => {};
     export let onKeyup      : ( event: KeyboardEvent ) => void = () => {};
+
+
+    shapeInput.inputStyle ??= inputUAITheme;
 </script>
 
 <Info { shapeInput } { onInput } { value }>
@@ -33,8 +37,8 @@
         value       = { value ?? '' }
         on:input    = {( event: Event ) => { onInput(( event.target as HTMLTextAreaElement ).value ); setError(); }}
         on:keyup    = { onKeyup }
-        class       = {`px-3 py-2  w-full 
-            ${ shapeInput.inputStyle?.fontSize        ?? 'text-sm' }
+        class       = {`px-3 py-2 w-full transition-all duration-150 ease-in-out 
+            ${ shapeInput.inputStyle?.fontSize      ?? 'text-sm' }
             ${ shapeInput.inputStyle?.height        ?? '' }
             ${ shapeInput.inputStyle?.borderRadius  ?? 'rounded-md' }
             ${ shapeInput.inputStyle?.borderSize    ?? 'border-0' }
@@ -67,7 +71,7 @@
             };`
         }
         on:focus={(e) => {
-            e.currentTarget.style.boxShadow = `0 0 0 ${shapeInput.inputStyle?.dark?.event?.focus?.ringSize ?? '2px'} ${
+            e.currentTarget.style.boxShadow = `0 0 0 ${shapeInput.inputStyle?.[isDarkMode ? 'dark' : 'light']?.event?.focus?.ringSize ?? '2px'} ${
                 isDarkMode
                     ? shapeInput.inputStyle?.dark?.event?.focus?.ring ?? '#71717a' // zinc-500
                     : shapeInput.inputStyle?.light?.event?.focus?.ring ?? '#a1a1aa' // zinc-400
