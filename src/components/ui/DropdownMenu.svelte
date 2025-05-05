@@ -14,7 +14,6 @@
     let triggerElement: HTMLElement;
     let contentElement: HTMLElement;
     let dropdownContainer: HTMLElement;
-    let menuStyles: {top?: string; left?: string; maxHeight?: string} = {};
 
     function positionMenu() {
         if (!triggerElement || !contentElement) return;
