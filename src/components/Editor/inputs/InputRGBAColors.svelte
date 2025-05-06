@@ -18,7 +18,12 @@
     export let type         : string;
     export let size         : string | null = null;
 
-    type = tailwindToRGBA(`${type}-${ color }-${ tonality }/${ transparency }`)
+
+    function updateType( value: string ): void {
+        type = value === 'transparent' || value === 'currentColor' || value === 'black' || value === 'white' 
+                ? value
+                : tailwindToRGBA( `${type}-${ color }-${ tonality }/${ transparency }` );
+    }
 </script>
 
 <div class={`grid grid-cols-1 @xl:grid-cols-[1.5fr,1fr,1fr,1fr${size !== null ? ',1fr' : ''}] gap-2 items-start`}>
@@ -36,9 +41,7 @@
         onSelectedChange = {( value ) => {
             if ( value instanceof Array || value === undefined ) return;
             color = value;
-            type = value === 'transparent' || value === 'currentColor' || value === 'black' || value === 'white' 
-                ? value
-                : tailwindToRGBA(`${type}-${ color }-${ tonality }/${ transparency }`);
+            updateType( value );
         }}
     />
 
@@ -56,9 +59,7 @@
         onSelectedChange = {( value ) => {
             if ( value instanceof Array || value === undefined ) return;
             tonality = value;
-            type = value === 'transparent' || value === 'currentColor' || value === 'black' || value === 'white' 
-                ? value
-                : tailwindToRGBA(`${type}-${ color }-${ tonality }/${ transparency }`);
+            updateType( value );
         }}
     />
 
@@ -76,9 +77,7 @@
         onSelectedChange = {( value ) => {
             if ( value instanceof Array || value === undefined ) return;
             transparency = value;
-            type = value === 'transparent' || value === 'currentColor' || value === 'black' || value === 'white' 
-                ? value
-                : tailwindToRGBA(`${type}-${ color }-${ tonality }/${ transparency }`);
+            updateType( value );
         }}
     />
 
