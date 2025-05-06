@@ -5,5 +5,4 @@ export const RING: ShapeOption[] = [
     { label: "Pequeño", value: "1px" },
     { label: "Mediano", value: "2px" },
     { label: "Grande", value: "4px" },
-    { label: "Extra Grande", value: "8px" },
 ];
