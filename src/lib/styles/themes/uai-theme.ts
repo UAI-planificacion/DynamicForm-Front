@@ -1,4 +1,5 @@
 import type { ShapeInputStyle } from "$models"
+import { tailwindToRGBA } from "../tailwind-colors";
 
 
 export const inputUAITheme: ShapeInputStyle = ({
@@ -11,26 +12,26 @@ export const inputUAITheme: ShapeInputStyle = ({
 
     light : {
         backgroundTransparency : '100',
-        backgroundColor        : 'white',
-        backgroundTonality     : '900',
-        // background             : 'background',
+        backgroundColor        : 'zinc',
+        backgroundTonality     : '50',
+        background             : tailwindToRGBA( 'zinc-50' ),
 
-        // color                : 'zinc',
         colorTransparency    : '100',
         colorTonality        : '800',
         colorColor           : 'zinc',
+        color                : tailwindToRGBA( 'zinc-800' ),
 
         ringTransparency : '100',
         ringColor        : 'zinc',
         ringTonality     : '300',
-        // ring             : 'ring',
+        ring             : tailwindToRGBA('zinc-300'),
 
         event : {
             focus : {
                 ringColor        : 'zinc',
                 ringTonality     : '400',
                 ringTransparency : '100',
-                // ring             : 'ring',
+                ring             : tailwindToRGBA('zinc-400'),
                 ringSize         : '2px',
             }
         }
@@ -40,24 +41,24 @@ export const inputUAITheme: ShapeInputStyle = ({
         backgroundTransparency : '100',
         backgroundColor        : 'zinc',
         backgroundTonality     : '900',
-        // background             : 'background',
+        background             : tailwindToRGBA('zinc-900'),
 
-        // color                : 'zinc',
         colorTransparency    : '100',
         colorTonality        : '300',
         colorColor           : 'zinc',
+        color                : tailwindToRGBA('zinc-300'),
 
         ringTransparency : '100',
         ringColor        : 'zinc',
         ringTonality     : '700',
-        // ring             : 'ring',
+        ring             : tailwindToRGBA('zinc-700'),
 
         event : {
             focus : {
                 ringColor        : 'zinc',
                 ringTonality     : '500',
                 ringTransparency : '100',
-                // ring             : 'ring',
+                ring             : tailwindToRGBA('zinc-500'),
                 ringSize         : '2px',
             }
         }
