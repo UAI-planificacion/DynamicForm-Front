@@ -19,16 +19,17 @@
     import { styles }   from '$lib';
     import Info         from './Info.svelte';
     import { inputUAITheme } from '$lib/styles/themes/uai-theme';
+    import BoxStyle from './BoxStyle.svelte';
 
 
     let isDarkMode = $theme === 'dark';
 
 
-$: if ( $theme === 'dark' ) {
-    isDarkMode = true;
-} else {
-    isDarkMode = false;
-}
+    $: if ( $theme === 'dark' ) {
+        isDarkMode = true;
+    } else {
+        isDarkMode = false;
+    }
 
 
     export let shapeInput       : ShapeInput;
@@ -466,58 +467,11 @@ $: if ( $theme === 'dark' ) {
     shapeInput.inputStyle ??= inputUAITheme;
 </script>
 
-
-<!-- class       = { shapeInput.boxSelectClass ?? `${( styles.select as InputStyle ).box }` } -->
 <Info { shapeInput } { onSelectedChange } { value }>
 <div class="relative w-full" bind:this={comboboxElement} >
-    <button
-        type        = "button"
-        on:click    = { handleOpen }
-        id          = { shapeInput.id }
-        disabled    = { shapeInput.disabled }
-        class       = {`px-3 py-2 transition-all duration-150 ease-in-out w-full flex items-center justify-between 
-            ${ shapeInput.inputStyle?.fontSize      ?? 'text-sm' }
-            ${ shapeInput.inputStyle?.height        ?? '' }
-            ${ shapeInput.inputStyle?.borderRadius  ?? 'rounded-md' }
-            ${ shapeInput.inputStyle?.borderSize    ?? 'border-0' }
-            ${ shapeInput.inputStyle?.boxShadow     ?? 'shadow-sm' }`
-        }
-        style={ `background-color: ${
-            isDarkMode
-                ? shapeInput.disabled || shapeInput.readonly
-                    ? shapeInput.inputStyle?.dark?.event?.disabled?.background ?? 'transparent'
-                    : shapeInput.inputStyle?.dark?.background   ?? 'transparent'
-                : shapeInput.disabled || shapeInput.readonly
-                    ? shapeInput.inputStyle?.light?.event?.disabled?.background ?? 'transparent'
-                    : shapeInput.inputStyle?.light?.background  ?? 'transparent'
-            }; color: ${
-                isDarkMode
-                    ? shapeInput.disabled || shapeInput.readonly
-                        ? shapeInput.inputStyle?.dark?.event?.disabled?.color ?? '#71717a'
-                        :shapeInput.inputStyle?.dark?.color    ?? '#d1d5db'
-                    : shapeInput.disabled || shapeInput.readonly
-                        ? shapeInput.inputStyle?.light?.event?.disabled?.color ?? '#71717a'
-                        :shapeInput.inputStyle?.light?.color   ?? 'black'
-            }; box-shadow: 0 0 0 ${shapeInput.inputStyle?.ringSize ?? '1px'} ${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46'  // zinc-700
-                    : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-300
-            };`
-        }
-        on:focus={(e) => {
-            e.currentTarget.style.boxShadow = `0 0 0 ${shapeInput.inputStyle?.[isDarkMode ? 'dark' : 'light']?.event?.focus?.ringSize ?? '2px'} ${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.event?.focus?.ring ?? '#71717a' // zinc-500
-                    : shapeInput.inputStyle?.light?.event?.focus?.ring ?? '#a1a1aa' // zinc-400
-            }`;
-        }}
-        on:blur={(e) => {
-            e.currentTarget.style.boxShadow = `0 0 0 ${shapeInput.inputStyle?.ringSize ?? '1px'} ${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46' // zinc-500
-                    : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-400
-            }`;
-        }}
+    <BoxStyle
+        shapeInput={shapeInput}
+        handleOpen={handleOpen}
     >
         <span class="truncate text-zinc-900 dark:text-zinc-300">
             { displayText }
@@ -533,30 +487,45 @@ $: if ( $theme === 'dark' ) {
                     on:keydown  = {( event ) => { if ( event.key === 'Enter' || event.key === ' ') clearSelection( event ); }}
                     tabindex    = "0" 
                 >
-                    <X class="h-3 w-3 text-gray-400"/>
+                    <X class="h-3 w-3 text-zinc-400"/>
                 </div>
             {/if}
 
             <ChevronDown class={`h-4 w-4 transition-transform duration-200 dark:text-zinc-500 ${isOpen ? 'rotate-180' : ''}`} />
         </div>
-    </button>
+    </BoxStyle>
 
     {#if isOpen}
+    <!-- class= { shapeInput.contentSelectClass ?? `${( styles.select as InputStyle ).content }` } -->
         <div 
             bind:this={dropdownElement}
-            class= { shapeInput.contentSelectClass ?? `${( styles.select as InputStyle ).content }` }
-            style="
-                min-width: {comboboxElement?.offsetWidth}px;
-                max-width: {comboboxElement?.offsetWidth}px;
-                {dropdownElement?.style.top || ''};
-                {dropdownElement?.style.left || ''};
-                {dropdownElement?.style.bottom || ''};
-                margin-top: {dropdownElement?.style.marginTop || '0.25rem'};
-                margin-bottom: {dropdownElement?.style.marginBottom || '0'};
-            "
+            class = {`absolute z-[9999] overflow-hidden shadow-xl 
+                ${ shapeInput.inputStyle?.borderRadius  ?? 'rounded-md' }
+            `}
+            style={`
+                min-width: ${comboboxElement?.offsetWidth}px;
+                max-width: ${comboboxElement?.offsetWidth}px;
+                ${dropdownElement?.style.top || ''};
+                ${dropdownElement?.style.left || ''};
+                ${dropdownElement?.style.bottom || ''};
+                margin-top: ${dropdownElement?.style.marginTop || '0.25rem'};
+                margin-bottom: ${dropdownElement?.style.marginBottom || '0'};
+                background-color: ${
+                isDarkMode
+                    ?  shapeInput.inputStyle?.dark?.background  ?? 'transparent'
+                    : shapeInput.inputStyle?.light?.background  ?? 'transparent'
+                }; color: ${
+                    isDarkMode
+                        ? shapeInput.inputStyle?.dark?.color    ?? '#d1d5db'
+                        : shapeInput.inputStyle?.light?.color   ?? 'black'
+                }; box-shadow: 0 0 0 ${shapeInput.inputStyle?.ringSize ?? '1px'} ${
+                    isDarkMode
+                        ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46'  // zinc-700
+                        : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-300
+            };`}
         >
             {#if shapeInput.search}
-                <div class="p-1 sticky top-0 bg-white dark:bg-zinc-800 z-10">
+                <div class="p-0.5 sticky top-0 z-10">
                     <Input
                         shapeInput = {{
                             id		    : 'search-items',
@@ -627,15 +596,15 @@ $: if ( $theme === 'dark' ) {
                                             {@const itemKey = `${i}-${optionIndex}`}
                                             <button
                                                 type            = "button"
-                                                class           = { `${shapeInput.itemSelectClass ?? ( styles.select as InputStyle ).item } px-6` }
-                                                data-selected   = {selectedItems.some(selected => selected.value === option.value)}
+                                                class           = { `${ shapeInput.itemSelectClass ?? ( styles.select as InputStyle ).item } px-6` }
+                                                data-selected   = { selectedItems.some(selected => selected.value === option.value )}
                                                 on:click        = { () => toggleItem( option )}
                                                 on:mouseenter   = { () => hoveredIndex = itemKey }
                                                 on:mouseleave   = { handleMouseLeave }
                                                 role            = "option"
-                                                aria-selected   = {selectedItems.some( selected => selected.value === option.value )}
+                                                aria-selected   = { selectedItems.some( selected => selected.value === option.value )}
                                             >
-                                                <span>{option.label}</span>
+                                                <span>{ option.label }</span>
 
                                                 {#if selectedItems.some( selected => selected.value === option.value )}
                                                     <Check class="h-4 w-4 text-blue-500" />
@@ -647,14 +616,14 @@ $: if ( $theme === 'dark' ) {
                                     <button
                                         type            = "button"
                                         class           = { shapeInput.itemSelectClass ?? ( styles.select as InputStyle ).item }
-                                        data-selected   = {selectedItems.some(selected => selected.value === item.value)}
+                                        data-selected   = { selectedItems.some(selected => selected.value === item.value )}
                                         on:click        = { () => toggleItem( item )}
                                         on:mouseenter   = { () => hoveredIndex = i.toString() }
                                         on:mouseleave   = { handleMouseLeave }
                                         role            = "option"
-                                        aria-selected   = {selectedItems.some( selected => selected.value === item.value )}
+                                        aria-selected   = { selectedItems.some( selected => selected.value === item.value )}
                                     >
-                                        <span>{item.label}</span>
+                                        <span>{ item.label }</span>
 
                                         {#if selectedItems.some( selected => selected.value === item.value )}
                                             <Check class="h-4 w-4 text-blue-500" />
