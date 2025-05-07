@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { fade, slide }  from 'svelte/transition';
     import { TimerIcon }    from 'lucide-svelte';
 
     import type {
@@ -10,9 +9,8 @@
     import { Input }    from '$components';
     import { styles }   from '$lib';
     import Info         from '../Info.svelte';
-    import { theme }            from "$stores";
-    import { inputUAITheme } from '$lib/styles/themes/uai-theme';
-
+    import BoxStyle     from '../BoxStyle.svelte';
+    import ContentStyle from '../ContentStyle.svelte';
 
 
     export let shapeInput   : ShapeInput;
@@ -20,16 +18,6 @@
     export let onTimerInput : ( value: string ) => void;
     export let setError     : VoidFunction = () => {};
 
-    shapeInput.inputStyle ??= inputUAITheme;
-
-    let isDarkMode = $theme === 'dark';
-
-
-    $: if ( $theme === 'dark' ) {
-        isDarkMode = true;
-    } else {
-        isDarkMode = false;
-    }
 
     let firstRender = true;
     let open = false;
@@ -138,57 +126,9 @@
 <Info { shapeInput } { value } { onTimerInput }>
 
 <div class="relative w-full" id={ shapeInput.id }>
-    <!-- class           = { `${( styles.digital as InputStyle ).box }` } -->
-    <button
-        disabled        = { shapeInput.disabled }
-        type            = "button"
-        id              = { shapeInput.id }
-        aria-haspopup   = "true"
-        aria-expanded   = { open }
-        on:click        = { togglePicker }
-        class       = {`px-3 py-2 transition-all duration-150 ease-in-out w-full flex items-center justify-between 
-            ${ shapeInput.inputStyle?.fontSize      ?? 'text-sm' }
-            ${ shapeInput.inputStyle?.height        ?? '' }
-            ${ shapeInput.inputStyle?.borderRadius  ?? 'rounded-md' }
-            ${ shapeInput.inputStyle?.borderSize    ?? 'border-0' }
-            ${ shapeInput.inputStyle?.boxShadow     ?? 'shadow-sm' }`
-        }
-        style={ `background-color: ${
-            isDarkMode
-                ? shapeInput.disabled || shapeInput.readonly
-                    ? shapeInput.inputStyle?.dark?.event?.disabled?.background ?? 'transparent'
-                    : shapeInput.inputStyle?.dark?.background   ?? 'transparent'
-                : shapeInput.disabled || shapeInput.readonly
-                    ? shapeInput.inputStyle?.light?.event?.disabled?.background ?? 'transparent'
-                    : shapeInput.inputStyle?.light?.background  ?? 'transparent'
-            }; color: ${
-                isDarkMode
-                    ? shapeInput.disabled || shapeInput.readonly
-                        ? shapeInput.inputStyle?.dark?.event?.disabled?.color ?? '#71717a'
-                        :shapeInput.inputStyle?.dark?.color    ?? '#d1d5db'
-                    : shapeInput.disabled || shapeInput.readonly
-                        ? shapeInput.inputStyle?.light?.event?.disabled?.color ?? '#71717a'
-                        :shapeInput.inputStyle?.light?.color   ?? 'black'
-            }; box-shadow: 0 0 0 ${shapeInput.inputStyle?.ringSize ?? '1px'} ${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46'  // zinc-700
-                    : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-300
-            };`
-        }
-        on:focus={(e) => {
-            e.currentTarget.style.boxShadow = `0 0 0 ${shapeInput.inputStyle?.[isDarkMode ? 'dark' : 'light']?.event?.focus?.ringSize ?? '2px'} ${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.event?.focus?.ring ?? '#71717a' // zinc-500
-                    : shapeInput.inputStyle?.light?.event?.focus?.ring ?? '#a1a1aa' // zinc-400
-            }`;
-        }}
-        on:blur={(e) => {
-            e.currentTarget.style.boxShadow = `0 0 0 ${shapeInput.inputStyle?.ringSize ?? '1px'} ${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46' // zinc-500
-                    : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-400
-            }`;
-        }}
+    <BoxStyle
+        shapeInput={shapeInput}
+        handleOpen={togglePicker}
     >
         {
             selectedHour === undefined ? 'hh' : selectedHour.toString().padStart(2, '0')
@@ -197,80 +137,73 @@
         }
 
         <TimerIcon class="w-5 h-5" />
-    </button>
+    </BoxStyle>
 
     {#if open}
-        <div 
-            class           = { shapeInput.boxStyle ?? `${( styles.digital as InputStyle ).content }` }
-            transition:fade={{ duration: 150 }}
-        >
-            <div class="flex p-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-full flex flex-col gap-3">
-                        <Input 
-                            shapeInput  = {{
-                                id          : `${shapeInput.id}-hour-search`,
-                                name        : 'hour-search',
-                                placeholder : 'Buscar hora...',
+        <ContentStyle {shapeInput}>
+            <div class="flex items-center gap-2">
+                <div class="w-full flex flex-col gap-3">
+                    <Input 
+                        shapeInput  = {{
+                            id          : `${shapeInput.id}-hour-search`,
+                            name        : 'hour-search',
+                            placeholder : 'Buscar hora...',
+                            type        : 'search',
+                            shape       : 'input',
+                            class_      : (styles.digital as InputStyle ).input
+                        }}
+                        onInput     = {( value ) => searchHour = value }
+                    />
+
+                    <div 
+                        class="h-52 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
+                    >
+                        {#each filteredHours ?? [] as hour}
+                            <button
+                                type            = "button"
+                                data-selected   = { selectedHour === hour }
+                                class           = {  shapeInput.itemStyle ?? `${( styles.digital as InputStyle ).item }` }
+                                on:click        = {() => toggleSelection('hour', hour) }
+                            >
+                                {hour.toString().padStart(2, '0')}
+                            </button>
+                        {/each}
+                    </div>
+                </div>
+
+                <span class="text-2xl mt-8 text-zinc-800 dark:text-zinc-200">:</span>
+
+                <div class="w-full flex flex-col gap-2">
+                    <Input 
+                        shapeInput={
+                            {
+                                id          : `${shapeInput.id}-minute-search`,
+                                name        : 'minute-search',
+                                placeholder : 'Buscar minuto...',
                                 type        : 'search',
                                 shape       : 'input',
                                 class_      : (styles.digital as InputStyle ).input
-                            }}
-                            onInput     = {( value ) => searchHour = value }
-                        />
-
-                        <div 
-                            class="h-52 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
-                            transition:slide={{ duration: 200 }}
-                        >
-                            {#each filteredHours ?? [] as hour}
-                                <button
-                                    type            = "button"
-                                    data-selected   = { selectedHour === hour }
-                                    class           = {  shapeInput.itemStyle ?? `${( styles.digital as InputStyle ).item }` }
-                                    on:click        = {() => toggleSelection('hour', hour) }
-                                >
-                                    {hour.toString().padStart(2, '0')}
-                                </button>
-                            {/each}
-                        </div>
-                    </div>
-
-                    <span class="text-2xl mt-8 text-zinc-800 dark:text-zinc-200">:</span>
-
-                    <div class="w-full flex flex-col gap-2">
-                        <Input 
-                            shapeInput={
-                                {
-                                    id          : `${shapeInput.id}-minute-search`,
-                                    name        : 'minute-search',
-                                    placeholder : 'Buscar minuto...',
-                                    type        : 'search',
-                                    shape       : 'input',
-                                    class_      : (styles.digital as InputStyle ).input
-                                }
                             }
-                            onInput={( value ) => searchMinute = value }
-                        />
-                        <div 
-                            class="mt-1 h-52 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
-                            transition:slide={{ duration: 200 }}
-                        >
-                            {#each filteredMinutes ?? [] as minute}
-                                <button
-                                    type            = "button"
-                                    data-selected   = { selectedMinute === minute }
-                                    class           = { shapeInput.itemStyle ?? `${( styles.digital as InputStyle ).item }` }
-                                    on:click        = {() => toggleSelection('minute', minute)}
-                                >
-                                    {minute.toString().padStart(2, '0')}
-                                </button>
-                            {/each}
-                        </div>
+                        }
+                        onInput={( value ) => searchMinute = value }
+                    />
+                    <div 
+                        class="mt-1 h-52 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
+                    >
+                        {#each filteredMinutes ?? [] as minute}
+                            <button
+                                type            = "button"
+                                data-selected   = { selectedMinute === minute }
+                                class           = { shapeInput.itemStyle ?? `${( styles.digital as InputStyle ).item }` }
+                                on:click        = {() => toggleSelection('minute', minute)}
+                            >
+                                {minute.toString().padStart(2, '0')}
+                            </button>
+                        {/each}
                     </div>
                 </div>
             </div>
-        </div>
+        </ContentStyle>
     {/if}
 </div>
 </Info>
