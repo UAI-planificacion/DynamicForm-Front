@@ -15,18 +15,9 @@
         CaretRightIcon,
     }                               from "$icons";
     import { Input, VirtualSelect } from "$components";
-    import { theme }                from "$stores";
     import { styles }               from "$lib";
-    import { inputUAITheme } from "$lib/styles/themes/uai-theme";
-
-
-    let isDarkMode = $theme === 'dark';
-
-    $: if ( $theme === 'dark' ) {
-        isDarkMode = true;
-    } else {
-        isDarkMode = false;
-    }
+    import { inputUAITheme }        from "$lib/styles/themes/uai-theme";
+    import ContentStyle             from "../ContentStyle.svelte";
 
 
     export let shapeInput           : ShapeInput;
@@ -39,6 +30,7 @@
     export let onClickDay           : ( date: DateValue, isSelected: boolean ) => void = () => {};
     export let onHoverDateChange    : ( hover: DateValue | null ) => void = () => {};
     export let isRange              : boolean = false;
+
 
     shapeInput.inputStyle ??= inputUAITheme;
 
@@ -59,29 +51,7 @@
     ];
 </script>
 
-<div 
-    class={`custom-daterangepicker-popup absolute top-full right-0 mt-1 z-[9999] p-3 shadow-xl w-[20rem] 
-        ${ shapeInput.inputStyle?.borderRadius ?? 'rounded-md' }
-    `}
-    on:click|stopPropagation
-    on:keydown|stopPropagation={e => e.key === 'Enter' }
-    tabindex="0"
-    role="button"
-    style = {`
-        background-color: ${
-            isDarkMode
-                ?  shapeInput.inputStyle?.dark?.background  ?? 'transparent'
-                : shapeInput.inputStyle?.light?.background  ?? 'transparent'
-        }; color: ${
-            isDarkMode
-                ? shapeInput.inputStyle?.dark?.color    ?? '#d1d5db'
-                : shapeInput.inputStyle?.light?.color   ?? 'black'
-        }; box-shadow: 0 0 0 ${shapeInput.inputStyle?.ringSize ?? '1px'} ${
-            isDarkMode
-                ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46'  // zinc-700
-                : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-300
-    };`}
->
+<ContentStyle { shapeInput }>
     <div class="flex space-x-1 py-1">
         <button 
             type="button"
@@ -231,4 +201,4 @@
             {/if}
         </div>
     </div>
-</div>
+</ContentStyle>
