@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+
     import { CalendarDate, type DateValue } from "@internationalized/date";
     import { DatePicker }                   from "bits-ui";
 
@@ -8,6 +10,8 @@
     import { numberWithZero, styles }       from "$lib";
     import BoxStyle                         from "../BoxStyle.svelte";
     import DateNavigator                    from "./DateNavigator.svelte";
+    import { handleClickOutside, togglePopup } from "./dateHandler";
+
 
     export let shapeInput       : ShapeInput;
     export let value            : DateValue | undefined = undefined;
@@ -43,16 +47,30 @@
     let selectedYear = currentDate.year.toString();
 
 
-    function togglePopup() {
-        if ( shapeInput.disabled || shapeInput.readonly ) return;
-        showPopup = !showPopup;
+    const _togglePopup= () => 
+        togglePopup(
+            showPopup,
+            shapeInput,
+            () => currentDate,
+            (val) => showPopup = val,
+            (val) => currentDate = val
+        );
 
-        if ( showPopup ) {
-            if ( !currentDate || !currentDate.year ) {
-                currentDate = getDefaultDate();
-            }
-        }
-    }
+
+    const _handleClickOutside = ( event: MouseEvent ) =>
+        handleClickOutside(
+            event,
+            inputContainer,
+            showPopup,
+            'custom-datepicker-popup',
+            (val) => showPopup = val
+        );
+
+
+    onMount(() => {
+        document.addEventListener("click", _handleClickOutside);
+        return () => document.removeEventListener("click", _handleClickOutside);
+    });
 
     // Update selectedMonth and selectedYear when currentDate changes
     $: if ( currentDate ) {
@@ -100,7 +118,7 @@
         <div bind:this={inputContainer} class="relative">
             <BoxStyle
                 shapeInput={shapeInput}
-                handleOpen={togglePopup}
+                handleOpen={_togglePopup}
             >
                 {#if selectedDate}
                     <span>{numberWithZero(selectedDate.day)} / {numberWithZero(selectedDate.month)} / {selectedDate.year}</span>
