@@ -1,7 +1,13 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+
     import { DateRangePicker, type DateRange }  from "bits-ui";
     import { CalendarDate, type DateValue }     from "@internationalized/date";
 
+    import {
+        handleClickOutside,
+        togglePopup
+    }                                   from "./dateHandler";
     import type {
         InputStyle,
         ShapeInput,
@@ -13,10 +19,11 @@
     import DateNavigator                from "./DateNavigator.svelte";
 
 
-    export let shapeInput: ShapeInput;
-    export let value: DateRange | any | undefined = undefined;
-    export let onValueChange: (value: DateRange | undefined) => void;
-    export let setError: VoidFunction = () => {};
+
+    export let shapeInput       : ShapeInput;
+    export let value            : DateRange | any | undefined = undefined;
+    export let onValueChange    : ( value: DateRange | undefined ) => void;
+    export let setError         : VoidFunction = () => {};
 
 
     const createEmptyDateRange = () => ({
@@ -78,17 +85,30 @@
     };
 
 
-    function togglePopup() {
-        if ( shapeInput.disabled || shapeInput.readonly ) return;
+    const _togglePopup= () => 
+        togglePopup(
+            showPopup,
+            shapeInput,
+            () => currentDate,
+            (val) => showPopup = val,
+            (val) => currentDate = val
+        );
 
-        showPopup = !showPopup;
 
-        if ( showPopup ) {
-            if ( !currentDate || !currentDate.year ) {
-                currentDate = getDefaultDate();
-            }
-        }
-    }
+    const _handleClickOutside = ( event: MouseEvent ) =>
+        handleClickOutside(
+            event,
+            inputContainer,
+            showPopup,
+            'custom-datepicker-popup',
+            (val) => showPopup = val
+        );
+
+
+    onMount(() => {
+        document.addEventListener("click", _handleClickOutside);
+        return () => document.removeEventListener("click", _handleClickOutside);
+    });
 
     // Update selectedMonth and selectedYear when currentDate changes
     $: if ( currentDate ) {
@@ -139,7 +159,7 @@
         <div bind:this={inputContainer} class="relative">
             <BoxStyle
                 shapeInput={shapeInput}
-                handleOpen={togglePopup}
+                handleOpen={_togglePopup}
             >
                 <div class="flex items-center">
                     <span class={!selectedRange?.start ? "text-muted-foreground" : ""}>
