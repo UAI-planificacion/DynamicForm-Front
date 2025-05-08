@@ -1,9 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
-    import { theme }            from "$stores";
-
-
     import { ChevronDown, Check, X } from 'lucide-svelte';
 
     import type {
@@ -18,25 +15,15 @@
     import { Input }            from '$components';
     import { styles }           from '$lib';
     import Info                 from './Info.svelte';
-    import { inputUAITheme }    from '$lib/styles/themes/uai-theme';
     import BoxStyle             from './BoxStyle.svelte';
     import ContentStyle         from './ContentStyle.svelte';
-
-
-    let isDarkMode = $theme === 'dark';
-
-
-    $: if ( $theme === 'dark' ) {
-        isDarkMode = true;
-    } else {
-        isDarkMode = false;
-    }
 
 
     export let shapeInput       : ShapeInput;
     export let value            : Selected = undefined;
     export let onSelectedChange : ( value: SelectInput ) => void;
     export let setError         : VoidFunction = () => {};
+
 
     let searchTerm = '';
     let isOpen = false;
@@ -465,7 +452,6 @@
         }
     });
 
-    shapeInput.inputStyle ??= inputUAITheme;
 
     const styleSelect = ( ): string => {
     if ( !comboboxElement || !dropdownElement ) return '';
