@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { inputUAITheme } from "$lib/styles/themes/uai-theme";
+    import { stylesS }          from "$lib/styles/themes/styl";
     import type { ShapeInput }  from "$models";
     import { theme }            from "$stores";
     import Info                 from "./Info.svelte";
@@ -20,9 +20,6 @@
     export let value        : string | undefined = undefined;
     export let setError     : VoidFunction = () => {};
     export let onKeyup      : ( event: KeyboardEvent ) => void = () => {};
-
-
-    shapeInput.inputStyle ??= inputUAITheme;
 </script>
 
 <Info { shapeInput } { onInput } { value }>
@@ -40,44 +37,23 @@
         class       = {`px-3 py-2 w-full transition-all duration-150 ease-in-out 
             ${ shapeInput.inputStyle?.fontSize      ?? 'text-sm' }
             ${ shapeInput.inputStyle?.height        ?? '' }
-            ${ shapeInput.inputStyle?.borderRadius  ?? 'rounded-md' }
+            ${ shapeInput.inputStyle?.borderRadius  ?? 'rounded-full' }
             ${ shapeInput.inputStyle?.borderSize    ?? 'border-0' }
             ${ shapeInput.inputStyle?.boxShadow     ?? 'shadow-sm' }`
         }
-        style={ `background-color: ${
-            isDarkMode
-                ? shapeInput.disabled || shapeInput.readonly
-                    ? shapeInput.inputStyle?.dark?.event?.disabled?.background ?? 'transparent'
-                    : shapeInput.inputStyle?.dark?.background   ?? 'transparent'
-                : shapeInput.disabled || shapeInput.readonly
-                    ? shapeInput.inputStyle?.light?.event?.disabled?.background ?? 'transparent'
-                    : shapeInput.inputStyle?.light?.background  ?? 'transparent'
-            }; color: ${
-                isDarkMode
-                    ? shapeInput.disabled || shapeInput.readonly
-                        ? shapeInput.inputStyle?.dark?.event?.disabled?.color ?? '#71717a'
-                        :shapeInput.inputStyle?.dark?.color    ?? '#d1d5db'
-                    : shapeInput.disabled || shapeInput.readonly
-                        ? shapeInput.inputStyle?.light?.event?.disabled?.color ?? '#71717a'
-                        :shapeInput.inputStyle?.light?.color   ?? 'black'
-            }; box-shadow: 0 0 0 ${shapeInput.inputStyle?.ringSize ?? '1px'} ${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46'  // zinc-700
-                    : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-300
-            };`
-        }
+        style={ stylesS( isDarkMode, shapeInput )}
         on:focus={(e) => {
-            e.currentTarget.style.boxShadow = `0 0 0 ${shapeInput.inputStyle?.[isDarkMode ? 'dark' : 'light']?.event?.focus?.ringSize ?? '2px'} ${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.event?.focus?.ring ?? '#71717a' // zinc-500
-                    : shapeInput.inputStyle?.light?.event?.focus?.ring ?? '#a1a1aa' // zinc-400
+            e.currentTarget.style.boxShadow = `0 0 0 ${shapeInput.inputStyle?.[isDarkMode ? 'dark' : 'light']?.event?.focus?.ringSize! }
+            ${ isDarkMode
+                ? shapeInput.inputStyle?.dark?.event?.focus?.ring!
+                : shapeInput.inputStyle?.light?.event?.focus?.ring!
             }`;
         }}
         on:blur={(e) => {
-            e.currentTarget.style.boxShadow = `0 0 0 ${shapeInput.inputStyle?.ringSize ?? '1px'} ${
-                isDarkMode
-                    ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46' // zinc-500
-                    : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-400
+            e.currentTarget.style.boxShadow = `0 0 0 ${ shapeInput.inputStyle?.ringSize! }
+            ${ isDarkMode
+                ? shapeInput.inputStyle?.dark?.ring!
+                : shapeInput.inputStyle?.light?.ring!
             }`;
         }}
     />
