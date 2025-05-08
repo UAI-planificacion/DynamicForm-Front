@@ -31,10 +31,14 @@ export type ShapeStyleItems = {
     backgroundTonality?     : string;
     backgroundTransparency? : string;
 
+    backgroundButton?       : string;
+
     color?                  : string;
     colorColor?             : string;
     colorTonality?          : string;
     colorTransparency?      : string;
+
+    colorButton?            : string;
 
     border?                 : string;
     borderColor?            : string;
@@ -170,6 +174,9 @@ export type ShapeInput = {
 	method?				: Method;
     buttonClass?        : string;
 	// form? 			: Form;
+
+    themeName?          : string;
+    themeColor?         : string;
 }
 
 
