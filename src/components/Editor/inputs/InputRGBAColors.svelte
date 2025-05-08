@@ -21,97 +21,99 @@
 
     function updateType( value: string ): void {
         type = value === 'transparent' || value === 'currentColor' || value === 'black' || value === 'white' 
-                ? value
-                : tailwindToRGBA( `${type}-${ color }-${ tonality }/${ transparency }` );
+            ? value
+            : tailwindToRGBA( `${type}-${ color }-${ tonality }/${ transparency }` );
     }
 </script>
 
-<div class={`grid grid-cols-1 @xl:grid-cols-[1.5fr,1fr,1fr,1fr${size !== null ? ',1fr' : ''}] gap-2 items-start`}>
+<VirtualSelect
+    value       = { color }
+    shapeInput  = {{
+        id          : uuid(),
+        name        : name,
+        label       : `Color del ${name}`,
+        placeholder : `Ingrese el color del ${name}`,
+        search      : true,
+        searchPlaceholder : `Ingrese el color del ${name}`,
+        options     : COLORS
+    }}
+    onSelectedChange = {( value ) => {
+        if ( value instanceof Array || value === undefined ) return;
+        color = value;
+        updateType( value );
+    }}
+/>
+
+<VirtualSelect
+    value       = { tonality }
+    shapeInput  = {{
+        id          : uuid(),
+        name        : `${type}-tonality`,
+        label       : 'Tonalidad',
+        placeholder : 'Ingrese la tonalidad',
+        search      : true,
+        searchPlaceholder : 'Ingrese la tonalidad',
+        options     : TONALITY
+    }}
+    onSelectedChange = {( value ) => {
+        if ( value instanceof Array || value === undefined ) return;
+        tonality = value;
+        updateType( value );
+    }}
+/>
+
+<VirtualSelect
+    value       = { transparency }
+    shapeInput  = {{
+        id          : uuid(),
+        name        : `${type}-transparency`,
+        label       : 'Transparencia',
+        placeholder : 'Ingrese la transparencia',
+        search      : true,
+        searchPlaceholder : 'Ingrese la transparencia',
+        options     : TRANSPARENCY_100
+    }}
+    onSelectedChange = {( value ) => {
+        if ( value instanceof Array || value === undefined ) return;
+        transparency = value;
+        updateType( value );
+    }}
+/>
+
+{#if size}
     <VirtualSelect
-        value       = { color }
+        value       = { size}
         shapeInput  = {{
-            id          : uuid(),
-            name        : name,
-            label       : `Color del ${name}`,
-            placeholder : `Ingrese el color del ${name}`,
-            search      : true,
-            searchPlaceholder : `Ingrese el color del ${name}`,
-            options     : COLORS
+            id                  : uuid(),
+            name                : 'ring',
+            label               : 'Anillo',
+            placeholder         : 'Ingrese el anillo',
+            search              : true,
+            searchPlaceholder   : 'Ingrese el anillo',
+            options             : RING
         }}
         onSelectedChange = {( value ) => {
             if ( value instanceof Array || value === undefined ) return;
-            color = value;
-            updateType( value );
+            size = value;
         }}
     />
+{/if}
 
-    <VirtualSelect
-        value       = { tonality }
-        shapeInput  = {{
+<div class="flex gap-2 items-end justify-center">
+    <Input
+        shapeInput = {{
             id          : uuid(),
-            name        : `${type}-tonality`,
-            label       : 'Tonalidad',
-            placeholder : 'Ingrese la tonalidad',
-            search      : true,
-            searchPlaceholder : 'Ingrese la tonalidad',
-            options     : TONALITY
+            name        : `${type}-custom`,
+            label       : 'Custom',
+            placeholder : 'Ingrese el color customizado',
         }}
-        onSelectedChange = {( value ) => {
-            if ( value instanceof Array || value === undefined ) return;
-            tonality = value;
-            updateType( value );
-        }}
+        value      = { type }
+        onInput    = {( value: string ) => type = value }
     />
 
-    <VirtualSelect
-        value       = { transparency }
-        shapeInput  = {{
-            id          : uuid(),
-            name        : `${type}-transparency`,
-            label       : 'Transparencia',
-            placeholder : 'Ingrese la transparencia',
-            search      : true,
-            searchPlaceholder : 'Ingrese la transparencia',
-            options     : TRANSPARENCY_100
-        }}
-        onSelectedChange = {( value ) => {
-            if ( value instanceof Array || value === undefined ) return;
-            transparency = value;
-            updateType( value );
-        }}
+    <!-- svelte-ignore element_invalid_self_closing_tag -->
+    <div
+        class="size-9 rounded-full mb-2 px-4 border-2 border-zinc-500"
+        style="background-color: {type}"
     />
-
-    {#if size}
-        <VirtualSelect
-            value       = { size}
-            shapeInput  = {{
-                id                  : uuid(),
-                name                : 'ring',
-                label               : 'Anillo',
-                placeholder         : 'Ingrese el anillo',
-                search              : true,
-                searchPlaceholder   : 'Ingrese el anillo',
-                options             : RING
-            }}
-            onSelectedChange = {( value ) => {
-                if ( value instanceof Array || value === undefined ) return;
-                size = value;
-            }}
-        />
-    {/if}
-
-    <div class="flex gap-2 items-end justify-center">
-        <Input
-            shapeInput = {{
-                id          : uuid(),
-                name        : `${type}-custom`,
-                label       : 'Custom',
-                placeholder : 'Ingrese el color customizado',
-            }}
-            value      = { type }
-            onInput    = {( value: string ) => type = value }
-        />
-
-        <div class="w-8 h-8 rounded-full mb-2 px-4" style="background-color: {type}"></div>
-    </div>
 </div>
