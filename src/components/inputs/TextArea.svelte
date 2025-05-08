@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { styles }			from "$lib";
-    import { inputUAITheme } from "$lib/styles/themes/uai-theme";
     import type { ShapeInput } 	from "$models";
     import { theme }            from "$stores";
 
@@ -16,17 +14,13 @@
     let isDarkMode = $theme === 'dark';
 
 
-$: if ( $theme === 'dark' ) {
-    isDarkMode = true;
-} else {
-    isDarkMode = false;
-}
-
-
-    shapeInput.inputStyle ??= inputUAITheme;
+    $: if ( $theme === 'dark' ) {
+        isDarkMode = true;
+    } else {
+        isDarkMode = false;
+    }
 </script>
 
-<!-- class       = { shapeInput.textareaClass ?? styles.textarea } -->
 <Info { shapeInput } { onInput } { value }>
 	<textarea
 		name        = { shapeInput.name }
