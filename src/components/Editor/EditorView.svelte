@@ -45,6 +45,7 @@
         errorSelect,
         stringToTime
 	}                       from "$lib";
+    import { UAITheme } from "$lib/styles/themes";
 
     export let shapeInput       : ShapeInput;
     export let onDelete         : VoidFunction;
@@ -53,6 +54,10 @@
 
     shapeInput.valid        = true;
     shapeInput.msgRequired  = 'El campo es requerido.'
+
+    shapeInput.themeName = 'uai';
+    shapeInput.themeColor = 'zinc';
+    shapeInput.inputStyle = UAITheme();
 
 
 
@@ -654,6 +659,7 @@
                     </Accordion.Content>
                 </Accordion.Item>
 
+                {#if shapeInput.shape === 'button' }
 				<Accordion.Item value="accordion" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
                     <Accordion.Header>
                         <Accordion.Trigger
@@ -670,7 +676,11 @@
                     </Accordion.Header>
 
                     <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
-						{#if shapeInput.shape === 'input' }
+						<!-- <InputStyles bind:shapeInput={shapeInput} /> -->
+                        <ButtonStyles bind:shapeInput={shapeInput} />
+
+
+						<!-- {#if shapeInput.shape === 'input' }
 							<InputStyles bind:shapeInput={shapeInput} />
                         {:else if shapeInput.shape === 'textarea'}
                             <TextareStyles bind:shapeInput={shapeInput} />
@@ -686,9 +696,10 @@
                             <TimeStyles bind:shapeInput={shapeInput} />
                         {:else if shapeInput.shape === 'markdown'}
                             <MarkdownStyles bind:shapeInput={shapeInput} />
-						{/if}
+						{/if} -->
                     </Accordion.Content>
                 </Accordion.Item>
+                {/if}
             </Accordion.Root>
 
             <div class="grid grid-cols-1 @lg:grid-cols-2 gap-2 items-center">
