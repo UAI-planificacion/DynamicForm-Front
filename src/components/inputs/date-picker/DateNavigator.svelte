@@ -16,7 +16,6 @@
     }                               from "$icons";
     import { Input, VirtualSelect } from "$components";
     import { styles }               from "$lib";
-    import { inputUAITheme }        from "$lib/styles/themes/uai-theme";
     import ContentStyle             from "../ContentStyle.svelte";
 
 
@@ -30,9 +29,6 @@
     export let onClickDay           : ( date: DateValue, isSelected: boolean ) => void = () => {};
     export let onHoverDateChange    : ( hover: DateValue | null ) => void = () => {};
     export let isRange              : boolean = false;
-
-
-    shapeInput.inputStyle ??= inputUAITheme;
 
 
     const monthOptions: ShapeOption[] = [
