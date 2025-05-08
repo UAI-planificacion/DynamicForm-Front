@@ -190,7 +190,7 @@
                     <div 
                         class="mt-1 h-52 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
                     >
-                        {#each filteredMinutes ?? [] as minute}
+                        {#each filteredMinutes as minute}
                             <button
                                 type            = "button"
                                 data-selected   = { selectedMinute === minute }
