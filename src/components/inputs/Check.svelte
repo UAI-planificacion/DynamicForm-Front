@@ -3,7 +3,6 @@
     import { CheckIcon }        from "$icons";
     import type { ShapeInput }  from "$models";
     import Description          from "./Description.svelte";
-    import { inputUAITheme }    from "$lib/styles/themes/uai-theme";
 
 
     let isDarkMode = $theme === 'dark';
@@ -22,7 +21,6 @@
     export let setError     : VoidFunction = () => {};
 
 
-    shapeInput.inputStyle ??= inputUAITheme;
     shapeInput.checked = checked ?? false;
 
 
