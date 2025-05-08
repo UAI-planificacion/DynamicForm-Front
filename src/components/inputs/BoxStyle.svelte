@@ -1,7 +1,6 @@
 <script lang="ts">
     import { theme }            from "$stores";
     import type { ShapeInput }  from '$models';
-    import { inputUAITheme }    from "$lib/styles/themes/uai-theme";
 
 
     let isDarkMode = $theme === 'dark';
@@ -16,8 +15,6 @@
 
     export let shapeInput: ShapeInput;
     export let handleOpen: VoidFunction;
-
-    shapeInput.inputStyle ??= inputUAITheme;
 </script>
 
 <button
