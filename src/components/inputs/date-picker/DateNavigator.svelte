@@ -8,15 +8,15 @@
     import type {
         ShapeInput,
         ShapeOption,
-        InputStyle
+        ThemeShape,
     }                               from "$models";
     import {
         CaretLeftIcon,
         CaretRightIcon,
     }                               from "$icons";
     import { Input, VirtualSelect } from "$components";
-    import { styles }               from "$lib";
     import ContentStyle             from "../ContentStyle.svelte";
+    import { UAITheme }             from "$lib";
 
 
     export let shapeInput           : ShapeInput;
@@ -29,6 +29,7 @@
     export let onClickDay           : ( date: DateValue, isSelected: boolean ) => void = () => {};
     export let onHoverDateChange    : ( hover: DateValue | null ) => void = () => {};
     export let isRange              : boolean = false;
+    export let themeShape           : ThemeShape = UAITheme();
 
 
     const monthOptions: ShapeOption[] = [
@@ -47,7 +48,7 @@
     ];
 </script>
 
-<ContentStyle { shapeInput }>
+<ContentStyle { themeShape }>
     <div class="flex space-x-1 py-1">
         <button 
             type="button"
@@ -158,8 +159,8 @@
                 <button
                     type="button"
                     class={isRange 
-                        ? (shapeInput.rangeDateClass ?? (styles.datepicker as InputStyle).rangeItem) 
-                        : (shapeInput.itemDateClass ?? (styles.datepicker as InputStyle).item)}
+                        ? "size-8 flex items-center justify-center rounded-md text-sm relative transition-colors duration-200 [&:not(.current-month)]:text-zinc-300 [&:not(.current-month)]:cursor-not-allowed [&:not(.current-month)]:opacity-50 [&.out-of-range]:text-zinc-300 [&.out-of-range]:dark:text-zinc-500 [&.out-of-range]:cursor-not-allowed [&.out-of-range]:opacity-60 [&.invalid-date]:text-zinc-300 [&.invalid-date]:dark:text-zinc-500 [&.invalid-date]:cursor-not-allowed [&.current-month:not(.out-of-range):not(.invalid-date)]:hover:bg-blue-100 [&.current-month:not(.out-of-range):not(.invalid-date)]:dark:hover:bg-blue-900/30 [&.start-date]:bg-blue-500 [&.start-date]:text-white [&.start-date]:font-bold [&.start-date]:rounded-l-md [&.end-date]:bg-blue-500 [&.end-date]:text-white [&.end-date]:font-bold [&.end-date]:rounded-r-md [&.in-range:not(.start-date):not(.end-date)]:bg-blue-100 [&.in-range:not(.start-date):not(.end-date)]:dark:bg-blue-900/30 [&.in-range:not(.start-date):not(.end-date)]:text-foreground [&.in-range:not(.start-date):not(.end-date)]:hover:bg-blue-200 [&.in-range:not(.start-date):not(.end-date)]:dark:hover:bg-blue-800/30 [&.in-hover-range:not(.start-date):not(.end-date):not(.in-range)]:bg-blue-50 [&.in-hover-range:not(.start-date):not(.end-date):not(.in-range)]:dark:bg-blue-900/20 [&.in-hover-range:not(.start-date):not(.end-date):not(.in-range)]:text-foreground [&.today:not(.start-date):not(.end-date):not(.in-range):not(.in-hover-range)]:font-bold [&.today:not(.start-date):not(.end-date):not(.in-range):not(.in-hover-range)]:text-blue-500"
+                        : "size-8 flex items-center justify-center rounded-md text-sm relative transition-colors duration-200 [&.current-month:not(.out-of-range):not(.invalid-date)]:hover:bg-zinc-200 [&.current-month:not(.out-of-range):not(.invalid-date)]:hover:text-foreground [&.current-month:not(.out-of-range):not(.invalid-date)]:dark:hover:bg-zinc-700 [&.current-month:not(.out-of-range):not(.invalid-date)]:dark:hover:text-white [&:not(.current-month)]:text-zinc-300 [&:not(.current-month)]:cursor-not-allowed [&:not(.current-month)]:opacity-50 [&.out-of-range]:text-zinc-300 [&.out-of-range]:dark:text-zinc-500 [&.out-of-range]:cursor-not-allowed [&.out-of-range]:opacity-60 [&.invalid-date]:text-zinc-300 [&.invalid-date]:dark:text-zinc-500 [&.invalid-date]:cursor-not-allowed [&.selected]:bg-blue-500 [&.selected]:text-white [&.selected]:font-bold [&.selected]:hover:bg-blue-600 [&.today:not(.selected):not(.invalid)]:font-bold [&.today:not(.selected):not(.invalid)]:text-primary"}
                     class:current-month={isCurrentMonth}
                     class:out-of-range={isOutOfRange}
                     class:invalid-date={isInvalidDate}
