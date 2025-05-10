@@ -28,9 +28,9 @@ export { default as Enumeration }   from './Preview/Enumeration.svelte';
 export { default as JsonViewer }    from './Preview/JsonViewer.svelte';
 
 // MarkdownEditor
-export { default as DynamicTable } 		from './markdown/DynamicTable.svelte';
-export { default as MarkdownEditor }	from './markdown/MarkdownEditor.svelte';
-export { default as marked }            from './markdown/marked.config';
+export { default as DynamicTable } 		from './inputs/markdown/DynamicTable.svelte';
+export { default as MarkdownEditor }	from './inputs/markdown/MarkdownEditor.svelte';
+export { default as marked }            from './inputs/markdown/marked.config';
 
 // MicrosoftAuth
 export { default as MicrosoftAuth } from './Auth/microsoftAuth.svelte';
@@ -49,13 +49,6 @@ export { default as SelectEditor }  from './Editor/select/SelectEditor.svelte';
 export { default as GenerateValidDates }    from './Editor/dates/GenerateValidDates.svelte';
 export { default as TimeGenerator }         from './Editor/times/TimeGenerator.svelte';
 export { default as ValidInput }            from './Editor/inputs/ValidInput.svelte';
-export { default as SelectStyles }          from './Editor/select/SelectStyles.svelte';
-export { default as DateStyles }            from './Editor/dates/DateStyles.svelte';
-export { default as TimeStyles }            from './Editor/times/TimeStyles.svelte';
 export { default as ButtonRequired }        from './Editor/buttons/ButtonRequired.svelte';
 export { default as ButtonValidations }     from './Editor/buttons/ButtonValidations.svelte';
 export { default as ButtonStyles }          from './Editor/buttons/ButtonStyles.svelte';
-export { default as MarkdownStyles }        from './Editor/markdown/MarkdownStyles.svelte';
-export { default as InputStyles }           from './Editor/inputs/InputStyles.svelte';
-export { default as CheckStyles }           from './Editor/checkbox/CheckStyles.svelte';
-export { default as TextareStyles }         from './Editor/textarea/TextareStyles.svelte';
