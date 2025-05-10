@@ -105,7 +105,7 @@ export const TRANSPARENCY: ShapeOption[] = [
     { label: "100%", value: "1" }
 ];
 
-export const TRANSPARENCY_100: ShapeOption[] = [
+export const OPACITY: ShapeOption[] = [
     { label: "100%", value: "100" },
     { label: "90%", value: "90" },
     { label: "80%", value: "80" },
