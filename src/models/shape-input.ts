@@ -1,16 +1,6 @@
 import { type DateValue } from "@internationalized/date";
 import type { DateRange } from "bits-ui";
 
-export type InputStyle = {
-    box?     	: string;
-    content?	: string;
-    item?   	: string;
-    rangeItem?  : string;
-	label?  	: string;
-	input?  	: string;
-    group?  	: string;
-}
-
 
 export type InputType  = 'input' | 'check' | 'timer' | 'select' | 'textarea' | 'datepicker' | 'button' | 'markdown' | 'none';
 export type Types      = 'text' | 'number' | 'password' | 'email' | 'url' | 'tel' | 'search';
@@ -21,61 +11,51 @@ export type DynamicForm = {
     name        : string;
     user_email  : string;
     details     : ShapeInput[];
+    themeShape? : ThemeShape;
 }
 
 
-export type ShapeStyleItems = {
-    [key: string]           : unknown;
-    background?             : string;
-    backgroundColor?        : string;
-    backgroundTonality?     : string;
-    backgroundTransparency? : string;
+export type ThemeAttribute = {
+    [key: string]       : unknown;
+    background          : string;
+    backgroundColor     : string;
+    backgroundTonality  : string;
+    backgroundOpacity   : string;
 
-    backgroundButton?       : string;
+    backgroundButton?: string;
 
-    color?                  : string;
-    colorColor?             : string;
-    colorTonality?          : string;
-    colorTransparency?      : string;
+    color           : string;
+    colorColor      : string;
+    colorTonality   : string;
+    colorOpacity    : string;
 
-    colorButton?            : string;
+    colorButton?: string;
 
-    border?                 : string;
-    borderColor?            : string;
-    borderTonality?         : string;
-    borderTransparency?     : string;
-
-    ring?                   : string;
-    ringColor?              : string;
-    ringTonality?           : string;
-    ringTransparency?       : string;
-    ringSize?               : string;
-
-    event?                  : ShapeStyleEvent
-}
-
-
-export type ShapeStyleEvent = {
-    [key: string]   : unknown;
-    hover?          : ShapeStyleItems;
-    active?         : ShapeStyleItems;
-    disabled?       : ShapeStyleItems;
-    placeholder?    : ShapeStyleItems;
-    focus?          : ShapeStyleItems;
-}
-
-
-export type ShapeInputStyle = {
-    // width?          : string;
-    fontSize?       : string;
-    height?         : string;
-    borderRadius?   : string;
-    boxShadow?      : string;
-    fontWeight?     : string;
-    borderSize?     : string;
+    ring            : string;
+    ringColor       : string;
+    ringTonality    : string;
+    ringOpacity     : string;
     ringSize?       : string;
-    light?          : ShapeStyleItems;
-    dark?           : ShapeStyleItems;
+
+    event: ThemeEvent
+}
+
+
+export type ThemeEvent = {
+    [key: string]   : unknown;
+    focus           : Partial<ThemeAttribute>;
+}
+
+
+export type ThemeShape = {
+    fontSize       : string;
+    height         : string;
+    borderRadius   : string;
+    boxShadow      : string;
+    borderSize     : string;
+    ringSize       : string;
+    light          : ThemeAttribute;
+    dark           : ThemeAttribute;
 }
 
 
@@ -108,22 +88,15 @@ export type ShapeInput = {
     max?            : number;
     msgMin?         : string;
     msgMax?         : string;
-    inputClass?     : string;
-    inputStyle?     : ShapeInputStyle;
 
     // Textarea
     rows?           : number;
-    textareaClass?  : string;
 
     // Markdown
     preview?            : boolean;
-    boxMarkdownClass?   : string;
-    inputMarkdownClass? : string;
 
     // Checkbox
     checked?            : boolean;
-    boxCheckboxClass?   : string;
-    labelCheckboxClass? : string;
 
     // Select
     selected?           : Selected;
@@ -132,11 +105,6 @@ export type ShapeInput = {
     searchPlaceholder?  : string;
     options?            : ShapeOption[] | GroupOption[];
     heightPanel?        : number;
-    boxSelectClass?     : string;
-    contentSelectClass? : string;
-    itemSelectClass?    : string;
-    groupSelectClass?   : string;
-    inputSelectClass?   : string;
 
     // Date
     maxValue?           : DateValue;
@@ -148,23 +116,10 @@ export type ShapeInput = {
     invalidDatesRange?  : InvalidDate;
     numberOfMonths?     : number;
     currentDate?        : boolean
-    boxDateClass?       : string;
-    contentDateClass?   : string;
-    labelDateClass?     : string;
-    itemDateClass?      : string;
-    rangeDateClass?     : string;
 
     // Time
     time?                   : Time;
     timeValue?              : string;
-    boxDigitalClass?        : string;
-    contentDigitalClass?    : string;
-    itemDigitalClass?       : string;
-    inputDigitalClass?      : string;
-    boxAnalogicClass?       : string;
-    contentAnalogicClass?   : string;
-    itemAnalogicClass?      : string;
-
 
     // Button
     httpList?			: Http[];
@@ -172,11 +127,7 @@ export type ShapeInput = {
 	invalidErrorMsg?	: string;
     urlSend?     		: string;
 	method?				: Method;
-    buttonClass?        : string;
 	// form? 			: Form;
-
-    themeName?          : string;
-    themeColor?         : string;
 }
 
 
