@@ -9,11 +9,11 @@
         togglePopup
     }                                   from "./dateHandler";
     import type {
-        InputStyle,
         ShapeInput,
+        ThemeShape,
     }                                   from "$models";
     import { CalendarBlankIcon }        from "$icons";
-    import { numberWithZero, styles }   from "$lib";
+    import { numberWithZero, UAITheme } from "$lib";
     import Description                  from "../Description.svelte";
     import BoxStyle                     from "../BoxStyle.svelte";
     import DateNavigator                from "./DateNavigator.svelte";
@@ -24,6 +24,7 @@
     export let value            : DateRange | any | undefined = undefined;
     export let onValueChange    : ( value: DateRange | undefined ) => void;
     export let setError         : VoidFunction = () => {};
+    export let themeShape       : ThemeShape = UAITheme();
 
 
     const createEmptyDateRange = () => ({
@@ -151,13 +152,16 @@
 >
     <div class="flex w-full flex-col gap-1.5">
         {#if shapeInput.label}
-            <DateRangePicker.Label class={shapeInput.labelDateClass ?? (styles.datepicker as InputStyle).label}>
+            <DateRangePicker.Label
+                class="block select-none text-sm font-medium dark:text-zinc-200 dark:data-[disabled]:text-zinc-400 data-[disabled]:text-zinc-500"
+            >
                 {shapeInput.label}
             </DateRangePicker.Label>
         {/if}
 
         <div bind:this={inputContainer} class="relative">
             <BoxStyle
+                { themeShape }
                 shapeInput={shapeInput}
                 handleOpen={_togglePopup}
             >
@@ -182,6 +186,7 @@
 
             {#if showPopup}
                 <DateNavigator
+                    { themeShape }
                     bind:shapeInput={shapeInput}
                     bind:currentDate={currentDate}
                     {selectedRange}
