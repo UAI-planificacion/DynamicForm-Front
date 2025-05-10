@@ -33,13 +33,15 @@
         DateDetail,
         DatesRange,
         SelectInput,
-        ShapeInput
+        ShapeInput,
+        ThemeShape
     }                   from "$models";
 
 
     export let template		: ShapeInput[] = [];
 	export let inputActive 	: number;
 	export let dynamicMode	: boolean = false;
+    export let themeShape   : ThemeShape;
 
 
     const keys = [
@@ -325,6 +327,7 @@
 			{#if shapeInput.shape === 'input'}
 				<Input
 					{ shapeInput }
+                    { themeShape }
 					onInput		= {( value: string ) => handleInput( value, shapeInput.name )}
 					value 		= { formValues[ shapeInput.name ]}
 					setError 	= {() => shapeInput.valid = errorInput( shapeInput, formValues[ shapeInput.name ])}
@@ -332,6 +335,7 @@
 			<!-- Select -->
 			{:else if shapeInput.shape === 'select'}
                 <VirtualSelect
+                    { themeShape }
                     { shapeInput }
                     value               = { formValues[ shapeInput.name ]}
                     setError            = {() => shapeInput.valid = errorSelect( shapeInput, formValues[ shapeInput.name ])}
@@ -347,6 +351,7 @@
 			<!-- Check -->
 			{:else if shapeInput.shape === 'check'}
 				<Check
+                    { themeShape }
 					{ shapeInput }
 					onChange	= {( checked: boolean ) => handleCheck( checked, shapeInput.name )}
 					checked		= { formValues[ shapeInput.name ]}
@@ -355,6 +360,7 @@
 			<!-- DatePicker -->
 			{:else if shapeInput.shape === 'datepicker' && !shapeInput.isRange}
 				<DatePicker
+                    { themeShape }
 					{ shapeInput }
 					onValueChange	= {( value: DateValue ) => handleDatePicker( value, shapeInput.name )}
 					value 			= { formValues[ shapeInput.name ]}
@@ -362,6 +368,7 @@
 				/>
 			{:else if shapeInput.shape === 'datepicker' && shapeInput.isRange}
 				<DateRangePicker
+                    { themeShape }
 					{ shapeInput }
 					onValueChange	= {( value: DateRange | undefined ) => handleDatePicker( value, shapeInput.name )}
 					value 			= { formValues[ shapeInput.name ] }
@@ -370,6 +377,7 @@
 			<!-- TextArea -->
 			{:else if shapeInput.shape === 'textarea'}
 				<TextArea
+                    { themeShape }
 					{ shapeInput }
 					onInput		= {( value: string ) => handleInput( value, shapeInput.name )}
 					value		= { formValues[ shapeInput.name ]}
@@ -386,6 +394,7 @@
             <!-- Digital Time -->
             {:else if shapeInput.shape === 'timer' && !shapeInput.time?.isAnalogic }
                 <DigitalTime
+                    { themeShape }
                     { shapeInput }
                     onTimerInput	= {( value: string ) => handleTime( value, shapeInput.name )}
                     value			= { stringToTime( formValues[ shapeInput.name ])}
@@ -394,6 +403,7 @@
             <!-- Analogic Time -->
             {:else if shapeInput.shape === 'timer' && shapeInput.time?.isAnalogic}
                 <AnalogicTime
+                    { themeShape }
                     { shapeInput }
                     onTimerInput    = {( value: string ) => handleTime( value, shapeInput.name, true )}
                     value			= { stringToTime( formValues[ shapeInput.name ] )}
@@ -409,6 +419,7 @@
 
     <!-- Button -->
     <Button
+        { themeShape }
         shapeInput={ template.find( item => item.shape === 'button' ) as ShapeInput}
         onClick={ onClick }
         loading={ loading }
