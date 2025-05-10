@@ -1,6 +1,5 @@
 export * from './inputs';
 export * from './valid-shapeinput';
-export * from './styles';
 export * from './toast.config';
 export * from './http-codes';
 export * from './auth';
@@ -11,3 +10,4 @@ export * from './clean-shape-input';
 export * from './string-to-time';
 export * from './docs/docs-sections';
 export * from './transforms/numberToString';
+export * from './styles/themes';
