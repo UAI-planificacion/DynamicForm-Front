@@ -27,16 +27,9 @@
         SelectEditor,
         ValidInput,
         DateRangePicker,
-        DateStyles,
-        TimeStyles,
         ButtonRequired,
         ButtonValidations,
-        SelectStyles,
-        CheckStyles,
-        InputStyles,
         ButtonStyles,
-        TextareStyles,
-        MarkdownStyles
     }						from "$components";
     import {
 		options,
@@ -45,7 +38,6 @@
         errorSelect,
         stringToTime
 	}                       from "$lib";
-    import { UAITheme } from "$lib/styles/themes";
 
     export let shapeInput       : ShapeInput;
     export let onDelete         : VoidFunction;
@@ -54,11 +46,6 @@
 
     shapeInput.valid        = true;
     shapeInput.msgRequired  = 'El campo es requerido.'
-
-    shapeInput.themeName = 'uai';
-    shapeInput.themeColor = 'zinc';
-    shapeInput.inputStyle = UAITheme();
-
 
 
     let editing: boolean = false;
@@ -269,265 +256,262 @@
             onEdit = { () => editing = !editing }
         />
     {:else}
-
-    <section class="space-y-2">
-        <Accordion.Root class="w-full" type="single" value="basic">
-            <Accordion.Item value="basic" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
-                <Accordion.Header>
-                    <Accordion.Trigger
-                        class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
-                    >
-                        Campos básicos
-                        <span
-                            class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10"
+        <section class="space-y-2">
+            <Accordion.Root class="w-full" type="single" value="basic">
+                <Accordion.Item value="basic" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
+                    <Accordion.Header>
+                        <Accordion.Trigger
+                            class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
                         >
-                            <CaretDownIcon />
-                        </span>
-                    </Accordion.Trigger>
-                </Accordion.Header>
+                            Campos básicos
+                            <span
+                                class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10"
+                            >
+                                <CaretDownIcon />
+                            </span>
+                        </Accordion.Trigger>
+                    </Accordion.Header>
 
-                <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
+                    <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
+                        <div class={`grid grid-cols-1 ${ shapeInput.shape !== 'button' ? '@lg:grid-cols-2' : '' } items-start gap-2`}>
+                            {#if shapeInput.shape !== 'button'}
+                                <VirtualSelect
+                                    shapeInput = {{ ...virtualShape, selected: shapeInput.shape }}
+                                    { onSelectedChange }
+                                    value = { shapeInput.shape }
+                                    setError = { () => {
+                                        virtualShape.valid = errorSelect( virtualShape, shapeInput.shape );
+                                    }}
+                                />
 
-            <div class={`grid grid-cols-1 ${ shapeInput.shape !== 'button' ? '@lg:grid-cols-2' : '' } items-start gap-2`}>
-				{#if shapeInput.shape !== 'button'}
-                    <VirtualSelect
-                        shapeInput = {{ ...virtualShape, selected: shapeInput.shape }}
-                        { onSelectedChange }
-                        value = { shapeInput.shape }
-                        setError = { () => {
-                            virtualShape.valid = errorSelect( virtualShape, shapeInput.shape );
-                        }}
-                    />
+                                <Input
+                                    shapeInput  = {{ ...nameShape, value: shapeInput.name }}
+                                    onInput     = {( value: string ) => shapeInput.name = value }
+                                    value       = { shapeInput.name }
+                                    setError    = { () => nameShape.valid = errorInput(nameShape, shapeInput.name) }
+                                />
+                            {/if}
 
-                    <Input
-                        shapeInput  = {{ ...nameShape, value: shapeInput.name }}
-                        onInput     = {( value: string ) => shapeInput.name = value }
-                        value       = { shapeInput.name }
-                        setError    = { () => nameShape.valid = errorInput(nameShape, shapeInput.name) }
-                    />
-				{/if}
+                            <Input
+                                shapeInput  = {{ ...labelShape, value: shapeInput.label, required: shapeInput.shape === 'check' || shapeInput.shape === 'button' }}
+                                onInput     = {( value: string ) => shapeInput.label = value }
+                                value       = { shapeInput.label }
+                                setError    = { () => labelShape.valid = errorInput( { ...labelShape, required: shapeInput.shape === 'check' || shapeInput.shape === 'button' }, shapeInput.label )}
+                            />
 
-                <Input
-                    shapeInput  = {{ ...labelShape, value: shapeInput.label, required: shapeInput.shape === 'check' || shapeInput.shape === 'button' }}
-                    onInput     = {( value: string ) => shapeInput.label = value }
-                    value       = { shapeInput.label }
-                    setError    = { () => labelShape.valid = errorInput( { ...labelShape, required: shapeInput.shape === 'check' || shapeInput.shape === 'button' }, shapeInput.label )}
-                />
+                            {#if shapeInput.shape === 'input' || shapeInput.shape === 'select' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' || shapeInput.shape === 'none'}
+                                <Input
+                                    shapeInput  = {{ ...placeholderShape, value: shapeInput.placeholder }}
+                                    onInput     = {( value: string ) => shapeInput.placeholder = value }
+                                    value       = { shapeInput.placeholder }
+                                    setError    = { () => placeholderShape.valid = errorInput(placeholderShape, shapeInput.placeholder) }
+                                />
+                            {/if}
 
-                {#if shapeInput.shape === 'input' || shapeInput.shape === 'select' || shapeInput.shape === 'textarea' || shapeInput.shape === 'markdown' || shapeInput.shape === 'none'}
-                    <Input
-                        shapeInput  = {{ ...placeholderShape, value: shapeInput.placeholder }}
-                        onInput     = {( value: string ) => shapeInput.placeholder = value }
-                        value       = { shapeInput.placeholder }
-                        setError    = { () => placeholderShape.valid = errorInput(placeholderShape, shapeInput.placeholder) }
-                    />
-                {/if}
+                            {#if shapeInput.shape === 'check'}
+                                <div class="flex mt-5">
+                                    <Check
+                                        shapeInput = {{
+                                            id      : uuid(),
+                                            name    : 'default-value',
+                                            label   : 'Valor por defecto',
+                                        }}
+                                        onChange = {( e ) => shapeInput.checked = e }
+                                        checked  = { shapeInput.checked }
+                                    />
+                                </div>
+                            {:else if shapeInput.shape === 'datepicker'}
+                                {#if !shapeInput.isRange }
+                                    <div class="flex gap-2 items-center">
+                                        <div class="w-48">
+                                            <Check
+                                                shapeInput = {{
+                                                    id      : uuid(),
+                                                    name    : 'current-date',
+                                                    label   : 'Día actual',
+                                                }}
+                                                onChange = {( e ) => shapeInput.currentDate = e}
+                                                checked  = { shapeInput.currentDate }
+                                            />
+                                        </div>
 
-                {#if shapeInput.shape === 'check'}
-                    <div class="flex mt-5">
-                        <Check
-                            shapeInput = {{
-                                id      : uuid(),
-                                name    : 'default-value',
-                                label   : 'Valor por defecto',
-                            }}
-                            onChange = {( e ) => shapeInput.checked = e }
-                            checked  = { shapeInput.checked }
-                        />
-                    </div>
-                {:else if shapeInput.shape === 'datepicker'}
-                    {#if !shapeInput.isRange }
-                        <div class="flex gap-2 items-center">
-                            <div class="w-48">
+                                        <DatePicker
+                                            shapeInput = {{
+                                                id          : uuid(),
+                                                name        : 'default-value',
+                                                date        : shapeInput.date,
+                                                label       : 'Valor por defecto',
+                                            }}
+                                            onValueChange = {( value: DateValue ) => shapeInput.date = value }
+                                            value = { shapeInput.date }
+                                        />
+                                    </div>
+                                {:else}
+                                    <DateRangePicker
+                                        onValueChange   = {( value: DateRange | undefined ) => shapeInput.dateRange = value }
+                                        value           = { shapeInput.dateRange }
+                                        shapeInput      = {{
+                                            id              : uuid(),
+                                            name            : 'default-value',
+                                            label           : 'Valor por defecto',
+                                            disabled        : shapeInput.currentDate
+                                        }}
+                                    />
+                                {/if}
+                            {:else if shapeInput.shape === 'timer'}
+                                {#if shapeInput.time?.isAnalogic}
+                                    <AnalogicTime
+                                        shapeInput = {{
+                                            id          : uuid(),
+                                            name        : 'time-default',
+                                            label       : 'Tiempo por defecto',
+                                            timeValue   : shapeInput.timeValue,
+                                        }}
+                                        onTimerInput = {( value: string ) => shapeInput.timeValue = value }
+                                        value        = { stringToTime( shapeInput.timeValue )}
+                                    />
+                                {:else}
+                                    <DigitalTime
+                                        shapeInput = {{
+                                            id		    : uuid(),
+                                            name	    : 'time-default',
+                                            label       : 'Tiempo por defecto',
+                                            timeValue   : shapeInput.timeValue
+                                        }}
+                                        onTimerInput    = {( value: string ) => shapeInput.timeValue = value }
+                                        value           = { stringToTime( shapeInput.timeValue )}
+                                    />
+                                {/if}
+                            {/if}
+                        </div>
+
+                        <div class="flex gap-2 justify-between items-center">
+                            {#if shapeInput.shape === 'markdown'}
                                 <Check
                                     shapeInput = {{
-                                        id      : uuid(),
-                                        name    : 'current-date',
-                                        label   : 'Día actual',
+                                        id		: uuid(),
+                                        label   : 'Previsualización',
+                                        name	: 'preview',
                                     }}
-                                    onChange = {( e ) => shapeInput.currentDate = e}
-                                    checked  = { shapeInput.currentDate }
+                                    onChange = {( e ) => shapeInput.preview = e as boolean }
+                                    checked  = { shapeInput.preview }
                                 />
-                            </div>
+                            {/if}
 
-                            <DatePicker
+                            <Check
                                 shapeInput = {{
-                                    id          : uuid(),
-                                    name        : 'default-value',
-                                    date        : shapeInput.date,
-                                    label       : 'Valor por defecto',
+                                    id		: uuid(),
+                                    label   : 'Desactivado',
+                                    name	: 'disabled',
                                 }}
-                                onValueChange = {( value: DateValue ) => shapeInput.date = value }
-                                value = { shapeInput.date }
+                                onChange = {( e ) => shapeInput.disabled = e as boolean }
+                                checked  = { shapeInput.disabled }
+                            />
+
+                            <Check
+                                shapeInput = {{
+                                    id		: uuid(),
+                                    label   : 'Solo lectura',
+                                    name	: 'readonly',
+                                }}
+                                onChange = {( e ) => shapeInput.readonly = e as boolean }
+                                checked  = { shapeInput.readonly }
                             />
                         </div>
-                    {:else}
-                        <DateRangePicker
-                            onValueChange   = {( value: DateRange | undefined ) => shapeInput.dateRange = value }
-                            value           = { shapeInput.dateRange }
-                            shapeInput      = {{
-                                id              : uuid(),
-                                name            : 'default-value',
-                                label           : 'Valor por defecto',
-                                disabled        : shapeInput.currentDate
-                            }}
-                        />
-                    {/if}
-                {:else if shapeInput.shape === 'timer'}
-                    {#if shapeInput.time?.isAnalogic}
-                        <AnalogicTime
-                            shapeInput = {{
-                                id          : uuid(),
-                                name        : 'time-default',
-                                label       : 'Tiempo por defecto',
-                                timeValue   : shapeInput.timeValue,
-                            }}
-                            onTimerInput = {( value: string ) => shapeInput.timeValue = value }
-                            value        = { stringToTime( shapeInput.timeValue )}
-                        />
-                    {:else}
-                        <DigitalTime
+
+                        <Input
                             shapeInput = {{
                                 id		    : uuid(),
-                                name	    : 'time-default',
-                                label       : 'Tiempo por defecto',
-                                timeValue   : shapeInput.timeValue
+                                label       : 'Descripción',
+                                name	    : 'description',
+                                placeholder : 'Ingrese la descripción',
                             }}
-                            onTimerInput    = {( value: string ) => shapeInput.timeValue = value }
-                            value           = { stringToTime( shapeInput.timeValue )}
+                            onInput = {( value: string ) => shapeInput.description = value }
+                            value = { shapeInput.description}
                         />
-                    {/if}
-                {/if}
-            </div>
 
-            <div class="flex gap-2 justify-between items-center">
-                {#if shapeInput.shape === 'markdown'}
-                    <Check
-                        shapeInput = {{
-                            id		: uuid(),
-                            label   : 'Previsualización',
-                            name	: 'preview',
-                        }}
-                        onChange = {( e ) => shapeInput.preview = e as boolean }
-                        checked  = { shapeInput.preview }
-                    />
-                {/if}
+                        {#if shapeInput.shape === 'input' }
+                            <div class="grid grid-cols-1 @lg:grid-cols-2 gap-2 items-center">
+                                <VirtualSelect
+                                    shapeInput          = {{ ...typeShape, selected: shapeInput.type, required: shapeInput.shape ==='input' }}
+                                    onSelectedChange    = { onSelectedType }
+                                    setError            = { () => typeShape.valid = errorInput( typeShape, shapeInput.type ) }
+                                    value               = { shapeInput.type }
+                                />
 
-                <Check
-                    shapeInput = {{
-                        id		: uuid(),
-                        label   : 'Desactivado',
-                        name	: 'disabled',
-                    }}
-                    onChange = {( e ) => shapeInput.disabled = e as boolean }
-                    checked  = { shapeInput.disabled }
-                />
+                                {#if true}
+                                    {@const defaultValueShape = {
+                                        ...baseInputShape,
+                                        id		    : uuid(),
+                                        label       : 'Valor por defecto',
+                                        name	    : 'value',
+                                        placeholder : 'Valor con el que se inicia',
+                                        type        : (shapeInput.type === 'number' ? 'number' : 'text') as Types
+                                    } as ShapeInput}
+                                    <Input
+                                        shapeInput = {{ ...defaultValueShape }}
+                                        onInput = {( value: string ) => shapeInput.value = value }
+                                        value = { shapeInput.value }
+                                    />
+                                {/if}
+                            </div>
+                        {:else if shapeInput.shape === 'textarea' }
+                            <div class="grid grid-cols-1 sm:grid-cols-2 space-x-2 items-center">
+                                <Input
+                                    shapeInput  = {{ ...rowsShape, value: shapeInput.rows?.toString() }}
+                                    onInput     = {( value: string ) => shapeInput.rows = Number(value) }
+                                    setError    = { () => rowsShape.valid = errorInput( rowsShape, shapeInput.rows?.toString() )}
+                                    value       = { shapeInput.rows?.toString() }
+                                />
 
-                <Check
-                    shapeInput = {{
-                        id		: uuid(),
-                        label   : 'Solo lectura',
-                        name	: 'readonly',
-                    }}
-                    onChange = {( e ) => shapeInput.readonly = e as boolean }
-                    checked  = { shapeInput.readonly }
-                />
-            </div>
-
-            <Input
-                shapeInput = {{
-                    id		    : uuid(),
-                    label       : 'Descripción',
-                    name	    : 'description',
-                    placeholder : 'Ingrese la descripción',
-                }}
-                onInput = {( value: string ) => shapeInput.description = value }
-                value = { shapeInput.description}
-            />
-
-            {#if shapeInput.shape === 'input' }
-                <div class="grid grid-cols-1 @lg:grid-cols-2 gap-2 items-center">
-                    <VirtualSelect
-                        shapeInput          = {{ ...typeShape, selected: shapeInput.type, required: shapeInput.shape ==='input' }}
-                        onSelectedChange    = { onSelectedType }
-                        setError            = { () => typeShape.valid = errorInput( typeShape, shapeInput.type ) }
-                        value               = { shapeInput.type }
-                    />
-
-                    {#if true}
-                        {@const defaultValueShape = {
-                            ...baseInputShape,
-                            id		    : uuid(),
-                            label       : 'Valor por defecto',
-                            name	    : 'value',
-                            placeholder : 'Valor con el que se inicia',
-                            // value       : shapeInput.value,
-                            type        : (shapeInput.type === 'number' ? 'number' : 'text') as Types
-                        } as ShapeInput}
-                        <Input
-                            shapeInput = {{ ...defaultValueShape }}
-                            onInput = {( value: string ) => shapeInput.value = value }
-                            value = { shapeInput.value }
-                        />
-                    {/if}
-                </div>
-            {:else if shapeInput.shape === 'textarea' }
-                <div class="grid grid-cols-1 sm:grid-cols-2 space-x-2 items-center">
-                    <Input
-                        shapeInput  = {{ ...rowsShape, value: shapeInput.rows?.toString() }}
-                        onInput     = {( value: string ) => shapeInput.rows = Number(value) }
-                        setError    = { () => rowsShape.valid = errorInput( rowsShape, shapeInput.rows?.toString() )}
-                        value       = { shapeInput.rows?.toString() }
-                    />
-
-                    {#if true}
-                        {@const textareaDefaultShape = {
-                            ...baseInputShape,
-                            id          : uuid(),
-                            name        : 'default-value',
-                            label       : 'Valor por defecto',
-                            placeholder : 'Ingrese el valor por defecto',
-                            rows        : 1,
-                        } as ShapeInput}
-                        <TextArea
-                            shapeInput  = {{ ...textareaDefaultShape }}
-                            onInput     = {( value: string ) => shapeInput.value = value }
-                            value       = { shapeInput.value }
-                        />
-                    {/if}
-                </div>
-			{:else if shapeInput.shape === 'markdown' }
-                {#if true}
-                    {@const markdownDefaultShape = {
-                        ...baseInputShape,
-                        id		    : uuid(),
-                        label       : 'Valor por defecto',
-                        name	    : 'value',
-                        placeholder : 'Ingrese el valor por defecto',
-                        preview		: false
-                    } as ShapeInput}
-                    <MarkdownEditor
-                        shapeInput  = {{ ...markdownDefaultShape }}
-                        dynamicMode	= { true }
-                        onInput		= {( value: string ) => shapeInput.value = value }
-                        value       = { shapeInput.value }
-                    />
-                {/if}
-            {:else if shapeInput.shape === 'select' }
-                <SelectEditor
-                    bind:shapeInput         = { shapeInput }
-                    bind:isSelectionValid   = { isSelectionValid }
-                    { countSend }
-                />
-            {:else if shapeInput.shape === 'button'}
-                <ButtonRequired
-                    bind:shapeInput     = { shapeInput }
-                    bind:isButtonValid  = { isButtonValid }
-                    { countSend }
-                />
-            {/if}
-        </Accordion.Content>
-    </Accordion.Item>
+                                {#if true}
+                                    {@const textareaDefaultShape = {
+                                        ...baseInputShape,
+                                        id          : uuid(),
+                                        name        : 'default-value',
+                                        label       : 'Valor por defecto',
+                                        placeholder : 'Ingrese el valor por defecto',
+                                        rows        : 1,
+                                    } as ShapeInput}
+                                    <TextArea
+                                        shapeInput  = {{ ...textareaDefaultShape }}
+                                        onInput     = {( value: string ) => shapeInput.value = value }
+                                        value       = { shapeInput.value }
+                                    />
+                                {/if}
+                            </div>
+                        {:else if shapeInput.shape === 'markdown' }
+                            {#if true}
+                                {@const markdownDefaultShape = {
+                                    ...baseInputShape,
+                                    id		    : uuid(),
+                                    label       : 'Valor por defecto',
+                                    name	    : 'value',
+                                    placeholder : 'Ingrese el valor por defecto',
+                                    preview		: false
+                                } as ShapeInput}
+                                <MarkdownEditor
+                                    shapeInput  = {{ ...markdownDefaultShape }}
+                                    dynamicMode	= { true }
+                                    onInput		= {( value: string ) => shapeInput.value = value }
+                                    value       = { shapeInput.value }
+                                />
+                            {/if}
+                        {:else if shapeInput.shape === 'select' }
+                            <SelectEditor
+                                bind:shapeInput         = { shapeInput }
+                                bind:isSelectionValid   = { isSelectionValid }
+                                { countSend }
+                            />
+                        {:else if shapeInput.shape === 'button'}
+                            <ButtonRequired
+                                bind:shapeInput     = { shapeInput }
+                                bind:isButtonValid  = { isButtonValid }
+                                { countSend }
+                            />
+                        {/if}
+                    </Accordion.Content>
+                </Accordion.Item>
 
                 <Accordion.Item value="validations" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
                     <Accordion.Header>
@@ -591,7 +575,7 @@
                                     value       = { shapeInput.msgRequired }
                                 />
                             </div>
-						{:else if shapeInput.shape === 'button' }
+                        {:else if shapeInput.shape === 'button' }
                             <ButtonValidations
                                 bind:shapeInput     = { shapeInput }
                                 bind:isButtonValid  = { isButtonValid }
@@ -660,45 +644,25 @@
                 </Accordion.Item>
 
                 {#if shapeInput.shape === 'button' }
-				<Accordion.Item value="accordion" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
-                    <Accordion.Header>
-                        <Accordion.Trigger
-                            class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
-                        >
-                            Estilos
-
-                            <span
-                                class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10"
+                    <Accordion.Item value="accordion" class="group border-b border-dark-10 px-1.5 dark:border-zinc-700">
+                        <Accordion.Header>
+                            <Accordion.Trigger
+                                class="flex w-full flex-1 items-center justify-between py-2 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 dark:text-zinc-300"
                             >
-                                <CaretDownIcon />
-                            </span>
-                        </Accordion.Trigger>
-                    </Accordion.Header>
+                                Tema
 
-                    <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
-						<!-- <InputStyles bind:shapeInput={shapeInput} /> -->
-                        <ButtonStyles bind:shapeInput={shapeInput} />
+                                <span
+                                    class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10"
+                                >
+                                    <CaretDownIcon />
+                                </span>
+                            </Accordion.Trigger>
+                        </Accordion.Header>
 
-
-						<!-- {#if shapeInput.shape === 'input' }
-							<InputStyles bind:shapeInput={shapeInput} />
-                        {:else if shapeInput.shape === 'textarea'}
-                            <TextareStyles bind:shapeInput={shapeInput} />
-                        {:else if shapeInput.shape === 'button'}
-                            <ButtonStyles bind:shapeInput={shapeInput} />
-						{:else if shapeInput.shape === 'check'}
-							<CheckStyles bind:shapeInput={shapeInput} />
-						{:else if shapeInput.shape === 'select' }
-							<SelectStyles bind:shapeInput={shapeInput} />
-						{:else if shapeInput.shape === 'datepicker'}
-							<DateStyles bind:shapeInput={shapeInput} />
-                        {:else if shapeInput.shape === 'timer'}
-                            <TimeStyles bind:shapeInput={shapeInput} />
-                        {:else if shapeInput.shape === 'markdown'}
-                            <MarkdownStyles bind:shapeInput={shapeInput} />
-						{/if} -->
-                    </Accordion.Content>
-                </Accordion.Item>
+                        <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
+                            <ButtonStyles />
+                        </Accordion.Content>
+                    </Accordion.Item>
                 {/if}
             </Accordion.Root>
 
