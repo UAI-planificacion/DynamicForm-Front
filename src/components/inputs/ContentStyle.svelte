@@ -2,7 +2,8 @@
     import { fade, slide } from 'svelte/transition';
 
     import { theme }            from "$stores";
-    import type { ShapeInput }  from "$models";
+    import type { ThemeShape }  from "$models";
+    import { style }            from '$lib/styles/themes/default/style';
 
 
     let isDarkMode = $theme === 'dark';
@@ -15,31 +16,27 @@
     }
 
 
-    export let shapeInput   : ShapeInput;
+    export let themeShape   : ThemeShape;
     export let styles       : string = '';
     export let padding      : string = 'p-3';
+
+
+    const withoutFull = ( size: string | undefined ): string | undefined =>
+        size === 'rounded-full'
+            ? 'rounded-xl'
+            : size ?? undefined;
 </script>
 
 <div
-    class={`absolute top-full right-0 mt-1 z-[9999] ${padding} shadow-xl w-[20rem] 
-        ${ shapeInput.inputStyle?.borderRadius ?? 'rounded-md' }
+    class={`
+        absolute top-full right-0 mt-1 z-[9999] ${padding} shadow-xl w-[20rem] 
+        ${ withoutFull( themeShape?.borderRadius )}
     `}
     transition:fade={{ duration: 150 }}
-
-    style = {`
-        background-color: ${
-            isDarkMode
-                ?  shapeInput.inputStyle?.dark?.background  ?? 'transparent'
-                : shapeInput.inputStyle?.light?.background  ?? 'transparent'
-        }; color: ${
-            isDarkMode
-                ? shapeInput.inputStyle?.dark?.color    ?? '#d1d5db'
-                : shapeInput.inputStyle?.light?.color   ?? 'black'
-        }; box-shadow: 0 0 0 ${shapeInput.inputStyle?.ringSize ?? '1px'} ${
-            isDarkMode
-                ? shapeInput.inputStyle?.dark?.ring ?? '#3f3f46'  // zinc-700
-                : shapeInput.inputStyle?.light?.ring ?? '#d4d4d8' // zinc-300
-    };${styles}`}
+    style={`
+        ${ style( isDarkMode, themeShape ) }
+        ${ styles }
+    `}
 >
     <div transition:slide={{ duration: 200 }}>
         <slot />
