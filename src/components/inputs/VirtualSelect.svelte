@@ -10,19 +10,20 @@
         SelectInput,
         SelectGroup,
         Selected,
-        InputStyle
-    }                           from '$models';
-    import { Input }            from '$components';
-    import { styles }           from '$lib';
-    import Info                 from './Info.svelte';
-    import BoxStyle             from './BoxStyle.svelte';
-    import ContentStyle         from './ContentStyle.svelte';
+        ThemeShape
+    }                   from '$models';
+    import { Input }    from '$components';
+    import Info         from './Info.svelte';
+    import BoxStyle     from './BoxStyle.svelte';
+    import ContentStyle from './ContentStyle.svelte';
+    import { UAITheme } from '$lib';
 
 
     export let shapeInput       : ShapeInput;
     export let value            : Selected = undefined;
     export let onSelectedChange : ( value: SelectInput ) => void;
     export let setError         : VoidFunction = () => {};
+    export let themeShape       : ThemeShape = UAITheme();
 
 
     let searchTerm = '';
@@ -471,8 +472,9 @@
 <Info { shapeInput } { onSelectedChange } { value }>
 <div class="relative w-full" bind:this={comboboxElement} >
     <BoxStyle
-        shapeInput={shapeInput}
-        handleOpen={handleOpen}
+        { shapeInput }
+        { handleOpen }
+        { themeShape }
     >
         <span class="truncate text-zinc-900 dark:text-zinc-300">
             { displayText }
@@ -499,7 +501,7 @@
     {#if isOpen}
         <div bind:this={dropdownElement}>
             <ContentStyle
-                shapeInput={shapeInput}
+                { themeShape }
                 styles={styleSelect()}
                 padding="p-0"
             >
@@ -510,7 +512,6 @@
                                 id		    : 'search-items',
                                 name	    : 'label',
                                 placeholder : shapeInput.searchPlaceholder,
-                                class_      : shapeInput.inputSelectClass ?? (styles.select as InputStyle ).input
                             }}
                             onInput = {( value: string ) => searchTerm = value }
                             on:blur = { handleBlur }
@@ -555,7 +556,7 @@
                                         <div class="group">
                                             <button
                                                 type        = "button"
-                                                class       = { `opacity-80 ${shapeInput.groupSelectClass ?? ( styles.select as InputStyle ).group }` }
+                                                class       = "opacity-80 dark:text-zinc-400 flex w-full items-center justify-between px-3 py-2 text-sm font-bold bg-transparent dark:bg-transparent hover:bg-zinc-200 dark:hover:bg-zinc-700/50 focus:bg-zinc-100 rounded-md dark:focus:bg-zinc-700 focus:outline-none transition-colors"
                                                 on:click    = { () => toggleGroup( item )}
                                             >
                                                 <span class="truncate text-zinc-900 dark:text-zinc-300">{item.name}</span>
@@ -575,7 +576,7 @@
                                                 {@const itemKey = `${i}-${optionIndex}`}
                                                 <button
                                                     type            = "button"
-                                                    class           = { `${ shapeInput.itemSelectClass ?? ( styles.select as InputStyle ).item } px-6` }
+                                                    class           = "flex w-full items-center justify-between py-2 text-sm transition-colors rounded-md focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-700 hover:bg-zinc-200/50 dark:hover:bg-zinc-700/50 data-[hovered=true]:bg-zinc-300/50 dark:data-[hovered=true]:bg-zinc-700 data-[selected=true]:bg-zinc-200/50 dark:data-[selected=true]:bg-zinc-700/50 px-6"
                                                     data-selected   = { selectedItems.some(selected => selected.value === option.value )}
                                                     on:click        = { () => toggleItem( option )}
                                                     on:mouseenter   = { () => hoveredIndex = itemKey }
@@ -594,7 +595,7 @@
                                     {:else}
                                         <button
                                             type            = "button"
-                                            class           = { shapeInput.itemSelectClass ?? ( styles.select as InputStyle ).item }
+                                            class           = "flex w-full items-center justify-between py-2 text-sm transition-colors rounded-md focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-700 hover:bg-zinc-200/50 dark:hover:bg-zinc-700/50 data-[hovered=true]:bg-zinc-300/50 dark:data-[hovered=true]:bg-zinc-700 data-[selected=true]:bg-zinc-200/50 dark:data-[selected=true]:bg-zinc-700/50 px-3"
                                             data-selected   = { selectedItems.some(selected => selected.value === item.value )}
                                             on:click        = { () => toggleItem( item )}
                                             on:mouseenter   = { () => hoveredIndex = i.toString() }
