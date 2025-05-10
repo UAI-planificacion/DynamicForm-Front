@@ -1,29 +1,145 @@
 <script lang="ts">
     import { v4 as uuid } from 'uuid';
+    import { onMount } from 'svelte';
 
     import {
         COLORS,
-        TRANSPARENCY_100,
+        OPACITY,
         tailwindToRGBA,
         TONALITY,
         RING
-    }                               from '$lib/styles/';
+    } from '$lib/styles/';
     import { Input, VirtualSelect } from "$components";
+    import { 
+        themeShapeStore,
+        updateBackgroundColor,
+        updateBackgroundTonality,
+        updateBackgroundOpacity,
+        updateBackground,
+        updateColorColor,
+        updateColorTonality,
+        updateColorOpacity,
+        updateColor,
+        updateRingColor,
+        updateRingTonality,
+        updateRingOpacity,
+        updateRing,
+        updateFocusEvent
+    } from '$stores/theme-shape';
 
+    // Propiedades del componente - solo necesitamos el nombre y el modo de color
+    export let name: string;
+    export let colorTheme: 'light' | 'dark' = 'light';
+    
+    // Obtener el tema actual del store
+    $: currentTheme = $themeShapeStore;
+    
+    // Variables locales para los valores
+    let color = '';
+    let tonality = '';
+    let opacity = '';
+    let type = '';
+    let size: string = '';
+    
+    // Definir evento personalizado
+    const dispatchChangeEvent = () => {
+        const event = new CustomEvent('change', {
+            bubbles: true,
+            cancelable: true,
+            detail: { name, colorTheme, color, tonality, opacity, type, size }
+        });
+        
+        // Disparar el evento desde el elemento actual
+        if (typeof document !== 'undefined') {
+            document.dispatchEvent(event);
+        }
+    };
+    
+    // Inicializar valores desde el store cuando cambia el tema o el modo de color
+    $: if (currentTheme && currentTheme[colorTheme]) {
+        updateLocalValues();
+    }
+    
+    // Función para actualizar los valores locales desde el store
+    function updateLocalValues() {
+        if (!currentTheme || !currentTheme[colorTheme]) return;
+        
+        // Determinar qué valores obtener según el nombre del componente
+        if (name.toLowerCase().includes('fondo')) {
+            color = currentTheme[colorTheme].backgroundColor || '';
+            tonality = currentTheme[colorTheme].backgroundTonality || '';
+            opacity = currentTheme[colorTheme].backgroundOpacity || '';
+            type = currentTheme[colorTheme].background || '';
+        } else if (name.toLowerCase().includes('texto')) {
+            color = currentTheme[colorTheme].colorColor || '';
+            tonality = currentTheme[colorTheme].colorTonality || '';
+            opacity = currentTheme[colorTheme].colorOpacity || '';
+            type = currentTheme[colorTheme].color || '';
+        } else if (name.toLowerCase().includes('borde')) {
+            if (name.toLowerCase().includes('foco')) {
+                // Es un evento de foco
+                color = currentTheme[colorTheme]?.event?.focus?.ringColor || '';
+                tonality = currentTheme[colorTheme]?.event?.focus?.ringTonality || '';
+                opacity = currentTheme[colorTheme]?.event?.focus?.ringOpacity || '';
+                type = currentTheme[colorTheme]?.event?.focus?.ring || '';
+                size = currentTheme[colorTheme]?.event?.focus?.ringSize || '';
+            } else {
+                // Es un borde normal
+                color = currentTheme[colorTheme].ringColor || '';
+                tonality = currentTheme[colorTheme].ringTonality || '';
+                opacity = currentTheme[colorTheme].ringOpacity || '';
+                type = currentTheme[colorTheme].ring || '';
+            }
+        }
+    }
 
-    export let name         : string;
-    export let color        : string;
-    export let tonality     : string;
-    export let transparency : string;
-    export let type         : string;
-    export let size         : string | null = null;
-
-
-    function updateType( value: string ): void {
+    // Función para actualizar el tipo
+    function updateType(value: string): void {
         type = value === 'transparent' || value === 'currentColor' || value === 'black' || value === 'white' 
             ? value
-            : tailwindToRGBA( `${type}-${ color }-${ tonality }/${ transparency }` );
+            : tailwindToRGBA(`${type}-${color}-${tonality}/${opacity}`);
     }
+
+    // Función para actualizar el store según el tipo de componente
+    function updateStore(): void {
+        // Determinar qué actualizar según el nombre del componente
+        if (name.toLowerCase().includes('fondo')) {
+            updateBackgroundColor(colorTheme, color);
+            updateBackgroundTonality(colorTheme, tonality);
+            updateBackgroundOpacity(colorTheme, opacity);
+            updateBackground(colorTheme, type);
+        } else if (name.toLowerCase().includes('texto')) {
+            updateColorColor(colorTheme, color);
+            updateColorTonality(colorTheme, tonality);
+            updateColorOpacity(colorTheme, opacity);
+            updateColor(colorTheme, type);
+        } else if (name.toLowerCase().includes('borde')) {
+            if (name.toLowerCase().includes('foco')) {
+                // Es un evento de foco
+                updateFocusEvent(colorTheme, {
+                    ringColor: color,
+                    ringTonality: tonality,
+                    ringOpacity: opacity,
+                    ring: type,
+                    ringSize: size || ''
+                });
+            } else {
+                // Es un borde normal
+                updateRingColor(colorTheme, color);
+                updateRingTonality(colorTheme, tonality);
+                updateRingOpacity(colorTheme, opacity);
+                updateRing(colorTheme, type);
+            }
+        }
+        
+        // Disparar evento personalizado
+        dispatchChangeEvent();
+    }
+    
+    // Inicializar valores al montar el componente
+    onMount(() => {
+        updateLocalValues();
+    });
 </script>
 
 <VirtualSelect
@@ -41,6 +157,7 @@
         if ( value instanceof Array || value === undefined ) return;
         color = value;
         updateType( value );
+        updateStore();
     }}
 />
 
@@ -59,42 +176,45 @@
         if ( value instanceof Array || value === undefined ) return;
         tonality = value;
         updateType( value );
+        updateStore();
     }}
 />
 
 <VirtualSelect
-    value       = { transparency }
+    value       = { opacity }
     shapeInput  = {{
         id          : uuid(),
-        name        : `${type}-transparency`,
-        label       : 'Transparencia',
-        placeholder : 'Ingrese la transparencia',
+        name        : `${type}-opacity`,
+        label       : 'Opacidad',
+        placeholder : 'Ingrese la opacidad',
         search      : true,
-        searchPlaceholder : 'Ingrese la transparencia',
-        options     : TRANSPARENCY_100
+        searchPlaceholder : 'Ingrese la opacidad',
+        options     : OPACITY
     }}
     onSelectedChange = {( value ) => {
         if ( value instanceof Array || value === undefined ) return;
-        transparency = value;
+        opacity = value;
         updateType( value );
+        updateStore();
     }}
 />
 
-{#if size}
+{#if name.toLowerCase().includes('foco') || size}
     <VirtualSelect
-        value       = { size}
+        value       = { size }
         shapeInput  = {{
             id                  : uuid(),
             name                : 'ring',
-            label               : 'Anillo',
-            placeholder         : 'Ingrese el anillo',
+            label               : 'Borde',
+            placeholder         : 'Ingrese el borde',
             search              : true,
-            searchPlaceholder   : 'Ingrese el anillo',
+            searchPlaceholder   : 'Ingrese el borde',
             options             : RING
         }}
         onSelectedChange = {( value ) => {
             if ( value instanceof Array || value === undefined ) return;
             size = value;
+            updateStore();
         }}
     />
 {/if}
