@@ -1,8 +1,20 @@
 <script lang="ts">
-    import { stylesS }          from "$lib/styles/themes/styl";
-    import type { ShapeInput }  from "$models";
+    import { style }            from "$lib/styles/themes/default/style";
+    import { focus }            from "$lib/styles/themes/default/focus";
+    import { blur }             from "$lib/styles/themes/default/blur";
+    import type { ShapeInput, ThemeShape }  from "$models";
     import { theme }            from "$stores";
     import Info                 from "./Info.svelte";
+    import { className }        from "$lib/styles/themes/default/class";
+    import { UAITheme } from "$lib";
+
+
+    export let shapeInput   : ShapeInput;
+    export let onInput      : ( value: string ) => void;
+    export let value        : string | undefined = undefined;
+    export let setError     : VoidFunction = () => {};
+    export let onKeyup      : ( event: KeyboardEvent ) => void = () => {};
+    export let themeShape   : ThemeShape = UAITheme();
 
 
     let isDarkMode = $theme === 'dark';
@@ -13,13 +25,6 @@
     } else {
         isDarkMode = false;
     }
-
-
-    export let shapeInput   : ShapeInput;
-    export let onInput      : ( value: string ) => void;
-    export let value        : string | undefined = undefined;
-    export let setError     : VoidFunction = () => {};
-    export let onKeyup      : ( event: KeyboardEvent ) => void = () => {};
 </script>
 
 <Info { shapeInput } { onInput } { value }>
@@ -34,27 +39,9 @@
         value       = { value ?? '' }
         on:input    = {( event: Event ) => { onInput(( event.target as HTMLTextAreaElement ).value ); setError(); }}
         on:keyup    = { onKeyup }
-        class       = {`px-3 py-2 w-full transition-all duration-150 ease-in-out 
-            ${ shapeInput.inputStyle?.fontSize      ?? 'text-sm' }
-            ${ shapeInput.inputStyle?.height        ?? '' }
-            ${ shapeInput.inputStyle?.borderRadius  ?? 'rounded-full' }
-            ${ shapeInput.inputStyle?.borderSize    ?? 'border-0' }
-            ${ shapeInput.inputStyle?.boxShadow     ?? 'shadow-sm' }`
-        }
-        style={ stylesS( isDarkMode, shapeInput )}
-        on:focus={(e) => {
-            e.currentTarget.style.boxShadow = `0 0 0 ${shapeInput.inputStyle?.[isDarkMode ? 'dark' : 'light']?.event?.focus?.ringSize! }
-            ${ isDarkMode
-                ? shapeInput.inputStyle?.dark?.event?.focus?.ring!
-                : shapeInput.inputStyle?.light?.event?.focus?.ring!
-            }`;
-        }}
-        on:blur={(e) => {
-            e.currentTarget.style.boxShadow = `0 0 0 ${ shapeInput.inputStyle?.ringSize! }
-            ${ isDarkMode
-                ? shapeInput.inputStyle?.dark?.ring!
-                : shapeInput.inputStyle?.light?.ring!
-            }`;
-        }}
+        class       = { className( false, themeShape )}
+        style       = { style( isDarkMode, themeShape )}
+        on:focus    = {( e ) => focus( e, isDarkMode, themeShape )}
+        on:blur     = {( e ) => blur( e, isDarkMode, themeShape )}
     />
 </Info>
