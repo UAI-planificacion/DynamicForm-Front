@@ -21,9 +21,8 @@
 		HeadingMarkIcon,
 	} 								            from "$icons/markdown";
     import { DynamicTable, Info, DropdownMenu } from "$components";
-	import type { InputStyle, ShapeInput }      from "$models";
+	import type { ShapeInput }      from "$models";
 	import marked 						        from './marked.config';
-    import { styles }                           from "$lib";
 
 	export let shapeInput	: ShapeInput;
 	export let value 		: string | undefined = '';
@@ -246,7 +245,7 @@
 <Info { shapeInput } { onInput } { value }>
 <div class="grid {updateGridClass()} bg-white dark:bg-zinc-700 rounded-lg shadow-lg overflow-hidden">
     <div class="relative">
-        <div class={ shapeInput.boxMarkdownClass ?? (styles.markdown as InputStyle).box }>
+        <div class="border-b border-gray-200 dark:border-zinc-700 bg-black flex items-center h-14 dark:bg-zinc-800">
             <!-- Desktop view -->
             <div class="hidden flex-wrap {updateGridButtonsDesktop()}">
                 <!-- Menú de títulos personalizado -->
@@ -478,7 +477,7 @@
             on:input    = {( value: Event ) => {onInput( ( value.target as HTMLTextAreaElement ).value ); setError() }}
             readonly 	= { shapeInput.readonly }
             disabled 	= { shapeInput.disabled }
-            class		= { shapeInput.inputMarkdownClass ?? ( styles.markdown as InputStyle ).input }
+            class		= "m-2 w-full min-h-64 border-none focus:ring-0 resize-none bg-transparent dark:text-zinc-200 overflow-hidden"
             placeholder = { shapeInput.placeholder }
         ></textarea>
 
