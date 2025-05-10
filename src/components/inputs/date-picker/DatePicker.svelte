@@ -4,19 +4,24 @@
     import { CalendarDate, type DateValue } from "@internationalized/date";
     import { DatePicker }                   from "bits-ui";
 
-    import type { InputStyle, ShapeInput }  from "$models";
+    import {
+        handleClickOutside,
+        togglePopup
+    }                                       from "./dateHandler";
+    import type {  ShapeInput, ThemeShape } from "$models";
     import { CalendarBlankIcon }            from "$icons";
     import Description                      from "../Description.svelte";
-    import { numberWithZero, styles }       from "$lib";
+    import { numberWithZero, UAITheme }     from "$lib";
     import BoxStyle                         from "../BoxStyle.svelte";
     import DateNavigator                    from "./DateNavigator.svelte";
-    import { handleClickOutside, togglePopup } from "./dateHandler";
 
 
     export let shapeInput       : ShapeInput;
     export let value            : DateValue | undefined = undefined;
     export let onValueChange    : ( value: any ) => void;
     export let setError         : VoidFunction = () => {};
+    export let themeShape       : ThemeShape = UAITheme();
+
 
 
     function createCalendarDate(): DateValue | undefined {
@@ -110,15 +115,18 @@
 >
     <div class="flex w-full flex-col gap-1.5">
         {#if shapeInput.label}
-            <DatePicker.Label class={shapeInput.labelDateClass ?? (styles.datepicker as InputStyle).label}>
+            <DatePicker.Label
+                class="block select-none text-sm font-medium dark:text-zinc-200 dark:data-[disabled]:text-zinc-400 data-[disabled]:text-zinc-500"
+            >
                 {shapeInput.label}
             </DatePicker.Label>
         {/if}
 
         <div bind:this={inputContainer} class="relative">
             <BoxStyle
-                shapeInput={shapeInput}
                 handleOpen={_togglePopup}
+                { shapeInput }
+                { themeShape }
             >
                 {#if selectedDate}
                     <span>{numberWithZero(selectedDate.day)} / {numberWithZero(selectedDate.month)} / {selectedDate.year}</span>
@@ -133,6 +141,7 @@
 
             {#if showPopup}
                 <DateNavigator
+                    { themeShape }
                     bind:shapeInput={shapeInput}
                     bind:currentDate={currentDate}
                     selectedDate={selectedDate}
