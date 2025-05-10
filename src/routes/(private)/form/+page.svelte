@@ -33,10 +33,10 @@
         ROUTER,
         successToast,
         startClean,
-        authClient
+        authClient,
     }                                       from "$lib";
 	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
-	import { dynamicMode, dynamicForms } 	from "$stores";
+	import { dynamicMode, dynamicForms, themeShapeStore } 	from "$stores";
 	import CircleLoader                     from "$components/Placeholder/CircleLoader.svelte";
 
 
@@ -408,6 +408,7 @@
                                     { inputActive }
                                     template    = { dynamicForm.details }
                                     dynamicMode = { $dynamicMode }
+                                    themeShape  = { dynamicForm.themeShape ?? $themeShapeStore }
                                 />
                             </div>
                         </Resizable>
@@ -482,6 +483,7 @@
                         { inputActive }
                         template    = { dynamicForm.details }
                         dynamicMode = { $dynamicMode }
+                        themeShape  = { dynamicForm.themeShape ?? $themeShapeStore }
                     />
                 </div>
             {/if}
