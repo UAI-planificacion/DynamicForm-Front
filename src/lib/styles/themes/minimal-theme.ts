@@ -1,59 +1,66 @@
-import type { ShapeInputStyle } from "$models"
+import type { ThemeShape } from "$models"
 import { tailwindToRGBA } from "../tailwind-colors";
 
 
-export const minimalTheme = (color: string = 'sky'): ShapeInputStyle =>({
-        height: 'h-8',
-        fontSize: 'text-sm',
-        borderRadius: 'rounded-md',
-        boxShadow: 'shadow-sm',
-        ringSize: '1px',
+export const minimalTheme = (color: string = 'sky'): ThemeShape =>({
+        height          : 'h-9',
+        fontSize        : 'text-sm',
+        borderRadius    : 'rounded-xl',
+        boxShadow       : 'shadow-sm',
+        ringSize        : '1px',
+        borderSize      : 'border-0',
 
         light: {
-        backgroundTransparency: '0',
-        backgroundColor: color,
-        backgroundTonality: '50',
-        background: tailwindToRGBA(`${color}-50`),
-        colorTransparency: '1',
-        colorColor: color,
-        colorTonality: '800',
-        color: tailwindToRGBA(`${color}-800`),
-        ringTransparency: '0',
-        ringColor: color,
-        ringTonality: '500',
-        ring: tailwindToRGBA(`${color}-500`),
-        event: {
-          focus: {
-            ringColor: color,
-            ringTonality: '600',
-            ringTransparency: '0.3',
-            ring: tailwindToRGBA(`${color}-600`),
-            ringSize: '2px'
-          }
-        }
-      },
+            backgroundOpacity   : '100',
+            backgroundTonality  : '50',
+            backgroundColor     : color,
+            background          : tailwindToRGBA(`${color}-50`),
 
-      dark: {
-        backgroundTransparency: '0',
-        backgroundColor: color,
-        backgroundTonality: '900',
-        background: tailwindToRGBA(`${color}-900`),
-        colorTransparency: '1',
-        colorColor: color,
-        colorTonality: '100',
-        color: tailwindToRGBA(`${color}-100`),
-        ringTransparency: '0',
-        ringColor: color,
-        ringTonality: '300',
-        ring: tailwindToRGBA(`${color}-300`),
-        event: {
-          focus: {
-            ringColor: color,
-            ringTonality: '200',
-            ringTransparency: '0.5',
-            ring: tailwindToRGBA(`${color}-200`),
-            ringSize: '2px'
-          }
+            colorOpacity    : '100',
+            colorTonality   : '800',
+            colorColor      : color,
+            color           : tailwindToRGBA(`${color}-800`),
+
+            ringOpacity     : '100',
+            ringTonality    : '500',
+            ringColor       : color,
+            ring            : tailwindToRGBA(`${color}-500`),
+
+            event: {
+                focus: {
+                    ringTonality    : '600',
+                    ringOpacity     : '300',
+                    ringColor       : color,
+                    ring            : tailwindToRGBA(`${color}-300`),
+                    ringSize        : '2px'
+                }
+            }
+        },
+
+        dark: {
+            backgroundOpacity   : '100',
+            backgroundTonality  : '900',
+            backgroundColor     : color,
+            background          : tailwindToRGBA( `${color}-900` ),
+
+            colorOpacity      : '100',
+            colorTonality     : '100',
+            colorColor        : color,
+            color             : tailwindToRGBA(`${color}-100`),
+
+            ringOpacity       : '100',
+            ringTonality      : '300',
+            ringColor         : color,
+            ring              : tailwindToRGBA(`${color}-300`),
+
+            event: {
+                focus: {
+                    ringTonality    : '200',
+                    ringOpacity     : '100',
+                    ringColor       : color,
+                    ring            : tailwindToRGBA(`${color}-200`),
+                    ringSize        : '2px'
+                }
+            }
         }
-      }
     })
