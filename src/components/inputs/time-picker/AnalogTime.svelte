@@ -3,21 +3,18 @@
 
     import { ClockIcon } from 'lucide-svelte';
 
-    import type {
-        InputStyle,
-        ShapeInput,
-        Time
-    }                   from '$models';
-    import { styles }   from '$lib';
-    import Info         from '../Info.svelte';
-    import BoxStyle     from '../BoxStyle.svelte';
-    import ContentStyle from '../ContentStyle.svelte';
+    import type { ShapeInput, ThemeShape, Time }    from '$models';
+    import Info                         from '../Info.svelte';
+    import BoxStyle                     from '../BoxStyle.svelte';
+    import ContentStyle                 from '../ContentStyle.svelte';
+    import { UAITheme } from '$lib';
 
 
     export let shapeInput   : ShapeInput;
     export let value        : Time | undefined = undefined;
     export let onTimerInput : ( value: string ) => void;
     export let setError     : VoidFunction = () => {};
+    export let themeShape   : ThemeShape = UAITheme();
 
 
     let isOpen              = false;
@@ -165,15 +162,16 @@
 <Info { shapeInput } { value } { onTimerInput }>
     <div class="relative w-full" id={ shapeInput.id }>
         <BoxStyle
-            shapeInput={shapeInput}
             handleOpen={togglePicker}
+            {shapeInput}
+            {themeShape}
         >
             { formattedTime }
             <ClockIcon class="w-5 h-5" />
         </BoxStyle>
 
         {#if isOpen}
-            <ContentStyle {shapeInput}>
+            <ContentStyle { themeShape }>
                 <div class="flex flex-col items-center">
                     <div class="flex space-x-4 mb-4">
                         <button
@@ -229,7 +227,7 @@
                                         type="button"
                                         data-selected={isSelected}
                                         data-disabled={isHourDisabled(hour)}
-                                        class = { `${ shapeInput.itemAnalogicClass ?? ( styles.analogic as InputStyle ).item }` }
+                                        class = "transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full text-zinc-700 dark:text-zinc-300 hover:scale-105 data-[selected=true]:bg-blue-500 dark:data-[selected=true]:bg-blue-500 data-[selected=true]:text-white data-[disabled=true]:opacity-50 data-[disabled=true]:cursor-not-allowed hover:data-[disabled=false]:bg-zinc-200 dark:hover:data-[disabled=false]:bg-zinc-600"
                                         style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                         on:click={() => selectHour(hour)}
                                         disabled={isHourDisabled(hour)}
@@ -260,7 +258,7 @@
                                         type="button"
                                         data-selected={isSelected}
                                         data-disabled={isMinuteDisabled(minute)}
-                                        class = { `${ shapeInput.itemAnalogicClass ?? ( styles.analogic as InputStyle ).item }` }
+                                        class = "transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full text-zinc-700 dark:text-zinc-300 hover:scale-105 data-[selected=true]:bg-blue-500 dark:data-[selected=true]:bg-blue-500 data-[selected=true]:text-white data-[disabled=true]:opacity-50 data-[disabled=true]:cursor-not-allowed hover:data-[disabled=false]:bg-zinc-200 dark:hover:data-[disabled=false]:bg-zinc-600"
                                         style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                         on:click={() => selectMinute(minute)}
                                         disabled={isMinuteDisabled(minute)}

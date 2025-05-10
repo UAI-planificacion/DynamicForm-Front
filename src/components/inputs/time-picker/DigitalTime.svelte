@@ -2,21 +2,22 @@
     import { TimerIcon }    from 'lucide-svelte';
 
     import type {
-        InputStyle,
         ShapeInput,
+        ThemeShape,
         Time
     }                   from '$models';
     import { Input }    from '$components';
-    import { styles }   from '$lib';
     import Info         from '../Info.svelte';
     import BoxStyle     from '../BoxStyle.svelte';
     import ContentStyle from '../ContentStyle.svelte';
+    import { UAITheme } from '$lib';
 
 
     export let shapeInput   : ShapeInput;
     export let value        : Time | undefined = undefined;
     export let onTimerInput : ( value: string ) => void;
     export let setError     : VoidFunction = () => {};
+    export let themeShape   : ThemeShape = UAITheme();
 
 
     let firstRender = true;
@@ -127,8 +128,9 @@
 
 <div class="relative w-full" id={ shapeInput.id }>
     <BoxStyle
-        shapeInput={shapeInput}
         handleOpen={togglePicker}
+        { shapeInput }
+        { themeShape }
     >
         {
             selectedHour === undefined ? 'hh' : selectedHour.toString().padStart(2, '0')
@@ -140,7 +142,7 @@
     </BoxStyle>
 
     {#if open}
-        <ContentStyle {shapeInput}>
+        <ContentStyle { themeShape }>
             <div class="flex items-center gap-2">
                 <div class="w-full flex flex-col gap-3">
                     <Input 
@@ -150,7 +152,6 @@
                             placeholder : 'Buscar hora...',
                             type        : 'search',
                             shape       : 'input',
-                            class_      : (styles.digital as InputStyle ).input
                         }}
                         onInput     = {( value ) => searchHour = value }
                     />
@@ -162,7 +163,7 @@
                             <button
                                 type            = "button"
                                 data-selected   = { selectedHour === hour }
-                                class           = {  shapeInput.itemStyle ?? `${( styles.digital as InputStyle ).item }` }
+                                class           = "w-full text-center px-2 py-1 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-md transition-colors duration-200 data-[selected=true]:bg-zinc-200 dark:data-[selected=true]:bg-zinc-900"
                                 on:click        = {() => toggleSelection('hour', hour) }
                             >
                                 {hour.toString().padStart(2, '0')}
@@ -175,16 +176,13 @@
 
                 <div class="w-full flex flex-col gap-2">
                     <Input 
-                        shapeInput={
-                            {
-                                id          : `${shapeInput.id}-minute-search`,
-                                name        : 'minute-search',
-                                placeholder : 'Buscar minuto...',
-                                type        : 'search',
-                                shape       : 'input',
-                                class_      : (styles.digital as InputStyle ).input
-                            }
-                        }
+                        shapeInput={{
+                            id          : `${shapeInput.id}-minute-search`,
+                            name        : 'minute-search',
+                            placeholder : 'Buscar minuto...',
+                            type        : 'search',
+                            shape       : 'input',
+                        }}
                         onInput={( value ) => searchMinute = value }
                     />
                     <div 
@@ -194,7 +192,7 @@
                             <button
                                 type            = "button"
                                 data-selected   = { selectedMinute === minute }
-                                class           = { shapeInput.itemStyle ?? `${( styles.digital as InputStyle ).item }` }
+                                class           = "w-full text-center px-2 py-1 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-md transition-colors duration-200 data-[selected=true]:bg-zinc-200 dark:data-[selected=true]:bg-zinc-900"
                                 on:click        = {() => toggleSelection('minute', minute)}
                             >
                                 {minute.toString().padStart(2, '0')}
@@ -207,11 +205,3 @@
     {/if}
 </div>
 </Info>
-
-<style>
-    .popover {
-        width: max-content;
-        max-width: var(--radix-popover-content-available-width);
-        max-height: var(--radix-popover-content-available-height);
-    }
-</style>
