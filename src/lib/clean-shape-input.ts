@@ -1,7 +1,6 @@
 import { CalendarDate } from "@internationalized/date";
 
-import type { DynamicForm, InputStyle, ShapeInput } from "$models";
-import { styles } from "./styles";
+import type { DynamicForm, ShapeInput } from "$models";
 
 
 export const startClean = ( dynamicForm: DynamicForm ): DynamicForm => ({
@@ -48,7 +47,6 @@ const clearButton = ( shapeInput: ShapeInput ) => ({
     invalidErrorMsg     : shapeInput.invalidErrorMsg,
     urlSend             : shapeInput.urlSend,
     method              : shapeInput.method,
-    buttonClass         : shapeInput.buttonClass ?? styles.button as string,
     ...( shapeInput.description  && { description: shapeInput.description }),
 });
 
@@ -86,27 +84,9 @@ function cleanInput( shapeInput: ShapeInput ) {
 
     if ( shapeInput.shape === 'input' ) type = shapeInput.type || 'text';
 
-    let styleClasses = {};
-
-    if ( shapeInput.shape === 'input' ) {
-        styleClasses = {
-            inputClass: shapeInput.inputClass ?? styles.input as string
-        };
-    } else if ( shapeInput.shape === 'textarea' ) {
-        styleClasses = {
-            textareaClass: shapeInput.textareaClass ?? styles.textarea as string
-        };
-    } else if ( shapeInput.shape === 'markdown' ) {
-        styleClasses = {
-            boxMarkdownClass    : shapeInput.boxMarkdownClass   ?? ( styles.markdown as InputStyle ).box,
-            inputMarkdownClass  : shapeInput.inputMarkdownClass ?? ( styles.markdown as InputStyle ).input
-        };
-    }
-
     return {
         ...basicClean( shapeInput ),
         ...( shapeInput.value && { value: shapeInput.value }),
-        ...styleClasses,
         type,
         min,
         max,
@@ -128,8 +108,6 @@ const cleanCheckbox = (
 ) : ShapeInput => ({
     ...basicClean( shapeInput ),
     ...( shapeInput.checked && { checked: shapeInput.checked }),
-    boxCheckboxClass    : shapeInput.boxCheckboxClass ?? ( styles.check as InputStyle ).box,
-    labelCheckboxClass  : shapeInput.labelCheckboxClass ?? ( styles.check as InputStyle ).label,
 });
 
 const cleanSelect = ( shapeInput: ShapeInput ): ShapeInput => ({
@@ -140,11 +118,6 @@ const cleanSelect = ( shapeInput: ShapeInput ): ShapeInput => ({
     ...( shapeInput.searchPlaceholder    && { searchPlaceholder  : shapeInput.searchPlaceholder }),
     ...( shapeInput.selected             && { selected           : shapeInput.selected }),
     ...( shapeInput.heightPanel          && { heightPanel        : shapeInput.heightPanel }),
-    boxSelectClass      : shapeInput.boxSelectClass     ?? ( styles.select as InputStyle ).box,
-    contentSelectClass  : shapeInput.contentSelectClass ?? ( styles.select as InputStyle ).content,
-    itemSelectClass     : shapeInput.itemSelectClass    ?? ( styles.select as InputStyle ).item,
-    groupSelectClass    : shapeInput.groupSelectClass   ?? ( styles.select as InputStyle ).group,
-    inputSelectClass    : shapeInput.inputSelectClass   ?? ( styles.select as InputStyle ).input,
 });
 
 
@@ -173,11 +146,7 @@ const cleanDate = ( shapeInput: ShapeInput ): ShapeInput => {
         ? shapeInput.invalidDatesRange  && { invalidDatesRange  : shapeInput.invalidDatesRange }
         : shapeInput.invalidDates       && { invalidDates       : shapeInput.invalidDates };
 
-    const defaultStyles = ( styles.datepicker as InputStyle );
 
-    const stylesItemOrRange = isRange
-        ? shapeInput.itemDateClass  && { itemDateClass  : shapeInput.itemDateClass }
-        : shapeInput.rangeDateClass && { rangeDateClass : shapeInput.rangeDateClass };
 
     return {
         ...basicClean( shapeInput ),
@@ -188,36 +157,16 @@ const cleanDate = ( shapeInput: ShapeInput ): ShapeInput => {
         ...( shapeInput.maxValue         && { maxValue       : shapeInput.maxValue }),
         ...( shapeInput.numberOfMonths   && { numberOfMonths : shapeInput.numberOfMonths }),
         ...( shapeInput.currentDate      && { currentDate    : shapeInput.currentDate }),
-        boxDateClass        : shapeInput.boxDateClass       ?? defaultStyles.box,
-        contentDateClass    : shapeInput.contentDateClass   ?? defaultStyles.content,
-        labelDateClass      : shapeInput.labelDateClass     ?? defaultStyles.label,
-        ...stylesItemOrRange,
     }
 }
 
 
 const cleanTime =( shapeInput: ShapeInput ): ShapeInput => {
     const isAnalogic    = shapeInput.time?.isAnalogic ?? false;
-    const defaultStyles = isAnalogic
-        ? ( styles.analogic as InputStyle )
-        : ( styles.digital as InputStyle );
 
     return {
         ...basicClean( shapeInput ),
         ...( shapeInput.time        && { time       : shapeInput.time }),
         ...( shapeInput.timeValue   && { timeValue  : shapeInput.timeValue }),
-        ...(isAnalogic
-            ? {
-                boxAnalogicClass      : shapeInput.boxAnalogicClass       ?? defaultStyles.box,
-                contentAnalogicClass  : shapeInput.contentAnalogicClass   ?? defaultStyles.content,
-                itemAnalogicClass     : shapeInput.itemAnalogicClass      ?? defaultStyles.item,
-            }
-            : {
-                boxDigitalClass        : shapeInput.boxDigitalClass       ?? defaultStyles.box,
-                contentDigitalClass    : shapeInput.contentDigitalClass   ?? defaultStyles.content,
-                itemDigitalClass       : shapeInput.itemDigitalClass      ?? defaultStyles.item,
-                inputDigitalClass      : shapeInput.inputDigitalClass     ?? defaultStyles.input,
-            }
-        ),
     };
 };
