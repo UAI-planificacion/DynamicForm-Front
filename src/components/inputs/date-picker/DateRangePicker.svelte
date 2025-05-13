@@ -14,10 +14,8 @@
     }                                   from "$models";
     import { CalendarBlankIcon }        from "$icons";
     import { numberWithZero, UAITheme } from "$lib";
-    import Description                  from "../Description.svelte";
-    import BoxStyle                     from "../BoxStyle.svelte";
+    import { BoxStyle, Description }    from "$components";
     import DateNavigator                from "./DateNavigator.svelte";
-
 
 
     export let shapeInput       : ShapeInput;
