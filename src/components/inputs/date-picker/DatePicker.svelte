@@ -10,9 +10,8 @@
     }                                       from "./dateHandler";
     import type {  ShapeInput, ThemeShape } from "$models";
     import { CalendarBlankIcon }            from "$icons";
-    import Description                      from "../Description.svelte";
+    import { Description, BoxStyle }        from "$components";
     import { numberWithZero, UAITheme }     from "$lib";
-    import BoxStyle                         from "../BoxStyle.svelte";
     import DateNavigator                    from "./DateNavigator.svelte";
 
 
