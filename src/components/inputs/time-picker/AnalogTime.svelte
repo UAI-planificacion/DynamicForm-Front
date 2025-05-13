@@ -3,10 +3,17 @@
 
     import { ClockIcon } from 'lucide-svelte';
 
-    import type { ShapeInput, ThemeShape, Time }    from '$models';
-    import Info                         from '../Info.svelte';
-    import BoxStyle                     from '../BoxStyle.svelte';
-    import ContentStyle                 from '../ContentStyle.svelte';
+    import {
+        BoxStyle,
+        ContentStyle,
+        ButtonNavigator,
+        Info
+    }                   from '$components';
+    import type {
+        ShapeInput,
+        ThemeShape,
+        Time
+    }                   from '$models';
     import { UAITheme } from '$lib';
 
 
@@ -15,6 +22,21 @@
     export let onTimerInput : ( value: string ) => void;
     export let setError     : VoidFunction = () => {};
     export let themeShape   : ThemeShape = UAITheme();
+
+
+    import { theme }            from "$stores";
+
+    
+    let isDarkMode = $theme === 'dark';
+
+
+    $: if ( $theme === 'dark' ) {
+        isDarkMode = true;
+    } else {
+        isDarkMode = false;
+    }
+
+
 
 
     let isOpen              = false;
@@ -174,36 +196,79 @@
             <ContentStyle { themeShape }>
                 <div class="flex flex-col items-center">
                     <div class="flex space-x-4 mb-4">
-                        <button
-                            type="button"
-                            data-selected={isSelectingHours}
-                            class="px-3 py-1 rounded-md data-[selected=true]:bg-blue-500 data-[selected=true]:text-white data-[selected=false]:text-gray-600"
-                            on:click={() => isSelectingHours = true}
+                        <ButtonNavigator
+                            { themeShape }
+                            selected    = { isSelectingHours}
+                            className   = "px-3 py-1"
+                            onClick     =  {() => isSelectingHours = true}
                         >
-                            Horas
-                        </button>
+                        Horas
+                        </ButtonNavigator>
 
-                        <button
-                            type="button"
-                            data-selected={!isSelectingHours}
-                            class="px-3 py-1 rounded-md data-[selected=true]:bg-blue-500 data-[selected=true]:text-white data-[selected=false]:text-gray-600"
-                            on:click={() => isSelectingHours = false}
+                        <ButtonNavigator
+                            { themeShape }
+                            selected    = { !isSelectingHours}
+                            className   = "px-3 py-1"
+                            onClick     =  {() => isSelectingHours = false}
                         >
                             Minutos
-                        </button>
+                        </ButtonNavigator>
                     </div>
 
                     <!-- Reloj analógico -->
-                    <div class="relative w-64 h-64 rounded-full border-4 border-gray-200 mb-4 p-1">
+                    <div
+                        class="relative size-64 rounded-full mb-4 p-1"
+                        style={`
+                        box-shadow: 0 0 0 4px ${
+                            isDarkMode
+                                ? themeShape?.dark.ring
+                                : themeShape?.light.ring
+                        };
+                        `}
+                    >
                         <!-- Botón AM/PM central -->
-                        <button
+                        <!-- <button
                             type="button"
                             data-selected={isPM}
-                            class="hover:scale-105 duration-200 absolute top-1/2 left-1/2 w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-white transform -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center text-sm font-medium transition-colors data-[selected=true]:bg-blue-500 data-[selected=true]:text-white"
+                            class="
+                            hover:scale-105
+                            duration-200
+                            absolute
+                            top-1/2
+                            left-1/2
+                            w-10 h-10
+                            rounded-full
+                            bg-zinc-200
+                            dark:bg-zinc-700
+                            text-zinc-700
+                            dark:text-white
+                            transform
+                            -translate-x-1/2
+                            -translate-y-1/2
+                            z-20
+                            flex
+                            items-center
+                            justify-center
+                            text-sm
+                            font-medium
+                            transition-colors
+                            data-[selected=true]:bg-blue-500
+                            data-[selected=true]:text-white"
                             on:click={toggleAMPM}
                         >
                             {isPM ? 'PM' : 'AM'}
-                        </button>
+                        </button> -->
+
+                        <ButtonNavigator
+                            { themeShape }
+                            selected    = { isPM}
+                            className   = "absolute top-1/2 left-1/2 size-10 transform -translate-x-1/2 -translate-y-1/2 z-20 justify-center font-medium"
+                            rounded     = "rounded-full"
+                            defaultSelected = {true}
+                            onClick     =  {toggleAMPM}
+                        >
+                            {isPM ? 'PM' : 'AM'}
+                        </ButtonNavigator>
 
                         {#if isSelectingHours}
                         <!-- Selector de horas -->
@@ -213,27 +278,66 @@
                             >
                                 <!-- Aguja de la hora -->
                                 {#if hours !== undefined}
-                                <div 
-                                    class="absolute top-1/2 left-1/2 h-1 bg-blue-500 rounded-full origin-left z-10"
-                                    style="width: 30%; transform: translateY(-50%) rotate({hourHandAngle}deg);"
-                                ></div>
+                                    <div 
+                                        class="absolute top-1/2 left-1/2 h-1 rounded-full origin-left z-10"
+                                        style={`
+                                        width: 30%; transform: translateY(-50%) rotate(${hourHandAngle}deg);
+                                        background-color: ${
+                                            isDarkMode
+                                                ? themeShape.dark.ring
+                                                : themeShape.light.ring
+                                        };
+                                    `}
+                                    ></div>
                                 {/if}
 
                                 <!-- Números de las horas -->
                                 {#each isPM ? hoursArrayPM : hoursArray as hour, i}
                                     {@const pos = getPosition(i, 12, 100)}
                                     {@const isSelected = isPM ? hours === hour : (hours === hour) || (hours === 0 && hour === 12)}
-                                    <button 
+                                    <ButtonNavigator
+                                        { themeShape }
+                                        disabled= {isHourDisabled(hour)}
+                                        selected    = { isSelected}
+                                        className   = "absolute size-10 shadow-md justify-center"
+                                        rounded     = "rounded-full"
+                                        defaultSelected = {true}
+                                        onClick     =  {() => selectHour(hour)}
+                                        style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
+                                    >
+                                    {`${hour < 10 ? '0' : ''}${hour}`}
+                                    </ButtonNavigator>
+                                    <!-- <button 
                                         type="button"
                                         data-selected={isSelected}
                                         data-disabled={isHourDisabled(hour)}
-                                        class = "transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full text-zinc-700 dark:text-zinc-300 hover:scale-105 data-[selected=true]:bg-blue-500 dark:data-[selected=true]:bg-blue-500 data-[selected=true]:text-white data-[disabled=true]:opacity-50 data-[disabled=true]:cursor-not-allowed hover:data-[disabled=false]:bg-zinc-200 dark:hover:data-[disabled=false]:bg-zinc-600"
                                         style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                         on:click={() => selectHour(hour)}
                                         disabled={isHourDisabled(hour)}
+                                        class = "
+                                        transition-transform
+                                        absolute
+                                        w-10 h-10
+                                        flex
+                                        items-center
+                                        justify-center
+                                        shadow-md
+                                        bg-zinc-100
+                                        dark:bg-zinc-700
+                                        rounded-full
+                                        text-zinc-700 
+                                        dark:text-zinc-300
+                                        hover:scale-105 
+                                        data-[selected=true]:bg-blue-500 
+                                        dark:data-[selected=true]:bg-blue-500 
+                                        data-[selected=true]:text-white
+                                        data-[disabled=true]:opacity-50
+                                        data-[disabled=true]:cursor-not-allowed
+                                        hover:data-[disabled=false]:bg-zinc-200 
+                                        dark:hover:data-[disabled=false]:bg-zinc-600"
                                     >
                                         {`${hour < 10 ? '0' : ''}${hour}`}
-                                    </button>
+                                    </button> -->
                                 {/each}
                             </div>
                         {:else}
@@ -244,10 +348,16 @@
                             >
                                 <!-- Aguja de los minutos -->
                                 {#if minutes !== undefined}
-                                <div 
-                                    class="absolute top-1/2 left-1/2 h-1 bg-blue-500 rounded-full origin-left "
-                                    style="width: 40%; transform: translateY(-50%) rotate({minuteHandAngle}deg);"
-                                ></div>
+                                    <div 
+                                        class="absolute top-1/2 left-1/2 h-1 bg-blue-500 rounded-full origin-left "
+                                        style={`width: 40%; transform: translateY(-50%) rotate(${minuteHandAngle}deg);
+                                        background-color: ${
+                                                isDarkMode
+                                                    ? themeShape.dark.ring
+                                                    : themeShape.light.ring
+                                            };
+                                        `}
+                                    ></div>
                                 {/if}
 
                                 <!-- Números de los minutos -->
