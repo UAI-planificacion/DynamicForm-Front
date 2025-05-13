@@ -21,6 +21,11 @@ export { default as Switch }		from './inputs/Switch.svelte';
 export { default as Info }			from './inputs/Info.svelte';
 export { default as DigitalTime }   from './inputs/time-picker/DigitalTime.svelte';
 export { default as AnalogicTime }  from './inputs/time-picker/AnalogTime.svelte';
+export { default as ButtonNavigator }   from './inputs/Styles/ButtonNavigator.svelte';
+export { default as BoxStyle }          from './inputs/Styles/BoxStyle.svelte';
+export { default as ContentStyle }      from './inputs/Styles/ContentStyle.svelte';
+export { default as Description }       from './inputs/Description.svelte';
+
 
 // Preview
 export { default as Preview }       from './Preview/Preview.svelte';
