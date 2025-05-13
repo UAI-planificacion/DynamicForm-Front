@@ -35,7 +35,8 @@ export { default as LoadIcon }      	from './LoadIcon.svelte';
 export { default as MicrosoftIcon }		from './MicrosoftIcon.svelte';
 export { default as SaveIcon }		    from './SaveIcon.svelte';
 export { default as CaretLeftJsonIcon } from './CaretLeftJsonIcon.svelte';
-
+export { default as ItemSelectIcon }    from './ItemSelectIcon.svelte';
+export { default as GroupSelectIcon }   from './GroupSelectIcon.svelte';
 
 // Markdown
 export * from './markdown';
