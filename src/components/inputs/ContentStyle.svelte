@@ -23,7 +23,7 @@
 
     const withoutFull = ( size: string | undefined ): string | undefined =>
         size === 'rounded-full'
-            ? 'rounded-xl'
+            ? 'rounded-2xl'
             : size ?? undefined;
 </script>
 
