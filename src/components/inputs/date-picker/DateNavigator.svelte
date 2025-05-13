@@ -9,14 +9,18 @@
         ShapeInput,
         ShapeOption,
         ThemeShape,
-    }                               from "$models";
+    }                       from "$models";
     import {
         CaretLeftIcon,
         CaretRightIcon,
-    }                               from "$icons";
-    import { Input, VirtualSelect } from "$components";
-    import ContentStyle             from "../ContentStyle.svelte";
-    import { UAITheme }             from "$lib";
+    }                       from "$icons";
+    import { 
+        Input,
+        VirtualSelect,
+        ButtonNavigator,
+        ContentStyle
+    }                       from "$components";
+    import { UAITheme }     from "$lib";
 
 
     export let shapeInput           : ShapeInput;
@@ -49,11 +53,11 @@
 </script>
 
 <ContentStyle { themeShape }>
-    <div class="flex space-x-1 py-1">
-        <button 
-            type="button"
-            class="rounded-9px bg-background-alt hover:bg-muted inline-flex size-10 items-center justify-center transition-all active:scale-[0.98]"
-            on:click={() => {
+    <div class="flex justify-center py-1 items-center gap-2">
+        <ButtonNavigator
+            { themeShape }
+            className = "justify-center size-10 active:scale-[0.97] mb-1"
+            onClick={() => {
                 const prevMonth = new Date(currentDate?.year || new Date().getFullYear(), (currentDate?.month || new Date().getMonth() + 1) - 2, 1);
                 currentDate     = new CalendarDate(prevMonth.getFullYear(), prevMonth.getMonth() + 1, 1);
                 selectedMonth   = ( prevMonth.getMonth() + 1 ).toString();
@@ -61,11 +65,12 @@
             }}
         >
             <CaretLeftIcon />
-        </button>
+        </ButtonNavigator>
 
-        <div class="flex items-center gap-1">
-            <div class="w-36 month-select-container">
+        <div class="flex items-center gap-2">
+            <div class="w-36">
                 <VirtualSelect
+                    { themeShape }
                     shapeInput={{
                         id: "month-select-range",
                         name: "month-select-range",
@@ -82,8 +87,9 @@
                     }}
                 />
             </div>
-            <div class="w-20 year-input-container">
+            <div class="w-20">
                 <Input
+                    { themeShape }
                     shapeInput={{
                         id: "year-input-range",
                         name: "year-input-range",
@@ -100,18 +106,18 @@
             </div>
         </div>
 
-        <button 
-            type="button"
-            class="rounded-9px bg-background-alt hover:bg-muted inline-flex size-10 items-center justify-center transition-all active:scale-[0.98]"
-            on:click={() => {
+        <ButtonNavigator
+            { themeShape }
+            className = "justify-center size-10 active:scale-[0.97] mb-1"
+            onClick={() => {
                 const nextMonth = new Date(currentDate?.year || new Date().getFullYear(), (currentDate?.month || new Date().getMonth() + 1), 1);
-                currentDate = new CalendarDate(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 1);
-                selectedMonth = (nextMonth.getMonth() + 1).toString();
-                selectedYear = nextMonth.getFullYear().toString();
+                currentDate     = new CalendarDate(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 1);
+                selectedMonth   = (nextMonth.getMonth() + 1).toString();
+                selectedYear    = nextMonth.getFullYear().toString();
             }}
         >
             <CaretRightIcon />
-        </button>
+        </ButtonNavigator>
     </div>
 
     <div class="p-3">
