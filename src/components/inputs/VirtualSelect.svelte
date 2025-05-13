@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
-    import { ChevronDown, Check, X } from 'lucide-svelte';
+    import { X } from 'lucide-svelte';
 
     import type {
         GroupOption,
@@ -12,11 +12,19 @@
         Selected,
         ThemeShape
     }                   from '$models';
-    import { Input }    from '$components';
-    import Info         from './Info.svelte';
-    import BoxStyle     from './BoxStyle.svelte';
-    import ContentStyle from './ContentStyle.svelte';
-    import { UAITheme } from '$lib';
+    import {
+        Input,
+        BoxStyle,
+        ContentStyle,
+        ButtonNavigator
+    }                       from '$components';
+    import {
+        CheckIcon,
+        GroupSelectIcon,
+        ItemSelectIcon
+    }                       from '$icons';
+    import Info             from './Info.svelte';
+    import { UAITheme }     from '$lib';
 
 
     export let shapeInput       : ShapeInput;
@@ -128,8 +136,9 @@
     }
 
 
-    function clearSelection(event: MouseEvent | KeyboardEvent): void {
+    function clearSelection( event: MouseEvent | KeyboardEvent ): void {
         event?.stopPropagation();
+        event?.preventDefault();
         searchTerm = '';
         isOpen = false;
         selectedItems = [];
@@ -336,7 +345,7 @@
     }
 
     function toggleGroup( group: GroupOption ): void {
-        if ( ! shapeInput.multiple ) return;
+        if ( !shapeInput.multiple ) return;
 
         const isFullySelected = group.options.every(option => 
             selectedItems.some(selected => selected.value === option.value)
@@ -476,25 +485,24 @@
         { handleOpen }
         { themeShape }
     >
-        <span class="truncate text-zinc-900 dark:text-zinc-300">
+        <span class="truncate">
             { displayText }
         </span>
 
         <div class="flex items-center gap-2">
             {#if shapeInput.multiple && selectedItems.length > 0}
-                <div
-                    on:click|stopPropagation={clearSelection}
-                    class       = "p-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
-                    title       = "Limpiar selección"
-                    role        = "button"
-                    on:keydown  = {( event ) => { if ( event.key === 'Enter' || event.key === ' ') clearSelection( event ); }}
-                    tabindex    = "0" 
+                <ButtonNavigator
+                    { themeShape }
+                    className   = "p-1 rounded-full cursor-pointer"
+                    onClick     = {( event ) => clearSelection(event)}
                 >
-                    <X class="h-3 w-3 text-zinc-400"/>
-                </div>
+                    <X class="h-3 w-3"/>
+                </ButtonNavigator>
             {/if}
 
-            <ChevronDown class={`h-4 w-4 transition-transform duration-200 dark:text-zinc-500 ${isOpen ? 'rotate-180' : ''}`} />
+            <span class={`inline-flex size-8 items-center justify-center transition-all duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-dasharray="10" stroke-dashoffset="10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15l-5 -5M12 15l5 -5"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="10;0"/></path></svg>
+            </span>
         </div>
     </BoxStyle>
 
@@ -508,6 +516,7 @@
                 {#if shapeInput.search}
                     <div class="px-1 pt-1 sticky top-0 z-10">
                         <Input
+                            { themeShape }
                             shapeInput = {{
                                 id		    : 'search-items',
                                 name	    : 'label',
@@ -554,61 +563,60 @@
                                 {#each visibleItems as item, i (item.id ?? i)}
                                     {#if isGroupOption(item)}
                                         <div class="group">
-                                            <button
-                                                type        = "button"
-                                                class       = "opacity-80 dark:text-zinc-400 flex w-full items-center justify-between px-3 py-2 text-sm font-bold bg-transparent dark:bg-transparent hover:bg-zinc-200 dark:hover:bg-zinc-700/50 focus:bg-zinc-100 rounded-md dark:focus:bg-zinc-700 focus:outline-none transition-colors"
-                                                on:click    = { () => toggleGroup( item )}
+                                            <ButtonNavigator
+                                                { themeShape }
+                                                selected    = { isGroupFullySelected(item) }
+                                                canHover    = { shapeInput.multiple }
+                                                className   = "opacity-80 w-full justify-between px-3 py-2 font-bold"
+                                                onClick     = { () => toggleGroup( item )}
                                             >
-                                                <span class="truncate text-zinc-900 dark:text-zinc-300">{item.name}</span>
+                                                <div class="flex items-center gap-2">
+                                                    <GroupSelectIcon />
+                                                    <span class="truncate text-zinc-900 dark:text-zinc-300">{item.name}</span>
+                                                </div>
 
                                                 {#if shapeInput.multiple}
-                                                    <Check class={`h-4 w-4 ${
-                                                        isGroupFullySelected(item)
-                                                        ? 'text-blue-700'
-                                                        : isGroupPartiallySelected(item)
-                                                            ? 'text-zinc-400'
-                                                            : 'text-transparent'
-                                                    }`} />
+                                                    {#if isGroupFullySelected(item)}
+                                                        <CheckIcon />
+                                                    {:else if isGroupPartiallySelected(item)}
+                                                        <span class={`text-zinc-400`}>
+                                                            <CheckIcon />
+                                                        </span>
+                                                    {/if}
                                                 {/if}
-                                            </button>
+                                            </ButtonNavigator>
 
-                                            {#each item.options as option, optionIndex}
-                                                {@const itemKey = `${i}-${optionIndex}`}
-                                                <button
-                                                    type            = "button"
-                                                    class           = "flex w-full items-center justify-between py-2 text-sm transition-colors rounded-md focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-700 hover:bg-zinc-200/50 dark:hover:bg-zinc-700/50 data-[hovered=true]:bg-zinc-300/50 dark:data-[hovered=true]:bg-zinc-700 data-[selected=true]:bg-zinc-200/50 dark:data-[selected=true]:bg-zinc-700/50 px-6"
-                                                    data-selected   = { selectedItems.some(selected => selected.value === option.value )}
-                                                    on:click        = { () => toggleItem( option )}
-                                                    on:mouseenter   = { () => hoveredIndex = itemKey }
-                                                    on:mouseleave   = { handleMouseLeave }
-                                                    role            = "option"
-                                                    aria-selected   = { selectedItems.some( selected => selected.value === option.value )}
+                                            {#each item.options as option}
+                                                <ButtonNavigator
+                                                    { themeShape }
+                                                    selected    = { selectedItems.some(selected => selected.value === option.value )}
+                                                    className   = "justify-between w-full px-6 py-2"
+                                                    onClick     = { () => toggleItem( option )}
                                                 >
-                                                    <span>{ option.label }</span>
+                                                    <div class="flex items-center gap-2">
+                                                        <ItemSelectIcon />
+                                                        <span>{ option.label }</span>
+                                                    </div>
 
                                                     {#if selectedItems.some( selected => selected.value === option.value )}
-                                                        <Check class="h-4 w-4 text-blue-500" />
+                                                        <CheckIcon />
                                                     {/if}
-                                                </button>
+                                                </ButtonNavigator>
                                             {/each}
                                         </div>
                                     {:else}
-                                        <button
-                                            type            = "button"
-                                            class           = "flex w-full items-center justify-between py-2 text-sm transition-colors rounded-md focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-700 hover:bg-zinc-200/50 dark:hover:bg-zinc-700/50 data-[hovered=true]:bg-zinc-300/50 dark:data-[hovered=true]:bg-zinc-700 data-[selected=true]:bg-zinc-200/50 dark:data-[selected=true]:bg-zinc-700/50 px-3"
-                                            data-selected   = { selectedItems.some(selected => selected.value === item.value )}
-                                            on:click        = { () => toggleItem( item )}
-                                            on:mouseenter   = { () => hoveredIndex = i.toString() }
-                                            on:mouseleave   = { handleMouseLeave }
-                                            role            = "option"
-                                            aria-selected   = { selectedItems.some( selected => selected.value === item.value )}
+                                        <ButtonNavigator
+                                            { themeShape }
+                                            selected    = { selectedItems.some( selected => selected.value === item.value )}
+                                            className   = "justify-between w-full px-3 py-2"
+                                            onClick     = { () => toggleItem( item )}
                                         >
                                             <span>{ item.label }</span>
 
                                             {#if selectedItems.some( selected => selected.value === item.value )}
-                                                <Check class="h-4 w-4 text-blue-500" />
+                                                <CheckIcon />
                                             {/if}
-                                        </button>
+                                        </ButtonNavigator>
                                     {/if}
                                 {/each}
                             </div>
