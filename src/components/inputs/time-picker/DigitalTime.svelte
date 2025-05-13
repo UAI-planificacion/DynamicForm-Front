@@ -1,16 +1,20 @@
 <script lang="ts">
-    import { TimerIcon }    from 'lucide-svelte';
+    import { TimerIcon } from 'lucide-svelte';
 
     import type {
         ShapeInput,
         ThemeShape,
         Time
     }                   from '$models';
-    import { Input }    from '$components';
-    import Info         from '../Info.svelte';
-    import BoxStyle     from '../BoxStyle.svelte';
-    import ContentStyle from '../ContentStyle.svelte';
-    import { UAITheme } from '$lib';
+    import {
+        Input,
+        BoxStyle,
+        ContentStyle,
+        ButtonNavigator,
+        Info
+    }                       from '$components';
+    import { UAITheme }     from '$lib';
+    import { CheckIcon }    from '$icons';
 
 
     export let shapeInput   : ShapeInput;
@@ -145,7 +149,8 @@
         <ContentStyle { themeShape }>
             <div class="flex items-center gap-2">
                 <div class="w-full flex flex-col gap-3">
-                    <Input 
+                    <Input
+                        { themeShape }
                         shapeInput  = {{
                             id          : `${shapeInput.id}-hour-search`,
                             name        : 'hour-search',
@@ -160,14 +165,21 @@
                         class="h-52 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
                     >
                         {#each filteredHours ?? [] as hour}
-                            <button
-                                type            = "button"
-                                data-selected   = { selectedHour === hour }
-                                class           = "w-full text-center px-2 py-1 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-md transition-colors duration-200 data-[selected=true]:bg-zinc-200 dark:data-[selected=true]:bg-zinc-900"
-                                on:click        = {() => toggleSelection('hour', hour) }
+                            <ButtonNavigator
+                                { themeShape }
+                                selected    = { selectedHour === hour }
+                                className   = "w-full justify-center py-1 relative"
+                                onClick     =  {() => toggleSelection('hour', hour) }
                             >
                                 {hour.toString().padStart(2, '0')}
-                            </button>
+
+                                {#if selectedHour === hour}
+                                <span class="absolute right-3">
+                                    <CheckIcon />
+
+                                </span>
+                                {/if}
+                            </ButtonNavigator>
                         {/each}
                     </div>
                 </div>
@@ -175,7 +187,8 @@
                 <span class="text-2xl mt-8 text-zinc-800 dark:text-zinc-200">:</span>
 
                 <div class="w-full flex flex-col gap-2">
-                    <Input 
+                    <Input
+                        { themeShape }
                         shapeInput={{
                             id          : `${shapeInput.id}-minute-search`,
                             name        : 'minute-search',
@@ -189,14 +202,20 @@
                         class="mt-1 h-52 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
                     >
                         {#each filteredMinutes as minute}
-                            <button
-                                type            = "button"
-                                data-selected   = { selectedMinute === minute }
-                                class           = "w-full text-center px-2 py-1 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-md transition-colors duration-200 data-[selected=true]:bg-zinc-200 dark:data-[selected=true]:bg-zinc-900"
-                                on:click        = {() => toggleSelection('minute', minute)}
+                            <ButtonNavigator
+                                { themeShape }
+                                selected    = { selectedMinute === minute }
+                                className   = "w-full justify-center py-1 relative"
+                                onClick     =  {() => toggleSelection('minute', minute)}
                             >
                                 {minute.toString().padStart(2, '0')}
-                            </button>
+
+                                {#if selectedMinute === minute}
+                                    <span class="absolute right-3">
+                                        <CheckIcon />
+                                    </span>
+                                {/if}
+                            </ButtonNavigator>
                         {/each}
                     </div>
                 </div>
