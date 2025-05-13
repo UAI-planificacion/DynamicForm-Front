@@ -403,7 +403,7 @@
                                 </button>
                             </container>
 
-                            <div slot="right" class="relative">
+                            <div slot="right" class="relative px-1">
                                 <Preview
                                     { inputActive }
                                     template    = { dynamicForm.details }
