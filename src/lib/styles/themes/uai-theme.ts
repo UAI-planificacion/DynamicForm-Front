@@ -21,11 +21,6 @@ export const UAITheme = ( color: string = 'zinc' ): ThemeShape => ({
         secondaryBackgroundColor     : 'black',
         secondaryBackground          : tailwindToRGBA( 'black' ),
 
-        colorSelectedOpacity    : '100',
-        colorSelectedTonality   : '50',
-        colorSelectedColor      : 'black',
-        colorSelected           : tailwindToRGBA( 'black' ),
-
         colorOpacity    : '100',
         colorTonality   : '800',
         colorColor      : color,
@@ -62,11 +57,6 @@ export const UAITheme = ( color: string = 'zinc' ): ThemeShape => ({
         secondaryBackgroundTonality  : '100',
         secondaryBackgroundColor     : 'black',
         secondaryBackground          : tailwindToRGBA( 'black' ),
-
-        colorSelectedOpacity    : '100',
-        colorSelectedTonality   : '50',
-        colorSelectedColor      : 'white',
-        colorSelected           : tailwindToRGBA( 'white' ),
 
         colorOpacity    : '100',
         colorTonality   : '300',
