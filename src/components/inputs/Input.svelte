@@ -27,7 +27,7 @@
     }
 </script>
 
-<Info { shapeInput } { onInput } { value }>
+<Info { shapeInput } { onInput } { value } { themeShape }>
     <input
         type        = { shapeInput.type || "text" }
         id          = { shapeInput.id }
