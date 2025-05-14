@@ -49,20 +49,19 @@
         
         // Asegurar que el menú no se salga de la pantalla
         requestAnimationFrame(() => {
-            if (!contentElement) return;
-            
+            if (!contentElement) return;            
+
             const contentRect = contentElement.getBoundingClientRect();
             const contentWidth = contentRect.width;
             const contentHeight = contentRect.height;
-            
             // Ajustar posición horizontal si se sale de la pantalla
             if (left + contentWidth > windowWidth - 20) {
                 left = windowWidth - contentWidth - 20;
             }
+
             if (left < 20) {
                 left = 20;
             }
-            
             // Ajustar posición vertical si se sale de la pantalla
             if (top + contentHeight > windowHeight - 20) {
                 // Si no cabe abajo, intentar colocarlo arriba
@@ -73,25 +72,24 @@
                     top = Math.max(20, windowHeight - contentHeight - 20);
                 }
             }
+
             if (top < 20) {
                 top = 20;
             }
-            
             // Aplicar estilos
             contentElement.style.top = `${top}px`;
             contentElement.style.left = `${left}px`;
-            
             // Establecer altura máxima para evitar que se salga de la pantalla
             const maxHeight = windowHeight - top - 20;
+
             if (contentHeight > maxHeight) {
                 contentElement.style.maxHeight = `${maxHeight}px`;
                 contentElement.style.overflowY = 'auto';
             }
         });
     }
-    
-    // Esta función ya no es necesaria ya que aplicamos los estilos directamente
 
+    // Esta función ya no es necesaria ya que aplicamos los estilos directamente
     function toggleMenu() {
         open = !open;
         if (open) {
@@ -178,7 +176,6 @@
             {/if}
         </slot>
     </div>
-    
     <!-- Content -->
     {#if open}
         <div 
