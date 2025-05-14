@@ -6,9 +6,9 @@
 
 
     type Colors = {
-        tonalityDark : number,
-        tonalityLight : number,
-        opacity  : number
+        tonalityDark    : number,
+        tonalityLight   : number,
+        opacity         : number
     }
 
 
@@ -82,7 +82,7 @@
 <button 
     type            = "button"
     disabled        = { disabled }
-    on:click|stopPropagation        = {( event ) => onClick(event) }
+    on:click        = {( event ) => onClick( event )}
     on:mouseenter   = {() => isHovered = canHover }
     on:mouseleave   = {() => isHovered = false }
     class           = {`
