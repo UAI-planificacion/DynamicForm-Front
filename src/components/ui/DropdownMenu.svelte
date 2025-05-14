@@ -1,6 +1,11 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
+    import { UAITheme }         from '$lib';
+    import { secondaryColor }   from '$lib/styles/themes/default/secondary-color';
+    import type { ThemeShape }  from '$models';
+
+
     export let trigger: any | undefined = undefined; // Componente o elemento que activa el dropdown
     export let content: any | undefined = undefined; // Contenido del dropdown
     export let open = false;
@@ -10,6 +15,9 @@
     export let closeOnSelect = true;
     export let trapFocus = true;
     export let contentClass = ""; // Clases adicionales para el contenido
+    export let themeShape   : ThemeShape = UAITheme();
+    export let isDarkMode   : boolean = false;
+
 
     let triggerElement: HTMLElement;
     let contentElement: HTMLElement;
@@ -180,8 +188,14 @@
     {#if open}
         <div 
             bind:this={contentElement}
-            class="dropdown-menu-content mt-2 z-[9999] {contentClass}"
-            style="position: fixed; {width ? `width: ${width};` : 'width: max-content;'}"
+            class={`
+                dropdown-menu-content mt-0.5 -ml-0.5 z-[9999]
+                ${contentClass}
+                ${themeShape.borderRadius}
+                ${themeShape.boxShadow}
+                ${themeShape.fontSize}
+            `}
+            style={`position: fixed; ${width ? `width: ${width};` : 'width: max-content;'}; ${secondaryColor(isDarkMode, themeShape )}`}
             role="menu"
             tabindex={trapFocus ? 0 : -1}
             aria-label="Menú desplegable"
@@ -206,14 +220,6 @@
     .dropdown-trigger {
         cursor: pointer;
     }
-    
-    .dropdown-content {
-        background-color: #333;
-        border-radius: 0.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        color: white;
-    }
-    
     /* Estilos para asegurar que el dropdown se muestre correctamente en todos los navegadores */
     .dropdown-menu-content {
         position: fixed;
