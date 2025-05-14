@@ -19,16 +19,21 @@
 		Heading3MarkIcon,
 		Heading4MarkIcon,
 		HeadingMarkIcon,
-	} 								            from "$icons/markdown";
-    import { DynamicTable, Info, DropdownMenu } from "$components";
-	import type { ShapeInput, ThemeShape }      from "$models";
-	import marked 						        from './marked.config';
-    import { UAITheme }                         from "$lib";
-    import { COLOR }                            from "$lib/styles/themes/default/color";
-    import { theme }                            from "$stores";
-    import { BACKGROUND }                       from "$lib/styles/themes/default/background";
-    import { BACKGROUND_RING }                  from "$lib/styles/themes/default/background-ring";
-    import { secondaryColor }                   from "$lib/styles/themes/default/secondary-color";
+	} 								        from "$icons/markdown";
+    import {
+        DynamicTable,
+        Info,
+        DropdownMenu,
+        ButtonNavigator
+    }                                       from "$components";
+	import type { ShapeInput, ThemeShape }  from "$models";
+	import marked 						    from './marked.config';
+    import { UAITheme }                     from "$lib";
+    import { COLOR }                        from "$lib/styles/themes/default/color";
+    import { theme }                        from "$stores";
+    import { BACKGROUND }                   from "$lib/styles/themes/default/background";
+    import { BACKGROUND_RING }              from "$lib/styles/themes/default/background-ring";
+    import { secondaryColor }               from "$lib/styles/themes/default/secondary-color";
 
 	export let shapeInput	: ShapeInput;
 	export let value 		: string | undefined = '';
@@ -271,7 +276,6 @@
         <div
             class   = "flex items-center h-14"
             style = { secondaryColor(isDarkMode, themeShape )}
-
         >
             <!-- Desktop view -->
             <div class="hidden flex-wrap { updateGridButtonsDesktop() }">
@@ -280,51 +284,50 @@
                     bind:open       = { desktopHeadingOpen }
                     position        = "bottom"
                     offset          = { 8 }
-                    contentClass    = "w-12 rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
+                    contentClass    = "w-12 px-1 py-1.5"
                     on:close        = { focusTextarea }
+                    {themeShape}
+                    {isDarkMode}
                 >
                     <svelte:fragment slot="trigger">
-                        <button 
-                            type        = "button"
-                            class       = "hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
-                            aria-label  = "Menú de títulos"
+                        <ButtonNavigator
+                            { themeShape }
+                            className = "justify-center size-10 active:scale-[0.97]"
+                            onClick={() => {}}
                         >
                             <HeadingMarkIcon />
-                        </button>
+                        </ButtonNavigator>
                     </svelte:fragment>
 
                     <svelte:fragment slot="content">
                         {#each headingTools as tool}
-                            <button
-                                type        = "button"
-                                class       = "flex h-10 w-full hover:rounded-lg select-none items-center rounded-button py-3 pl-3 pr-2.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
-                                on:click    = {() => {
+                            <ButtonNavigator
+                                { themeShape }
+                                className = "justify-center size-10 active:scale-[0.97]"
+                                onClick={() => {
                                     tool.action();
                                     desktopHeadingOpen = false;
                                     focusTextarea();
                                 }}
-                                aria-label={tool.title}
                             >
                                 <div class="flex items-center">
                                     <tool.icon />
                                 </div>
-                            </button>
+                            </ButtonNavigator>
                         {/each}
                     </svelte:fragment>
                 </DropdownMenu>
 
                 {#each tools as tool}
-                    <button
-                        type        = "button"
-                        on:click    = { tool.action }
-                        class       = "p-2 hover:bg-zinc-700 rounded-lg transition-colors duration-200 text-gray-200 hover:text-gray-200 flex items-center justify-center min-w-[2.5rem] dark:hover:bg-zinc-600 dark:active:bg-zinc-700 active:scale-95"
-                        title       = {tool.title}
-                        aria-label  = {tool.title}
+                    <ButtonNavigator
+                        { themeShape }
+                        className = "p-2 justify-center size-10 active:scale-[0.97]"
+                        onClick={ tool.action }
                     >
-                        <span class="text-sm font-medium dark:text-white">
+                        <span class=" font-medium">
                             <tool.icon />
                         </span>
-                    </button>
+                    </ButtonNavigator>
                 {/each}
                 <!-- Menú de tabla personalizado -->
                 <DropdownMenu 
@@ -333,19 +336,23 @@
                     offset          = { 8 }
                     contentClass    = "rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
                     on:close        = { focusTextarea }
+                    {themeShape}
+                    {isDarkMode}
                 >
                     <svelte:fragment slot="trigger">
-                        <button 
-                            type        = "button"
-                            class       = "hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-700 dark:text-zinc-200"
-                            aria-label  = "Insertar tabla"
+                        <ButtonNavigator
+                            { themeShape }
+                            className = " justify-center size-10 active:scale-[0.97]"
+                            onClick={ () => {} }
                         >
                             <TableMarkIcon />
-                        </button>
+                        </ButtonNavigator>
                     </svelte:fragment>
 
                     <svelte:fragment slot="content">
                         <DynamicTable
+                            { themeShape }
+                            { isDarkMode }
                             onTableGenerated={( table ) => {
                                 insertText( table );
                                 desktopTableOpen = false;
@@ -362,17 +369,19 @@
                 offset          = { 8 }
                 contentClass    = "w-full max-w-[229px] rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
                 on:close        = { focusTextarea }
+                {themeShape}
+                {isDarkMode}
             >
                 <svelte:fragment slot="trigger">
-                    <button 
-                        type        = "button"
-                        class       = "{updateGridButtonsMobile()} hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
-                        aria-label  = "Abrir menú de herramientas"
+                    <ButtonNavigator
+                        { themeShape }
+                        className = {`${updateGridButtonsMobile()} justify-center size-10 active:scale-[0.97]`}
+                        onClick={ () => {} }
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                         </svg>
-                    </button>
+                    </ButtonNavigator>
                 </svelte:fragment>
 
                 <svelte:fragment slot="content">
@@ -381,14 +390,16 @@
                         bind:open       = { mobileHeadingOpen }
                         position        = "right"
                         offset          = { 10 }
-                        contentClass    = "rounded-lg w-28 bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-lg"
+                        contentClass    = "w-32 px-1 py-1.5"
                         on:close        = { () => {} }
+                        {themeShape}
+                        {isDarkMode}
                     >
                         <svelte:fragment slot="trigger">
-                            <button
-                                type        = "button"
-                                class       = "flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
-                                aria-label  = "Menú de títulos"
+                            <ButtonNavigator
+                                { themeShape }
+                                className = "justify-center w-full h-10 active:scale-[0.97] py-3 pl-3 pr-1.5 font-medium "
+                                onClick={ () => {} }
                             >
                                 <div class="flex items-center gap-2">
                                     <HeadingMarkIcon />
@@ -399,48 +410,46 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                     </svg>
                                 </div>
-                            </button>
+                            </ButtonNavigator>
                         </svelte:fragment>
 
                         <svelte:fragment slot="content">
                             {#each headingTools as tool}
-                                <button
-                                    type        = "button"
-                                    class       = "flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
-                                    on:click    = {() => {
+                                <ButtonNavigator
+                                    { themeShape }
+                                    className = "justify-center w-full h-10 active:scale-[0.97] py-3 pl-3 pr-1.5 font-medium "
+                                    onClick={ () => {
                                         tool.action();
                                         mobileHeadingOpen   = false;
                                         mobileMenuOpen      = false;
                                         focusTextarea();
                                     }}
-                                    aria-label={tool.title}
                                 >
                                     <div class="flex items-center gap-2">
                                         <tool.icon />
                                         <span>{tool.title}</span>
                                     </div>
-                                </button>
+                                </ButtonNavigator>
                             {/each}
                         </svelte:fragment>
                     </DropdownMenu>
 
                     <!-- Herramientas normales -->
                     {#each tools as tool}
-                        <button
-                            type        = "button"
-                            class       = "flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
-                            on:click    = {() => {
+                        <ButtonNavigator
+                            { themeShape }
+                            className = "w-full h-10 active:scale-[0.97] py-3 pl-3 pr-1.5 font-medium "
+                            onClick={ () => {
                                 tool.action();
                                 mobileMenuOpen = false;
                                 focusTextarea();
                             }}
-                            aria-label={tool.title}
                         >
                             <div class="flex items-center gap-2">
                                 <tool.icon />
                                 <span>{tool.title}</span>
                             </div>
-                        </button>
+                        </ButtonNavigator>
                     {/each}
                     <!-- Submenú de tabla -->
                     <DropdownMenu 
@@ -449,12 +458,14 @@
                         offset          = { 10 }
                         contentClass    = "rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
                         on:close        = { () => {} }
+                        { themeShape }
+                        { isDarkMode }
                     >
                         <svelte:fragment slot="trigger">
-                            <button
-                                type        = "button"
-                                class       = "flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
-                                aria-label  = "Insertar tabla"
+                            <ButtonNavigator
+                                { themeShape }
+                                className = "w-full h-10 active:scale-[0.97] py-3 pl-3 pr-1.5 font-medium "
+                                onClick={ () => {}}
                             >
                                 <div class="flex items-center gap-2">
                                     <TableMarkIcon />
@@ -466,11 +477,13 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                     </svg>
                                 </div>
-                            </button>
+                            </ButtonNavigator>
                         </svelte:fragment>
 
                         <svelte:fragment slot="content">
                             <DynamicTable
+                                { themeShape }
+                                { isDarkMode }
                                 onTableGenerated={( table ) => {
                                     insertText( table );
                                     mobileTableOpen = false;
@@ -483,7 +496,12 @@
                 </svelte:fragment>
             </DropdownMenu>
 
-            <h3 class="text-zinc-200 font-medium {updateGridButtonsMobile()}">Editor</h3>
+            <h3
+                class="font-medium {updateGridButtonsMobile()}"
+                style={ secondaryColor(isDarkMode, themeShape )}
+            >
+                Editor
+            </h3>
         </div>
 
         <textarea bind:value={ value }
