@@ -1,7 +1,12 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { UAITheme }             from '$lib';
+    import { SECONDARY_COLOR_RING } from '$lib/styles/themes/default/secondary-color-ring';
+    import type { ThemeShape }      from '$models';
 
     export let onTableGenerated : ( tableString: string ) => void;
+    export let themeShape       : ThemeShape = UAITheme();
+    export let isDarkMode       : boolean = false;
 
 
     let initialRows : number = 4;
@@ -87,7 +92,7 @@
 
 <div class="flex">
     <div 
-        class           = "grid gap-0.5"
+        class           = "grid gap-1"
         style           = "grid-template-columns: repeat({cols}, auto); grid-template-rows: repeat({rows}, auto);"
         on:mouseleave   = { handleMouseLeave }
         role            = "grid"
@@ -96,20 +101,29 @@
         {#each Array(rows) as _, i}
             {#each Array(cols) as _, j}
                 <div
-                    class           = "w-4 h-4 border border-zinc-600 dark:border-zinc-500 transition-colors duration-200 ease-in-out rounded cursor-pointer"
-                    class:bg-sky-500= {cells[i][j]}
+                    class           = {`
+                        w-4 h-4 transition-colors duration-200 ease-in-out cursor-pointer
+                        ${themeShape.borderRadius}
+                    `}
                     on:mouseenter   = {() => handleMouseEnter(i, j)}
                     on:click        = {() => handleCellClick(i, j)}
                     on:keydown      = {(e) => e.key === 'Enter' && handleCellClick(i, j)}
                     role            = "grid"
                     tabindex        = "0"
-                ></div>
+                    style           = {`
+                        ${SECONDARY_COLOR_RING(isDarkMode, themeShape)}
+                        ${cells[i][j] ? `background-color: ${isDarkMode ? themeShape.dark.secondaryColor : themeShape.light.secondaryColor};` : ''}
+                    `}
+                    ></div>
             {/each}
         {/each}
     </div>
 </div>
 
-<span class="mx-auto flex justify-center mt-1 text-zinc-200">
+<span
+    class="mx-auto flex justify-center mt-1"
+    style= {`color: ${isDarkMode ? themeShape.dark.secondaryColor : themeShape.light.secondaryColor}`}
+>
     {#if hoveredRow >= 0 && hoveredCol >= 0}
         {hoveredRow + 1} x {hoveredCol + 1}
     {:else}
