@@ -1,22 +1,24 @@
 <script lang="ts">
-    import type { Selected, ShapeInput, Time }  from "$models";
-    import Description          from "./Description.svelte";
+    import type {
+        Selected,
+        ShapeInput,
+        ThemeShape,
+        Time
+    }                               from "$models";
+    import { Label, Description }   from "$components";
+
 
     export let shapeInput       : ShapeInput;
     export let onInput          : ( value: string ) => void = () => {};
     export let onTimerInput     : ( value: string ) => void = () => {};
     export let onSelectedChange : ( value: Selected ) => void = () => {};
     export let value            : Time | Selected | string = undefined;
+    export let themeShape       : ThemeShape;
 </script>
 
 <div class="w-full space-y-1.5">
     {#if shapeInput.label}
-        <label
-            for     = { shapeInput.id || "no name" }
-            class   = {`block text-sm font-medium ${ shapeInput.disabled ? 'text-zinc-500 dark:text-zinc-400' : 'text-zinc-700 dark:text-zinc-300' }`}
-        >
-            { shapeInput.label }
-        </label>
+        <Label { shapeInput } { themeShape } />
     {/if}
 
     <slot { shapeInput } { onInput } { onTimerInput } { onSelectedChange } />
