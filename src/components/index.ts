@@ -25,7 +25,7 @@ export { default as ButtonNavigator }   from './inputs/Styles/ButtonNavigator.sv
 export { default as BoxStyle }          from './inputs/Styles/BoxStyle.svelte';
 export { default as ContentStyle }      from './inputs/Styles/ContentStyle.svelte';
 export { default as Description }       from './inputs/Description.svelte';
-
+export { default as Label }             from './inputs/Styles/Label.svelte';
 
 // Preview
 export { default as Preview }       from './Preview/Preview.svelte';
