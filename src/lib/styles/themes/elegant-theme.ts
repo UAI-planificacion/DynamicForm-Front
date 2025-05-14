@@ -15,10 +15,10 @@ export const elegantTheme = ( color: string = 'emerald' ): ThemeShape => ({
         backgroundColor     : color,
         background          : tailwindToRGBA(`${color}-50`),
 
-        secondaryBackgroundOpacity   : '80',
-        secondaryBackgroundTonality  : '300',
+        secondaryBackgroundOpacity   : '100',
+        secondaryBackgroundTonality  : '200',
         secondaryBackgroundColor     : color,
-        secondaryBackground          : tailwindToRGBA(`${color}-300`),
+        secondaryBackground          : tailwindToRGBA(`${color}-200`),
 
         colorOpacity    : '100',
         colorTonality   : '800',
