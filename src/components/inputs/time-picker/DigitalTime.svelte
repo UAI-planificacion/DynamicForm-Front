@@ -128,7 +128,7 @@
 
 <svelte:window on:click={handleClickOutside} />
 
-<Info { shapeInput } { value } { onTimerInput }>
+<Info { shapeInput } { value } { onTimerInput } { themeShape }>
 
 <div class="relative w-full" id={ shapeInput.id }>
     <BoxStyle
