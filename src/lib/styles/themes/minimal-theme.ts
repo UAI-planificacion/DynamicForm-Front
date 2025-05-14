@@ -16,10 +16,20 @@ export const minimalTheme = (color: string = 'sky'): ThemeShape =>({
             backgroundColor     : color,
             background          : tailwindToRGBA(`${color}-50`),
 
+            secondaryBackgroundOpacity   : '100',
+            secondaryBackgroundTonality  : '500',
+            secondaryBackgroundColor     : color,
+            secondaryBackground          : tailwindToRGBA(`${color}-500`),
+
             colorOpacity    : '100',
             colorTonality   : '800',
             colorColor      : color,
             color           : tailwindToRGBA(`${color}-800`),
+
+            secondaryColorOpacity    : '100',
+            secondaryColorTonality   : '100',
+            secondaryColorColor      : color,
+            secondaryColor           : tailwindToRGBA(`${color}-100`),
 
             ringOpacity     : '100',
             ringTonality    : '500',
@@ -43,10 +53,20 @@ export const minimalTheme = (color: string = 'sky'): ThemeShape =>({
             backgroundColor     : color,
             background          : tailwindToRGBA( `${color}-900` ),
 
+            secondaryBackgroundOpacity   : '100',
+            secondaryBackgroundTonality  : '900',
+            secondaryBackgroundColor     : color,
+            secondaryBackground          : tailwindToRGBA(`${color}-900`),
+
             colorOpacity      : '100',
             colorTonality     : '100',
             colorColor        : color,
             color             : tailwindToRGBA(`${color}-100`),
+
+            secondaryColorOpacity    : '100',
+            secondaryColorTonality   : '200',
+            secondaryColorColor      : color,
+            secondaryColor           : tailwindToRGBA(`${color}-200`),
 
             ringOpacity       : '100',
             ringTonality      : '700',
