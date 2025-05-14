@@ -10,7 +10,7 @@
     }                                       from "./dateHandler";
     import type {  ShapeInput, ThemeShape } from "$models";
     import { CalendarBlankIcon }            from "$icons";
-    import { Description, BoxStyle }        from "$components";
+    import { Description, BoxStyle, Label } from "$components";
     import { numberWithZero, UAITheme }     from "$lib";
     import DateNavigator                    from "./DateNavigator.svelte";
 
@@ -114,11 +114,7 @@
 >
     <div class="flex w-full flex-col gap-1.5">
         {#if shapeInput.label}
-            <DatePicker.Label
-                class="block select-none text-sm font-medium dark:text-zinc-200 dark:data-[disabled]:text-zinc-400 data-[disabled]:text-zinc-500"
-            >
-                {shapeInput.label}
-            </DatePicker.Label>
+            <Label { shapeInput } { themeShape } />
         {/if}
 
         <div bind:this={inputContainer} class="relative">
