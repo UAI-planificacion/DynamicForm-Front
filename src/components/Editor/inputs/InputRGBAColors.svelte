@@ -228,7 +228,7 @@
             placeholder : 'Ingrese el color customizado',
         }}
         value      = { type }
-        onInput    = {( value: string ) => type = value }
+        onInput    = {( value: string ) => {type = value; updateStore(); }}
     />
 
     <!-- svelte-ignore element_invalid_self_closing_tag -->
