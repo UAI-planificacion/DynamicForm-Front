@@ -49,9 +49,9 @@ export const minimalTheme = (color: string = 'sky'): ThemeShape =>({
 
         dark: {
             backgroundOpacity   : '100',
-            backgroundTonality  : '900',
+            backgroundTonality  : '800',
             backgroundColor     : color,
-            background          : tailwindToRGBA( `${color}-900` ),
+            background          : tailwindToRGBA( `${color}-800` ),
 
             secondaryBackgroundOpacity   : '100',
             secondaryBackgroundTonality  : '900',
