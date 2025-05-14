@@ -16,10 +16,25 @@ export const UAITheme = ( color: string = 'zinc' ): ThemeShape => ({
         backgroundColor     : color,
         background          : tailwindToRGBA( `${color}-50` ),
 
+        secondaryBackgroundOpacity   : '100',
+        secondaryBackgroundTonality  : '100',
+        secondaryBackgroundColor     : 'black',
+        secondaryBackground          : tailwindToRGBA( 'black' ),
+
+        colorSelectedOpacity    : '100',
+        colorSelectedTonality   : '50',
+        colorSelectedColor      : 'black',
+        colorSelected           : tailwindToRGBA( 'black' ),
+
         colorOpacity    : '100',
         colorTonality   : '800',
         colorColor      : color,
         color           : tailwindToRGBA( `${color}-800` ),
+
+        secondaryColorOpacity    : '100',
+        secondaryColorTonality   : '200',
+        secondaryColorColor      : 'white',
+        secondaryColor           : tailwindToRGBA( 'white' ),
 
         ringOpacity     : '100',
         ringTonality    : '300',
@@ -43,10 +58,25 @@ export const UAITheme = ( color: string = 'zinc' ): ThemeShape => ({
         backgroundColor     : color,
         background          : tailwindToRGBA(`${color}-900`),
 
+        secondaryBackgroundOpacity   : '100',
+        secondaryBackgroundTonality  : '100',
+        secondaryBackgroundColor     : 'black',
+        secondaryBackground          : tailwindToRGBA( 'black' ),
+
+        colorSelectedOpacity    : '100',
+        colorSelectedTonality   : '50',
+        colorSelectedColor      : 'white',
+        colorSelected           : tailwindToRGBA( 'white' ),
+
         colorOpacity    : '100',
         colorTonality   : '300',
         colorColor      : color,
         color           : tailwindToRGBA(`${color}-300`),
+
+        secondaryColorOpacity    : '100',
+        secondaryColorTonality   : '200',
+        secondaryColorColor      : 'white',
+        secondaryColor           : tailwindToRGBA( 'white' ),
 
         ringOpacity     : '100',
         ringTonality    : '700',
