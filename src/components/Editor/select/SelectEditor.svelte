@@ -132,7 +132,7 @@
         <Tabs.Trigger
             value   = "options"
             onclick = { tabOptionsClick }
-            class   = "data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-zinc-100 text-black dark:text-zinc-400 h-8 dark:data-[state=active]:text-black rounded-lg bg-transparent py-2"
+            class   = "data-[state=active]:bg-black data-[state=active]:text-white text-black dark:text-zinc-200 h-8 rounded-md bg-transparent py-2 transition-all"
         >
             Selección
         </Tabs.Trigger>
@@ -140,7 +140,7 @@
         <Tabs.Trigger
             value   = "groups"
             onclick = { tabGroupsClick }
-            class   = "data-[state=active]:bg-black data-[state=active]:text-white dark:data-[state=active]:bg-zinc-100 text-black dark:text-zinc-400 h-8 dark:data-[state=active]:text-black rounded-lg bg-transparent py-2"
+            class   = "data-[state=active]:bg-black data-[state=active]:text-white text-black dark:text-zinc-200 h-8 rounded-md bg-transparent py-2 transition-all"
         >
             Grupos
         </Tabs.Trigger>
