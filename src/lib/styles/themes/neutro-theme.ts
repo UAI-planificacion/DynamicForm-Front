@@ -15,10 +15,20 @@ export const neutralTheme = ( color: string = 'slate' ): ThemeShape => ({
         backgroundColor     : color,
         background          : tailwindToRGBA(`${color}-50`),
 
+        secondaryBackgroundOpacity   : '100',
+        secondaryBackgroundTonality  : '200',
+        secondaryBackgroundColor     : color,
+        secondaryBackground          : tailwindToRGBA(`${color}-200`),
+
         colorOpacity    : '100',
         colorTonality   : '700',
         colorColor      : color,
         color           : tailwindToRGBA(`${color}-700`),
+
+        secondaryColorOpacity    : '100',
+        secondaryColorTonality   : '500',
+        secondaryColorColor      : color,
+        secondaryColor           : tailwindToRGBA(`${color}-500`),
 
         ringOpacity     : '100',
         ringTonality    : '200',
@@ -42,10 +52,20 @@ export const neutralTheme = ( color: string = 'slate' ): ThemeShape => ({
         backgroundColor     : color,
         background          : tailwindToRGBA(`${color}-800`),
 
+        secondaryBackgroundOpacity   : '100',
+        secondaryBackgroundTonality  : '800',
+        secondaryBackgroundColor     : color,
+        secondaryBackground          : tailwindToRGBA(`${color}-800`),
+
         colorOpacity    : '100',
         colorTonality   : '200',
         colorColor      : color,
         color           : tailwindToRGBA(`${color}-200`),
+
+        secondaryColorOpacity    : '100',
+        secondaryColorTonality   : '200',
+        secondaryColorColor      : color,
+        secondaryColor           : tailwindToRGBA(`${color}-200`),
 
         ringOpacity     : '100',
         ringTonality    : '500',
