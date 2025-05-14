@@ -17,9 +17,9 @@ export const casualTheme = ( color: string = 'orange' ): ThemeShape => ({
         background          : tailwindToRGBA(`${color}-100`),
 
         secondaryBackgroundOpacity   : '100',
-        secondaryBackgroundTonality  : '300',
+        secondaryBackgroundTonality  : '200',
         secondaryBackgroundColor     : color,
-        secondaryBackground          : tailwindToRGBA(`${color}-300`),
+        secondaryBackground          : tailwindToRGBA(`${color}-200`),
 
         colorOpacity    : '100',
         colorTonality   : '700',
