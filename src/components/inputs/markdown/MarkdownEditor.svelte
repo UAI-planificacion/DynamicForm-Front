@@ -21,14 +21,31 @@
 		HeadingMarkIcon,
 	} 								            from "$icons/markdown";
     import { DynamicTable, Info, DropdownMenu } from "$components";
-	import type { ShapeInput }      from "$models";
+	import type { ShapeInput, ThemeShape }      from "$models";
 	import marked 						        from './marked.config';
+    import { UAITheme }                         from "$lib";
+    import { COLOR }                            from "$lib/styles/themes/default/color";
+    import { theme }                            from "$stores";
+    import { BACKGROUND }                       from "$lib/styles/themes/default/background";
+    import { BACKGROUND_RING }                  from "$lib/styles/themes/default/background-ring";
+    import { secondaryColor }                   from "$lib/styles/themes/default/secondary-color";
 
 	export let shapeInput	: ShapeInput;
 	export let value 		: string | undefined = '';
     export let onInput		: ( value: string ) => void;
     export let setError     : VoidFunction = () => {};
     export let dynamicMode  : boolean = false;
+    export let themeShape   : ThemeShape = UAITheme();
+
+
+    let isDarkMode = $theme === 'dark';
+
+
+    $: if ( $theme === 'dark' ) {
+        isDarkMode = true;
+    } else {
+        isDarkMode = false;
+    }
 
 	// Textarea
 	let textarea: HTMLTextAreaElement;
@@ -242,25 +259,35 @@
     }
 </script>
 
-<Info { shapeInput } { onInput } { value }>
-<div class="grid {updateGridClass()} bg-white dark:bg-zinc-700 rounded-lg shadow-lg overflow-hidden">
+<Info { shapeInput } { onInput } { value } { themeShape }>
+<div
+    class   = "grid { updateGridClass() } rounded-md shadow-xl overflow-hidden"
+    style   = {`
+        ${BACKGROUND( isDarkMode, themeShape )}
+        ${COLOR( isDarkMode, themeShape )}
+    `}
+>
     <div class="relative">
-        <div class="border-b border-gray-200 dark:border-zinc-700 bg-black flex items-center h-14 dark:bg-zinc-800">
+        <div
+            class   = "flex items-center h-14"
+            style = { secondaryColor(isDarkMode, themeShape )}
+
+        >
             <!-- Desktop view -->
-            <div class="hidden flex-wrap {updateGridButtonsDesktop()}">
+            <div class="hidden flex-wrap { updateGridButtonsDesktop() }">
                 <!-- Menú de títulos personalizado -->
                 <DropdownMenu 
-                    bind:open={desktopHeadingOpen}
-                    position="bottom"
-                    offset={8}
-                    contentClass="w-12 rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
-                    on:close={focusTextarea}
+                    bind:open       = { desktopHeadingOpen }
+                    position        = "bottom"
+                    offset          = { 8 }
+                    contentClass    = "w-12 rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
+                    on:close        = { focusTextarea }
                 >
                     <svelte:fragment slot="trigger">
                         <button 
-                            type="button"
-                            class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
-                            aria-label="Menú de títulos"
+                            type        = "button"
+                            class       = "hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
+                            aria-label  = "Menú de títulos"
                         >
                             <HeadingMarkIcon />
                         </button>
@@ -269,9 +296,9 @@
                     <svelte:fragment slot="content">
                         {#each headingTools as tool}
                             <button
-                                type="button"
-                                class="flex h-10 w-full hover:rounded-lg select-none items-center rounded-button py-3 pl-3 pr-2.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
-                                on:click={() => {
+                                type        = "button"
+                                class       = "flex h-10 w-full hover:rounded-lg select-none items-center rounded-button py-3 pl-3 pr-2.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                                on:click    = {() => {
                                     tool.action();
                                     desktopHeadingOpen = false;
                                     focusTextarea();
@@ -288,36 +315,35 @@
 
                 {#each tools as tool}
                     <button
-                        type="button"
-                        on:click={tool.action}
-                        class="p-2 hover:bg-zinc-700 rounded-lg transition-colors duration-200 text-gray-200 hover:text-gray-200 flex items-center justify-center min-w-[2.5rem] dark:hover:bg-zinc-600 dark:active:bg-zinc-700 active:scale-95"
-                        title={tool.title}
-                        aria-label={tool.title}
+                        type        = "button"
+                        on:click    = { tool.action }
+                        class       = "p-2 hover:bg-zinc-700 rounded-lg transition-colors duration-200 text-gray-200 hover:text-gray-200 flex items-center justify-center min-w-[2.5rem] dark:hover:bg-zinc-600 dark:active:bg-zinc-700 active:scale-95"
+                        title       = {tool.title}
+                        aria-label  = {tool.title}
                     >
                         <span class="text-sm font-medium dark:text-white">
                             <tool.icon />
                         </span>
                     </button>
                 {/each}
-
                 <!-- Menú de tabla personalizado -->
                 <DropdownMenu 
-                    bind:open={desktopTableOpen}
-                    position="bottom"
-                    offset={8}
-                    contentClass="rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
-                    on:close={focusTextarea}
+                    bind:open       = { desktopTableOpen }
+                    position        = "bottom"
+                    offset          = { 8 }
+                    contentClass    = "rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
+                    on:close        = { focusTextarea }
                 >
                     <svelte:fragment slot="trigger">
                         <button 
-                            type="button"
-                            class="hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-700 dark:text-zinc-200"
-                            aria-label="Insertar tabla"
+                            type        = "button"
+                            class       = "hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-700 dark:text-zinc-200"
+                            aria-label  = "Insertar tabla"
                         >
                             <TableMarkIcon />
                         </button>
                     </svelte:fragment>
-                    
+
                     <svelte:fragment slot="content">
                         <DynamicTable
                             onTableGenerated={( table ) => {
@@ -329,20 +355,19 @@
                     </svelte:fragment>
                 </DropdownMenu>
             </div>
-
             <!-- Mobile menu personalizado -->
             <DropdownMenu 
-                bind:open={mobileMenuOpen}
-                position="bottom"
-                offset={8}
-                contentClass="w-full max-w-[229px] rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
-                on:close={focusTextarea}
+                bind:open       = { mobileMenuOpen }
+                position        = "bottom"
+                offset          = { 8 }
+                contentClass    = "w-full max-w-[229px] rounded-lg bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-popover"
+                on:close        = { focusTextarea }
             >
                 <svelte:fragment slot="trigger">
                     <button 
-                        type="button"
-                        class="{updateGridButtonsMobile()} hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
-                        aria-label="Abrir menú de herramientas"
+                        type        = "button"
+                        class       = "{updateGridButtonsMobile()} hover:bg-zinc-700 rounded-lg h-10 w-10 flex justify-center items-center dark:active:bg-zinc-700 active:scale-95 dark:hover:bg-zinc-600"
+                        aria-label  = "Abrir menú de herramientas"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -353,17 +378,17 @@
                 <svelte:fragment slot="content">
                     <!-- Submenú de títulos -->
                     <DropdownMenu 
-                        bind:open={mobileHeadingOpen}
-                        position="right"
-                        offset={10}
-                        contentClass="rounded-lg w-28 bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-lg"
-                        on:close={() => {}}
+                        bind:open       = { mobileHeadingOpen }
+                        position        = "right"
+                        offset          = { 10 }
+                        contentClass    = "rounded-lg w-28 bg-black dark:bg-zinc-600 px-1 py-1.5 shadow-lg"
+                        on:close        = { () => {} }
                     >
                         <svelte:fragment slot="trigger">
                             <button
-                                type="button"
-                                class="flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
-                                aria-label="Menú de títulos"
+                                type        = "button"
+                                class       = "flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                                aria-label  = "Menú de títulos"
                             >
                                 <div class="flex items-center gap-2">
                                     <HeadingMarkIcon />
@@ -380,12 +405,12 @@
                         <svelte:fragment slot="content">
                             {#each headingTools as tool}
                                 <button
-                                    type="button"
-                                    class="flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
-                                    on:click={() => {
+                                    type        = "button"
+                                    class       = "flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                                    on:click    = {() => {
                                         tool.action();
-                                        mobileHeadingOpen = false;
-                                        mobileMenuOpen = false;
+                                        mobileHeadingOpen   = false;
+                                        mobileMenuOpen      = false;
                                         focusTextarea();
                                     }}
                                     aria-label={tool.title}
@@ -402,9 +427,9 @@
                     <!-- Herramientas normales -->
                     {#each tools as tool}
                         <button
-                            type="button"
-                            class="flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
-                            on:click={() => {
+                            type        = "button"
+                            class       = "flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                            on:click    = {() => {
                                 tool.action();
                                 mobileMenuOpen = false;
                                 focusTextarea();
@@ -417,25 +442,25 @@
                             </div>
                         </button>
                     {/each}
-
                     <!-- Submenú de tabla -->
                     <DropdownMenu 
-                        bind:open={mobileTableOpen}
-                        position="right"
-                        offset={10}
-                        contentClass="rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
-                        on:close={() => {}}
+                        bind:open       = { mobileTableOpen }
+                        position        = "right"
+                        offset          = { 10 }
+                        contentClass    = "rounded-lg bg-black dark:bg-zinc-600 p-2 shadow-lg"
+                        on:close        = { () => {} }
                     >
                         <svelte:fragment slot="trigger">
                             <button
-                                type="button"
-                                class="flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
-                                aria-label="Insertar tabla"
+                                type        = "button"
+                                class       = "flex w-full h-10 select-none items-center rounded-lg py-3 pl-3 pr-1.5 text-sm font-medium text-gray-200 !ring-0 !ring-transparent hover:bg-zinc-700"
+                                aria-label  = "Insertar tabla"
                             >
                                 <div class="flex items-center gap-2">
                                     <TableMarkIcon />
                                     <span>Insertar Tabla</span>
                                 </div>
+
                                 <div class="ml-auto flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -443,7 +468,7 @@
                                 </div>
                             </button>
                         </svelte:fragment>
-                        
+
                         <svelte:fragment slot="content">
                             <DynamicTable
                                 onTableGenerated={( table ) => {
@@ -461,11 +486,10 @@
             <h3 class="text-zinc-200 font-medium {updateGridButtonsMobile()}">Editor</h3>
         </div>
 
-        <textarea
+        <textarea bind:value={ value }
             name        = { shapeInput.name }
             id          = { shapeInput.id }
-            bind:value={ value }
-            bind:this={ textarea }
+            bind:this   = { textarea }
             required 	= { shapeInput.required }
             minlength   = { shapeInput.minLength }
             maxlength   = { shapeInput.maxLength }
@@ -477,15 +501,29 @@
             on:input    = {( value: Event ) => {onInput( ( value.target as HTMLTextAreaElement ).value ); setError() }}
             readonly 	= { shapeInput.readonly }
             disabled 	= { shapeInput.disabled }
-            class		= "m-2 w-full min-h-64 border-none focus:ring-0 resize-none bg-transparent dark:text-zinc-200 overflow-hidden"
             placeholder = { shapeInput.placeholder }
+            style       = { COLOR(isDarkMode, themeShape )}
+            class		= {`
+                w-full
+                min-h-64
+                border-none
+                focus:ring-0
+                bg-transparent
+                ring-0
+                px-4
+                py-2
+                resize-none
+                overflow-hidden
+                ${ themeShape.fontSize }
+            `}
         ></textarea>
 
         {#if shapeInput.preview }
             <div class="absolute right-0 top-14 h-[calc(100%-3.5rem)] sm:block hidden">
                 <Separator.Root
-                    orientation="vertical"
-                    class="h-full w-[1px] bg-gray-200 dark:bg-zinc-600"
+                    orientation = "vertical"
+                    class       = "h-full w-[1px]"
+                    style       = { BACKGROUND_RING(isDarkMode, themeShape )}
                 />
             </div>
         {/if}
@@ -493,7 +531,10 @@
 
     {#if shapeInput.preview}
         <div>
-            <div class="h-14 font-semibold bg-black text-gray-200 dark:text-zinc-200 border-b dark:border-b-zinc-700 px-4 items-center flex dark:bg-zinc-800">
+            <div
+                class = "h-14 font-semibold px-4 items-center flex "
+                style = { secondaryColor(isDarkMode, themeShape )}
+            >
                 Previsualización
             </div>
             <div class="p-4">
