@@ -478,7 +478,7 @@
 };
 </script>
 
-<Info { shapeInput } { onSelectedChange } { value }>
+<Info { shapeInput } { onSelectedChange } { value } { themeShape }>
 <div class="relative w-full" bind:this={comboboxElement} >
     <BoxStyle
         { shapeInput }
