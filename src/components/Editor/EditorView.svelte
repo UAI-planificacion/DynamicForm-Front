@@ -385,8 +385,39 @@
                             {/if}
                         </div>
 
+                        <Input
+                            shapeInput = {{
+                                id		    : uuid(),
+                                label       : 'Descripción',
+                                name	    : 'description',
+                                placeholder : 'Ingrese la descripción',
+                            }}
+                            onInput = {( value: string ) => shapeInput.description = value }
+                            value = { shapeInput.description}
+                        />
+
                         <div class="flex gap-2 justify-between items-center">
-                            {#if shapeInput.shape === 'markdown'}
+                            {#if shapeInput.shape === 'datepicker'}
+                                <Check
+                                    shapeInput = {{
+                                        id      : uuid(),
+                                        name    : 'is-range',
+                                        label   : 'Con rango',
+                                    }}
+                                    onChange = {( check ) => shapeInput.isRange = check }
+                                    checked  = { shapeInput.isRange }
+                                />
+                            {:else if shapeInput.shape === 'timer'}
+                                <Check 
+                                    shapeInput = {{
+                                        id      : uuid(),
+                                        name    : 'analogic',
+                                        label   : 'Reloj Análogo',
+                                    }}
+                                    onChange = {( check ) =>  shapeInput.time = { isAnalogic: check }}
+                                    checked  = { shapeInput.time?.isAnalogic }
+                                />
+                            {:else if shapeInput.shape === 'markdown'}
                                 <Check
                                     shapeInput = {{
                                         id		: uuid(),
@@ -418,17 +449,6 @@
                                 checked  = { shapeInput.readonly }
                             />
                         </div>
-
-                        <Input
-                            shapeInput = {{
-                                id		    : uuid(),
-                                label       : 'Descripción',
-                                name	    : 'description',
-                                placeholder : 'Ingrese la descripción',
-                            }}
-                            onInput = {( value: string ) => shapeInput.description = value }
-                            value = { shapeInput.description}
-                        />
 
                         {#if shapeInput.shape === 'input' }
                             <div class="grid grid-cols-1 @lg:grid-cols-2 gap-2 items-center">
@@ -530,39 +550,15 @@
                     <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
                         {#if shapeInput.shape !== 'button' }
                             <div class="grid grid-cols-1 @xl:grid-cols-2 gap-4 items-center">
-                                <div class=" flex items-center justify-between gap-2">
-                                    <Check
-                                        shapeInput = {{
-                                            id		    : uuid(),
-                                            label       : 'Requerido',
-                                            name	    : 'required',
-                                        }}
-                                        onChange = {( chech ) => shapeInput.required = chech }
-                                        checked  = { shapeInput.required }
-                                    />
-
-                                    {#if shapeInput.shape === 'datepicker'}
-                                        <Check
-                                            shapeInput = {{
-                                                id      : uuid(),
-                                                name    : 'is-range',
-                                                label   : 'Con rango',
-                                            }}
-                                            onChange = {( check ) => shapeInput.isRange = check }
-                                            checked  = { shapeInput.isRange }
-                                        />
-                                    {:else if shapeInput.shape === 'timer'}
-                                        <Check 
-                                            shapeInput = {{
-                                                id      : uuid(),
-                                                name    : 'analogic',
-                                                label   : 'Reloj Análogo',
-                                            }}
-                                            onChange = {( check ) =>  shapeInput.time = { isAnalogic: check }}
-                                            checked  = { shapeInput.time?.isAnalogic }
-                                        />
-                                    {/if}
-                                </div>
+                                <Check
+                                    shapeInput = {{
+                                        id		    : uuid(),
+                                        label       : 'Requerido',
+                                        name	    : 'required',
+                                    }}
+                                    onChange = {( chech ) => shapeInput.required = chech }
+                                    checked  = { shapeInput.required }
+                                />
 
                                 <Input
                                     shapeInput = {{
