@@ -49,7 +49,7 @@ export const minimalTheme = (color: string = 'sky'): ThemeShape =>({
             color             : tailwindToRGBA(`${color}-100`),
 
             ringOpacity       : '100',
-            ringTonality      : '300',
+            ringTonality      : '700',
             ringColor         : color,
             ring              : tailwindToRGBA(`${color}-300`),
 
