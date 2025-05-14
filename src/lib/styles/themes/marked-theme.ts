@@ -16,10 +16,20 @@ export const markedTheme = ( color: string = 'rose' ): ThemeShape => ({
         backgroundTonality     : '100',
         background             : tailwindToRGBA(`${color}-100`),
 
-        colorOpacity      : '100',
-        colorTonality          : '900',
-        colorColor             : color,
-        color                  : tailwindToRGBA(`${color}-900`),
+        secondaryBackgroundOpacity   : '100',
+        secondaryBackgroundTonality  : '400',
+        secondaryBackgroundColor     : color,
+        secondaryBackground          : tailwindToRGBA(`${color}-400`),
+
+        colorOpacity    : '100',
+        colorTonality   : '900',
+        colorColor      : color,
+        color           : tailwindToRGBA(`${color}-900`),
+
+        secondaryColorOpacity    : '100',
+        secondaryColorTonality   : '50',
+        secondaryColorColor      : color,
+        secondaryColor           : tailwindToRGBA(`${color}-50`),
 
         ringOpacity       : '100',
         ringColor              : color,
@@ -43,15 +53,25 @@ export const markedTheme = ( color: string = 'rose' ): ThemeShape => ({
         backgroundTonality     : '900',
         background             : tailwindToRGBA(`${color}-900`),
 
-        colorOpacity      : '100',
-        colorTonality          : '200',
-        colorColor             : color,
-        color                  : tailwindToRGBA(`${color}-200`),
+        secondaryBackgroundOpacity   : '100',
+        secondaryBackgroundTonality  : '600',
+        secondaryBackgroundColor     : color,
+        secondaryBackground          : tailwindToRGBA(`${color}-600`),
 
-        ringOpacity       : '100',
-        ringColor              : color,
-        ringTonality           : '600',
-        ring                   : tailwindToRGBA(`${color}-600`),
+        colorOpacity    : '100',
+        colorTonality   : '200',
+        colorColor      : color,
+        color           : tailwindToRGBA(`${color}-200`),
+
+        secondaryColorOpacity    : '100',
+        secondaryColorTonality   : '200',
+        secondaryColorColor      : color,
+        secondaryColor           : tailwindToRGBA(`${color}-200`),
+
+        ringOpacity     : '100',
+        ringColor       : color,
+        ringTonality    : '600',
+        ring            : tailwindToRGBA(`${color}-600`),
 
         event : {
             focus : {
