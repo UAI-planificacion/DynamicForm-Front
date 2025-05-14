@@ -20,6 +20,14 @@
         updateColorTonality,
         updateColorOpacity,
         updateColor,
+        updateSecondaryBackgroundColor,
+        updateSecondaryBackgroundTonality,
+        updateSecondaryBackgroundOpacity,
+        updateSecondaryBackground,
+        updateSecondaryColorColor,
+        updateSecondaryColorTonality,
+        updateSecondaryColorOpacity,
+        updateSecondaryColor,
         updateRingColor,
         updateRingTonality,
         updateRingOpacity,
@@ -66,15 +74,29 @@
         
         // Determinar qué valores obtener según el nombre del componente
         if (name.toLowerCase().includes('fondo')) {
-            color = currentTheme[colorTheme].backgroundColor || '';
-            tonality = currentTheme[colorTheme].backgroundTonality || '';
-            opacity = currentTheme[colorTheme].backgroundOpacity || '';
-            type = currentTheme[colorTheme].background || '';
+            if (name.toLowerCase().includes('secundario')) {
+                color = currentTheme[colorTheme].secondaryBackgroundColor || '';
+                tonality = currentTheme[colorTheme].secondaryBackgroundTonality || '';
+                opacity = currentTheme[colorTheme].secondaryBackgroundOpacity || '';
+                type = currentTheme[colorTheme].secondaryBackground || '';
+            } else {
+                color = currentTheme[colorTheme].backgroundColor || '';
+                tonality = currentTheme[colorTheme].backgroundTonality || '';
+                opacity = currentTheme[colorTheme].backgroundOpacity || '';
+                type = currentTheme[colorTheme].background || '';
+            }
         } else if (name.toLowerCase().includes('texto')) {
-            color = currentTheme[colorTheme].colorColor || '';
-            tonality = currentTheme[colorTheme].colorTonality || '';
-            opacity = currentTheme[colorTheme].colorOpacity || '';
-            type = currentTheme[colorTheme].color || '';
+            if (name.toLowerCase().includes('secundario')) {
+                color = currentTheme[colorTheme].secondaryColorColor || '';
+                tonality = currentTheme[colorTheme].secondaryColorTonality || '';
+                opacity = currentTheme[colorTheme].secondaryColorOpacity || '';
+                type = currentTheme[colorTheme].secondaryColor || '';
+            } else {
+                color = currentTheme[colorTheme].colorColor || '';
+                tonality = currentTheme[colorTheme].colorTonality || '';
+                opacity = currentTheme[colorTheme].colorOpacity || '';
+                type = currentTheme[colorTheme].color || '';
+            }
         } else if (name.toLowerCase().includes('borde')) {
             if (name.toLowerCase().includes('foco')) {
                 // Es un evento de foco
@@ -104,15 +126,29 @@
     function updateStore(): void {
         // Determinar qué actualizar según el nombre del componente
         if (name.toLowerCase().includes('fondo')) {
-            updateBackgroundColor(colorTheme, color);
-            updateBackgroundTonality(colorTheme, tonality);
-            updateBackgroundOpacity(colorTheme, opacity);
-            updateBackground(colorTheme, type);
+            if (name.toLowerCase().includes('secundario')) {
+                updateSecondaryBackgroundColor(colorTheme, color);
+                updateSecondaryBackgroundTonality(colorTheme, tonality);
+                updateSecondaryBackgroundOpacity(colorTheme, opacity);
+                updateSecondaryBackground(colorTheme, type);
+            } else {
+                updateBackgroundColor(colorTheme, color);
+                updateBackgroundTonality(colorTheme, tonality);
+                updateBackgroundOpacity(colorTheme, opacity);
+                updateBackground(colorTheme, type);
+            }
         } else if (name.toLowerCase().includes('texto')) {
-            updateColorColor(colorTheme, color);
-            updateColorTonality(colorTheme, tonality);
-            updateColorOpacity(colorTheme, opacity);
-            updateColor(colorTheme, type);
+            if (name.toLowerCase().includes('secundario')) {
+                updateSecondaryColorColor(colorTheme, color);
+                updateSecondaryColorTonality(colorTheme, tonality);
+                updateSecondaryColorOpacity(colorTheme, opacity);
+                updateSecondaryColor(colorTheme, type);
+            } else {
+                updateColorColor(colorTheme, color);
+                updateColorTonality(colorTheme, tonality);
+                updateColorOpacity(colorTheme, opacity);
+                updateColor(colorTheme, type);
+            }
         } else if (name.toLowerCase().includes('borde')) {
             if (name.toLowerCase().includes('foco')) {
                 // Es un evento de foco
