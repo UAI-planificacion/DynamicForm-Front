@@ -53,9 +53,9 @@ export const neutralTheme = ( color: string = 'slate' ): ThemeShape => ({
         background          : tailwindToRGBA(`${color}-800`),
 
         secondaryBackgroundOpacity   : '100',
-        secondaryBackgroundTonality  : '800',
+        secondaryBackgroundTonality  : '900',
         secondaryBackgroundColor     : color,
-        secondaryBackground          : tailwindToRGBA(`${color}-800`),
+        secondaryBackground          : tailwindToRGBA(`${color}-900`),
 
         colorOpacity    : '100',
         colorTonality   : '200',
