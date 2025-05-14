@@ -281,6 +281,34 @@
                     {colorTheme}
                 />
             </Grid5Styles>
+
+            <div class="flex items-center">
+                <span class="w-52 text-md font-semibold text-zinc-700 dark:text-zinc-300">Colores secundarios</span>
+
+                <Separator.Root
+                    orientation = "horizontal"
+                    class       = "w-full h-[1px] rounded-lg bg-primary dark:bg-zinc-700 my-4 @xl:my-1"
+                />
+            </div>
+
+            <Grid4Styles>
+                <InputRGBAColors
+                    name = "Fondo Secundario"
+                    {colorTheme}
+                />
+            </Grid4Styles>
+
+            <Separator.Root
+                orientation = "horizontal"
+                class       = "w-full h-[1px] rounded-lg bg-primary dark:bg-zinc-700 my-4 @xl:my-1"
+            />
+
+            <Grid4Styles>
+                <InputRGBAColors
+                    name = "Texto Secundario"
+                    {colorTheme}
+                />
+            </Grid4Styles>
         </Accordion.Content>
     </Accordion.Item>
 </Accordion.Root>
