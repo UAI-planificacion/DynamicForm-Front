@@ -22,7 +22,6 @@ export type ThemeAttribute = {
     backgroundTonality  : string;
     backgroundOpacity   : string;
 
-
     secondaryBackground          : string;
     secondaryBackgroundColor     : string;
     secondaryBackgroundTonality  : string;
