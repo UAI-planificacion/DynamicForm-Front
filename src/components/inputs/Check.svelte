@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { theme }            from "$stores";
-    import { CheckIcon }        from "$icons";
     import type { ShapeInput, ThemeShape }  from "$models";
-    import Description          from "./Description.svelte";
-    import { UAITheme }         from "$lib/styles/themes";
-    import { style }            from "$lib/styles/themes/default/style";
-    import { focus }            from "$lib/styles/themes/default/focus";
-    import { blur }             from "$lib/styles/themes/default/blur";
+    import { theme }                        from "$stores";
+    import { CheckIcon }                    from "$icons";
+    import {Description, Label}             from "$components";
+    import { UAITheme }                     from "$lib/styles/themes";
+    import { style }                        from "$lib/styles/themes/default/style";
+    import { focus }                        from "$lib/styles/themes/default/focus";
+    import { blur }                         from "$lib/styles/themes/default/blur";
 
 
     let isDarkMode = $theme === 'dark';
@@ -42,6 +42,7 @@
     <div class="items-center flex">
         <button
             on:click    = { toggle }
+            id          = { shapeInput.id }
             type        = "button"
             disabled    = { shapeInput.disabled || shapeInput.readonly }
             class       = {`
@@ -65,15 +66,7 @@
             {/if}
         </button>
 
-        <span
-            class={`ml-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} ${shapeInput.disabled || shapeInput.readonly ? 'opacity-50' : ''}`}
-            on:click={toggle}
-            role="button"
-            tabindex={shapeInput.disabled || shapeInput.readonly ? -1 : 0}
-            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggle(); }}
-        >
-            {shapeInput.label}
-        </span>
+        <Label { shapeInput } { themeShape } isMargin />
     </div>
 
     <Description { shapeInput } { checked } />
