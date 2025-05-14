@@ -15,6 +15,8 @@
         Time
     }                   from '$models';
     import { UAITheme } from '$lib';
+    import { theme }    from "$stores";
+    import { RING }     from '$lib/styles/themes/default/ring';
 
 
     export let shapeInput   : ShapeInput;
@@ -24,9 +26,6 @@
     export let themeShape   : ThemeShape = UAITheme();
 
 
-    import { theme }            from "$stores";
-
-    
     let isDarkMode = $theme === 'dark';
 
 
@@ -37,12 +36,10 @@
     }
 
 
-
-
     let isOpen              = false;
     let [hours, minutes]    = value 
-    ? [value.hour, value.minute]
-    : [undefined, undefined];
+        ? [value.hour, value.minute]
+        : [undefined, undefined];
 
     let formattedTime = 'hh : mm';
     $: if (hours !== undefined && minutes !== undefined) {
@@ -175,13 +172,13 @@
         const target = event.target as HTMLElement;
         const picker = document.getElementById( shapeInput.id );
 
-        if (picker && !picker.contains( target )) isOpen = false;
+        if ( picker && !picker.contains( target )) isOpen = false;
     }
 </script>
 
 <svelte:window on:click={ handleClickOutside } />
 
-<Info { shapeInput } { value } { onTimerInput }>
+<Info { shapeInput } { value } { onTimerInput } { themeShape }>
     <div class="relative w-full" id={ shapeInput.id }>
         <BoxStyle
             handleOpen={togglePicker}
@@ -200,16 +197,16 @@
                             { themeShape }
                             selected    = { isSelectingHours}
                             className   = "px-3 py-1"
-                            onClick     =  {() => isSelectingHours = true}
+                            onClick     = {() => isSelectingHours = true }
                         >
-                        Horas
+                            Horas
                         </ButtonNavigator>
 
                         <ButtonNavigator
                             { themeShape }
                             selected    = { !isSelectingHours}
                             className   = "px-3 py-1"
-                            onClick     =  {() => isSelectingHours = false}
+                            onClick     = {() => isSelectingHours = false }
                         >
                             Minutos
                         </ButtonNavigator>
@@ -218,47 +215,8 @@
                     <!-- Reloj analógico -->
                     <div
                         class="relative size-64 rounded-full mb-4 p-1"
-                        style={`
-                        box-shadow: 0 0 0 4px ${
-                            isDarkMode
-                                ? themeShape?.dark.ring
-                                : themeShape?.light.ring
-                        };
-                        `}
+                        style={ RING( isDarkMode, themeShape )}
                     >
-                        <!-- Botón AM/PM central -->
-                        <!-- <button
-                            type="button"
-                            data-selected={isPM}
-                            class="
-                            hover:scale-105
-                            duration-200
-                            absolute
-                            top-1/2
-                            left-1/2
-                            w-10 h-10
-                            rounded-full
-                            bg-zinc-200
-                            dark:bg-zinc-700
-                            text-zinc-700
-                            dark:text-white
-                            transform
-                            -translate-x-1/2
-                            -translate-y-1/2
-                            z-20
-                            flex
-                            items-center
-                            justify-center
-                            text-sm
-                            font-medium
-                            transition-colors
-                            data-[selected=true]:bg-blue-500
-                            data-[selected=true]:text-white"
-                            on:click={toggleAMPM}
-                        >
-                            {isPM ? 'PM' : 'AM'}
-                        </button> -->
-
                         <ButtonNavigator
                             { themeShape }
                             selected    = { isPM}
@@ -280,8 +238,7 @@
                                 {#if hours !== undefined}
                                     <div 
                                         class="absolute top-1/2 left-1/2 h-1 rounded-full origin-left z-10"
-                                        style={`
-                                        width: 30%; transform: translateY(-50%) rotate(${hourHandAngle}deg);
+                                        style={`width: 31.5%; transform: translateY(-50%) rotate(${hourHandAngle}deg);
                                         background-color: ${
                                             isDarkMode
                                                 ? themeShape.dark.ring
@@ -297,47 +254,19 @@
                                     {@const isSelected = isPM ? hours === hour : (hours === hour) || (hours === 0 && hour === 12)}
                                     <ButtonNavigator
                                         { themeShape }
-                                        disabled= {isHourDisabled(hour)}
-                                        selected    = { isSelected}
-                                        className   = "absolute size-10 shadow-md justify-center"
-                                        rounded     = "rounded-full"
-                                        defaultSelected = {true}
-                                        onClick     =  {() => selectHour(hour)}
-                                        style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
+                                        disabled                = { isHourDisabled( hour )}
+                                        selected                = { isSelected }
+                                        className               = "absolute size-10 shadow-md justify-center hover:scale-105"
+                                        rounded                 = "rounded-full"
+                                        defaultSelected         = { true }
+                                        colorDefaultSelected    = {{ tonalityDark: 100, tonalityLight: 100, opacity: 100 }}
+                                        colorHover              = {{ tonalityDark: 100, tonalityLight: 100, opacity: 60 }}
+                                        colorSelected           = {{ tonalityDark: 300, tonalityLight: 200, opacity: 100 }}
+                                        onClick                 =  {() => selectHour( hour )}
+                                        style                   = "left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                     >
-                                    {`${hour < 10 ? '0' : ''}${hour}`}
+                                        { `${hour < 10 ? '0' : ''}${hour}` }
                                     </ButtonNavigator>
-                                    <!-- <button 
-                                        type="button"
-                                        data-selected={isSelected}
-                                        data-disabled={isHourDisabled(hour)}
-                                        style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
-                                        on:click={() => selectHour(hour)}
-                                        disabled={isHourDisabled(hour)}
-                                        class = "
-                                        transition-transform
-                                        absolute
-                                        w-10 h-10
-                                        flex
-                                        items-center
-                                        justify-center
-                                        shadow-md
-                                        bg-zinc-100
-                                        dark:bg-zinc-700
-                                        rounded-full
-                                        text-zinc-700 
-                                        dark:text-zinc-300
-                                        hover:scale-105 
-                                        data-[selected=true]:bg-blue-500 
-                                        dark:data-[selected=true]:bg-blue-500 
-                                        data-[selected=true]:text-white
-                                        data-[disabled=true]:opacity-50
-                                        data-[disabled=true]:cursor-not-allowed
-                                        hover:data-[disabled=false]:bg-zinc-200 
-                                        dark:hover:data-[disabled=false]:bg-zinc-600"
-                                    >
-                                        {`${hour < 10 ? '0' : ''}${hour}`}
-                                    </button> -->
                                 {/each}
                             </div>
                         {:else}
@@ -349,8 +278,8 @@
                                 <!-- Aguja de los minutos -->
                                 {#if minutes !== undefined}
                                     <div 
-                                        class="absolute top-1/2 left-1/2 h-1 bg-blue-500 rounded-full origin-left "
-                                        style={`width: 40%; transform: translateY(-50%) rotate(${minuteHandAngle}deg);
+                                        class="absolute top-1/2 left-1/2 h-1 rounded-full origin-left"
+                                        style={`width: 31.5%; transform: translateY(-50%) rotate(${minuteHandAngle}deg);
                                         background-color: ${
                                                 isDarkMode
                                                     ? themeShape.dark.ring
@@ -364,17 +293,21 @@
                                 {#each minutesArray as minute, i}
                                     {@const pos = getPosition(i, 12, 100)}
                                     {@const isSelected = minutes === minute}
-                                    <button 
-                                        type="button"
-                                        data-selected={isSelected}
-                                        data-disabled={isMinuteDisabled(minute)}
-                                        class = "transition-transform absolute w-10 h-10 flex items-center justify-center shadow-md bg-zinc-100 dark:bg-zinc-700 rounded-full text-zinc-700 dark:text-zinc-300 hover:scale-105 data-[selected=true]:bg-blue-500 dark:data-[selected=true]:bg-blue-500 data-[selected=true]:text-white data-[disabled=true]:opacity-50 data-[disabled=true]:cursor-not-allowed hover:data-[disabled=false]:bg-zinc-200 dark:hover:data-[disabled=false]:bg-zinc-600"
-                                        style="left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
-                                        on:click={() => selectMinute(minute)}
-                                        disabled={isMinuteDisabled(minute)}
+                                    <ButtonNavigator
+                                        { themeShape }
+                                        disabled                = { isMinuteDisabled( minute )}
+                                        selected                = { isSelected}
+                                        className               = "absolute size-10 shadow-md justify-center  hover:scale-105 "
+                                        rounded                 = "rounded-full"
+                                        defaultSelected         = { true }
+                                        colorDefaultSelected    = {{ tonalityDark: 100, tonalityLight: 100, opacity: 100 }}
+                                        colorHover              = {{ tonalityDark: 100, tonalityLight: 100, opacity: 60 }}
+                                        colorSelected           = {{ tonalityDark: 300, tonalityLight: 200, opacity: 100 }}
+                                        onClick                 =  {() => selectMinute( minute )}
+                                        style                   = "left: calc(50% + {pos.x}px - 20px); top: calc(50% + {pos.y}px - 20px);"
                                     >
                                         {`${minute < 10 ? '0' : ''}${minute}`}
-                                    </button>
+                                    </ButtonNavigator>
                                 {/each}
                             </div>
                         {/if}
