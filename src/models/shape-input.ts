@@ -22,14 +22,25 @@ export type ThemeAttribute = {
     backgroundTonality  : string;
     backgroundOpacity   : string;
 
-    backgroundButton?: string;
+    colorSelected: string;
+    colorSelectedColor: string;
+    colorSelectedTonality: string;
+    colorSelectedOpacity: string;
+
+    secondaryBackground          : string;
+    secondaryBackgroundColor     : string;
+    secondaryBackgroundTonality  : string;
+    secondaryBackgroundOpacity   : string;
 
     color           : string;
     colorColor      : string;
     colorTonality   : string;
     colorOpacity    : string;
 
-    colorButton?: string;
+    secondaryColor           : string;
+    secondaryColorColor      : string;
+    secondaryColorTonality   : string;
+    secondaryColorOpacity    : string;
 
     ring            : string;
     ringColor       : string;
