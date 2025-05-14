@@ -4,6 +4,7 @@ type TailwindColorName = keyof typeof colors;
 type TailwindShade = '50' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
 
 export function tailwindToRGBA(tailwindClass: string): string {
+    if ( tailwindClass === 'white' ) return 'rgba(255, 255, 255, 1)';
     const match = tailwindClass.match(/(\w+)-(\d+)(?:\/(\d+))?/);
     if (!match) return 'rgba(0, 0, 0, 1)';
 
