@@ -385,6 +385,7 @@
 				/>
 			{:else if shapeInput.shape === 'markdown'}
 				<MarkdownEditor
+					{ themeShape }
 					{ shapeInput }
 					onInput		= {( value: string ) => handleInput( value, shapeInput.name )}
 					value		= { formValues[ shapeInput.name ]}
