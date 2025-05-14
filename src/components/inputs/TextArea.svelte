@@ -26,7 +26,7 @@
     }
 </script>
 
-<Info { shapeInput } { onInput } { value }>
+<Info { shapeInput } { onInput } { value } { themeShape }>
 	<textarea
         bind:value={ value }
 		name        = { shapeInput.name }
