@@ -3,8 +3,8 @@
 	import Description 			from "./Description.svelte";
 	import { LoadIcon } 		from "$icons";
     import { theme }            from "$stores";
-    import { style }            from '$lib/styles/themes/default/style';
     import { UAITheme }         from '$lib/styles/themes';
+    import { secondaryColor }   from '$lib/styles/themes/default/secondary-color';
 
 
     export let shapeInput	: ShapeInput;
@@ -29,7 +29,7 @@
         onclick		= { onClick }
         disabled    = { shapeInput.disabled || loading }
         name 		= { shapeInput.name }
-        style       = { style( isDarkMode, themeShape )}
+        style       = { secondaryColor( isDarkMode, themeShape )}
         class       = {`
             transition-all duration-200 ease-in-out 
             w-full
