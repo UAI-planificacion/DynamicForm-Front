@@ -100,6 +100,40 @@ function updateColorOpacity(mode: 'light' | 'dark', colorOpacity: string) {
     updateThemeAttribute(mode, { colorOpacity });
 }
 
+// Funciones para actualizar atributos secundarios de fondo
+function updateSecondaryBackground(mode: 'light' | 'dark', secondaryBackground: string) {
+    updateThemeAttribute(mode, { secondaryBackground });
+}
+
+function updateSecondaryBackgroundColor(mode: 'light' | 'dark', secondaryBackgroundColor: string) {
+    updateThemeAttribute(mode, { secondaryBackgroundColor });
+}
+
+function updateSecondaryBackgroundTonality(mode: 'light' | 'dark', secondaryBackgroundTonality: string) {
+    updateThemeAttribute(mode, { secondaryBackgroundTonality });
+}
+
+function updateSecondaryBackgroundOpacity(mode: 'light' | 'dark', secondaryBackgroundOpacity: string) {
+    updateThemeAttribute(mode, { secondaryBackgroundOpacity });
+}
+
+// Funciones para actualizar atributos secundarios de color
+function updateSecondaryColor(mode: 'light' | 'dark', secondaryColor: string) {
+    updateThemeAttribute(mode, { secondaryColor });
+}
+
+function updateSecondaryColorColor(mode: 'light' | 'dark', secondaryColorColor: string) {
+    updateThemeAttribute(mode, { secondaryColorColor });
+}
+
+function updateSecondaryColorTonality(mode: 'light' | 'dark', secondaryColorTonality: string) {
+    updateThemeAttribute(mode, { secondaryColorTonality });
+}
+
+function updateSecondaryColorOpacity(mode: 'light' | 'dark', secondaryColorOpacity: string) {
+    updateThemeAttribute(mode, { secondaryColorOpacity });
+}
+
 function updateRing(mode: 'light' | 'dark', ring: string) {
     updateThemeAttribute(mode, { ring });
 }
@@ -140,6 +174,7 @@ function getCurrentTheme(): ThemeShape {
     return get(themeShapeStore);
 }
 
+
 export {
     themeShapeStore,
     initThemeShape,
@@ -159,6 +194,14 @@ export {
     updateColorColor,
     updateColorTonality,
     updateColorOpacity,
+    updateSecondaryBackground,
+    updateSecondaryBackgroundColor,
+    updateSecondaryBackgroundTonality,
+    updateSecondaryBackgroundOpacity,
+    updateSecondaryColor,
+    updateSecondaryColorColor,
+    updateSecondaryColorTonality,
+    updateSecondaryColorOpacity,
     updateRing,
     updateRingColor,
     updateRingTonality,
