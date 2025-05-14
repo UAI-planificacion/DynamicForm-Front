@@ -15,10 +15,20 @@ export const elegantTheme = ( color: string = 'emerald' ): ThemeShape => ({
         backgroundColor     : color,
         background          : tailwindToRGBA(`${color}-50`),
 
+        secondaryBackgroundOpacity   : '80',
+        secondaryBackgroundTonality  : '300',
+        secondaryBackgroundColor     : color,
+        secondaryBackground          : tailwindToRGBA(`${color}-300`),
+
         colorOpacity    : '100',
         colorTonality   : '800',
         colorColor      : color,
         color           : tailwindToRGBA(`${color}-800`),
+
+        secondaryColorOpacity    : '100',
+        secondaryColorTonality   : '800',
+        secondaryColorColor      : color,
+        secondaryColor           : tailwindToRGBA(`${color}-800`),
 
         ringOpacity     : '80',
         ringTonality    : '300',
@@ -42,10 +52,20 @@ export const elegantTheme = ( color: string = 'emerald' ): ThemeShape => ({
         backgroundColor     : color,
         background          : tailwindToRGBA(`${color}-950`),
 
+        secondaryBackgroundOpacity   : '100',
+        secondaryBackgroundTonality  : '600',
+        secondaryBackgroundColor     : color,
+        secondaryBackground          : tailwindToRGBA(`${color}-600`),
+
         colorOpacity    : '100',
         colorTonality   : '300',
         colorColor      : color,
         color           : tailwindToRGBA(`${color}-300`),
+
+        secondaryColorOpacity    : '100',
+        secondaryColorTonality   : '50',
+        secondaryColorColor      : color,
+        secondaryColor           : tailwindToRGBA(`${color}-50`),
 
         ringOpacity     : '100',
         ringTonality    : '600',
