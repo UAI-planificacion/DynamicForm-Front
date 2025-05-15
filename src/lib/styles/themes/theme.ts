@@ -7,4 +7,5 @@ export const THEME: ShapeOption[] = [
     { label: "Marked",      value: "marked" },
     { label: "Neutral",     value: "neutral" },
     { label: "Minimalista", value: "minimal" },
+    { label: "Personalizado", value: "custom" },
 ];
