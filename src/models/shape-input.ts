@@ -11,7 +11,9 @@ export type DynamicForm = {
     name        : string;
     user_email  : string;
     details     : ShapeInput[];
-    themeShape? : ThemeShape;
+    themeShape  : ThemeShape;
+    themeName   : string;
+    themeColor  : string;
 }
 
 
