@@ -13,10 +13,10 @@
         markedTheme, 
         neutralTheme, 
         minimalTheme 
-    } from '$lib/styles/themes/';
-    import Grid4Styles from '../inputs/Grid4Styles.svelte';
-    import Grid5Styles from '../inputs/Grid5Styles.svelte';
-    import InputRGBAColors from '../inputs/InputRGBAColors.svelte';
+    }                                   from '$lib/styles/themes/';
+    import Grid4Styles                  from '../inputs/Grid4Styles.svelte';
+    import Grid5Styles                  from '../inputs/Grid5Styles.svelte';
+    import InputRGBAColors              from '../inputs/InputRGBAColors.svelte';
     import { Accordion, Separator, Tabs } from 'bits-ui';
     
     import {
@@ -26,26 +26,27 @@
         updateFontSize,
         updateBorderRadius,
         updateBoxShadow,
-        updateRingSize
+        updateRingSize,
+        themeColorStore,
+        themeNameStore,
+        updateThemeName,
+        updateThemeColor,
     } from '$stores/theme-shape';
     import { CaretDownIcon } from '$icons';
 
-    $: currentTheme = $themeShapeStore;
-
-    let themeName = 'uai';
-    let themeColor = 'zinc';
     let colorTheme: 'light' | 'dark' = 'light';
-    
+
+
     onMount(() => {
         if (!$themeShapeStore) {
-            updateThemeShape(UAITheme(themeColor));
+            updateThemeShape(UAITheme($themeColorStore));
         }
     });
 </script>
 
 <div class="grid grid-cols-2 gap-2 items-center">
     <VirtualSelect
-        value       = { themeName }
+        value       = { $themeNameStore }
         shapeInput  = {{
             id          : uuid(),
             name        : 'theme',
@@ -57,7 +58,7 @@
         }}
         onSelectedChange = {( value ) => {
             if ( value instanceof Array || value === undefined ) return;
-            themeName = value;
+            updateThemeName( value );
 
             const color = {
                 uai     : 'zinc',
@@ -65,10 +66,11 @@
                 casual  : 'orange',
                 marked  : 'rose',
                 neutral : 'slate',
-                minimal : 'sky'
+                minimal : 'sky',
+                custom  : $themeColorStore
             }[value] || 'zinc';
-            
-            themeColor = color;
+
+            updateThemeColor( color );
 
             const theme = {
                 uai     : UAITheme( color ),
@@ -76,7 +78,8 @@
                 casual  : casualTheme( color ),
                 marked  : markedTheme( color ),
                 neutral : neutralTheme( color ),
-                minimal : minimalTheme( color )
+                minimal : minimalTheme( color ),
+                custom  : $themeShapeStore
             }[value] || UAITheme( color );
 
             updateThemeShape( theme );
@@ -84,7 +87,7 @@
     />
 
     <VirtualSelect
-        value       = { themeColor }
+        value       = { $themeColorStore }
         shapeInput  = {{
             id          : uuid(),
             name        : 'themeColor',
@@ -97,7 +100,7 @@
         onSelectedChange = {( value ) => {
             if ( value instanceof Array || value === undefined ) return;
 
-            themeColor = value;
+            updateThemeColor( value );
 
             const theme = {
                 uai     : UAITheme( value ),
@@ -105,8 +108,9 @@
                 casual  : casualTheme( value ),
                 marked  : markedTheme( value ),
                 neutral : neutralTheme( value ),
-                minimal : minimalTheme( value )
-            }[themeName] || UAITheme( value );
+                minimal : minimalTheme( value ),
+                custom  : $themeShapeStore
+            }[$themeNameStore] || UAITheme( value );
 
             updateThemeShape( theme );
         }}
@@ -132,7 +136,7 @@
         <Accordion.Content class="pb-3 tracking-[-0.01em] space-y-2">
             <div class="grid grid-cols-1 @lg:grid-cols-2 @2xl:grid-cols-5 gap-4">
                 <VirtualSelect
-                    value       = { currentTheme.height }
+                    value       = { $themeShapeStore.height }
                     shapeInput  = {{
                         id          : uuid(),
                         name        : 'height',
@@ -149,7 +153,7 @@
                 />
 
                 <VirtualSelect
-                    value       = { currentTheme.fontSize }
+                    value       = { $themeShapeStore.fontSize }
                     shapeInput  = {{
                         id          : uuid(),
                         name        : 'fontSize',
@@ -166,7 +170,7 @@
                 />
 
                 <VirtualSelect
-                    value       = { currentTheme.borderRadius }
+                    value       = { $themeShapeStore.borderRadius }
                     shapeInput  = {{
                         id          : uuid(),
                         name        : 'borderRadius',
@@ -183,7 +187,7 @@
                 />
 
                 <VirtualSelect
-                    value       = { currentTheme.ringSize }
+                    value       = { $themeShapeStore.ringSize }
                     shapeInput  = {{
                         id                  : uuid(),
                         name                : 'ring',
@@ -200,7 +204,7 @@
                 />
 
                 <VirtualSelect
-                    value       = { currentTheme.boxShadow }
+                    value       = { $themeShapeStore.boxShadow }
                     shapeInput  = {{
                         id          : uuid(),
                         name        : 'boxShadow',
