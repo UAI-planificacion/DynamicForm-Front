@@ -34,9 +34,19 @@
         successToast,
         startClean,
         authClient,
+        UAITheme,
     }                                       from "$lib";
 	import { AddIcon, LoadIcon, SaveIcon }  from "$icons";
-	import { dynamicMode, dynamicForms, themeShapeStore } 	from "$stores";
+	import {
+        dynamicMode,
+        dynamicForms,
+        themeShapeStore,
+        themeNameStore,
+        themeColorStore,
+        updateThemeShape,
+        updateThemeName,
+        updateThemeColor
+    }                                       from "$stores";
 	import CircleLoader                     from "$components/Placeholder/CircleLoader.svelte";
 
 
@@ -54,7 +64,10 @@
         _id         : '',
         name        : '',
         details     : [ buttonTemplate ] ,
-        user_email  : ''
+        user_email  : '',
+        themeShape  : UAITheme(),
+        themeName   : 'uai',
+        themeColor  : 'zinc'
     };
 
     $: {
@@ -90,24 +103,24 @@
         isValidList.push( false );
 
         return dynamicForm.details = [
-		{
-			id		: uuid(),
-			name 	: '',
-			shape	: 'none',
-		}, ...dynamicForm.details,
-	];
-}
+            {
+                id		: uuid(),
+                name 	: '',
+                shape	: 'none',
+            }, ...dynamicForm.details,
+        ];
+    }
 
 
 	const deleteItem = ( id: string ) => {
-		const indexToDelete = dynamicForm.details.findIndex(temp => temp.id === id);
+		const indexToDelete = dynamicForm.details.findIndex( temp => temp.id === id );
 
 		dynamicForm.details = [
-			...dynamicForm.details.filter(temp => temp.id !== id) ?? []
+			...dynamicForm.details.filter( temp => temp.id !== id ) ?? []
 		];
 
-		if (indexToDelete !== -1) {
-			isValidList.splice(indexToDelete, 1);
+		if ( indexToDelete !== -1 ) {
+			isValidList.splice( indexToDelete, 1 );
 			isValidList = [...isValidList];
 		}
 	};
@@ -172,6 +185,9 @@
         isLoading           = true;
         formName.disabled   = true;
         dynamicForm.name    = dynamicForm.name.trim();
+        dynamicForm.themeShape = $themeShapeStore;
+        dynamicForm.themeName = $themeNameStore;
+        dynamicForm.themeColor = $themeColorStore;
 
         return true;
     }
@@ -275,6 +291,10 @@
         optionSelected = selected;
 
         if ( selected === 'new' ) {
+            updateThemeShape( UAITheme() );
+            updateThemeName( 'uai' );
+            updateThemeColor( 'zinc' );
+
             dynamicForm = {
                 ...dynamicForm,
                 name    : '',
@@ -290,6 +310,10 @@
             dynamicForm.details = [];
             return;
         }
+
+        updateThemeShape( selectedForm.themeShape );
+        updateThemeName( selectedForm.themeName );
+        updateThemeColor( selectedForm.themeColor );
 
         formName.value = selectedForm.name;
         dynamicForm = { ...selectedForm, name: selectedForm.name };
@@ -408,7 +432,7 @@
                                     { inputActive }
                                     template    = { dynamicForm.details }
                                     dynamicMode = { $dynamicMode }
-                                    themeShape  = { dynamicForm.themeShape ?? $themeShapeStore }
+                                    themeShape  = { $themeShapeStore }
                                 />
                             </div>
                         </Resizable>
@@ -429,7 +453,7 @@
                                 setError    = { () => formName.valid = dynamicForm.name.length > 0 }
                             />
 
-                            <div class="flex items-start gap-2 mt-[1.7rem]">
+                            <div class="flex items-center gap-2 mt-[1.7rem]">
                                 {#if optionSelected === 'new' }
                                     <button
                                         class       = "h-10 sm:h-9 w-20 sm:w-40 md:w-36 bg-primary transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-blue-600 dark:active:bg-blue-800"
@@ -483,7 +507,7 @@
                         { inputActive }
                         template    = { dynamicForm.details }
                         dynamicMode = { $dynamicMode }
-                        themeShape  = { dynamicForm.themeShape ?? $themeShapeStore }
+                        themeShape  = { $themeShapeStore }
                     />
                 </div>
             {/if}
