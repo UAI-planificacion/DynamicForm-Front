@@ -5,6 +5,17 @@ import { UAITheme } from '$lib/styles/themes';
 // Store principal para el tema
 const themeShapeStore = writable<ThemeShape>(UAITheme());
 
+const themeNameStore = writable<string>( 'uai' );
+const themeColorStore = writable<string>( 'zinc' );
+
+function updateThemeName(name: string) {
+    themeNameStore.set(name);
+}
+
+function updateThemeColor(color: string) {
+    themeColorStore.set(color);
+}
+
 // Función para inicializar el theme shape completo
 function initThemeShape(initialTheme: ThemeShape) {
     themeShapeStore.set(initialTheme);
@@ -207,5 +218,9 @@ export {
     updateRingTonality,
     updateRingOpacity,
     updateFocusEvent,
-    getCurrentTheme
+    getCurrentTheme,
+    themeNameStore,
+    themeColorStore,
+    updateThemeName,
+    updateThemeColor
 };

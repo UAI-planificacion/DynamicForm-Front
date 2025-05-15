@@ -14,7 +14,7 @@ export const POST = async ({ request }: RequestEvent): Promise<Response> => {
         }
 
         const response = await dynamicForm.create( rest );
-        
+
         if ( isApiError( response )) {
             let statusCode = 500;
             if (response.code === 'HTTP_422') {
