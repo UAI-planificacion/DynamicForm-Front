@@ -1,15 +1,8 @@
 <script lang="ts">
-    import { v4 as uuid } from 'uuid';
     import { onMount } from 'svelte';
 
-    import {
-        COLORS,
-        OPACITY,
-        tailwindToRGBA,
-        TONALITY,
-        RING
-    } from '$lib/styles/';
-    import { Input, VirtualSelect } from "$components";
+    import { v4 as uuid } from 'uuid';
+
     import { 
         themeShapeStore,
         updateBackgroundColor,
@@ -32,47 +25,56 @@
         updateRingTonality,
         updateRingOpacity,
         updateRing,
-        updateFocusEvent
-    } from '$stores/theme-shape';
+        updateFocusEvent,
 
-    // Propiedades del componente - solo necesitamos el nombre y el modo de color
+        updateThemeName
+
+    }                               from '$stores/theme-shape';
+    import {
+        COLORS,
+        OPACITY,
+        tailwindToRGBA,
+        TONALITY,
+        RING
+    }                               from '$lib/styles/';
+    import { Input, VirtualSelect } from "$components";
+
+
     export let name: string;
     export let colorTheme: 'light' | 'dark' = 'light';
-    
-    // Obtener el tema actual del store
+
+
     $: currentTheme = $themeShapeStore;
-    
-    // Variables locales para los valores
+
+
     let color = '';
     let tonality = '';
     let opacity = '';
     let type = '';
     let size: string = '';
-    
-    // Definir evento personalizado
+
+
     const dispatchChangeEvent = () => {
         const event = new CustomEvent('change', {
             bubbles: true,
             cancelable: true,
             detail: { name, colorTheme, color, tonality, opacity, type, size }
         });
-        
-        // Disparar el evento desde el elemento actual
+
         if (typeof document !== 'undefined') {
             document.dispatchEvent(event);
         }
     };
-    
-    // Inicializar valores desde el store cuando cambia el tema o el modo de color
+
+
     $: if (currentTheme && currentTheme[colorTheme]) {
         updateLocalValues();
     }
-    
-    // Función para actualizar los valores locales desde el store
+
+
     function updateLocalValues() {
         if (!currentTheme || !currentTheme[colorTheme]) return;
-        
-        // Determinar qué valores obtener según el nombre del componente
+
         if (name.toLowerCase().includes('fondo')) {
             if (name.toLowerCase().includes('secundario')) {
                 color = currentTheme[colorTheme].secondaryBackgroundColor || '';
@@ -115,16 +117,15 @@
         }
     }
 
-    // Función para actualizar el tipo
+
     function updateType(value: string): void {
         type = value === 'transparent' || value === 'currentColor' || value === 'black' || value === 'white' 
             ? value
             : tailwindToRGBA(`${type}-${color}-${tonality}/${opacity}`);
     }
 
-    // Función para actualizar el store según el tipo de componente
+
     function updateStore(): void {
-        // Determinar qué actualizar según el nombre del componente
         if (name.toLowerCase().includes('fondo')) {
             if (name.toLowerCase().includes('secundario')) {
                 updateSecondaryBackgroundColor(colorTheme, color);
@@ -167,12 +168,12 @@
                 updateRing(colorTheme, type);
             }
         }
-        
-        // Disparar evento personalizado
+
         dispatchChangeEvent();
+        updateThemeName('custom' );
     }
-    
-    // Inicializar valores al montar el componente
+
+
     onMount(() => {
         updateLocalValues();
     });
