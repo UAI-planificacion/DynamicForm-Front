@@ -47,14 +47,6 @@ El componente Área de Texto incluye validación integrada:
 
 ![Validación del Área de Texto](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744242746/UAI/dynamic-form/bedfd645-ea27-425e-9fd7-bb99735c4c36.png)
 
-## Estilos personalizables
-
-El componente Área de Texto permite personalizar su apariencia mediante clases CSS personalizadas:
-
-- **Estilos con Tailwind**: Puedes aplicar clases de Tailwind CSS para personalizar completamente el aspecto del área de texto
-
-![Estilos del Área de Texto](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744242778/UAI/dynamic-form/bb24749e-0d1e-4903-95d1-aacdb0dfc08e.png)
-
 ## Ejemplo de uso
 
 \`\`\`typescript
