@@ -313,7 +313,7 @@
 		<SubTitle title="Vista Previa" />
 	{/if}
 
-    <div class=" grid grid-cols-1 xl:grid-cols-1 gap-2">
+    <div class=" grid grid-cols-1 xl:grid-cols-1 gap-3">
 
     {#each template as shapeInput, index }
 		<div class={`flex ${dynamicMode ? "gap-1.5" : "" } ${inputActive === index + 1 ? ' pr-2 py-2 rounded-lg bg-zinc-200 dark:bg-zinc-800' : ''}`}>
