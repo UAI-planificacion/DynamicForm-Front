@@ -223,8 +223,8 @@
                         id      : uuid(),
                         name    : 'search',
                         label   : 'Con buscador',
-                        checked : shapeInput.search
                     }}
+                    checked   = { shapeInput.search }
                 />
 
                 <Input
