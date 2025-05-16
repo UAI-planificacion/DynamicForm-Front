@@ -16,7 +16,6 @@ El componente Date en DynamicForm proporciona las siguientes funcionalidades:
 - **Visualización clara**: Resaltado de la fecha actual y las fechas seleccionadas.
 - **Formato consistente**: Presentación de fechas en formato DD / MM / AAAA.
 - **Validaciones integradas**: Soporte para campos requeridos y mensajes de error personalizados.
-- **Personalización visual**: Clases CSS personalizables para adaptar el estilo.
 
 ## Propiedades principales
 
@@ -65,16 +64,6 @@ Cuando se habilita la opción de rango, el valor seleccionado tiene el siguiente
 }
 \`\`\`
 
-## Estilos personalizables
-
-El componente Date permite personalizar tres elementos principales a través de clases CSS:
-
-1. **Etiqueta**: Mediante la propiedad \`labelDateClass\`
-2. **Contenedor del selector**: Mediante la propiedad \`boxDateClass\`
-3. **Contenido del calendario**: Mediante la propiedad \`contentDateClass\`
-
-Si no se especifican estilos personalizados, se utilizarán los estilos predeterminados definidos en el sistema.
-
 ## Validación
 
 El componente Date incluye validación integrada:
@@ -100,10 +89,6 @@ El componente Date incluye validación integrada:
 3. Selecciona la fecha de fin haciendo clic sobre otro día
 4. El rango entre ambas fechas se resaltará automáticamente
 5. Para deseleccionar un rango, haz clic nuevamente sobre cualquiera de las fechas seleccionadas
-
-## Estilos con Tailwind
-
-![Tailwind date picker](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744674740/UAI/dynamic-form/date/302ccb2d-c7d8-4f72-a168-faf32b70a153.png)
 
 ## Ejemplo de uso
 
