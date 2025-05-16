@@ -29,20 +29,6 @@ Para crear un botón simple en tu formulario, solo necesitas configurar estas pr
 2. **Etiqueta**: Texto que verán los usuarios en el botón
 3. **Descripción**: Texto explicativo opcional que aparece debajo
 
-## Personalización visual
-
-Puedes personalizar la apariencia del botón utilizando estilos de Tailwind CSS. Esto te permite cambiar colores, tamaños, bordes y otros aspectos visuales.
-
-![Personalización de estilos](https://res.cloudinary.com/dbgzsikcs/image/upload/v1745530928/UAI/dynamic-form/button/54ff4e0a-0dec-4ab5-9f4d-3461c38ea2cc.png)
-
-Ejemplos de estilos comunes:
-
-- **Botón azul**: \`w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded\`
-- **Botón verde**: \`w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg\`
-- **Botón rojo**: \`w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md\`
-
-Si no especificas estilos personalizados, se usará el diseño predeterminado del sistema.
-
 ## Envío de datos a una API
 
 El componente Botón puede configurarse para enviar los datos del formulario a un servicio externo (API). Para ello, necesitas configurar:
