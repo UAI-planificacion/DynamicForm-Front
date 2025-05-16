@@ -71,18 +71,6 @@ El formato requerido para la importación debe incluir las columnas:
 - Etiqueta: Texto visible para el usuario
 - Valor: Valor que se almacena al seleccionar
 
-## Estilos personalizables
-
-El componente Selector permite personalizar cinco elementos principales a través de clases CSS:
-
-1. **Caja del selector**: El contenedor principal
-2. **Contenido desplegable**: El panel que muestra las opciones
-3. **Elementos individuales**: Cada opción seleccionable
-4. **Encabezados de grupo**: Los títulos de los grupos
-5. **Campo de búsqueda**: El input para filtrar opciones
-
-![Estilos personalizables](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744241309/UAI/dynamic-form/bb300df5-23fb-4522-ae66-48e88ecd69a2.png)
-
 ## Validación
 
 El componente Selector incluye validación integrada:
