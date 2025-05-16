@@ -8,7 +8,6 @@
 	import { marked } from '$components';
 
 
-
     let activeSection   = docSections[0].id;
     let activeItem      = docSections[0].items[0].id;
     let isSidebarOpen   = false;
@@ -42,10 +41,10 @@
     onMount(() => {
         updateFromHash();
 
-        window.addEventListener( 'hashchange', updateFromHash );
+        window.addEventListener('hashchange', updateFromHash);
 
         return () => {
-            window.removeEventListener( 'hashchange', updateFromHash );
+            window.removeEventListener('hashchange', updateFromHash);
         };
     });
 
@@ -77,15 +76,15 @@
 
 <div class="flex flex-col min-h-screen bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100 transition-colors duration-300">
     {#if isSearchOpen}
-        <div class="border-t border-gray-200 dark:border-gray-700 py-3 px-4 transition-all duration-300 ">
+        <div class="border-t border-gray-200 dark:border-gray-700 py-3 px-4 transition-all duration-300">
             <div class="relative">
                 <input 
                     type="text" 
                     bind:value={searchQuery} 
                     placeholder="Buscar en la documentación..." 
-                    class="w-full px-4 py-2 pl-10 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300"
+                    class="w-full px-4 py-2 pl-10 rounded-md border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300"
                 />
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
@@ -93,12 +92,11 @@
     {/if}
 
     <div class="flex flex-1 overflow-hidden h-full">
-        <!-- Sidebar -->
         <aside 
-            class="w-64 border-r border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 transition-all ease-in-out duration-300 overflow-y-auto
+            class="w-64 mt-20 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-all ease-in-out duration-300 overflow-y-auto
             {isSidebarOpen
-                ? 'fixed inset-y-0 left-0 z-20 shadow-lg md:shadow-none md:static md:block'
-                : 'hidden md:block'}"
+                ? 'fixed top-0 left-0 z-20 h-screen shadow-lg md:shadow-none md:fixed md:top-0 md:h-screen md:block'
+                : 'hidden md:fixed md:top-0 md:h-screen md:block'}"
         >
             <!-- Search bar (desktop) -->
             <div class="p-4 border-b border-gray-200 dark:border-zinc-700">
@@ -163,7 +161,7 @@
         {/if}
         <!-- Main content -->
         <main
-            class="flex-1 overflow-y-auto bg-white dark:bg-zinc-900 p-4 md:p-8 transition-all duration-300"
+            class="flex-1 overflow-y-auto bg-white dark:bg-zinc-900 p-4 md:p-8 md:ml-64 transition-all duration-300"
             in:fly  = {{ y: -20, duration: 300 }}
             out:fly = {{ y: 20, duration: 300 }}
         >
