@@ -29,15 +29,16 @@
 
         updateThemeName
 
-    }                               from '$stores/theme-shape';
+    }                           from '$stores/theme-shape';
     import {
         COLORS,
         OPACITY,
         tailwindToRGBA,
         TONALITY,
         RING
-    }                               from '$lib/styles/';
-    import { Input, VirtualSelect } from "$components";
+    }                           from '$lib/styles/';
+    import { VirtualSelect }    from "$components";
+    import ColorPicker          from './colorpicker/ColorPicker.svelte';
 
 
     export let name: string;
@@ -256,21 +257,14 @@
     />
 {/if}
 
-<div class="flex gap-2 items-end justify-center">
-    <Input
-        shapeInput = {{
-            id          : uuid(),
-            name        : `${type}-custom`,
-            label       : 'Custom',
-            placeholder : 'Ingrese el color customizado',
-        }}
-        value      = { type }
-        onInput    = {( value: string ) => {type = value; updateStore(); }}
-    />
+<div class="w-full space-y-1.5">
+    {#if  true}
+    {@const id = uuid()}
+    <label for={id} class="text-sm font-medium dark:text-zinc-300">Color</label>
 
-    <!-- svelte-ignore element_invalid_self_closing_tag -->
-    <div
-        class="size-9 rounded-full mb-2 px-4 border-2 border-zinc-500"
-        style="background-color: {type}"
-    />
+    <ColorPicker id={id} color={type} on:change={( colorEvent )=> {
+        type = colorEvent.detail.color;
+        updateStore();
+    }} />
+    {/if}
 </div>
