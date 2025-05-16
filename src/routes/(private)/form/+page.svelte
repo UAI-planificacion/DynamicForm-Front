@@ -10,6 +10,7 @@
 	import { v4 as uuid }   from 'uuid';
 	import { Separator }    from "bits-ui";
     import toast            from "svelte-french-toast";
+    import { SquarePen }    from "lucide-svelte";
 
 	import {
 		Preview,
@@ -443,7 +444,7 @@
                         />
 
                         <div
-                            class   = "flex flex-row items-start w-full gap-2"
+                            class   = "{ optionSelected === 'new'? 'flex' : 'grid sm:flex' } flex-row items-start w-full gap-2"
                             in:fade = {{ duration: 1000, delay: 50 }}
                         >
                             <Input 
@@ -453,10 +454,10 @@
                                 setError    = { () => formName.valid = dynamicForm.name.length > 0 }
                             />
 
-                            <div class="flex items-center gap-2 mt-[1.7rem]">
+                            <div class="flex items-center gap-2 { optionSelected === 'new'? 'mt-[1.9rem]' : 'mt-0 sm:mt-[1.9rem]' } ">
                                 {#if optionSelected === 'new' }
                                     <button
-                                        class       = "h-10 sm:h-9 w-20 sm:w-40 md:w-36 bg-primary transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-blue-600 dark:active:bg-blue-800"
+                                        class       = "h-9 w-20 sm:w-40 md:w-36 bg-primary transition-colors text-white px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-blue-600 dark:active:bg-blue-800"
                                         on:click    = { saveTemplate }
                                         disabled    = { isLoading }
                                     >
@@ -472,11 +473,11 @@
                                     </button>
                                 {:else }
                                     <button
-                                        class       = "h-10 sm:h-9 w-20 md:w-36 bg-primary transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-blue-600 dark:active:bg-blue-800"
+                                        class       = "h-9 w-full sm:w-40 md:w-36 bg-primary transition-colors text-white px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-blue-600 dark:active:bg-blue-800"
                                         on:click    = { updatedTemplate }
                                         disabled    = { isLoading }
                                     >
-                                        <SaveIcon />
+                                        <SquarePen class="w-5 h-5" />
 
                                         {#if isLoading }
                                             <LoadIcon />
