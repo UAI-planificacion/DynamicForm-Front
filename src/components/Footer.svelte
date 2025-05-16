@@ -1,4 +1,4 @@
-<footer class="bg-black border-t border-gray-900 py-4 px-4 transition-colors duration-300">
+<footer class="bg-black border-t border-gray-900 py-4 px-4 transition-colors duration-300 z-50">
     <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
         <div class="flex items-center mb-4 md:mb-0">
             <span class="font-bold text-white transition-colors duration-300">Universidad Adolfo Ibáñez</span>
