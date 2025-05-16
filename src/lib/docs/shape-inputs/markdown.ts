@@ -78,7 +78,12 @@ El editor proporciona un menú desplegable para insertar encabezados de diferent
 | Fórmula | Inserta una fórmula matemática | \`$fórmula$\` |
 | Tabla | Abre un generador de tablas interactivo | Ver ejemplo abajo |
 
-\`| Encabezado | Encabezado |\`<br>\`| --- | --- |\`<br>\`| Celda | Celda |\`
+\`\`\`
+| Encabezado | Encabezado |
+| --- | --- |
+| Celda | Celda |
+\`\`\`
+
 
 ## Generador de tablas
 
@@ -111,26 +116,12 @@ $E = mc^2$
 
 Esto se renderizará como una fórmula matemática en la vista previa.
 
-## Estilos personalizables
-
-El componente Markdown permite personalizar su apariencia mediante clases CSS:
-
-- **Contenedor del editor**: Mediante la propiedad \`boxMarkdownClass\`
-- **Área de texto**: Mediante la propiedad \`textareaMarkdownClass\`
-- **Vista previa**: Mediante la propiedad \`previewMarkdownClass\`
-
-Si no se especifican estilos personalizados, se utilizarán los estilos predeterminados definidos en el sistema.
-
 ## Validación
 
 El componente Markdown incluye validación integrada:
 
 - Si la propiedad \`required\` está establecida como \`true\`, el campo no puede estar vacío
 - El mensaje de error se muestra a través de la propiedad \`msgRequired\` cuando el campo es requerido pero está vacío
-
-## Estilos con Tailwind
-
-![Tailwind markdown](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744926911/UAI/dynamic-form/markdown/d39eaa9b-2904-4720-820a-8379a94ddbf1.png)
 
 ## Ejemplo de uso
 
@@ -162,9 +153,6 @@ const advancedMarkdownEditor = {
     preview: true,
     minHeight: '400px',
     dynamicMode: true,
-    boxMarkdownClass: 'bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600',
-    textareaMarkdownClass: 'prose dark:prose-invert max-w-none',
-    previewMarkdownClass: 'prose dark:prose-invert max-w-none p-4'
 };
 \`\`\`
 
