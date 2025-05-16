@@ -388,6 +388,13 @@
                             <container slot="left" class="ml-1 h-full flex flex-col space-y-3">
                                 <SubTitle title="Editor" />
 
+                                <button
+                                    class="hover:shadow-xl transition-colors delay-300 flex-shrink-0 w-full flex justify-center hover:brightness-105 dark:hover:brightness-110 shadow-md rounded-lg p-5 border-1 border-zinc-300 dark:border-zinc-700 border bg-white dark:bg-zinc-900 active:scale-[0.99] active:brightness-90"
+                                    on:click={ addItem }
+                                >
+                                    <AddIcon />
+                                </button>
+
                                 <div
                                     class		= "flex-1 space-y-3"
                                     on:consider = { handleConsider }
@@ -418,13 +425,6 @@
                                         </div>
                                     {/each}
                                 </div>
-
-                                <button
-                                    class="hover:shadow-xl transition-colors delay-300 flex-shrink-0 w-full flex justify-center hover:brightness-105 dark:hover:brightness-110 shadow-md rounded-lg p-5 border-1 border-zinc-300 dark:border-zinc-700 border bg-white dark:bg-zinc-900 active:scale-[0.99] active:brightness-90"
-                                    on:click={ addItem }
-                                >
-                                    <AddIcon />
-                                </button>
                             </container>
 
                             <div slot="right" class="relative px-1">
