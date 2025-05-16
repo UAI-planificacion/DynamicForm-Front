@@ -96,26 +96,6 @@ Esto generaría las siguientes opciones:
 - Puedes ir generando un rango de cada 2, 3 o 5 horas.
 - Puedes ir generando un rango de cada 15 minutos.
 
-
-## Estilos personalizables
-
-El componente Tiempo permite personalizar su apariencia mediante clases CSS, con diferentes opciones según el modo seleccionado:
-
-### Modo Digital
-
-- **Contenedor**: Mediante la propiedad \`boxDigitalClass\`
-- **Contenido del menú desplegable**: Mediante la propiedad \`contentDigitalClass\`
-- **Elementos de la lista**: Mediante la propiedad \`itemDigitalClass\`
-- **Campo de entrada**: Mediante la propiedad \`inputDigitalClass\`
-
-### Modo Analógico
-
-- **Contenedor**: Mediante la propiedad \`boxAnalogicClass\`
-- **Contenido del reloj**: Mediante la propiedad \`contentAnalogicClass\`
-- **Elementos del reloj**: Mediante la propiedad \`itemAnalogicClass\`
-
-Si no se especifican estilos personalizados, se utilizarán los estilos predeterminados definidos en el sistema.
-
 ## Validación
 
 El componente Tiempo incluye validación integrada:
@@ -123,10 +103,6 @@ El componente Tiempo incluye validación integrada:
 - Si la propiedad \`required\` está establecida como \`true\`, debe seleccionarse una hora y un minuto
 - El mensaje de error se muestra a través de la propiedad \`msgRequired\` cuando el campo es requerido pero no se ha seleccionado un tiempo
 - La validación se activa solo después de que el usuario haya interactuado con el componente, evitando mostrar errores prematuramente
-
-## Estilos con Tailwind
-
-![Tailwind time picker](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744926211/UAI/dynamic-form/time/d3c498db-403a-47de-828c-9584ff562f29.png)
 
 ## Ejemplo de uso
 
@@ -163,8 +139,6 @@ const analogTime = {
         hourList: [10, 11, 12, 13, 14, 15],
         minuteList: [0, 30]
     },
-    boxAnalogicClass: 'bg-blue-50 dark:bg-blue-900 border-blue-300 dark:border-blue-700',
-    contentAnalogicClass: 'bg-white dark:bg-gray-800 shadow-xl',
     disabled: false,
     readonly: false
 };
