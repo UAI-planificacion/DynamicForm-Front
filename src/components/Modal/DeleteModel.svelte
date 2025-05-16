@@ -1,16 +1,15 @@
 <script lang="ts">
-    import { fade, fly } from 'svelte/transition';
-
     import {
         Dialog,
         Label,
         Separator
-    }               from "bits-ui";
+    }                   from "bits-ui";
+    import { Trash2 }   from 'lucide-svelte';
+
     import {
         LoadIcon,
-        SaveIcon,
         CloseIcon
-    }               from '$icons';
+    } from '$icons';
 
     export let onConfirm : VoidFunction;
     export let formName  : string;
@@ -26,9 +25,9 @@
 
 <Dialog.Root>
     <Dialog.Trigger
-        class="h-10 sm:h-9 w-20 md:w-36 bg-red-500 dark:bg-red-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
+        class="h-9 w-full md:w-36 bg-red-500 dark:bg-red-700 transition-colors text-white py-2 px-4 rounded flex items-center gap-2 justify-center active:scale-[0.99] active:brightness-90 hover:brightness-105 dark:hover:brightness-110 shadow-md active:bg-amber-600 dark:active:bg-amber-800"
     >
-        <SaveIcon />
+        <Trash2 class="w-5 h-5" />
 
         {#if isLoading }
             <LoadIcon />
