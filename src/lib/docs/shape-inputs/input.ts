@@ -9,7 +9,6 @@ El componente Input en DynamicForm proporciona las siguientes funcionalidades:
 - **Múltiples tipos de entrada**: texto, número, contraseña, email, URL, teléfono y búsqueda.
 - **Validaciones integradas**: requerido, longitud mínima/máxima, patrones regex, valores mínimos/máximos para números.
 - **Mensajes de error personalizados**: para cada tipo de validación.
-- **Personalización visual**: clases CSS personalizables para adaptar el estilo.
 - **Estados especiales**: deshabilitado, solo lectura.
 - **Valores por defecto**: configurables para inicializar el campo.
 
@@ -48,12 +47,6 @@ Para crear un campo de entrada básico, necesitas configurar al menos estas prop
 | Mensaje Valor Mínimo | texto | Mensaje de error cuando el valor es menor que el mínimo |
 | Mensaje Valor Máximo | texto | Mensaje de error cuando el valor es mayor que el máximo |
 
-### Propiedades de estilo
-
-| Propiedad | Tipo | Descripción |
-|-----------|------|-------------|
-| inputClass | string | Clases CSS para personalizar el estilo del campo de entrada |
-
 ## Validaciones
 
 El componente Input incluye un sistema completo de validaciones que se ejecutan tanto durante la edición como al enviar el formulario:
@@ -84,14 +77,6 @@ En la vista previa del formulario, el componente Input:
 3. Muestra mensajes de error cuando no se cumplen las validaciones.
 4. Recopila y almacena el valor ingresado para ser enviado con el formulario.
 
-
-## Estilos con Tailwind
-
-![Input form styles](https://res.cloudinary.com/dbgzsikcs/image/upload/v1744238908/UAI/dynamic-form/ab0077b8-42e3-448c-9ab3-f7a6196a5e1a.png)
-Para poder personalizar el estilo del componente Input, puedes usar las propiedades de tailwind para personalizar el campo de entrada.
-
-
-
 ## Ejemplo de uso completo
 
 \`\`\`javascript
@@ -109,7 +94,6 @@ const campoEmail = {
   msgPattern: "Ingresa un formato de correo electrónico válido",
   maxLength: 100,
   msgMaxLength: "El correo electrónico no puede exceder los 100 caracteres",
-  inputClass: "border-blue-500 focus:ring-blue-500"
 };
 \`\`\`
 
