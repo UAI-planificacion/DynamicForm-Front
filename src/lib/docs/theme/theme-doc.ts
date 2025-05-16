@@ -5,7 +5,7 @@ export const THEME = `# Personalización de Temas
 Los temas en Formulario Dinámico te permiten personalizar la apariencia visual de todos los componentes de tu formulario. Puedes modificar colores, tonalidades y opacidades para crear una experiencia visual coherente que se adapte a tu marca o preferencias.
 Los estilos se aplican a todos los componentes del formulario solo debes cambiar en un solo lugar.
 
-![Personalización de temas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1745528364/UAI/dynamic-form/theme/theme_customization.gif)
+![Personalización de temas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1747429928/UAI/dynamic-form/themes/Theme_light_kxebm8.gif)
 
 > **Nota**: Formulario Dinámico incluye un tema predeterminado (UAI Theme) que se carga automáticamente, pero puedes personalizarlo completamente.
 
@@ -18,7 +18,7 @@ Formulario Dinámico incluye una variedad de temas prediseñados que puedes util
 
 Cada tema controla automáticamente la apariencia de todos los componentes del formulario, incluyendo botones, campos de entrada, selectores y más. El sistema cambia entre los modos claro y oscuro según las preferencias del usuario o la configuración del sistema.
 
-![Modos de tema](https://res.cloudinary.com/dbgzsikcs/image/upload/v1745528364/UAI/dynamic-form/theme/light_dark_modes.png)
+![Modos de temas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1747429689/UAI/dynamic-form/themes/Theme_darks_imbnhv.gif)
 
 ### Catálogo de temas
 
@@ -72,7 +72,7 @@ También puedes personalizar colores secundarios para fondos y textos, siguiendo
 
 En el panel de edición de tu formulario, busca la sección "Temas" en el menú lateral.
 
-![Acceso al editor de temas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1745528364/UAI/dynamic-form/theme/theme_editor_access.png)
+![Acceso al editor de temas](https://res.cloudinary.com/dbgzsikcs/image/upload/v1747429366/UAI/dynamic-form/themes/Theme_custom_rb5mmu.gif)
 
 ### Paso 2: Selecciona el modo de tema
 
@@ -90,7 +90,7 @@ Elige si quieres personalizar el tema claro o el tema oscuro.
 3. **Configura la opacidad**:
    - Elige el nivel de transparencia (100% es completamente opaco)
 
-![Selector de color](https://res.cloudinary.com/dbgzsikcs/image/upload/v1745528364/UAI/dynamic-form/theme/color_picker.png)
+![Selector de color](https://res.cloudinary.com/dbgzsikcs/image/upload/v1747428274/UAI/dynamic-form/themes/Theme_custom_color_zzmt2d.gif)
 
 ### Paso 4: Previsualiza los cambios
 
@@ -133,6 +133,4 @@ Los cambios se aplican en tiempo real a todos los componentes del formulario, pe
 4. **Considera la accesibilidad**: Elige combinaciones de colores que sean accesibles para personas con discapacidades visuales.
 
 5. **Guarda tus temas**: Una vez que hayas creado un tema que te guste, guárdalo para poder reutilizarlo en otros formularios.
-
-![Guardar tema](https://res.cloudinary.com/dbgzsikcs/image/upload/v1745528364/UAI/dynamic-form/theme/save_theme.png)
 `;
